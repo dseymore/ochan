@@ -1,0 +1,23 @@
+#labels Build,Deployment
+How do I build this thing?
+
+= Introduction =
+Currently, Ochan doesn't meet all of its goals for deployment. It currently builds a war that is deployable to various Servlet Containers. Development is done on [http://www.mortbay.org/ Jetty].
+
+= Details =
+Dependencies are handled using Ivy, but, you really REALLY need to maintain your own ivy repository. Sadly I cant host one here, but, I do have a tar of my Ivy repository in svn. You should simply untar it, host it somewhere local to your development environment, and update the IvyConf.xml to point to it. 
+
+Once you've done that, you can simply use the following command, against jdk 1.5:
+
+:>ant -lib tools/apache-ivy-2.0.0-alpha2-incubating/ -lib tools/pmd-4.0/lib/ clean war
+
+
+==Deploying to Jetty==
+1. Copy the war to jetty
+:cp scratch/Ochan.war /...../jetty-6.1.3/webapps/Ochan.war
+2. Start a local database (not currently starting internal to the war)
+:java -cp hsqldb-1.8.0.7.jar org.hsqldb.Server -database.0 file:mydb -dbname.0 xdb
+3. Start jetty with JMX enabled and in debug mode
+:java -Xdebug -Xnoagent -Xrunjdwp:transport=dt_socket,address=4000,server=y,suspend=n -Dcom.sun.management.jmxremote -jar start.jar etc/jetty-jmx.xml etc/jetty.xml
+4. For good measure, and configuration, start jconsole
+:jconsole
