@@ -1,0 +1,35 @@
+<html>
+	<head>
+	</head>
+	<body>
+		#foreach($thread in ${category.threads})
+			<hr>
+			<div>
+				Started: $thread.startDate [<a href="viewThread.Ochan?identifier=$thread.identifier">Reply</a>]<br>
+				#foreach($post in $thread.posts)
+					<!-- Only print the first and last post to the thread -->
+					#if ($velocityCount == 1 || $velocityCount == ($list.size($thread.posts)) )
+					<div>
+						<table>
+							<tr>
+								#if ($post.getClass().getName() == 'org.Ochan.entity.ImagePost')
+								<td>
+									<a href="#springUrl('/thumb.Ochan')?identifier=$post.identifier"><img src="#springUrl('/thumb.Ochan')?identifier=$post.identifier&thumb=true"></a>
+								</td>
+								#end
+								<td>
+									<a name="$post.identifier"/>
+									<div>
+										<a href="mailto:$post.email">$post.author</a> <a href="$post.url">$post.url</a> $post.time
+									</div>
+									$post.comment
+								</td>
+							</tr>
+						</table>
+					</div>
+					#end
+				#end
+			</div>
+		#end
+	</body>
+</html>

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+                           http://www.springframework.org/schema/tx
+                           http://www.springframework.org/schema/tx/spring-tx-2.0.xsd
+                           http://www.springframework.org/schema/aop
+                           http://www.springframework.org/schema/aop/spring-aop-2.0.xsd">
+
+	<!-- xxxxxxxxxxxxxxxxxxxxxxxxx  JPA configuration  xxxxxxxxxxxxxxxxxxxxxxxxx -->
+	<!-- enables interpretation of the @Required annotation to ensure that dependency injection actually occures -->
+	<bean class="org.springframework.beans.factory.annotation.RequiredAnnotationBeanPostProcessor" />
+
+	<!-- enables interpretation of the @PersistenceUnit/@PersistenceContext annotations providing convenient
+		access to EntityManagerFactory/EntityManager -->
+	<bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
+
+	<!-- uses the persistence unit defined in the META-INF/persistence.xml JPA configuration file -->
+	<bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalEntityManagerFactoryBean">
+		<property name="persistenceUnitName" value="DefaultPersistenceUnit" />
+	</bean>
+
+	<!-- transaction manager for use with a single JPA EntityManagerFactory for transactional data access
+		to a single datasource -->
+	<bean id="jpaTransactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+		<property name="entityManagerFactory" ref="entityManagerFactory" />
+	</bean>
+
+	<!-- enables interpretation of the @Transactional annotation for declerative transaction managment
+		using the specified JpaTransactionManager -->
+	<tx:annotation-driven transaction-manager="jpaTransactionManager" proxy-target-class="false" />
+
+	<!-- enables interpretation of the @Configurable annotation for domain object dependency injection -->
+	<aop:spring-configured />
+
+	<!--  xxxxxxxxxxxxxxxxxxxxxxxxx  DAO configuration xxxxxxxxxxxxxxxxxxxxxxxxx  -->
+	<bean id="categoryDAO" class="org.Ochan.dao.CategoryDAO" />
+	<bean id="postDAO" class="org.Ochan.dao.PostDAO" />
+	<bean id="threadDAO" class="org.Ochan.dao.ThreadDAO">
+		<property name="postDao" ref="postDAO" />
+	</bean>
+	
+	<!--  xxxxxxxxxxxxxxxxxxxxxxxxx  Service configuration xxxxxxxxxxxxxxxxxxxxxxxxx  -->
+	<bean id="localCategoryService" class="org.Ochan.service.local.LocalCategoryService">
+		<property name="categoryDAO" ref="categoryDAO"/>
+	</bean>
+	
+	<bean id="localThreadService" class="org.Ochan.service.local.LocalThreadService">
+		<property name="threadDAO" ref="threadDAO"/>
+		<property name="categoryService" ref="localCategoryService"/>
+	</bean>
+	
+	<bean id="localPostService" class="org.Ochan.service.local.LocalPostService">
+		<property name="postDAO" ref="postDAO"/>
+		<property name="threadService" ref="localThreadService"/>
+	</bean>
+	
+	
+	<!--  JMX! -->
+	<bean id="exporter" class="org.springframework.jmx.export.MBeanExporter">
+        <property name="assembler" ref="assembler"/>
+        <property name="namingStrategy" ref="namingStrategy"/>
+        <property name="autodetect" value="true"/>
+    </bean>
+
+    <bean id="jmxAttributeSource"
+          class="org.springframework.jmx.export.annotation.AnnotationJmxAttributeSource"/>
+
+    <!-- will create management interface using annotation metadata -->
+    <bean id="assembler"
+          class="org.springframework.jmx.export.assembler.MetadataMBeanInfoAssembler">
+        <property name="attributeSource" ref="jmxAttributeSource"/>
+    </bean>
+
+    <!-- will pick up the ObjectName from the annotation -->
+    <bean id="namingStrategy"
+          class="org.springframework.jmx.export.naming.MetadataNamingStrategy">
+        <property name="attributeSource" ref="jmxAttributeSource"/>
+    </bean>
+
+	<bean class="org.Ochan.util.StatisticalErrorHandler"/>
+	
+</beans>

@@ -1,0 +1,71 @@
+<project name="configurations" default="compile" xmlns:ivy="antlib:org.apache.ivy.ant">
+    <!-- some variables used -->
+    <property name="build.dir" value="scratch" />
+    <property name="src.dir" value="src" />
+    <property name="lib.dir" value="${build.dir}/lib"/>
+    
+
+	<target name="compile" description="--> compile and run the project">
+		<ivy:configure file="ivyconf.xml" />
+		<ivy:resolve conf="default"/>
+		<ivy:retrieve conf="default" pattern="${lib.dir}/[artifact]-[revision].[ext]"/>
+	        <mkdir dir="${build.dir}" />
+	        <mkdir dir="${build.dir}/classes" />
+	        <javac srcdir="${src.dir}/java/" debug="true" destdir="${build.dir}/classes/">
+			<classpath>
+				<fileset dir="${lib.dir}">
+			        	<include name="**/*.jar"/>
+				</fileset>
+			</classpath>		
+		</javac>
+	</target>
+	
+	<target name="jarPersistence">
+		<jar destfile="${lib.dir}/persistence-Ochan.jar">
+			<metainf dir="src/config/META-INF/"/>
+		</jar>
+	</target>
+	
+	<target name="war" depends="compile,jarPersistence">
+		<war destfile="${build.dir}/Ochan.war" webxml="src/config/WEB-INF/web.xml">
+			<webinf dir="src/config/WEB-INF/"/>
+			<!-- <metainf dir="src/config/META-INF/"/>-->
+			<fileset dir="src/root" /> <!-- javascript & toolsets --> 
+			<lib dir="${lib.dir}"/>
+  			<classes dir="${build.dir}/classes" />
+		</war>
+	</target>
+
+	<target name="clean">
+		<delete dir="${build.dir}"/>
+	</target>
+
+	<target name="clean-cache" depends="clean" description="--> clean the ivy cache">
+		<ivy:cleancache />
+	</target>
+	
+	<target name="pmd">
+	 <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
+	 <mkdir dir="${build.dir}"/>
+	 <pmd shortFilenames="true">
+		<ruleset>basic</ruleset>
+	 	<ruleset>imports</ruleset>
+		<ruleset>unusedcode</ruleset>
+	 	<formatter type="xml" toFile="${build.dir}/pmd_report.xml"/>
+		<formatter type="html" toFile="${build.dir}/pmd_report.html" linkPrefix="http://pmd.sourceforge.net/xref/"/>
+		<fileset dir="src/java/">
+			<include name="**/*.java"/>
+	  	</fileset>
+	 </pmd>
+	</target>
+
+	<target name="cpd">
+	    <taskdef name="cpd" classname="net.sourceforge.pmd.cpd.CPDTask" />
+	    <cpd minimumTokenCount="100" outputFile="${build.dir}/cpd_report.xml" format="xml">
+	       	<fileset dir="src/java/">
+				<include name="**/*.java"/>
+	  		</fileset>
+	    </cpd>
+	</target>
+
+</project>

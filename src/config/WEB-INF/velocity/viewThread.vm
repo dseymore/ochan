@@ -1,0 +1,105 @@
+<html>
+	<head>
+		<!-- ext js -->
+		<script type="text/javascript" src="#springUrl('/ext-2.0-beta1/adapter/ext/ext-base.js')"></script>
+		<script language="javascript" type="text/javascript" src="#springUrl('/ext-2.0-beta1/ext-all-debug.js')"></script>
+    	<!-- Include Ext stylesheets here: -->
+	    <link rel="stylesheet" type="text/css" href="#springUrl('/ext-2.0-beta1/resources/css/ext-all.css')">
+		<script language="javascript" type="text/javascript">
+			Ext.onReady(function() {
+				Ext.QuickTips.init();
+	
+	    		var form = new Ext.form.FormPanel({
+	    		id: 'threadForm',
+			    labelAlign: 'top',
+			    bodyStyle:'padding:5px 5px 0',
+			    width: 600,
+			    fileUpload: true,
+			    url: '#springUrl('/postReply.Ochan')',
+			    items: [
+			    {
+	                xtype:'hidden',
+	                value: '${thread.identifier}',
+	                name: 'parent',
+	                anchor:'95%'
+			    },{
+	                xtype:'textfield',
+	                fieldLabel: 'Author',
+	                name: 'author',
+	                anchor:'95%'
+			    },{
+	                xtype:'textfield',
+	                fieldLabel: 'Subject',
+	                name: 'subject',
+	                anchor:'95%'
+			    },{
+	                xtype:'textfield',
+	                fieldLabel: 'Email',
+	                name: 'email',
+	                anchor:'95%'
+			    },{
+	                xtype:'textfield',
+	                fieldLabel: 'Url',
+	                name: 'url',
+	                anchor:'95%'
+			    },{
+			        xtype:'htmleditor',
+			        id:'comment',
+			        fieldLabel:'Comment',
+			        height:200,
+			        anchor:'98%'
+			    },{
+	                xtype:'textfield',
+	                fieldLabel: 'Image',
+	                name: 'file',
+	                inputType: 'file',
+	                id: 'file',
+	                anchor:'95%'
+			    }],
+			    buttons: [{
+			        text: 'Reply',
+			        handler: function() {
+			        	var formPanel = Ext.getCmp('threadForm'); 
+			        	formPanel.getForm().getEl().dom.setAttribute('method', 'POST');
+        				formPanel.getForm().getEl().dom.setAttribute('enctype', 'multipart/form-data');
+			        	formPanel.getForm().getEl().dom.setAttribute('Action','#springUrl('/postReply.Ochan')');
+			        	formPanel.getForm().getEl().dom.submit();
+			        }
+			    }],
+			    onSubmit: Ext.emptyFn,
+        		submit: function() {
+            		this.getEl().dom.submit();
+        		},
+        		renderTo: 'reply',
+        		frame: true
+			});
+			 
+			##form.render(document.body);
+	        });
+		</script>
+	</head>
+	<body>
+		<div id="reply"></div>
+		#foreach($post in ${thread.posts})
+			<hr>
+			<div>
+				<a name="$post.identifier"/>
+				<div>
+					$post.subject&nbsp;&nbsp;<a href="mailto:$post.email">$post.author</a> <a href="$post.url">$post.url</a> $post.time  &nbsp;&nbsp;&raquo;$post.identifier
+				</div>
+				<table>
+					<tr>
+					#if ($post.getClass().getName() == 'org.Ochan.entity.ImagePost')
+						<td>
+							<a href="#springUrl('/thumb.Ochan')?identifier=$post.identifier"><img src="#springUrl('/thumb.Ochan')?identifier=$post.identifier&thumb=true"></a>
+						</td>
+					#end
+						<td>
+							$post.comment
+						</td>
+					</tr>
+				</table>
+			</div>
+		#end
+	</body>
+</html> 

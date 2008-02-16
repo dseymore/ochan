@@ -1,0 +1,16 @@
+<html>
+	<head>
+	</head>
+	<body>
+		<div id="admin">
+			#include("/WEB-INF/velocity/admin.vm")
+		</div>
+		<div id="categoryList">
+			<ul>
+				#foreach($cat in ${category})
+					<li><a href="openCategory.Ochan?identifier=$cat.identifier">$cat.name</a></li>
+				#end
+			</ul>
+		</div>
+	</body>
+</html> 

@@ -1,0 +1,13 @@
+Administration
+
+<ul>
+	<li>
+		<a href="category.Ochan">Add Category to instance</a>
+	</li>
+	<li>
+		<a href="thread.Ochan">Add Thread to instance</a>
+	</li>
+	<li>
+		<a href="categoryList.Ochan">List Categories</a>
+	</li>
+</ul>
