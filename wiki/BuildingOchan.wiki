@@ -9,7 +9,10 @@ Dependencies are handled using Ivy, but, you really REALLY need to maintain your
 
 Once you've done that, you can simply use the following command, against jdk 1.5:
 
-:>ant -lib tools/apache-ivy-2.0.0-alpha2-incubating/ -lib tools/pmd-4.0/lib/ clean war
+:>ant -lib tools/apache-ivy-2.0.0-alpha2-incubating/ clean war
+
+Note:
+Ivy isn't in the svn repository for space reasons, so you'll need to download it separately.
 
 
 ==Deploying to Jetty==
