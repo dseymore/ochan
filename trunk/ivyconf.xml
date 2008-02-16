@@ -1,0 +1,9 @@
+<ivysettings>
+        <settings defaultResolver="tanuki" checkUpToDate="false" />
+        <resolvers>
+                <url name="tanuki">
+                        <ivy pattern="http://ivy.tanuki/[organization]/[module]/ivy-[revision].xml" />
+                        <artifact pattern="http://ivy.tanuki/[organization]/[module]/jars/[artifact]-[revision].[ext]" />
+                </url>
+        </resolvers>
+</ivysettings>

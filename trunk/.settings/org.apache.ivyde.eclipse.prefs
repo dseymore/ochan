@@ -1,0 +1,7 @@
+#Tue Oct 16 19:15:44 EDT 2007
+acceptedTypes=[inherited]
+eclipse.preferences.version=1
+ivy_conf_path=file\:/opt/workspace/Ochan/ivyconf.xml
+javadocTypes=[inherited]
+retreive.pattern=lib/[conf]/[artifact].[ext]
+sourceTypes=[inherited]

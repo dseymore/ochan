@@ -1,0 +1,37 @@
+<ivy-module version="1.0">
+    <info organisation="Ogroup" module="Ochan"
+        status="integration" >
+    	<description>
+		Bulliten board project taking advantage of state of the art java tools.
+    	</description>
+    </info>
+    <configurations>
+    	<conf name="default" description="This is the configuration that describes modules need to build our project"/>
+    	<conf name="test" extends="default" description="This is this configuration that describes modules need to run test on our project"/>
+    </configurations>
+    <dependencies>
+		<!-- front end -->
+		<dependency org="commons-dbcp" name="commons-dbcp" rev="1.2" conf="default->default"/>
+		<dependency org="commons-fileupload" name="commons-fileupload" rev="1.2" conf="default->default"/>
+		<dependency org="org.springframework" name="spring-webmvc" rev="2.+" conf="default->default"/>
+		<dependency org="org.apache.velocity" name="velocity" rev="1.+" conf="default->default"/>
+		<dependency org="org.apache.velocity" name="velocity-tools" rev="1.+" conf="default->default"/>
+		<!-- services -->
+		<dependency org="org.springframework" name="spring-jmx" rev="2.+" conf="default->default"/>
+		<dependency org="org.springframework" name="spring-remoting" rev="2.+" conf="default->default"/>
+		<!-- persistence -->
+		<dependency org="org.springframework" name="spring-jpa" rev="2.+" conf="default->default"/>
+		<dependency org="org.springframework" name="spring-aspects" rev="2.+" conf="default->default"/>
+		<dependency org="org.springframework" name="spring-hibernate3" rev="2.+" conf="default->default"/>
+		<dependency org="org.hibernate" name="hibernate-annotations" rev="3.+" conf="default->default"/>
+		<dependency org="org.hibernate" name="hibernate-entitymanager" rev="3.+" conf="default->default"/>
+		<dependency org="javax.persistence" name="persistence-api" rev="1.+" conf="default->default"/> 
+		<!-- database driver  -->
+		<dependency org="mysql" name="mysql-connector-java" rev="5.+" conf="default->default"/>
+		<dependency org="hsqldb" name="hsqldb" rev="1.8.0.7" conf="default->default"/>
+        <!-- junit is only need in the test configuration-->        
+        <dependency org="junit" name="junit" rev="3.8.1" conf="test->default"/>
+		<!-- exclusions -->
+		<!-- <exclude org="avalon-framework" conf="default"/>--> 
+    </dependencies>
+</ivy-module>
