@@ -1,0 +1,9 @@
+<ivysettings>
+	<conf defaultResolver="filesystem" />
+	<resolvers>
+		<filesystem name="filesystem">
+			<ivy pattern="/opt/workspace/ochan/tools/thirdparty/[organisation]/[module]/ivy-[revision].xml"/>
+			<artifact pattern="/opt/workspace/ochan/tools/thirdparty/[organisation]/[module]/[type]s/[artifact]-[revision].[ext]"/>
+		</filesystem>
+	</resolvers>
+</ivysettings>
