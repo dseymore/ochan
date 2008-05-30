@@ -1,10 +1,10 @@
 <html>
 	<head>
 		<!-- ext js -->
-		<script type="text/javascript" src="#springUrl('/ext-2.0-beta1/adapter/ext/ext-base.js')"></script>
-		<script language="javascript" type="text/javascript" src="#springUrl('/ext-2.0-beta1/ext-all-debug.js')"></script>
+		<script type="text/javascript" src="#springUrl('/extjs/adapter/ext/ext-base.js')"></script>
+		<script language="javascript" type="text/javascript" src="#springUrl('/extjs/ext-all-debug.js')"></script>
     	<!-- Include Ext stylesheets here: -->
-	    <link rel="stylesheet" type="text/css" href="#springUrl('/ext-2.0-beta1/resources/css/ext-all.css')">
+	    <link rel="stylesheet" type="text/css" href="#springUrl('/extjs/resources/css/ext-all.css')">
 		<script language="javascript" type="text/javascript">
 			Ext.onReady(function() {
 				Ext.QuickTips.init();
