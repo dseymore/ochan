@@ -1,9 +1,9 @@
 <ivysettings>
-        <settings defaultResolver="tanuki" checkUpToDate="false" />
-        <resolvers>
-                <url name="tanuki">
-                        <ivy pattern="http://ivy.tanuki/[organization]/[module]/ivy-[revision].xml" />
-                        <artifact pattern="http://ivy.tanuki/[organization]/[module]/jars/[artifact]-[revision].[ext]" />
-                </url>
-        </resolvers>
+	<conf defaultResolver="filesystem" />
+	<resolvers>
+		<filesystem name="filesystem">
+			<ivy pattern="${basedir}/tools/thirdparty/[organisation]/[module]/ivy-[revision].xml"/>
+			<artifact pattern="${basedir}/tools/thirdparty/[organisation]/[module]/[type]s/[artifact]-[revision].[ext]"/>
+		</filesystem>
+	</resolvers>
 </ivysettings>

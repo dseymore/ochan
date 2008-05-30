@@ -1,12 +1,10 @@
 Building:
 
-I haven't committed tools to svn, so you'll need to download at minimum apache ivy. If you wish to run pmd to examine the source code, you'll need that as well. 
+Just type ant :)
 
-Both:
+For unit testing:
 ant -lib tools/apache-ivy-2.0.0-alpha2-incubating/ -lib tools/pmd-4.0/lib/ clean war
 
-Minimum:
-ant -lib tools/apache-ivy-2.0.0-alpha2-incubating/ clean war
 
 Deploying:
 I've been deploying to Jetty, and modifying configuration with Jconsole. 
