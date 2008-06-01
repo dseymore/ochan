@@ -17,7 +17,11 @@
 			<property name="hibernate.hbm2ddl.auto" value="update"/>
 			<property name="hibernate.format_sql" value="true" />
 			<property name="hibernate.connection.driver_class" value="org.hsqldb.jdbcDriver" />
-			<property name="hibernate.connection.url" value="jdbc:hsqldb:hsql://localhost/xdb" />
+<!--			This is for connecting to a local external process-->
+<!--			<property name="hibernate.connection.url" value="jdbc:hsqldb:hsql://localhost/xdb" />-->
+<!---->
+<!--			This will start the hsqldb embedded-->
+			<property name="hibernate.connection.url" value="jdbc:hsqldb:file:ochandb" />
 			<property name="hibernate.dialect" value="org.hibernate.dialect.HSQLDialect" />
 			<property name="hibernate.connection.username" value="sa" />
 			<property name="hibernate.connection.password" value="" />
