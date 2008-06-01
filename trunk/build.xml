@@ -1,4 +1,4 @@
-<project name="configurations" default="compile" xmlns:ivy="antlib:fr.jayasoft.ivy.ant">
+<project name="configurations" default="dist" xmlns:ivy="antlib:fr.jayasoft.ivy.ant">
 	<!-- some variables used -->
 	<property name="build.dir" value="scratch" />
 	<property name="src.dir" value="src" />
@@ -64,9 +64,17 @@
 		</war>
 	</target>
 
-	<target name="dist">
-		<!-- TODO -->
-		<ivy:publish resolver="filesystem" artifactspattern="${basedir}/scratch/dist/[artifact].[ext]" />
+	<target name="dist" depends="war">
+		<!-- step one. unjar the winstone -->
+		<ivy:artifactproperty name="[module].[artifact].[type]" value="${user.home}${file.separator}.ivy${file.separator}cache${file.separator}[organization]${file.separator}[module]${file.separator}[type]s${file.separator}[artifact]-[revision].[ext]" />
+		<mkdir dir="${basedir}/scratch/winstone"/>
+		<unjar src="${winstone.winstone.jar}" dest="${basedir}/scratch/winstone"/>
+		<!-- step two, place the war in its path -->
+		<copy file="${basedir}/scratch/Ochan.war" tofile="${basedir}/scratch/winstone/embedded.war"/>
+		<!-- step three, jar it back up -->
+		<jar destfile="${basedir}/scratch/Ochan.jar" manifest="${basedir}/scratch/winstone/META-INF/MANIFEST.MF" basedir="${basedir}/scratch/winstone/" excludes="**/MANIFEST.MF"/>
+		<!-- and then toss our 'artifacts' into the ivy library -->
+		<ivy:publish resolver="filesystem" artifactspattern="${basedir}/scratch/[artifact].[ext]" />
 	</target>
 
 	<target name="clean">

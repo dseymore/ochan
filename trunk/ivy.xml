@@ -9,6 +9,11 @@
     	<conf name="default" description="This is the configuration that describes modules need to build our project"/>
     	<conf name="test" extends="default" description="This is this configuration that describes modules need to run test on our project"/>
     </configurations>
+    <publications>
+    	<artifact name="Ochan" type="jar" ext="jar" conf="default"/>
+    	<artifact name="Ochan" type="war" ext="war" conf="default"/>
+		<!--  TODO snapshot our source code  -->
+    </publications>
     <dependencies>
 		<!-- front end -->
 		<dependency org="commons-dbcp" name="commons-dbcp" rev="1.2" conf="default->default"/>
