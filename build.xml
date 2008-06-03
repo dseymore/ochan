@@ -3,6 +3,8 @@
 	<property name="build.dir" value="scratch" />
 	<property name="src.dir" value="src" />
 	<property name="lib.dir" value="${build.dir}/lib" />
+	<property name="ivy.cache.item.path" value="${user.home}${file.separator}.ivy${file.separator}cache${file.separator}[organization]${file.separator}[module]${file.separator}[type]s${file.separator}"/>
+	<property name="ivy.item.path" value="${ivy.cache.item.path}[artifact]-[revision].[ext]"/>
 
 	<!-- checks for ivy -->
 	<target name="-check-for-ivy">
@@ -29,9 +31,12 @@
 		<mkdir dir="${build.dir}/report" />
 		<ivy:configure file="ivyconf.xml" />
 		<ivy:resolve conf="default" />
+		<!-- place the libraries into the scratch -->
 		<ivy:retrieve conf="default" pattern="${lib.dir}/[artifact]-[revision].[ext]" />
+		<!-- make a fancy report -->
 		<ivy:report todir="${basedir}/scratch/report" />
-		<ivy:artifactproperty name="[module].[artifact]" value="${user.home}${file.separator}.ivy${file.separator}cache${file.separator}[organization]${file.separator}[module]${file.separator}[type]s${file.separator}[artifact]-[revision].[ext]" />
+		<!-- set a property for the artifacts -->
+		<ivy:artifactproperty name="[module].[artifact]" value="${ivy.item.path}" />
 		
 		<javac srcdir="${src.dir}/java/" debug="true" destdir="${build.dir}/classes/">
 			<classpath>
@@ -85,28 +90,63 @@
 		<ivy:cleancache />
 	</target>
 
-	<target name="pmd">
-		<taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask" />
-		<mkdir dir="${build.dir}" />
+	<target name="pmd" depends="-ivy-define">
+		<ivy:resolve conf="test" />
+		<ivy:artifactproperty name="[module].[artifact]" value="${ivy.item.path}" />
+		<mkdir dir="${build.dir}"/>
+		<mkdir dir="${build.dir}/pmd"/>
+		<unzip src="${pmd.pmd-bin}" dest="${build.dir}/pmd"/>
+		<taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask">
+                <classpath>
+                		<!-- TODO - fix the pmd.. really.. seriously.... small enough that we can -->
+						<fileset file="${build.dir}/pmd/pmd-4.2.2.jar"/>
+                </classpath>
+        </taskdef>
 		<pmd shortFilenames="true">
 			<ruleset>basic</ruleset>
 			<ruleset>imports</ruleset>
 			<ruleset>unusedcode</ruleset>
 			<formatter type="xml" toFile="${build.dir}/pmd_report.xml" />
-			<formatter type="html" toFile="${build.dir}/pmd_report.html" linkPrefix="http://pmd.sourceforge.net/xref/" />
 			<fileset dir="src/java/">
 				<include name="**/*.java" />
 			</fileset>
 		</pmd>
-	</target>
-
-	<target name="cpd">
-		<taskdef name="cpd" classname="net.sourceforge.pmd.cpd.CPDTask" />
+		
+		<!-- lets do CPD too! -->
+		<taskdef name="cpd" classname="net.sourceforge.pmd.cpd.CPDTask">
+            <classpath>
+            		<!-- TODO - fix the pmd.. really.. seriously.... small enough that we can -->
+					<fileset file="${build.dir}/pmd/pmd-4.2.2.jar"/>
+            </classpath>
+    	</taskdef>
 		<cpd minimumTokenCount="100" outputFile="${build.dir}/cpd_report.xml" format="xml">
 			<fileset dir="src/java/">
 				<include name="**/*.java" />
 			</fileset>
 		</cpd>
+	</target>
+	
+	<target name="findbugs" depends="compile">
+		<ivy:resolve conf="test" />
+		<ivy:artifactproperty name="[module].[artifact]" value="${ivy.item.path}" />
+		<taskdef name="findbugs" classname="edu.umd.cs.findbugs.anttask.FindBugsTask">
+                <classpath>
+                        <fileset file="${findbugs.findbugs}"/>
+						<fileset file="${findbugs.findbugs-ant}"/>
+                </classpath>
+        </taskdef>
+		<mkdir dir="${build.dir}/findbugs"/>
+		<copy file="${findbugs.findbugs}" tofile="${build.dir}/findbugs/findbugs.jar"/>
+		<copy file="${findbugs.findbugs-ant}" tofile="${build.dir}/findbugs/findbugs-ant.jar"/>
+		<unzip src="${findbugs.dependencies}" dest="${build.dir}/findbugs/"/>
+		<findbugs home="${build.dir}/findbugs/"
+			output="xml"
+			outputFile="${build.dir}${file.separator}ochan-fb.xml" >
+			<sourcePath path="${basedir}/src/java" />
+			<class location="${basedir}/scratch/classes"/>
+			<!-- may be needed for missing classes... -->
+			<!-- <auxClasspath pathref="ivy.classpath"/> -->
+		</findbugs>
 	</target>
 
 </project>
