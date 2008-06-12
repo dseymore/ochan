@@ -9,6 +9,7 @@ public class PostReplyForm {
 	private String url;
 	private String comment;
 	private byte[] file;
+	private String fileUrl;
 
 	/**
 	 * @return the parent
@@ -115,6 +116,16 @@ public class PostReplyForm {
 	public void setSubject(String subject) {
 		this.subject = subject;
 	}
+	
+	
+
+	public String getFileUrl() {
+		return fileUrl;
+	}
+
+	public void setFileUrl(String fileUrl) {
+		this.fileUrl = fileUrl;
+	}
 
 	/**
 	 * Not including File. COMMENTS ARE INCLUDED!! (may be long)
@@ -135,5 +146,7 @@ public class PostReplyForm {
 		buf.append("]");
 		return buf.toString();
 	}
+	
+	
 
 }

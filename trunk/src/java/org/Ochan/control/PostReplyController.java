@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.Ochan.form.PostReplyForm;
 import org.Ochan.service.PostService;
+import org.Ochan.util.RemoteFileGrabber;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
@@ -46,15 +47,20 @@ public class PostReplyController extends SimpleFormController {
 	protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
 		PostReplyForm prf = (PostReplyForm)command;
 		//Copying the byte array to be a Byte array. fun..
-        Byte[] bytes = null;
-        if (prf.getFile() != null && prf.getFile().length > 0){
-            bytes = new Byte[prf.getFile().length];
-            int invariant = 0;
-            for( byte b : prf.getFile()){
-                bytes[invariant] = new Byte(b);
-                invariant++;
-            }
-        }
+		Byte[] bytes = null;
+		if (prf.getFileUrl() == null || "".equals(prf.getFileUrl().trim())){
+	        if (prf.getFile() != null && prf.getFile().length > 0){
+	            bytes = new Byte[prf.getFile().length];
+	            int invariant = 0;
+	            for( byte b : prf.getFile()){
+	                bytes[invariant] = new Byte(b);
+	                invariant++;
+	            }
+	        }
+		}else{
+			bytes = RemoteFileGrabber.getDataFromUrl(prf.getFileUrl());
+		}
+		
 		postService.createPost(Long.valueOf(prf.getParent()), prf.getAuthor(), prf.getSubject(), prf.getEmail(), prf.getUrl(), prf.getComment(), bytes);
 		
 		return super.onSubmit(request, response, command, errors);
