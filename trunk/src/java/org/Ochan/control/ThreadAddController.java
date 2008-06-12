@@ -100,7 +100,12 @@ public class ThreadAddController extends SimpleFormController {
 		}
 		
 		LOG.debug("calling thread service to add thread (form): " + tf);
-		threadService.createThread(Long.valueOf(tf.getCategoryIdentifier()), tf.getAuthor(), tf.getSubject(), tf.getUrl(), tf.getEmail(), tf.getComment(), bytes);
+		try{
+			threadService.createThread(Long.valueOf(tf.getCategoryIdentifier()), tf.getAuthor(), tf.getSubject(), tf.getUrl(), tf.getEmail(), tf.getComment(), bytes);
+		}catch(Exception e){
+			//FIXME - handle this so the user gets notified NICELY
+			LOG.error("Unable to create thread",e);
+		}
 		
 		return super.onSubmit(request, response, command, errors);
 	}
