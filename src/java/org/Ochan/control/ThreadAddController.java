@@ -15,6 +15,7 @@ import org.Ochan.form.ThreadForm;
 import org.Ochan.service.CategoryService;
 import org.Ochan.service.ThreadService;
 import org.Ochan.service.CategoryService.CategoryCriteria;
+import org.Ochan.util.RemoteFileGrabber;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -83,16 +84,21 @@ public class ThreadAddController extends SimpleFormController {
 		boolean isMultipart = ServletFileUpload.isMultipartContent(request);
 		LOG.error("Multipart?: " + isMultipart);
 		
-		// Copying the byte array to be a Byte array. fun..
 		Byte[] bytes = null;
-		if (tf.getFile() != null && tf.getFile().length > 0) {
-			bytes = new Byte[tf.getFile().length];
-			int invariant = 0;
-			for (byte b : tf.getFile()) {
-				bytes[invariant] = new Byte(b);
-				invariant++;
+		if (tf.getFileUrl() == null || "".equals(tf.getFileUrl().trim())){
+			// Copying the byte array to be a Byte array. fun..
+			if (tf.getFile() != null && tf.getFile().length > 0) {
+				bytes = new Byte[tf.getFile().length];
+				int invariant = 0;
+				for (byte b : tf.getFile()) {
+					bytes[invariant] = new Byte(b);
+					invariant++;
+				}
 			}
+		}else{
+			bytes = RemoteFileGrabber.getDataFromUrl(tf.getFileUrl());
 		}
+		
 		LOG.debug("calling thread service to add thread (form): " + tf);
 		threadService.createThread(Long.valueOf(tf.getCategoryIdentifier()), tf.getAuthor(), tf.getSubject(), tf.getUrl(), tf.getEmail(), tf.getComment(), bytes);
 		

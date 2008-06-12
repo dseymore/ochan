@@ -10,6 +10,7 @@ public class ThreadForm {
     private String url;
     private String comment;
     private byte[] file;
+    private String fileUrl;
     
     /**
      * @return the categoryIdentifier
@@ -95,6 +96,12 @@ public class ThreadForm {
 	public void setSubject(String subject) {
 		this.subject = subject;
 	}
+	public String getFileUrl() {
+		return fileUrl;
+	}
+	public void setFileUrl(String fileUrl) {
+		this.fileUrl = fileUrl;
+	}
 	/**
 	 * Not including File. COMMENTS ARE INCLUDED!! (may be long)
 	 * @see java.lang.Object#toString()
@@ -110,6 +117,7 @@ public class ThreadForm {
 		buf.append(",url:").append(this.getUrl());
 		buf.append(",comment:").append(this.getComment());
 		buf.append(",category:").append(this.getCategoryIdentifier());
+		buf.append(",fileUrl: ").append(this.getFileUrl());
 		buf.append("]");
 		return buf.toString();
 	}

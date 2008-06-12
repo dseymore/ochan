@@ -48,13 +48,32 @@
 			        fieldLabel:'Comment',
 			        height:200,
 			        anchor:'98%'
-			    },{
-	                xtype:'textfield',
-	                fieldLabel: 'Image',
-	                name: 'file',
-	                inputType: 'file',
-	                id: 'file',
-	                anchor:'95%'
+			     },{
+				    xtype:'tabpanel',
+            		activeTab: 0,
+            		defaults:{autoHeight:true, bodyStyle:'padding:10px'}, 
+            		items:[{
+            			title: 'Upload Image',
+            			layout: 'form',
+            			items: [{
+		                	xtype:'textfield',
+		                	fieldLabel: 'Image',
+		                	name: 'file',
+		                	inputType: 'file',
+		                	id: 'file',
+		                	anchor:'95%'
+		                }]
+					},{
+						title: 'Remote Image',
+						layout: 'form',
+						items: [{
+	                		xtype: 'textfield',
+	                		fieldLabel: 'Image URL',
+	                		name: 'fileUrl',
+	                		id:	'fileUrl',
+	                		anchor: '95%'
+	                	}]
+	                }]
 			    }],
 			    buttons: [{
 			        text: 'Reply',
