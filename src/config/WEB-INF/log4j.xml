@@ -4,14 +4,13 @@
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
 
 	<appender name="ConsoleAppender" class="org.apache.log4j.ConsoleAppender">
+		<errorHandler class="org.Ochan.util.StatisticalErrorHandler"/>
 		<layout class="org.apache.log4j.SimpleLayout" />
 	</appender>
 
 	<root>
 		<priority value="error" />
 		<appender-ref ref="ConsoleAppender" />
-<!--	So, on jetty, we have a bit of a problem.. we never actually get to use our own log.. and it sucks.. so, I'm considering using JARJAR... dunno yet	-->
-		<errorHandler class="org.Ochan.util.StatisticalErrorHandler"/>
 	</root>
 
 </log4j:configuration>

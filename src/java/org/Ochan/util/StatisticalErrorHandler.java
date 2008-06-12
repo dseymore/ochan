@@ -15,6 +15,9 @@ import org.springframework.jmx.export.annotation.ManagedResource;
  * 
  * Absolutely untested
  * 
+ * So, it seems that I may have misunderstood what this does.. this is the what is called when the original logger fails to work.. 
+ * damnit.. ok, what we want to make this is an appender...
+ * 
  * @author David Seymore Feb 8, 2008
  */
 @ManagedResource(description = "How many of each type of exception have occured", objectName = "Ochan:utility=logging,name=ErrorStatistics", logFile = "jmx.log")
