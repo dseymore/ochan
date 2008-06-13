@@ -40,6 +40,7 @@
 	<bean id="threadDAO" class="org.Ochan.dao.ThreadDAO">
 		<property name="postDao" ref="postDAO" />
 	</bean>
+	<bean id="externalCategoryDAO" class="org.Ochan.dao.ExternalCategoryDAO" />
 	
 	<!--  xxxxxxxxxxxxxxxxxxxxxxxxx  Service configuration xxxxxxxxxxxxxxxxxxxxxxxxx  -->
 	<bean id="localCategoryService" class="org.Ochan.service.local.LocalCategoryService">
@@ -56,6 +57,9 @@
 		<property name="threadService" ref="localThreadService"/>
 	</bean>
 	
+	<bean id="localExternalCategoryService" class="org.Ochan.service.local.LocalExternalCategoryService">
+		<property name="externalCategoryDAO" ref="externalCategoryDAO"/>
+	</bean>
 	
 	<!--  JMX! -->
 	<bean id="exporter" class="org.springframework.jmx.export.MBeanExporter">
