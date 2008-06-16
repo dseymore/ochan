@@ -9,7 +9,8 @@
                            http://www.springframework.org/schema/aop/spring-aop-2.0.xsd">
 
 	<!--  get the main applicationContext for the servlet to link to -->
-	<import resource="applicationContext.xml" />
+<!--	<import resource="service-beans.xml" />-->
+<!--	<import resource="cxf-beans.xml" />-->
 
 	<!-- xxxxxxxxxxxxxxxxxxxxxxxxx frontend configuration xxxxxxxxxxxxxxxxxxxxxxxxx  -->
 	<!--  xxxxxxxxxxxxxxxxxxxxxxxxx  VELOCITY xxxxxxxxxxxxxxxxxxxxxxxxx  -->

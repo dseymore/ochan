@@ -26,7 +26,7 @@ public class TestingSchema {
 	public static void main(String[] args) {
 
 		// Springing it up!
-		ApplicationContext context = new ClassPathXmlApplicationContext(new String[] { "applicationContext.xml" });
+		ApplicationContext context = new ClassPathXmlApplicationContext(new String[] { "service-beans.xml" });
 		BeanFactory factory = (BeanFactory) context;
 
 		LOG.debug("Got beanfactory: " + factory);
