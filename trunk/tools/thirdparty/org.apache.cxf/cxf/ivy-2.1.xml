@@ -31,10 +31,13 @@
 		<dependency org="javax.xml.ws" name="jaxws-api" rev="2.0" conf="*->*"/>
 		<dependency org="org.apache.geronimo.specs" name="geronimo-ws-metadata_2.0_spec" rev="1.1.1" conf="*->*"/>
 		<dependency org="com.sun.xml.ws" name="jaxws-rt" rev="2.0EA3" conf="*->*"/>
+		<dependency org="asm" name="asm" rev="2.2.4" conf="*->*"/>
 		<!-- wsdlto -->
 		<!--<dependency org="apache" name="velocity" rev="1.4" conf="*->*"/>-->
-		<!--<dependency org="wsdl4j" name="wsdl4j" rev="1.6.1" conf="*->*"/>-->
+		<dependency org="com.ibm" name="wsdl4j" rev="1.6.1" conf="*->*"/>
+		<dependency org="org.apache" name="ws" rev="1.4.2" conf="*->*"/>
 		<!-- tons of other jars for support to things I don't think we need yet -->
+		<dependency org="org.jvnet" name="fastinfoset" rev="1.2.2" conf="*->*"/>
 	</dependencies>
 
 </ivy-module>
