@@ -1,5 +1,6 @@
 package org.Ochan.service.remote.webservice;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -34,11 +35,12 @@ public class CategoryListImpl implements CategoryList {
 	public List<RemoteCategory> getCategories() {
 		List<Category> localCategoies = categoryService
 				.retrieveCategories(new HashMap<CategoryCriteria, String>());
-		List<RemoteCategory> categoriesToSend = null;
+		List<RemoteCategory> categoriesToSend = new ArrayList<RemoteCategory>();
 		if (localCategoies != null) {
 			for (Category cat : localCategoies) {
 				RemoteCategory rc = new RemoteCategory();
 				rc.setName(cat.getName());
+				categoriesToSend.add(rc);
 			}
 		}
 		return categoriesToSend;
