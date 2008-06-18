@@ -8,8 +8,10 @@ http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd">
 	<import resource="classpath:META-INF/cxf/cxf.xml" />
 	<import resource="classpath:META-INF/cxf/cxf-extension-soap.xml" />
 	<import resource="classpath:META-INF/cxf/cxf-servlet.xml" />
-	<import resource="service-beans.xml"/>
+	<import resource="service-beans.xml" />
 
+
+	<!--  category Service -->
 	<bean id="categoryListBean"
 		class="org.Ochan.service.remote.webservice.CategoryListImpl">
 		<property name="categoryService" ref="localCategoryService" />
@@ -17,4 +19,26 @@ http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd">
 
 	<jaxws:endpoint id="CategoryList" implementor="#categoryListBean"
 		address="/category" />
+
+	<!--  category client  -->
+<!--	I would love to use spring to build me a client.. but..problem is.. we dont know the url, and the client comes configured-->
+<!--	<bean id="client" class="org.Ochan.service.remote.webservice.CategoryList"-->
+<!--		factory-bean="clientFactory" factory-method="create" />-->
+<!---->
+<!--	<bean id="clientFactory"-->
+<!--		class="org.apache.cxf.jaxws.JaxWsProxyFactoryBean">-->
+<!--		<property name="serviceClass" value="org.Ochan.service.remote.webservice.CategoryList" />-->
+<!--		<property name="address" value="http://localhost:8080/remote/category" />-->
+<!--	</bean>-->
+	
+	<jaxws:client id="client" 
+    	serviceClass="org.Ochan.service.remote.webservice.CategoryList"
+    	address="http://localhost:8080/remote/category"/>
+	
+	<!--  our JMX interaction guy  -->
+	<bean id="hostlist" class="org.Ochan.service.remote.jmx.HostList">
+		<property name="categoryListClient" ref="client"/>
+		<property name="externalCategoryService" ref="localExternalCategoryService"/>
+	</bean>
+	
 </beans>
