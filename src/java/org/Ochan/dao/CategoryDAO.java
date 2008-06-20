@@ -1,6 +1,7 @@
 package org.Ochan.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -8,6 +9,7 @@ import javax.persistence.PersistenceUnit;
 import javax.persistence.Query;
 
 import org.Ochan.entity.Category;
+import org.Ochan.service.CategoryService.CategoryCriteria;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -76,5 +78,29 @@ public class CategoryDAO {
             }
         }
         return category;
+    }
+    
+    public List<Category> retrieveCategories(Map<CategoryCriteria, String> criteria) {
+    	List<Category> results = null;
+        LOG.trace("getting categories by search");
+        LOG.trace(criteria);
+        EntityManager em = this.entityManagerFactory.createEntityManager();
+        try {
+        	StringBuffer queryString = new StringBuffer();
+        	queryString.append("SELECT c FROM Category c");
+        	if (criteria.get(CategoryCriteria.NAME) != null){
+        		queryString.append(" where c.name = :name");
+        	}
+        	Query query = em.createQuery(queryString.toString());
+            query.setParameter("name", criteria.get(CategoryCriteria.NAME));
+            results = query.getResultList();
+        } catch (Exception e) {
+            LOG.error("Unable to retrieve categories",e);
+        } finally {
+            if (em != null) {
+                em.close();
+            }
+        }
+        return results;
     }
 }
