@@ -81,9 +81,10 @@
 		<servlet-name>Ochan</servlet-name>
 		<url-pattern>*.Ochan</url-pattern>
 	</servlet-mapping>
+	<!--  the share endpoint -->
 	<servlet-mapping>
 		<servlet-name>Ochan</servlet-name>
-		<url-pattern>/*</url-pattern>
+		<url-pattern>/share</url-pattern>
 	</servlet-mapping>
 
 <!--	  Spring Context! -->
@@ -94,5 +95,12 @@
 	<welcome-file-list>
 		<welcome-file>/WEB-INF/velocity/admin.vm</welcome-file>
 	</welcome-file-list>
+
+    <!--  Log4J JMX initialization -->
+    <listener>
+            <listener-class>
+                    gov.grantsolutions.util.logging.LoggingConfiguration
+            </listener-class>
+    </listener>
 
 </web-app>

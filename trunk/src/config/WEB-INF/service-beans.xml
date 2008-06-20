@@ -87,5 +87,6 @@
     </bean>
 
 	<bean class="org.Ochan.util.StatisticalErrorHandler"/>
+	<bean class="org.Ochan.util.LoggingConfiguration"/>
 
 </beans>
