@@ -52,6 +52,7 @@
 				<prop key="/**/postReply.Ochan">postReplyController</prop>
 				<prop key="/**/openCategory.Ochan">viewCategoryController</prop>
 				<prop key="/**/thumb.Ochan">thumbnailController</prop>
+				<prop key="/**/share">shareController</prop>
 			</props>
 		</property>
 	</bean>
@@ -116,6 +117,13 @@
 		<property name="postService" ref="localPostService" />
 		<!--        FIXME - make the service not injected, but, inject a factory that decides whether local or external service-->
 	</bean>
+	
+	<bean name="shareController" class="org.Ochan.control.ShareController">
+		<property name="categoryService" ref="localCategoryService" />
+		<property name="threadService" ref="localThreadService" />
+		<!--        FIXME - make the service not injected, but, inject a factory that decides whether local or external service-->
+	</bean>
+	
 
 	<!--	Requires commons-fileupload-->
 	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">

@@ -120,12 +120,17 @@ public class LocalCategoryService implements CategoryService, NotificationPublis
 		if (criteria == null || criteria.isEmpty()) {
 			return categoryDAO.getAllCategories();
 		}
+		
+		List<Category> cats = categoryDAO.retrieveCategories(criteria);
+		
 		// capture end of call
 		long end = new Date().getTime();
 		// compute total time
 		lastSearchTime = end - start;
 
-		return null;
+		return cats;
 	}
+	
+	
 
 }

@@ -81,6 +81,10 @@
 		<servlet-name>Ochan</servlet-name>
 		<url-pattern>*.Ochan</url-pattern>
 	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>Ochan</servlet-name>
+		<url-pattern>/*</url-pattern>
+	</servlet-mapping>
 
 <!--	  Spring Context! -->
 <!--	<listener>-->
