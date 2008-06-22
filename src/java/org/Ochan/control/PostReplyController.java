@@ -63,6 +63,11 @@ public class PostReplyController extends SimpleFormController {
 		
 		postService.createPost(Long.valueOf(prf.getParent()), prf.getAuthor(), prf.getSubject(), prf.getEmail(), prf.getUrl(), prf.getComment(), bytes);
 		
+		//for viewing the thread again.
+		request.setAttribute("identifier", prf.getParent());
+		
 		return super.onSubmit(request, response, command, errors);
 	}
+	
+	
 }
