@@ -65,7 +65,13 @@ public class ViewThreadController implements Controller {
 
 	public ModelAndView handleRequest(HttpServletRequest arg0, HttpServletResponse arg1) throws Exception {
 		Map controlModel = new HashMap();
-		Long identifier = Long.valueOf(arg0.getParameter("identifier"));
+		Long identifier = null; 
+		if (arg0.getParameter("identifier") != null){
+			identifier = Long.valueOf(arg0.getParameter("identifier"));
+		}else{
+			identifier = Long.parseLong((String)arg0.getAttribute("identifier"));
+		}
+		
 		Thread t = threadService.getThread(identifier);
 		t.setPosts(getPostService().retrieveThreadPosts(t));
 		controlModel.put("thread", t);

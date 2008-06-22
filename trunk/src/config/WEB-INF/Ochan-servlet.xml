@@ -84,7 +84,7 @@
 		<property name="commandName" value="command" />
 		<property name="commandClass" value="org.Ochan.form.PostReplyForm" />
 		<property name="formView" value="viewThread" />
-		<property name="successView" value="admin" />
+		<property name="successView" value="forward:viewThread.Ochan" />
 		<property name="bindOnNewForm" value="true" />
 		<property name="sessionForm" value="true" />
 		<property name="postService" ref="localPostService" />
