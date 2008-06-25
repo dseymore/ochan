@@ -146,14 +146,14 @@ public class LocalThreadService implements ThreadService {
 		return threadDAO.getThread(identifier);
 	}
 
-	public Set<Thread> retrieveThreads(Map<ThreadCriteria, Object> criteria) {
+	public List<Thread> retrieveThreads(Map<ThreadCriteria, Object> criteria) {
 		// capture start of call
 		long start = new Date().getTime();
 		if (criteria == null || criteria.isEmpty()) {
 			throw new IllegalArgumentException("You dont honestly expect me to dump my data to you...");
 		}
 		
-		Set<Thread> result = threadDAO.search(criteria); 
+		List<Thread> result = threadDAO.search(criteria); 
 		
 		// capture end of call
 		long end = new Date().getTime();

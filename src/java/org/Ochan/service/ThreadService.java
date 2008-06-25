@@ -1,7 +1,7 @@
 package org.Ochan.service;
 
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.Ochan.entity.Thread;
 
@@ -37,7 +37,7 @@ public interface ThreadService {
      * @param criteria
      * @return
      */
-    public Set<Thread> retrieveThreads(Map<ThreadCriteria, Object> criteria);
+    public List<Thread> retrieveThreads(Map<ThreadCriteria, Object> criteria);
     
 
     /**
