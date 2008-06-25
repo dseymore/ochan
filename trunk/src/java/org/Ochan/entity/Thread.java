@@ -1,5 +1,6 @@
 package org.Ochan.entity;
 
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -14,10 +15,13 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import org.Ochan.entity.comparator.AscendingThreadComparator;
 
 @Entity
 @Table(name="THREAD")
-public class Thread {
+public class Thread implements Comparable<Thread>{
 
     @Id
     @Column(updatable =false, unique=true)
@@ -34,6 +38,9 @@ public class Thread {
     @OneToMany(mappedBy="parent", fetch=FetchType.LAZY)
     private List<Post> posts;
     
+    @Transient
+    private Comparator<Thread> comparator = new AscendingThreadComparator();
+    
     public Thread(){
         
     }
@@ -47,7 +54,13 @@ public class Thread {
         this.posts = posts;
     }
     
-    /**
+    
+    @Override
+	public int compareTo(Thread o) {
+		return comparator.compare(this, o);
+	}
+
+	/**
      * @return the identifier
      */
     public Long getIdentifier() {

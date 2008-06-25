@@ -1,6 +1,6 @@
 package org.Ochan.entity;
 
-import java.util.Set;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -30,7 +30,7 @@ public class Category {
     private Long identifier;
     
     @OneToMany(mappedBy="category", fetch=FetchType.LAZY)
-    private Set<Thread> threads;
+    private List<Thread> threads;
     
     @Version
     @Column(name="OPTLOCK")
@@ -41,7 +41,7 @@ public class Category {
     }
     
     public Category(String name, String longDescription, Long identifier,
-            Set<Thread> threads, Integer version) {
+    		List<Thread> threads, Integer version) {
         super();
         this.name = name;
         this.longDescription = longDescription;
@@ -89,13 +89,13 @@ public class Category {
     /**
      * @return the threads
      */
-    public Set<Thread> getThreads() {
+    public List<Thread> getThreads() {
         return threads;
     }
     /**
      * @param threads the threads to set
      */
-    public void setThreads(Set<Thread> threads) {
+    public void setThreads(List<Thread> threads) {
         this.threads = threads;
     }
 

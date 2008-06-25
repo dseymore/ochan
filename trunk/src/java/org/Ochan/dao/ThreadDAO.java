@@ -1,9 +1,8 @@
 package org.Ochan.dao;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -83,8 +82,8 @@ public class ThreadDAO {
      * @param criteria
      * @return
      */
-    public Set<Thread> search(Map<ThreadCriteria, Object> criteria){
-    	Set<Thread> threads = null;
+    public List<Thread> search(Map<ThreadCriteria, Object> criteria){
+    	List<Thread> threads = null;
     	LOG.trace("Searching for threads with criteria.");
         EntityManager em = this.entityManagerFactory.createEntityManager();
         try {
@@ -101,7 +100,7 @@ public class ThreadDAO {
         	}
             List results = query.getResultList();
             if (results.size() > 0){
-            	threads = new HashSet<Thread>();
+            	threads = new ArrayList<Thread>();
 	            for(Object result : results){
 	                threads.add((Thread)result);
 	            }

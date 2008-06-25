@@ -1,8 +1,9 @@
 package org.Ochan.control;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -88,12 +89,14 @@ public class ViewCategoryController implements Controller {
 		Category cat = categoryService.getCategory(identifier);
 		Map<ThreadCriteria,Object> searchCriteria = new HashMap<ThreadCriteria,Object>();
 		searchCriteria.put(ThreadCriteria.CATEGORY, cat.getIdentifier());
-		Set<Thread> threads = getThreadService().retrieveThreads(searchCriteria);
+		List<Thread> threads = getThreadService().retrieveThreads(searchCriteria);
 		cat.setThreads(threads);
 		for (Thread t : threads){
 			t.setPosts(getPostService().retrieveThreadPosts(t));
 		}
 		controlModel.put("category", cat);
+		
+		Collections.sort(cat.getThreads());
 		
 		return new ModelAndView(viewName, controlModel);
 	}
