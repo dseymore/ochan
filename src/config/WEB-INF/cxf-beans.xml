@@ -27,19 +27,19 @@ http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd">
 <!--	<bean id="client" class="org.Ochan.service.remote.webservice.CategoryList"-->
 <!--		factory-bean="clientFactory" factory-method="create" />-->
 <!---->
-<!--	<bean id="clientFactory"-->
-<!--		class="org.apache.cxf.jaxws.JaxWsProxyFactoryBean">-->
-<!--		<property name="serviceClass" value="org.Ochan.service.remote.webservice.CategoryList" />-->
-<!--		<property name="address" value="http://localhost:8080/remote/category" />-->
-<!--	</bean>-->
+	<bean id="clientFactory"
+		class="org.apache.cxf.jaxws.JaxWsProxyFactoryBean">
+		<property name="serviceClass" value="org.Ochan.service.remote.webservice.CategoryList" />
+		<property name="address" value="http://localhost:8080/remote/category" />
+	</bean>
 	
-	<jaxws:client id="client" 
-    	serviceClass="org.Ochan.service.remote.webservice.CategoryList"
-    	address="http://localhost:8080/remote/category"/>
+<!--	<jaxws:client id="client" -->
+<!--    	serviceClass="org.Ochan.service.remote.webservice.CategoryList"-->
+<!--    	address="http://localhost:8080/remote/category"/>-->
 	
 	<!--  our JMX interaction guy  -->
 	<bean id="hostlist" class="org.Ochan.service.remote.jmx.HostList">
-		<property name="categoryListClient" ref="client"/>
+		<property name="categoryListClient" ref="clientFactory"/>
 		<property name="externalCategoryService" ref="localExternalCategoryService"/>
 	</bean>
 	

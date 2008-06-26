@@ -7,7 +7,7 @@ import org.Ochan.service.remote.model.RemoteCategory;
 import org.Ochan.service.remote.webservice.CategoryList;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.cxf.jaxws.JaxWsClientProxy;
+import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
 import org.springframework.jmx.export.annotation.ManagedOperation;
 import org.springframework.jmx.export.annotation.ManagedOperationParameter;
 import org.springframework.jmx.export.annotation.ManagedOperationParameters;
@@ -32,14 +32,15 @@ public class HostList {
 
 	private static final Log LOG = LogFactory.getLog(HostList.class);
 	
-	private CategoryList categoryListClient;
+	private JaxWsProxyFactoryBean categoryListClient;
 	private ExternalCategoryService externalCategoryService;
 
-	public CategoryList getCategoryListClient() {
+
+	public JaxWsProxyFactoryBean getCategoryListClient() {
 		return categoryListClient;
 	}
 
-	public void setCategoryListClient(CategoryList categoryListClient) {
+	public void setCategoryListClient(JaxWsProxyFactoryBean categoryListClient) {
 		this.categoryListClient = categoryListClient;
 	}
 
@@ -57,19 +58,18 @@ public class HostList {
 	public void addHost(String host) {
 		// here we would take the host, and connect to its webservice endpoint
 		// that gets the categories
+		LOG.info("About to connect to host: " + host);
 		
-		LOG.error("Starting: " + categoryListClient);
+		categoryListClient.setAddress(host + "/remote/category");
+		CategoryList client = (CategoryList)categoryListClient.create();
 		try{
-			List<RemoteCategory> remoteCategories = categoryListClient.getCategories();
+			List<RemoteCategory> remoteCategories = client.getCategories();
 	    	for (RemoteCategory rc : remoteCategories){
 	    		externalCategoryService.createCategory(rc.getName(), "", host);
 	    	}
 		}catch(Exception e){
 			LOG.error("Unable to call service:",e);
-		}finally{
-			LOG.error("ending");
 		}
-    	
 
 	}
 
