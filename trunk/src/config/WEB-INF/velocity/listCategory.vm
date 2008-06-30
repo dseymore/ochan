@@ -12,5 +12,12 @@
 				#end
 			</ul>
 		</div>
+		<div id="externalCategoryList">
+			<ul>
+				#foreach($cat in ${external})
+					<li><a href="$cat.host">$cat.name</a></li>
+				#end
+			</ul>
+		</div>
 	</body>
 </html> 

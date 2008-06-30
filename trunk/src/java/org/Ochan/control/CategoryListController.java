@@ -1,6 +1,7 @@
 package org.Ochan.control;
 
 import static org.Ochan.control.StaticNames.CATEGORY_LIST;
+import static org.Ochan.control.StaticNames.EXTERNAL_CATEGORY_LIST;
 
 import java.util.HashMap;
 import java.util.List;
@@ -10,7 +11,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.Ochan.entity.Category;
+import org.Ochan.entity.ExternalCategory;
 import org.Ochan.service.CategoryService;
+import org.Ochan.service.ExternalCategoryService;
 import org.Ochan.service.ThreadService;
 import org.Ochan.service.CategoryService.CategoryCriteria;
 import org.Ochan.service.ThreadService.ThreadCriteria;
@@ -20,6 +23,7 @@ import org.springframework.web.servlet.mvc.Controller;
 public class CategoryListController implements Controller {
 
 	private CategoryService categoryService;
+	private ExternalCategoryService externalCategoryService;
 	private ThreadService threadService;
 	private String viewName;
 
@@ -67,6 +71,22 @@ public class CategoryListController implements Controller {
 	public void setViewName(String viewName) {
 		this.viewName = viewName;
 	}
+	
+	
+
+	/**
+	 * @return the externalCategoryService
+	 */
+	public ExternalCategoryService getExternalCategoryService() {
+		return externalCategoryService;
+	}
+
+	/**
+	 * @param externalCategoryService the externalCategoryService to set
+	 */
+	public void setExternalCategoryService(ExternalCategoryService externalCategoryService) {
+		this.externalCategoryService = externalCategoryService;
+	}
 
 	/**
 	 * Builds a list of categories with threads retrieved
@@ -82,8 +102,12 @@ public class CategoryListController implements Controller {
 			category.setThreads(getThreadService().retrieveThreads(searchCriteria));
 		}
 		
+		List<ExternalCategory> externalList = getExternalCategoryService().retrieveCategories(null);
+		
+		
 		Map controlModel = new HashMap();
 		controlModel.put(CATEGORY_LIST, categories);
+		controlModel.put(EXTERNAL_CATEGORY_LIST, externalList);
 		return new ModelAndView(viewName, controlModel);
 	}
 
