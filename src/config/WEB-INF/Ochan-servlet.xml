@@ -95,6 +95,7 @@
 		<property name="viewName" value="listCategory" />
 		<property name="categoryService" ref="localCategoryService" />
 		<property name="threadService" ref="localThreadService" />
+		<property name="externalCategoryService" ref="localExternalCategoryService"/>
 		<!--        FIXME - make the service not injected, but, inject a factory that decides whether local or external service-->
 	</bean>
 	

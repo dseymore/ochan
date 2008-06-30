@@ -21,6 +21,14 @@ public class ExternalCategoryDAO {
 	public void setEntityManagerFactory(EntityManagerFactory emf) {
 		this.entityManagerFactory = emf;
 	}
+	
+	public void deleteExternalCategory(Long identifier){
+		EntityManager em = this.entityManagerFactory.createEntityManager();
+		em.getTransaction().begin();
+		ExternalCategory cat = (ExternalCategory)em.find(ExternalCategory.class, identifier);
+		em.remove(cat);
+		em.getTransaction().commit();
+	}
 
 	public void saveExternalCategory(ExternalCategory cat) {
 		LOG.trace("Saving Externalcategory " + cat.getName());

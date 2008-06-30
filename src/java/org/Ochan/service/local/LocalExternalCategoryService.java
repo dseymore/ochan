@@ -40,8 +40,7 @@ public class LocalExternalCategoryService implements ExternalCategoryService {
 
 	@Override
 	public void deleteCategory(Long identifier) {
-		// TODO Auto-generated method stub
-
+		externalCategoryDAO.deleteExternalCategory(identifier);
 	}
 
 	@Override

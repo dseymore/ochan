@@ -2,12 +2,14 @@ package org.Ochan.service.remote.jmx;
 
 import java.util.List;
 
+import org.Ochan.entity.ExternalCategory;
 import org.Ochan.service.ExternalCategoryService;
 import org.Ochan.service.remote.model.RemoteCategory;
 import org.Ochan.service.remote.webservice.CategoryList;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
+import org.springframework.jmx.export.annotation.ManagedAttribute;
 import org.springframework.jmx.export.annotation.ManagedOperation;
 import org.springframework.jmx.export.annotation.ManagedOperationParameter;
 import org.springframework.jmx.export.annotation.ManagedOperationParameters;
@@ -66,16 +68,37 @@ public class HostList {
 			List<RemoteCategory> remoteCategories = client.getCategories();
 	    	for (RemoteCategory rc : remoteCategories){
 	    		externalCategoryService.createCategory(rc.getName(), "", host);
-	    	}
+	    	}	    	
 		}catch(Exception e){
 			LOG.error("Unable to call service:",e);
 		}
+		
 
 	}
 
-	//TODO
+	@ManagedOperation(description = "Removes all external hosts listings")
 	public void flushHosts() {
-
+		List<ExternalCategory> externals = externalCategoryService.retrieveCategories(null);
+		for (ExternalCategory xcat : externals){
+			LOG.debug("Deleting: " + xcat);
+			externalCategoryService.deleteCategory(xcat.getIdentifier());
+		}
+	}
+	
+	@ManagedAttribute(description="Returns a list of all hosts")
+	@ManagedOperation(description="Returns a list of all hosts")
+	public String getExternalHosts(){
+		List<ExternalCategory> externals = externalCategoryService.retrieveCategories(null);
+		if (externals == null){
+			return "";
+		}else{
+			StringBuffer buf = new StringBuffer();
+			for (ExternalCategory xcat : externals){
+				buf.append(xcat.getHost() + ": " + xcat.getName() + "\n");
+			}
+			return buf.toString();
+		}
+		
 	}
 
 }
