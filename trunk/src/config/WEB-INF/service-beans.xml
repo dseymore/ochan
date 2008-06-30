@@ -88,5 +88,6 @@
 
 	<bean class="org.Ochan.util.StatisticalErrorHandler"/>
 	<bean class="org.Ochan.util.LoggingConfiguration"/>
+	<bean class="org.Ochan.control.ThumbnailController"/>
 
 </beans>
