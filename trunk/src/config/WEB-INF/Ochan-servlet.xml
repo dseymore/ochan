@@ -61,7 +61,7 @@
 		<property name="commandName" value="command" />
 		<property name="commandClass" value="org.Ochan.form.CategoryForm" />
 		<property name="formView" value="addCategory" />
-		<property name="successView" value="admin" />
+		<property name="successView" value="forward:categoryList.Ochan" />
 		<property name="bindOnNewForm" value="true" />
 		<property name="sessionForm" value="true" />
 		<property name="service" ref="localCategoryService" />
@@ -72,7 +72,7 @@
 		<property name="commandName" value="command" />
 		<property name="commandClass" value="org.Ochan.form.ThreadForm" />
 		<property name="formView" value="addThread" />
-		<property name="successView" value="admin" />
+		<property name="successView" value="forward:categoryList.Ochan" />
 		<property name="bindOnNewForm" value="true" />
 		<property name="sessionForm" value="true" />
 		<property name="categoryService" ref="localCategoryService" />

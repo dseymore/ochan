@@ -97,6 +97,7 @@
 	        });
 		</script>
 	</head>
+	#include("/WEB-INF/velocity/style.vm")
 	<body>
 		<div id="reply"></div>
 		#foreach($post in ${thread.posts})

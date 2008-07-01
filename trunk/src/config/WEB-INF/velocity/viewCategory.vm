@@ -1,6 +1,7 @@
 <html>
 	<head>
 	</head>
+	#include("/WEB-INF/velocity/style.vm")
 	<body>
 		#foreach($thread in ${category.threads})
 			<hr>

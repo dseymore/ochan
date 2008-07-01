@@ -1,23 +1,26 @@
 <html>
 	<head>
 	</head>
+	#include("/WEB-INF/velocity/style.vm")
 	<body>
-		<div id="admin">
+		<div  id="adminBox" class="box">
 			#include("/WEB-INF/velocity/admin.vm")
 		</div>
-		<div id="categoryList">
-			<ul>
+		<div id="categoryBox" class="box">
+			<ul class="categoryList">
 				#foreach($cat in ${category})
 					<li><a href="openCategory.Ochan?identifier=$cat.identifier">$cat.name</a></li>
 				#end
 			</ul>
 		</div>
-		<div id="externalCategoryList">
+		#if ($list.size(${external}) > 0)
+		<div id="externalCategoryList" class="box">
 			<ul>
 				#foreach($cat in ${external})
 					<li><a href="$cat.host">$cat.name</a></li>
 				#end
 			</ul>
 		</div>
+		#end
 	</body>
 </html> 

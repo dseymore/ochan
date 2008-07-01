@@ -78,6 +78,7 @@
 		<copy file="${basedir}/scratch/Ochan.war" tofile="${basedir}/scratch/winstone/embedded.war"/>
 		<!-- step three, jar it back up -->
 		<jar destfile="${basedir}/scratch/Ochan.jar" manifest="${basedir}/scratch/winstone/META-INF/MANIFEST.MF" basedir="${basedir}/scratch/winstone/" excludes="**/MANIFEST.MF"/>
+		<delete file="${basedir}/scratch/ivy.xml"/>
 		<!-- and then toss our 'artifacts' into the ivy library -->
 		<ivy:publish resolver="filesystem" artifactspattern="${basedir}/scratch/[artifact].[ext]" />
 	</target>
