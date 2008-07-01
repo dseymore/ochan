@@ -43,6 +43,7 @@
 	        });
 		</script>
 	</head>
+	#include("/WEB-INF/velocity/style.vm")
 	<body>
 	</body>
 </html>

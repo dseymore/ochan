@@ -1,0 +1,25 @@
+<style type="text/css">
+	body{background-color: rgb(209,210,255); font-family: Verdana, Arial, Helvetica, sans-serif;}
+
+	#adminBox{padding-right-value: 0.5em; padding-left-value: 0.5em; 
+		background-color: rgb(240,240,255); width: 200px;}
+		
+	#categoryBox{padding-right-value: 0.5em; padding-left-value: 0.5em; 
+		background-color: rgb(240,240,255);}
+	
+	.box{border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px;
+		border-left-width: 1px; border-top-style: solid; border-right-style: solid;
+		border-bottom-style: solid; border-left-style: solid;}
+	
+	h2{font-size: 1.2em; margin-top: 0pt; margin-right-value: 0pt; margin-bottom: 0pt; 
+		margin-left-value: 0pt; padding-top: 0pt; padding-right-value: 0pt;
+		padding-bottom: 0pt; padding-left-value: 0pt; color: rgb(177,177,177);}
+	
+	.heading{background-color: rgb(56,84,106);}
+	
+	ul.adminList{list-style-type:cjk-ideographic;}
+	
+	ul.categoryList{list-style-type:circle;}
+	
+	.categoryItem{display: inline;}
+</style>

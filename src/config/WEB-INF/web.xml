@@ -81,6 +81,11 @@
 		<servlet-name>Ochan</servlet-name>
 		<url-pattern>*.Ochan</url-pattern>
 	</servlet-mapping>
+	<!-- so that the welcome calls the servlet -->
+	<servlet-mapping>
+		<servlet-name>Ochan</servlet-name>
+		<url-pattern>categoryList.Ochan</url-pattern>
+	</servlet-mapping>
 	<!--  the share endpoint -->
 	<servlet-mapping>
 		<servlet-name>Ochan</servlet-name>
@@ -93,7 +98,7 @@
 <!--	</listener> -->
 
 	<welcome-file-list>
-		<welcome-file>/WEB-INF/velocity/admin.vm</welcome-file>
+		<welcome-file>/categoryList.Ochan</welcome-file>
 	</welcome-file-list>
 
     <!--  Log4J JMX initialization -->
