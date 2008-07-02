@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ivy-module version="1.0">
+	<info organisation="org.codehaus"
+		module="jettison"
+		revision="1.0"
+		status="integration"
+		publication="20060513083149"
+	/>
+	<publications>
+		<artifact name="jettison" type="jar" ext="jar"/>
+	</publications>
+</ivy-module>

@@ -49,5 +49,7 @@
 <!--		<dependency org="javax.xml" name="saaj-impl" rev="1.3" conf="default->default"/>	-->
 		<dependency org="xerces" name="xerces" rev="2.9.1" conf="default->default"/>
 		<dependency org="opensymphony" name="quartz" rev="1.6.0" conf="default->default"/>
+		<!--  JSON support -->
+		<dependency org="org.codehaus" name="jettison" rev="1.0" conf="default->default"/>
     </dependencies>
 </ivy-module>
