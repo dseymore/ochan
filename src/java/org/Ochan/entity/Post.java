@@ -30,7 +30,10 @@ public abstract class Post implements Comparable<Post> {
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "POST_SEQUENCE")
 	private Long identifier;
 
-	@ManyToOne(fetch=FetchType.LAZY)
+	/**
+	 * We're eagerly getting the thread so that a post can load its parent.. and no siblings. 
+	 */
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name = "THREAD_IDENTIFIER", insertable = true, updatable = false)
 	private Thread parent;
 

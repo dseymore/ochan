@@ -7,20 +7,20 @@ import java.util.List;
 import javax.jws.WebService;
 
 import org.Ochan.entity.Category;
+import org.Ochan.service.CategoryService;
 import org.Ochan.service.CategoryService.CategoryCriteria;
-import org.Ochan.service.local.LocalCategoryService;
 import org.Ochan.service.remote.model.RemoteCategory;
 
 @WebService(endpointInterface = "org.Ochan.service.remote.webservice.CategoryList")
 public class CategoryListImpl implements CategoryList {
 
-	private LocalCategoryService categoryService;
+	private CategoryService categoryService;
 
-	public LocalCategoryService getCategoryService() {
+	public CategoryService getCategoryService() {
 		return categoryService;
 	}
 
-	public void setCategoryService(LocalCategoryService categoryService) {
+	public void setCategoryService(CategoryService categoryService) {
 		this.categoryService = categoryService;
 	}
 
