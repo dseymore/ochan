@@ -6,6 +6,9 @@
     	<!-- Include Ext stylesheets here: -->
 	    <link rel="stylesheet" type="text/css" href="#springUrl('/extjs/resources/css/ext-all.css')">
 		<script language="javascript" type="text/javascript">
+			//variable to keep track of the pages most recent thread id
+	        var currentPostId = 0;
+	        
 			Ext.onReady(function() {
 				Ext.QuickTips.init();
 	
@@ -95,17 +98,78 @@
 			 
 			##form.render(document.body);
 	        });
+	        
+	        window.setInterval(xyz, 10000)
+	        
+	        ##var request = { "env.getNextPost" : { "ochan.thread" : "2", "ochan.lastPost" : "4"} };
+	        
+	        function xyz(){
+	        	Ext.Ajax.request({
+					url: '/remote/rest/post/next/' + currentPostId + '/',
+					method: 'GET',
+					##success: someFn,
+					##failure: otherFn,
+					##headers: {
+						##'my-header': 'foo'
+					##},
+					##params: Ext.util.JSON.encode(request)
+					scope:this,
+					callback: function(opts, suss, resp){
+						var result = Ext.util.JSON.decode(resp.responseText);
+						//so here, lets make a new table.. yeah? yeah.
+						//alert(result.RemotePost.comment);
+						if (result != undefined && result.RemotePost.identifier != -1){
+							createItem(result.RemotePost.subject, result.RemotePost.email, result.RemotePost.author, result.RemotePost.url, result.RemotePost.time, result.RemotePost.type, result.RemotePost.identifier, result.RemotePost.comment);
+							currentPostId = result.RemotePost.identifier;
+						}
+					}
+				});
+	        }
+	        
+	        //NASTY duplication of style in JAVASCRIPT to ... 2 places to edit one style.. sucks. 
+	        function createItem(subject,email,author,url,time,type,id,comment){
+	        	var body = document.getElementById("body");
+	        	var newhr = document.createElement("hr");
+	        	var bigdiv = document.createElement("div");
+	        	var location = document.createElement("a");
+	        	location.setAttribute("name",id);
+	        	
+	        	var newdiv = document.createElement("div");
+	        	newdiv.innerHTML = subject + "&nbsp;&nbsp;<a href=\"mailto:" + email + "\">" + author + "</a> " + "<a href=\"" + url + "\">uri</a>" + time + "&nbsp;&nbsp;&raquo;" + id;
+	        	var table = document.createElement("table");
+	        	var row = document.createElement("tr");
+	        	var cell1 = document.createElement("td");
+	        	if (type == 'IMAGE'){
+	        		cell1.innerHTML = "<a href=\"#springUrl('/thumb.Ochan')?identifier=" + id + "\"><img src=\"#springUrl('/thumb.Ochan')?identifier=" + id + "&thumb=true\"></a>";
+	        	}
+	        	var cell2 = document.createElement("td");
+	        	cell2.innerHTML = comment;
+	        	row.appendChild(cell1);
+	        	row.appendChild(cell2);
+	        	table.appendChild(row);
+	        	
+	        	bigdiv.appendChild(location);
+	        	bigdiv.appendChild(newdiv);
+	        	bigdiv.appendChild(table);
+	        	
+	        	body.appendChild(newhr);
+	        	body.appendChild(bigdiv);
+	        }
+	        	
 		</script>
 	</head>
 	#include("/WEB-INF/velocity/style.vm")
-	<body>
+	<body id="body">
 		<div id="reply"></div>
 		#foreach($post in ${thread.posts})
 			<hr>
 			<div>
+				<script language="javascript" type="text/javascript">
+					currentPostId = $post.identifier;
+				</script>
 				<a name="$post.identifier"/>
 				<div>
-					$post.subject&nbsp;&nbsp;<a href="mailto:$post.email">$post.author</a> <a href="$post.url">$post.url</a> $post.time  &nbsp;&nbsp;&raquo;$post.identifier
+					$post.subject&nbsp;&nbsp;<a href="mailto:$post.email">$post.author</a> <a href="$post.url">uri</a> $post.time  &nbsp;&nbsp;&raquo;$post.identifier
 				</div>
 				<table>
 					<tr>

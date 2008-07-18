@@ -62,6 +62,7 @@ public class PostDAO {
      * @return
      */
     public Post getPost(Long identifier){
+    	//FIXME - will this work if it isnt a ImagePost?
     	ImagePost post = null;
         LOG.trace("getting post with ID: " + identifier);
         EntityManager em = this.entityManagerFactory.createEntityManager();

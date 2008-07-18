@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ivy-module version="1.0">
+	<info organisation="org.apache"
+		module="abdera"
+		revision="0.4.0-incubating"
+		status="integration"
+		publication="20080608083149"
+	/>
+	<publications>
+		<artifact name="abdera-core" type="jar" ext="jar"/>
+                <artifact name="abdera-parser" type="jar" ext="jar"/>
+                <artifact name="abdera-i18n" type="jar" ext="jar"/>
+                <artifact name="abdera-server" type="jar" ext="jar"/>
+                <artifact name="abdera-extensions-html" type="jar" ext="jar"/>
+                <artifact name="abdera-extensions-main" type="jar" ext="jar"/>
+                <artifact name="abdera-extensions-json" type="jar" ext="jar"/>
+	</publications>
+	<dependencies>
+		<dependency org="org.jaxen" name="jaxen" rev="1.1"/>
+	</dependencies>
+</ivy-module>

@@ -1,51 +1,101 @@
-<beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:jaxws="http://cxf.apache.org/jaxws"
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jaxws="http://cxf.apache.org/jaxws"
 	xmlns:http-conf="http://cxf.apache.org/transports/http/configuration"
+	xmlns:jaxrs="http://cxf.apache.org/jaxrs"
 	xsi:schemaLocation="
 http://cxf.apache.org/transports/http/configuration http://cxf.apache.org/schemas/configuration/http-conf.xsd
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd">
-
+http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd
+http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd">
 	<import resource="classpath:META-INF/cxf/cxf.xml" />
 	<import resource="classpath:META-INF/cxf/cxf-extension-soap.xml" />
 	<import resource="classpath:META-INF/cxf/cxf-servlet.xml" />
 	<import resource="service-beans.xml" />
+	<import resource="classpath:META-INF/cxf/cxf-extension-xml.xml"/> 
+	<import resource="classpath:META-INF/cxf/cxf-extension-jaxrs-binding.xml" />
+
 
 
 	<!--  category Service -->
-	<bean id="categoryListBean"
-		class="org.Ochan.service.remote.webservice.CategoryListImpl">
+	<bean id="categoryListBean" class="org.Ochan.service.remote.webservice.CategoryListImpl">
 		<property name="categoryService" ref="localCategoryService" />
 	</bean>
-
-	<jaxws:endpoint id="CategoryList" implementor="#categoryListBean"
-		address="/category" />
+	<jaxws:endpoint id="CategoryList" implementor="#categoryListBean" address="/category" />
 
 	<!--  category client  -->
 <!--	I would love to use spring to build me a client.. but..problem is.. we dont know the url, and the client comes configured-->
 <!--	<bean id="client" class="org.Ochan.service.remote.webservice.CategoryList"-->
 <!--		factory-bean="clientFactory" factory-method="create" />-->
 <!---->
-	<bean id="clientFactory"
-		class="org.apache.cxf.jaxws.JaxWsProxyFactoryBean">
+	<bean id="clientFactory" class="org.apache.cxf.jaxws.JaxWsProxyFactoryBean">
 		<property name="serviceClass" value="org.Ochan.service.remote.webservice.CategoryList" />
 		<property name="address" value="http://localhost:8080/remote/category" />
 	</bean>
 	
-<!--	<jaxws:client id="client" -->
-<!--    	serviceClass="org.Ochan.service.remote.webservice.CategoryList"-->
-<!--    	address="http://localhost:8080/remote/category"/>-->
-	
 	<!--  our JMX interaction guy  -->
 	<bean id="hostlist" class="org.Ochan.service.remote.jmx.HostList">
-		<property name="categoryListClient" ref="clientFactory"/>
-		<property name="externalCategoryService" ref="localExternalCategoryService"/>
+		<property name="categoryListClient" ref="clientFactory" />
+		<property name="externalCategoryService" ref="localExternalCategoryService" />
 	</bean>
-	
 	<http-conf:conduit name="*.http-conduit">
 		<http-conf:client AllowChunking="false" />
 	</http-conf:conduit>
 	
+
+
+	<!--  Post Service -->
+	<!--  no client ATM -->
+	<bean id="postListBean" class="org.Ochan.service.remote.webservice.PostListImpl">
+		<property name="postService" ref="localPostService" />
+		<property name="threadService" ref="localThreadService" />
+	</bean>
+
+	
+<!--	TODO - figure out what the fuck these binding configurations do.. and how i can pick what i want.. -->
+<!--	sets up the proper observer list for properly using the jettison mappedxml guy.. it basically reaches the end of the line/document/node stack too soon. -->
+<!--	<bean id="httpBindingFactory" class="org.apache.cxf.binding.http.HttpBindingFactory"/>-->
+<!--	<property name="bindingFactory" ref="httpBindingFactory"/>-->
+	
+<!--	-->
+<!--	<jaxws:endpoint id="PostList" implementor="#postListBean" address="/post"/>-->
+<!--	<jaxws:endpoint id="JsonPostList" implementor="#postListBean" address="/json/post" >-->
+<!--		<jaxws:serviceFactory>-->
+<!--            <bean class="org.apache.cxf.jaxws.support.JaxWsServiceFactoryBean">-->
+<!--                <property name="wrapped" value="false" />-->
+<!--                <property name="properties">-->
+<!--                    <map>-->
+<!--                        <entry key="Content-Type" value="text/plain" />-->
+<!--                        <entry>                           -->
+<!--							<key><value>javax.xml.stream.XMLInputFactory</value></key>-->
+<!--                            <bean class="org.codehaus.jettison.mapped.MappedXMLInputFactory">-->
+<!--                                <constructor-arg>-->
+<!--                                    <map>-->
+<!--                                    	<entry key="http://webservice.remote.service.Ochan.org/" value="ochan"/>-->
+<!--                                        <entry key="http://schemas.xmlsoap.org/soap/envelope/" value="env" />-->
+<!--                                    </map>-->
+<!--                                </constructor-arg>-->
+<!--                            </bean>-->
+<!--                        </entry>-->
+<!--                        <entry>-->
+<!--                            <key><value>javax.xml.stream.XMLOutputFactory</value></key>-->
+<!--                            <bean class="org.codehaus.jettison.mapped.MappedXMLOutputFactory">-->
+<!--                                <constructor-arg>-->
+<!--                                    <map>-->
+<!--                                    	<entry key="http://webservice.remote.service.Ochan.org/" value="ochan"/>-->
+<!--                                        <entry key="http://schemas.xmlsoap.org/soap/envelope/" value="env" />-->
+<!--                                    </map>-->
+<!--                                </constructor-arg>-->
+<!--                            </bean>-->
+<!--                        </entry>-->
+<!--                    </map>-->
+<!--                </property>-->
+<!--            </bean>-->
+<!--        </jaxws:serviceFactory>-->
+<!--	</jaxws:endpoint>-->
+	
+	<jaxrs:server id="restPostList" address="/rest/">
+	    <jaxrs:serviceBeans>
+	    	<ref bean="postListBean" />
+	    </jaxrs:serviceBeans>
+	</jaxrs:server>
 	
 </beans>
