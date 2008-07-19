@@ -62,16 +62,15 @@ public class PostDAO {
      * @return
      */
     public Post getPost(Long identifier){
-    	//FIXME - will this work if it isnt a ImagePost?
-    	ImagePost post = null;
+    	Post post = null;
         LOG.trace("getting post with ID: " + identifier);
         EntityManager em = this.entityManagerFactory.createEntityManager();
         try {
-            Query query = em.createQuery("SELECT p FROM ImagePost p where p.identifier = :identifier");
+            Query query = em.createQuery("SELECT p FROM Post p where p.identifier = :identifier");
             query.setParameter("identifier", identifier);
             List results = query.getResultList();
             if (results.size() == 1){
-                post = (ImagePost)results.get(0);
+                post = (Post)results.get(0);
             }
         } catch (Exception e) {
             LOG.error("Unable to retrieve post: " + identifier,e);

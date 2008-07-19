@@ -10,6 +10,9 @@
 					<!-- Only print the first and last post to the thread -->
 					#if ($velocityCount == 1 || $velocityCount == ($list.size($thread.posts)) )
 					<div>
+						<div>
+							$post.subject
+						</div>
 						<table>
 							<tr>
 								#if ($post.getClass().getName() == 'org.Ochan.entity.ImagePost')
