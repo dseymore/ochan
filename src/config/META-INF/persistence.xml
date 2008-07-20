@@ -6,12 +6,12 @@
 <!-- transaction type set to RESOURCE_LOCAL, no JTA support -->
 	<persistence-unit name="DefaultPersistenceUnit" transaction-type="RESOURCE_LOCAL">
 <!--		All persistence classes must be listed -->
-		<class>org.Ochan.entity.Category</class>
-		<class>org.Ochan.entity.Thread</class>
-		<class>org.Ochan.entity.Post</class>
-		<class>org.Ochan.entity.TextPost</class>
-		<class>org.Ochan.entity.ImagePost</class>
-		<class>org.Ochan.entity.ExternalCategory</class>
+		<class>org.ochan.entity.Category</class>
+		<class>org.ochan.entity.Thread</class>
+		<class>org.ochan.entity.Post</class>
+		<class>org.ochan.entity.TextPost</class>
+		<class>org.ochan.entity.ImagePost</class>
+		<class>org.ochan.entity.ExternalCategory</class>
 		<properties>
 			<property name="hibernate.archive.autodetection" value="class, hbm" />
 			<property name="hibernate.show_sql" value="false" />

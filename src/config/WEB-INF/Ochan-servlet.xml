@@ -57,9 +57,9 @@
 		</property>
 	</bean>
 
-	<bean name="categoryAddController" class="org.Ochan.control.CategoryAddController">
+	<bean name="categoryAddController" class="org.ochan.control.CategoryAddController">
 		<property name="commandName" value="command" />
-		<property name="commandClass" value="org.Ochan.form.CategoryForm" />
+		<property name="commandClass" value="org.ochan.form.CategoryForm" />
 		<property name="formView" value="addCategory" />
 		<property name="successView" value="forward:categoryList.Ochan" />
 		<property name="bindOnNewForm" value="true" />
@@ -68,9 +68,9 @@
 		<!--        FIXME - make the service not injected, but, inject a factory that decides whether local or external service-->
 	</bean>
 	
-	<bean name="threadAddController" class="org.Ochan.control.ThreadAddController">
+	<bean name="threadAddController" class="org.ochan.control.ThreadAddController">
 		<property name="commandName" value="command" />
-		<property name="commandClass" value="org.Ochan.form.ThreadForm" />
+		<property name="commandClass" value="org.ochan.form.ThreadForm" />
 		<property name="formView" value="addThread" />
 		<property name="successView" value="forward:categoryList.Ochan" />
 		<property name="bindOnNewForm" value="true" />
@@ -80,9 +80,9 @@
 		<!--        FIXME - make the service not injected, but, inject a factory that decides whether local or external service-->
 	</bean>
 	
-	<bean name="postReplyController" class="org.Ochan.control.PostReplyController">
+	<bean name="postReplyController" class="org.ochan.control.PostReplyController">
 		<property name="commandName" value="command" />
-		<property name="commandClass" value="org.Ochan.form.PostReplyForm" />
+		<property name="commandClass" value="org.ochan.form.PostReplyForm" />
 		<property name="formView" value="viewThread" />
 		<property name="successView" value="forward:viewThread.Ochan" />
 		<property name="bindOnNewForm" value="true" />
@@ -91,7 +91,7 @@
 		<!--        FIXME - make the service not injected, but, inject a factory that decides whether local or external service-->
 	</bean>
 	
-	<bean name="categoryListController" class="org.Ochan.control.CategoryListController">
+	<bean name="categoryListController" class="org.ochan.control.CategoryListController">
 		<property name="viewName" value="listCategory" />
 		<property name="categoryService" ref="localCategoryService" />
 		<property name="threadService" ref="localThreadService" />
@@ -99,14 +99,14 @@
 		<!--        FIXME - make the service not injected, but, inject a factory that decides whether local or external service-->
 	</bean>
 	
-	<bean name="viewThreadController" class="org.Ochan.control.ViewThreadController">
+	<bean name="viewThreadController" class="org.ochan.control.ViewThreadController">
 		<property name="viewName" value="viewThread" />
 		<property name="threadService" ref="localThreadService" />
 		<property name="postService" ref="localPostService" />
 		<!--        FIXME - make the service not injected, but, inject a factory that decides whether local or external service-->
 	</bean>
 	
-	<bean name="viewCategoryController" class="org.Ochan.control.ViewCategoryController">
+	<bean name="viewCategoryController" class="org.ochan.control.ViewCategoryController">
 		<property name="viewName" value="viewCategory" />
 		<property name="categoryService" ref="localCategoryService" />
 		<property name="threadService" ref="localThreadService" />
@@ -114,12 +114,12 @@
 		<!--        FIXME - make the service not injected, but, inject a factory that decides whether local or external service-->
 	</bean>
 	
-	<bean name="thumbnailController" class="org.Ochan.control.ThumbnailController">
+	<bean name="thumbnailController" class="org.ochan.control.ThumbnailController">
 		<property name="postService" ref="localPostService" />
 		<!--        FIXME - make the service not injected, but, inject a factory that decides whether local or external service-->
 	</bean>
 	
-	<bean name="shareController" class="org.Ochan.control.ShareController">
+	<bean name="shareController" class="org.ochan.control.ShareController">
 		<property name="categoryService" ref="localCategoryService" />
 		<property name="threadService" ref="localThreadService" />
 		<!--        FIXME - make the service not injected, but, inject a factory that decides whether local or external service-->
