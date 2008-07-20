@@ -38,29 +38,29 @@
 	<aop:spring-configured />
 
 	<!--  xxxxxxxxxxxxxxxxxxxxxxxxx  DAO configuration xxxxxxxxxxxxxxxxxxxxxxxxx  -->
-	<bean id="categoryDAO" class="org.Ochan.dao.CategoryDAO" />
-	<bean id="postDAO" class="org.Ochan.dao.PostDAO" />
-	<bean id="threadDAO" class="org.Ochan.dao.ThreadDAO">
+	<bean id="categoryDAO" class="org.ochan.dao.CategoryDAO" />
+	<bean id="postDAO" class="org.ochan.dao.PostDAO" />
+	<bean id="threadDAO" class="org.ochan.dao.ThreadDAO">
 		<property name="postDao" ref="postDAO" />
 	</bean>
-	<bean id="externalCategoryDAO" class="org.Ochan.dao.ExternalCategoryDAO" />
+	<bean id="externalCategoryDAO" class="org.ochan.dao.ExternalCategoryDAO" />
 	
 	<!--  xxxxxxxxxxxxxxxxxxxxxxxxx  Service configuration xxxxxxxxxxxxxxxxxxxxxxxxx  -->
-	<bean id="localCategoryService" class="org.Ochan.service.local.LocalCategoryService">
+	<bean id="localCategoryService" class="org.ochan.service.local.LocalCategoryService">
 		<property name="categoryDAO" ref="categoryDAO"/>
 	</bean>
 	
-	<bean id="localThreadService" class="org.Ochan.service.local.LocalThreadService">
+	<bean id="localThreadService" class="org.ochan.service.local.LocalThreadService">
 		<property name="threadDAO" ref="threadDAO"/>
 		<property name="categoryService" ref="localCategoryService"/>
 	</bean>
 	
-	<bean id="localPostService" class="org.Ochan.service.local.LocalPostService">
+	<bean id="localPostService" class="org.ochan.service.local.LocalPostService">
 		<property name="postDAO" ref="postDAO"/>
 		<property name="threadService" ref="localThreadService"/>
 	</bean>
 	
-	<bean id="localExternalCategoryService" class="org.Ochan.service.local.LocalExternalCategoryService">
+	<bean id="localExternalCategoryService" class="org.ochan.service.local.LocalExternalCategoryService">
 		<property name="externalCategoryDAO" ref="externalCategoryDAO"/>
 	</bean>
 	
@@ -86,8 +86,8 @@
         <property name="attributeSource" ref="jmxAttributeSource"/>
     </bean>
 
-	<bean class="org.Ochan.util.StatisticalErrorHandler"/>
-	<bean class="org.Ochan.util.LoggingConfiguration"/>
-	<bean class="org.Ochan.control.ThumbnailController"/>
+	<bean class="org.ochan.util.StatisticalErrorAppender"/>
+	<bean class="org.ochan.util.LoggingConfiguration"/>
+	<bean class="org.ochan.control.ThumbnailController"/>
 
 </beans>

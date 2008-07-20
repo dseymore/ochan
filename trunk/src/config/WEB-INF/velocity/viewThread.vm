@@ -104,7 +104,6 @@
 	        
 	        ## Calls rest url for the next post
 	        function xyz(){
-	        	alert("Requesting" + currentPostId);	
 	        	Ext.Ajax.request({
 					url: '/remote/rest/post/next/' + currentPostId + '/',
 					method: 'GET',

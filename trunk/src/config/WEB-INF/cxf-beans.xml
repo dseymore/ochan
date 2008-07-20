@@ -16,23 +16,23 @@ http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd">
 
 
 	<!--  category Service -->
-	<bean id="categoryListBean" class="org.Ochan.service.remote.webservice.CategoryListImpl">
+	<bean id="categoryListBean" class="org.ochan.service.remote.webservice.CategoryListImpl">
 		<property name="categoryService" ref="localCategoryService" />
 	</bean>
 	<jaxws:endpoint id="CategoryList" implementor="#categoryListBean" address="/category" />
 
 	<!--  category client  -->
 <!--	I would love to use spring to build me a client.. but..problem is.. we dont know the url, and the client comes configured-->
-<!--	<bean id="client" class="org.Ochan.service.remote.webservice.CategoryList"-->
+<!--	<bean id="client" class="org.ochan.service.remote.webservice.CategoryList"-->
 <!--		factory-bean="clientFactory" factory-method="create" />-->
 <!---->
 	<bean id="clientFactory" class="org.apache.cxf.jaxws.JaxWsProxyFactoryBean">
-		<property name="serviceClass" value="org.Ochan.service.remote.webservice.CategoryList" />
+		<property name="serviceClass" value="org.ochan.service.remote.webservice.CategoryList" />
 		<property name="address" value="http://localhost:8080/remote/category" />
 	</bean>
 	
 	<!--  our JMX interaction guy  -->
-	<bean id="hostlist" class="org.Ochan.service.remote.jmx.HostList">
+	<bean id="hostlist" class="org.ochan.service.remote.jmx.HostList">
 		<property name="categoryListClient" ref="clientFactory" />
 		<property name="externalCategoryService" ref="localExternalCategoryService" />
 	</bean>
@@ -44,7 +44,7 @@ http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd">
 
 	<!--  Post Service -->
 	<!--  no client ATM -->
-	<bean id="postListBean" class="org.Ochan.service.remote.webservice.PostListImpl">
+	<bean id="postListBean" class="org.ochan.service.remote.webservice.PostListImpl">
 		<property name="postService" ref="localPostService" />
 		<property name="threadService" ref="localThreadService" />
 	</bean>
@@ -69,7 +69,7 @@ http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd">
 <!--                            <bean class="org.codehaus.jettison.mapped.MappedXMLInputFactory">-->
 <!--                                <constructor-arg>-->
 <!--                                    <map>-->
-<!--                                    	<entry key="http://webservice.remote.service.Ochan.org/" value="ochan"/>-->
+<!--                                    	<entry key="http://webservice.remote.service.ochan.org/" value="ochan"/>-->
 <!--                                        <entry key="http://schemas.xmlsoap.org/soap/envelope/" value="env" />-->
 <!--                                    </map>-->
 <!--                                </constructor-arg>-->
@@ -80,7 +80,7 @@ http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd">
 <!--                            <bean class="org.codehaus.jettison.mapped.MappedXMLOutputFactory">-->
 <!--                                <constructor-arg>-->
 <!--                                    <map>-->
-<!--                                    	<entry key="http://webservice.remote.service.Ochan.org/" value="ochan"/>-->
+<!--                                    	<entry key="http://webservice.remote.service.ochan.org/" value="ochan"/>-->
 <!--                                        <entry key="http://schemas.xmlsoap.org/soap/envelope/" value="env" />-->
 <!--                                    </map>-->
 <!--                                </constructor-arg>-->
