@@ -15,7 +15,7 @@
 						</div>
 						<table>
 							<tr>
-								#if ($post.getClass().getName() == 'org.Ochan.entity.ImagePost')
+								#if ($post.getClass().getName() == 'org.ochan.entity.ImagePost')
 								<td>
 									<a href="#springUrl('/thumb.Ochan')?identifier=$post.identifier"><img src="#springUrl('/thumb.Ochan')?identifier=$post.identifier&thumb=true"></a>
 								</td>
