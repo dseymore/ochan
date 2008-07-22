@@ -10,13 +10,15 @@
 	        var currentPostId = 0;
 	        
 			Ext.onReady(function() {
-				Ext.QuickTips.init();
 	
 	    		var form = new Ext.form.FormPanel({
 	    		id: 'threadForm',
+	    		title: 'Reply',
+	    		header: true,
 			    labelAlign: 'top',
 			    bodyStyle:'padding:5px 5px 0',
 			    width: 600,
+			    collapsible: true,
 			    fileUpload: true,
 			    url: '#springUrl('/postReply.Ochan')',
 			    items: [
@@ -96,6 +98,7 @@
         		frame: true
 			});
 			 
+			Ext.QuickTips.init();
 			##form.render(document.body);
 	        });
 	        
