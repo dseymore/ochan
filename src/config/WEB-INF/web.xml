@@ -107,5 +107,15 @@
                     gov.grantsolutions.util.logging.LoggingConfiguration
             </listener-class>
     </listener>
+    
+    <!--  ATOM FEEDS via Abdera! -->
+    <servlet id="abdera">
+		<servlet-name>Abdera</servlet-name>  
+    	<servlet-class>org.apache.abdera.spring.SpringAbderaServlet</servlet-class>
+  	</servlet>
+	<servlet-mapping id="abdera-mapping">
+		<servlet-name>Abdera</servlet-name>
+    	<url-pattern>/atom/*</url-pattern>
+	</servlet-mapping>
 
 </web-app>

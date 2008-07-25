@@ -18,7 +18,7 @@
 			    labelAlign: 'top',
 			    bodyStyle:'padding:5px 5px 0',
 			    width: 600,
-			    collapsible: true,
+			    //collapsible: true,
 			    fileUpload: true,
 			    url: '#springUrl('/postReply.Ochan')',
 			    items: [
