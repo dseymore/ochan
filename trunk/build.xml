@@ -32,7 +32,7 @@
 		<ivy:configure file="ivyconf.xml" />
 		<ivy:resolve conf="default" />
 		<!-- place the libraries into the scratch -->
-		<ivy:retrieve conf="default" pattern="${lib.dir}/[artifact]-[revision].[ext]" />
+		<ivy:retrieve conf="default" type="jar" pattern="${lib.dir}/[artifact]-[revision].[ext]" />
 		<!-- make a fancy report -->
 		<ivy:report todir="${basedir}/scratch/report" />
 		<!-- set a property for the artifacts -->
