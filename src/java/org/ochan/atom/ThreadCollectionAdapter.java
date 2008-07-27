@@ -9,7 +9,10 @@ import java.util.Map;
 
 import org.apache.abdera.i18n.iri.IRI;
 import org.apache.abdera.model.Content;
+import org.apache.abdera.model.Entry;
 import org.apache.abdera.model.Person;
+import org.apache.abdera.model.Content.Type;
+import org.apache.abdera.parser.stax.FOMFactory;
 import org.apache.abdera.protocol.server.RequestContext;
 import org.apache.abdera.protocol.server.context.ResponseContextException;
 import org.apache.abdera.protocol.server.impl.AbstractEntityCollectionAdapter;
@@ -22,6 +25,7 @@ import org.ochan.service.CategoryService;
 import org.ochan.service.PostService;
 import org.ochan.service.ThreadService;
 import org.ochan.service.ThreadService.ThreadCriteria;
+import org.ochan.util.DeploymentConfiguration;
 
 public class ThreadCollectionAdapter extends AbstractEntityCollectionAdapter<Thread> {
 
@@ -85,7 +89,10 @@ public class ThreadCollectionAdapter extends AbstractEntityCollectionAdapter<Thr
 	 */
 	@Override
 	public Object getContent(Thread entry, RequestContext request) throws ResponseContextException {
-		return ((TextPost)entry.getPosts().get(0)).getComment();
+		FOMFactory ff = new FOMFactory();
+		Content content = ff.newContent(Type.HTML);
+		content.setValue(((TextPost)entry.getPosts().get(0)).getComment());
+		return content;
 	}
 
 	/**
@@ -100,9 +107,12 @@ public class ThreadCollectionAdapter extends AbstractEntityCollectionAdapter<Thr
 			Map<ThreadCriteria,Object> criteria = new HashMap<ThreadCriteria,Object>();
 			criteria.put(ThreadCriteria.CATEGORY, c.getIdentifier());
 			List<Thread> threads = threadService.retrieveThreads(criteria);
-			for (Thread thread : threads){
-				thread.setPosts(postService.retrieveThreadPosts(thread));
-				toreturn.add(thread);
+			//categories have 0 threads to begin with.. 
+			if (threads != null){
+				for (Thread thread : threads){
+					thread.setPosts(postService.retrieveThreadPosts(thread));
+					toreturn.add(thread);
+				}
 			}
 		}
 		Collections.sort(toreturn);
@@ -206,6 +216,35 @@ public class ThreadCollectionAdapter extends AbstractEntityCollectionAdapter<Thr
 		return "/atom/atom/threads";
 	}
 
+	/**  
+	 * The default generated urls dont really work..they try and go down into the atompub spec
+	 * to find the feed item.. which, i dont wanna do. and then on top of that, it is always setup as an
+	 * edit link, which most readers dont understand or give a flying shit about.
+	 * 
+	 * which causes us to override the addEntryDetails method. 
+	 * 
+	 * So, lets generate a nice url.
+	 * @see org.apache.abdera.protocol.server.impl.AbstractEntityCollectionAdapter#getLink(java.lang.String, java.lang.Object, org.apache.abdera.i18n.iri.IRI, org.apache.abdera.protocol.server.RequestContext)
+	 */
+	@Override
+	protected String getLink(String name, Thread entryObj, IRI feedIri, RequestContext request) {
+		DeploymentConfiguration config = new DeploymentConfiguration(); 
+		String link = "http://"+config.getHostname() + ":" + config.getPort() + "/viewThread.Ochan?identifier="+entryObj.getIdentifier();
+		return link;
+	}
+
+	/**
+	 * @see org.apache.abdera.protocol.server.impl.AbstractEntityCollectionAdapter#addEntryDetails(org.apache.abdera.protocol.server.RequestContext, org.apache.abdera.model.Entry, org.apache.abdera.i18n.iri.IRI, java.lang.Object)
+	 */
+	@Override
+	protected String addEntryDetails(RequestContext request, Entry e, IRI feedIri, Thread entryObj) throws ResponseContextException {
+		String realLink = getLink(getName(entryObj),entryObj, feedIri, request);
+		String ret = super.addEntryDetails(request, e, feedIri, entryObj);
+		//Atom spec says the url to the item that the feed entry is about, is the 'alternate' link, not an edit link.. what a hassle
+		e.addLink(realLink, "alternate");
+		return ret;
+	}
+	
 	
 	
 
