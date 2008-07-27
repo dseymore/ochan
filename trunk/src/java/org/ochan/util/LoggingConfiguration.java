@@ -2,6 +2,7 @@ package org.ochan.util;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.prefs.Preferences;
 
@@ -12,6 +13,7 @@ import org.apache.commons.collections.EnumerationUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.Appender;
+import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.RollingFileAppender;
@@ -132,10 +134,18 @@ public class LoggingConfiguration implements ServletContextListener {
 		if (setTo == null) {
 			LOG.fatal("You passed in an argument to change log threshold that didn't match an expected value.");
 		} else {
-			// we have a proper value, lets go to it!
-			((RollingFileAppender) Logger.getRootLogger().getAppender(ROLLING_LOG_FILE_CONFIGURED_NAME)).setThreshold(setTo);
-			((RollingFileAppender) Logger.getRootLogger().getAppender(ROLLING_LOG_FILE_CONFIGURED_NAME)).activateOptions();
-			setLevel(level); // saving into preferences
+			Enumeration enumer = Logger.getRootLogger().getAllAppenders();
+			while(enumer.hasMoreElements()){
+				Object next = enumer.nextElement();
+				if (next instanceof AppenderSkeleton){
+					AppenderSkeleton appen = (AppenderSkeleton)next;
+					appen.setThreshold(setTo);
+					appen.activateOptions();
+					// saving into preferences
+					setLevel(level);
+				}
+			}
+			Logger.getRootLogger().setLevel(setTo);
 		}
 	}
 

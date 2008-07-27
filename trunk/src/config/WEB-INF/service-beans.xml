@@ -89,5 +89,6 @@
 	<bean class="org.ochan.util.StatisticalErrorAppender"/>
 	<bean class="org.ochan.util.LoggingConfiguration"/>
 	<bean class="org.ochan.control.ThumbnailController"/>
+	<bean class="org.ochan.util.DeploymentConfiguration"/>
 
 </beans>
