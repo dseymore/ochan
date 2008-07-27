@@ -46,6 +46,12 @@
 			org.springframework.web.context.ContextLoaderListener
 		</listener-class>
 	</listener>
+	
+	<listener>
+		<listener-class>
+			org.ochan.util.UserCounter
+		</listener-class>
+	</listener>
 
 <!--	<servlet>-->
 <!--		<servlet-name>dummy</servlet-name>-->
