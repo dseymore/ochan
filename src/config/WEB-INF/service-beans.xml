@@ -85,11 +85,33 @@
           class="org.springframework.jmx.export.naming.MetadataNamingStrategy">
         <property name="attributeSource" ref="jmxAttributeSource"/>
     </bean>
-
+	<!--  JMX-ABLES -->
 	<bean class="org.ochan.util.StatisticalErrorAppender"/>
 	<bean class="org.ochan.util.LoggingConfiguration"/>
 	<bean class="org.ochan.control.ThumbnailController"/>
 	<bean class="org.ochan.util.DeploymentConfiguration"/>
 	<bean class="org.ochan.util.UserCounter"/>
+	
+	
+	
+	<!--  Quartz Jobs! -->
+	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+	    <property name="triggers">
+	        <list>
+	            <ref bean="activeThreadTrigger" />
+	        </list>
+	    </property>
+	</bean>
+	<bean id="activeThreadTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+    	<property name="jobDetail" ref="activeThreadsJob" />
+    	<!-- every minute -->
+    	<property name="cronExpression" value="0 */1 * * * ?" />
+	</bean>
+	<bean name="activeThreadsJob" class="org.springframework.scheduling.quartz.JobDetailBean">
+        <property name="jobClass" value="org.ochan.job.ActiveThreadCounterJob"/>
+    </bean>
+    <!--  expose schedule config through JMX -->
+	<bean class="org.ochan.job.ActiveThreadCounterJob"/>
+	
 
 </beans>
