@@ -13,13 +13,18 @@ import org.ochan.entity.Post;
 import org.ochan.service.PostService;
 import org.ochan.service.ThreadService;
 import org.ochan.service.remote.model.RemotePost;
+import org.springframework.jmx.export.annotation.ManagedAttribute;
+import org.springframework.jmx.export.annotation.ManagedResource;
 
 @Path("/post/")
+@ManagedResource(description = "RESTful post grabber", objectName = "Ochan:type=rest,name=Post", logFile = "jmx.log")
 public class PostListImpl implements PostList {
 	private static final Log LOG = LogFactory.getLog(PostListImpl.class);
 	
 	private PostService postService;
 	private ThreadService threadService;
+	
+	private static Long NEXT_POST_GET_COUNT = new Long(0);
 	
 	/**
 	 * @return the postService
@@ -47,6 +52,14 @@ public class PostListImpl implements PostList {
 	 */
 	public void setThreadService(ThreadService threadService) {
 		this.threadService = threadService;
+	}	
+
+	/**
+	 * @return the nextGetCount
+	 */
+	@ManagedAttribute(description="The number of calls received for a next post. This is used by the ActiveThreadCounterJob to determine how many thread watches are open.")
+	public Long getNextGetCount() {
+		return NEXT_POST_GET_COUNT;
 	}
 
 	/**
@@ -57,6 +70,7 @@ public class PostListImpl implements PostList {
     @GET
     @Path("/next/{postId}/")
 	public RemotePost next(@PathParam("postId") String id) {
+		NEXT_POST_GET_COUNT++;
 		//i have the post id.. lets find the thread that owns this post
 		Post p = postService.getPost(Long.valueOf(id));
 		if (p != null){
