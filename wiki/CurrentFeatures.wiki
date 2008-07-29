@@ -1,0 +1,14 @@
+#labels Featured,Phase-Design
+This page introduces the reader to the current feature-set of Ochan.
+
+==Atom Feed==
+ * A quick hack to introduce the technology, Ochan now aggregates all of the threads created across all categories into a single atom feed, with the date of the thread creation as the comparison. 
+
+==Ajax-enabled Thread Watching==
+ * When in 'reply-mode' on a thread, your browser is 'thread-watching'. What this means is that it makes a request for any 'new' posts in the background, and upon discovering one renders it and scrolls your browser to its location on screen. There is also a JMX accessible metric to see how many threads are being watched. 
+
+==Host encapsulation==
+ * In a step to introduce mirroring, clustering, and service partitioning; host encapsulation  was introduced. This allows ochan to be aware of the categories hosted on an alternate Ochan install, and allow users to be directed to those other hosts to view those categories. 
+
+==In JVM image thumbnailing==
+ * Everything that Ochan needs out of the box is in the jar; Including resizing the uploaded images into thumbnails. This cuts down on any installation time or any setup or dependency gathering. 
