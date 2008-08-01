@@ -24,6 +24,7 @@ import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
+import org.springframework.web.servlet.view.RedirectView;
 
 public class ThreadAddController extends SimpleFormController {
 
@@ -107,7 +108,7 @@ public class ThreadAddController extends SimpleFormController {
 			LOG.error("Unable to create thread",e);
 		}
 		
-		return super.onSubmit(request, response, command, errors);
+		return new ModelAndView(new RedirectView("categoryList.Ochan"));
 	}
 
 	/**
