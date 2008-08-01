@@ -10,6 +10,7 @@ import org.ochan.service.CategoryService;
 import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
+import org.springframework.web.servlet.view.RedirectView;
 
 public class CategoryAddController extends SimpleFormController {
 
@@ -40,7 +41,7 @@ public class CategoryAddController extends SimpleFormController {
         CategoryForm form = (CategoryForm)command;
         service.createCategory(form.getName(), form.getDescription());
         
-        return super.onSubmit(request, response, command, errors);
+        return new ModelAndView(new RedirectView("categoryList.Ochan"));
     }
 
     @Override
