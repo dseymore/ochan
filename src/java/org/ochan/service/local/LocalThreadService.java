@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.ochan.dao.ThreadDAO;
 import org.ochan.entity.Category;
@@ -35,7 +34,7 @@ public class LocalThreadService implements ThreadService {
 	/**
 	 * @return the createCount
 	 */
-	@ManagedAttribute(description = "The number of calls to create a category")
+	@ManagedAttribute(description = "The number of calls to create a thread")
 	public long getCreateCount() {
 		return createCount;
 	}
@@ -43,7 +42,7 @@ public class LocalThreadService implements ThreadService {
 	/**
 	 * @return the getCount
 	 */
-	@ManagedAttribute(description = "The number of calls to get a category.")
+	@ManagedAttribute(description = "The number of calls to get a thread.")
 	public long getGetCount() {
 		return getCount;
 	}
@@ -51,7 +50,7 @@ public class LocalThreadService implements ThreadService {
 	/**
 	 * @return the deleteCount
 	 */
-	@ManagedAttribute(description = "The number of calls to delete a category.")
+	@ManagedAttribute(description = "The number of calls to delete a thread.")
 	public long getDeleteCount() {
 		return deleteCount;
 	}
@@ -59,7 +58,7 @@ public class LocalThreadService implements ThreadService {
 	/**
 	 * @return the lastSearchTime
 	 */
-	@ManagedAttribute(description = "The time in milliseconds of the last call to search for categories.")
+	@ManagedAttribute(description = "The time in milliseconds of the last call to search for threads.")
 	public long getLastSearchTime() {
 		return lastSearchTime;
 	}

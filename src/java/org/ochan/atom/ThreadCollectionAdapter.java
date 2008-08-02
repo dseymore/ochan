@@ -26,10 +26,16 @@ import org.ochan.service.PostService;
 import org.ochan.service.ThreadService;
 import org.ochan.service.ThreadService.ThreadCriteria;
 import org.ochan.util.DeploymentConfiguration;
+import org.springframework.jmx.export.annotation.ManagedAttribute;
+import org.springframework.jmx.export.annotation.ManagedResource;
 
+@ManagedResource(description = "Syndication wrapper", objectName = "Ochan:type=feed,name=ThreadCollector", logFile = "jmx.log")
 public class ThreadCollectionAdapter extends AbstractEntityCollectionAdapter<Thread> {
 
 	private static final Log LOG = LogFactory.getLog(ThreadCollectionAdapter.class);
+	//Statistics
+	private static long getCount = 0;
+	private static long lastSearchTime = 0;
 	
 	private ThreadService threadService;
 	private CategoryService categoryService;
@@ -76,7 +82,23 @@ public class ThreadCollectionAdapter extends AbstractEntityCollectionAdapter<Thr
 	public void setPostService(PostService postService) {
 		this.postService = postService;
 	}
-
+	
+	/**
+	 * @return the getCount
+	 */
+	@ManagedAttribute(description = "The number of calls to get the feed")
+	public long getGetCount() {
+		return getCount;
+	}
+	
+	/**
+	 * @return the lastSearchTime
+	 */
+	@ManagedAttribute(description = "The time in milliseconds of the last call to search for threads.")
+	public long getLastSearchTime() {
+		return lastSearchTime;
+	}
+	
 	/**
 	 * @see org.apache.abdera.protocol.server.impl.AbstractEntityCollectionAdapter#deleteEntry(java.lang.String, org.apache.abdera.protocol.server.RequestContext)
 	 */
@@ -100,6 +122,8 @@ public class ThreadCollectionAdapter extends AbstractEntityCollectionAdapter<Thr
 	 */
 	@Override
 	public Iterable<Thread> getEntries(RequestContext request) throws ResponseContextException {
+		getCount++;
+		long start = new Date().getTime();
 		//TODO Cache this shit.. so freaking expensive.
 		List<Thread> toreturn = new ArrayList<Thread>();
 		List<Category> categories = categoryService.retrieveCategories(null);
@@ -116,6 +140,12 @@ public class ThreadCollectionAdapter extends AbstractEntityCollectionAdapter<Thr
 			}
 		}
 		Collections.sort(toreturn);
+		
+		// capture end of call
+		long end = new Date().getTime();
+		// compute total time
+		lastSearchTime = end - start;
+		
 		return toreturn;
 	}
 
