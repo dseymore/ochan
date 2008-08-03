@@ -11,7 +11,7 @@ import org.ochan.service.CategoryService;
 import org.ochan.service.CategoryService.CategoryCriteria;
 import org.ochan.service.remote.model.RemoteCategory;
 
-@WebService(endpointInterface = "org.Ochan.service.remote.webservice.CategoryList")
+@WebService(endpointInterface = "org.ochan.service.remote.webservice.CategoryList")
 public class CategoryListImpl implements CategoryList {
 
 	private CategoryService categoryService;
