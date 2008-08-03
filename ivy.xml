@@ -56,5 +56,11 @@
 		<dependency org="org.apache" name="abdera" rev="0.4.0-incubating" conf="default->default"/>
 		<dependency org="org.apache" name="axiom" rev="1.2.7" conf="default->default"/>
 		<dependency org="org.apache" name="commons-codec" rev="1.3" conf="default->default"/>
+		<!-- upgrading jaxb -->
+		<dependency org="javax.xml" name="jaxb-api" rev="2.1.7" conf="default->default"/>
+		<dependency org="com.sun.xml.bind" name="jaxb-xjc" rev="2.1.7" conf="default->default"/>
+		<dependency org="com.sun.xml" name="jaxb-impl" rev="2.1.7" conf="default->default"/>
+				
     </dependencies>
 </ivy-module>
+
