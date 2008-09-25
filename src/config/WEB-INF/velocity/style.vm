@@ -4,6 +4,9 @@
 	#adminBox{padding-right-value: 0.5em; padding-left-value: 0.5em; 
 		background-color: rgb(240,240,255); width: 200px;}
 		
+	#recentBox{padding-right-value: 0.5em; padding-left-value: 0.5em; 
+		background-color: rgb(240,240,255); width: 200px;}
+		
 	#categoryBox{padding-right-value: 0.5em; padding-left-value: 0.5em; 
 		background-color: rgb(240,240,255);}
 	
