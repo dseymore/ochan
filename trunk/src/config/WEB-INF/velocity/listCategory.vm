@@ -26,5 +26,16 @@
 			</ul>
 		</div>
 		#end
+		<div id="recentBox" class="box">
+			<div class="box">
+				<a href="#springUrl('viewThread.Ochan')?identifier=$P1.parent.identifier"><img src="#springUrl('/thumb.Ochan')?identifier=$P1.identifier&thumb=true"></a>
+			</div>
+			<div class="box">
+				<a href="#springUrl('viewThread.Ochan')?identifier=$P2.parent.identifier"<img src="#springUrl('/thumb.Ochan')?identifier=$P2.identifier&thumb=true"></a>
+			</div>
+			<div class="box">
+				<a href="#springUrl('viewThread.Ochan')?identifier=$P3.parent.identifier"<img src="#springUrl('/thumb.Ochan')?identifier=$P3.identifier&thumb=true"></a>
+			</div>
+		</div>
 	</body>
 </html> 

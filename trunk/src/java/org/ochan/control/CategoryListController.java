@@ -3,6 +3,8 @@ package org.ochan.control;
 import static org.ochan.control.StaticNames.CATEGORY_LIST;
 import static org.ochan.control.StaticNames.EXTERNAL_CATEGORY_LIST;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,10 +12,17 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.sf.ehcache.Ehcache;
+import net.sf.ehcache.Element;
+
 import org.ochan.entity.Category;
 import org.ochan.entity.ExternalCategory;
+import org.ochan.entity.ImagePost;
+import org.ochan.entity.Post;
+import org.ochan.entity.Thread;
 import org.ochan.service.CategoryService;
 import org.ochan.service.ExternalCategoryService;
+import org.ochan.service.PostService;
 import org.ochan.service.ThreadService;
 import org.ochan.service.CategoryService.CategoryCriteria;
 import org.ochan.service.ThreadService.ThreadCriteria;
@@ -25,6 +34,8 @@ public class CategoryListController implements Controller {
 	private CategoryService categoryService;
 	private ExternalCategoryService externalCategoryService;
 	private ThreadService threadService;
+	private PostService postService;
+	private Ehcache cache;
 	private String viewName;
 
 	/**
@@ -70,9 +81,24 @@ public class CategoryListController implements Controller {
 	 */
 	public void setViewName(String viewName) {
 		this.viewName = viewName;
+	}	
+
+	
+	
+	/**
+	 * @param postService the postService to set
+	 */
+	public void setPostService(PostService postService) {
+		this.postService = postService;
 	}
+
 	
-	
+	/**
+	 * @param cache the cache to set
+	 */
+	public void setCache(Ehcache cache) {
+		this.cache = cache;
+	}
 
 	/**
 	 * @return the externalCategoryService
@@ -105,9 +131,59 @@ public class CategoryListController implements Controller {
 		List<ExternalCategory> externalList = getExternalCategoryService().retrieveCategories(null);
 		
 		
+		//Get a cached list of all threads and posts.. yay!
+		//semi-hack-i-tude.. need to push this down to a service level 
+		//(its copypasta from the threadcollectionadapter)
+		List<Thread> toreturn = new ArrayList<Thread>();
+		Element o = cache.get("1");
+		if (o == null || o.getObjectValue() == null || o.isExpired()){
+			List<Category> cats = categoryService.retrieveCategories(null);
+			for (Category c : cats){
+				Map<ThreadCriteria,Object> criteria = new HashMap<ThreadCriteria,Object>();
+				criteria.put(ThreadCriteria.CATEGORY, c.getIdentifier());
+				List<Thread> threads = threadService.retrieveThreads(criteria);
+				//categories have 0 threads to begin with.. 
+				if (threads != null){
+					for (Thread thread : threads){
+						thread.setPosts(postService.retrieveThreadPosts(thread));
+						toreturn.add(thread);
+					}
+				}
+			}
+			Collections.sort(toreturn);
+			cache.put(new Element("1",toreturn));
+		}else{
+			//unsafe!
+			toreturn = (ArrayList<Thread>)o.getObjectValue();
+		}
+		
 		Map controlModel = new HashMap();
 		controlModel.put(CATEGORY_LIST, categories);
 		controlModel.put(EXTERNAL_CATEGORY_LIST, externalList);
+
+		//get the most recent three image posts (this logic is shit!)
+		Post p1 = null;
+		Post p2 = null;
+		Post p3 = null;
+		for (Thread t : toreturn){
+			Post p = t.getPosts().get(t.getPosts().size() -1); 
+			if ( p instanceof ImagePost){ 
+				if (p1 == null){
+					p1 = p;
+				}else if (p2 == null){
+					p2 = p;
+				}else if (p3 == null){
+					p3 = p;
+				}
+				if (p3 != null){
+					//jump out!
+					break;
+				}
+			}
+		}
+		controlModel.put("P1",p1);
+		controlModel.put("P2",p2);
+		controlModel.put("P3",p3);
 		return new ModelAndView(viewName, controlModel);
 	}
 

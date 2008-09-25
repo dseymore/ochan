@@ -95,7 +95,9 @@
 		<property name="categoryService" ref="localCategoryService" />
 		<property name="threadService" ref="localThreadService" />
 		<property name="externalCategoryService" ref="localExternalCategoryService"/>
+		<property name="postService" ref="localPostService" />
 		<!--        FIXME - make the service not injected, but, inject a factory that decides whether local or external service-->
+		<property name="cache" ref="threadCache"/>
 	</bean>
 	
 	<bean name="viewThreadController" class="org.ochan.control.ViewThreadController">
