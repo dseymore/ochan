@@ -7,6 +7,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.sf.ehcache.Ehcache;
+import net.sf.ehcache.Element;
+
 import org.apache.abdera.i18n.iri.IRI;
 import org.apache.abdera.model.Content;
 import org.apache.abdera.model.Entry;
@@ -41,6 +44,17 @@ public class ThreadCollectionAdapter extends AbstractEntityCollectionAdapter<Thr
 	private CategoryService categoryService;
 	private PostService postService;
 	
+	private Ehcache cache;
+	
+	
+	
+	/**
+	 * @param cache the cache to set
+	 */
+	public void setCache(Ehcache cache) {
+		this.cache = cache;
+	}
+
 	/**
 	 * @return the threadService
 	 */
@@ -124,22 +138,28 @@ public class ThreadCollectionAdapter extends AbstractEntityCollectionAdapter<Thr
 	public Iterable<Thread> getEntries(RequestContext request) throws ResponseContextException {
 		getCount++;
 		long start = new Date().getTime();
-		//TODO Cache this shit.. so freaking expensive.
 		List<Thread> toreturn = new ArrayList<Thread>();
-		List<Category> categories = categoryService.retrieveCategories(null);
-		for (Category c : categories){
-			Map<ThreadCriteria,Object> criteria = new HashMap<ThreadCriteria,Object>();
-			criteria.put(ThreadCriteria.CATEGORY, c.getIdentifier());
-			List<Thread> threads = threadService.retrieveThreads(criteria);
-			//categories have 0 threads to begin with.. 
-			if (threads != null){
-				for (Thread thread : threads){
-					thread.setPosts(postService.retrieveThreadPosts(thread));
-					toreturn.add(thread);
+		Element o = cache.get("1");
+		if (o == null || o.getObjectValue() == null || o.isExpired()){
+			List<Category> categories = categoryService.retrieveCategories(null);
+			for (Category c : categories){
+				Map<ThreadCriteria,Object> criteria = new HashMap<ThreadCriteria,Object>();
+				criteria.put(ThreadCriteria.CATEGORY, c.getIdentifier());
+				List<Thread> threads = threadService.retrieveThreads(criteria);
+				//categories have 0 threads to begin with.. 
+				if (threads != null){
+					for (Thread thread : threads){
+						thread.setPosts(postService.retrieveThreadPosts(thread));
+						toreturn.add(thread);
+					}
 				}
 			}
+			Collections.sort(toreturn);
+			cache.put(new Element("1",toreturn));
+		}else{
+			//unsafe!
+			toreturn = (ArrayList<Thread>)o.getObjectValue();
 		}
-		Collections.sort(toreturn);
 		
 		// capture end of call
 		long end = new Date().getTime();
