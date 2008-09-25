@@ -10,7 +10,6 @@ import javax.persistence.Query;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.ochan.entity.ImagePost;
 import org.ochan.entity.Post;
 import org.ochan.entity.Thread;
 
