@@ -6,11 +6,15 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.ochan.entity.Post;
+import org.ochan.entity.TextPost;
 import org.ochan.entity.Thread;
 import org.ochan.service.PostService;
 import org.ochan.service.ThreadService;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
+
+import antlr.StringUtils;
 
 public class ViewThreadController implements Controller {
 
@@ -74,6 +78,36 @@ public class ViewThreadController implements Controller {
 		
 		Thread t = threadService.getThread(identifier);
 		t.setPosts(getPostService().retrieveThreadPosts(t));
+		//ok, lets walk through the posts, and handle the special html for linking between posts.. TODO - make this a better implementation..
+		for (Post p : t.getPosts()){
+			TextPost tp = (TextPost)p;
+			String[] pieces = tp.getComment().split("&gt;&gt;");
+			if (pieces != null && pieces.length > 1){
+				StringBuilder value = new StringBuilder();
+				boolean first = true;
+				for (String x : pieces){
+					if(first){
+						//first one, nothing to do here.
+						value.append(x);
+						first = false;
+					}else{
+						int stop = x.indexOf(" ");
+						if (stop <= 0){
+							stop = x.length();
+						}
+						String num = x.substring(0,stop);
+						if (!org.apache.commons.lang.StringUtils.isNumeric(num)){
+							//(the <br> bit)
+							stop = stop - 4;
+							num = x.substring(0,stop);
+						}
+						value.append("<a href=\"#"+num+"\" onclick=\"replyhl("+num+")\">&gt;&gt;"+num+"</a> "+x.substring(stop));
+					}
+				}
+				tp.setComment(value.toString());
+			}
+		}
+		
 		controlModel.put("thread", t);
 
 		return new ModelAndView(viewName, controlModel);
