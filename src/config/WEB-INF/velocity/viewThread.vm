@@ -5,6 +5,7 @@
 		<script language="javascript" type="text/javascript" src="#springUrl('/extjs/ext-all-debug.js')"></script>
     	<!-- Include Ext stylesheets here: -->
 	    <link rel="stylesheet" type="text/css" href="#springUrl('/extjs/resources/css/ext-all.css')">
+	    <script language="javascript" type="text/javascript" src="#springUrl('/quoting.js')"></script>
 		<script language="javascript" type="text/javascript">
 			//variable to keep track of the pages most recent thread id
 	        var currentPostId = 0;
@@ -171,8 +172,7 @@
 	<body id="body">
 		<div id="reply"></div>
 		#foreach($post in ${thread.posts})
-			<hr>
-			<div>
+			<div id="$post.identifier" class="reply">
 				<script language="javascript" type="text/javascript">
 					currentPostId = $post.identifier;
 				</script>

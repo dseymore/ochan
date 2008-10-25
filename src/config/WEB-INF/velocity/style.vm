@@ -25,4 +25,8 @@
 	ul.categoryList{list-style-type:circle;}
 	
 	.categoryItem{display: inline;}
+	
+	.reply{background-color: rgb(209,210,255);}
+	
+	.replyhl{background-color: rgb(153, 187, 232);}
 </style>
