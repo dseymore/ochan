@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.ochan.entity.Category;
@@ -81,7 +82,9 @@ public class ThreadAddController extends SimpleFormController {
 	protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
 
 		ThreadForm tf = (ThreadForm) command;
-
+		//save the username in the session.
+		request.getSession().setAttribute("author", tf.getAuthor());
+		
 		boolean isMultipart = ServletFileUpload.isMultipartContent(request);
 		LOG.error("Multipart?: " + isMultipart);
 		
@@ -122,6 +125,12 @@ public class ThreadAddController extends SimpleFormController {
 		if (controlModel == null)
 			controlModel = new HashMap();
 		controlModel.put(CATEGORY_LIST, categories);
+		String author = (String)request.getSession().getAttribute("author");
+		if (StringUtils.isNotEmpty(author)){
+			controlModel.put("author", author);
+		}else{
+			controlModel.put("author", "Anonymous");
+		}
 		return super.showForm(request, response, errors, controlModel);
 	}
 
