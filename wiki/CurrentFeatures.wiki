@@ -12,3 +12,20 @@ This page introduces the reader to the current feature-set of Ochan.
 
 ==In JVM image thumbnailing==
  * Everything that Ochan needs out of the box is in the jar; Including resizing the uploaded images into thumbnails. This cuts down on any installation time or any setup or dependency gathering. 
+
+==Basic Features==
+ * Author capturing, with optional email. 
+ * Every post can have a subject, an image, and some HTML (WYSIWYG editor) text. 
+ * Each instance of ochan can have multiple categories.
+ * Currently, there are an unlimited number of categories, and posts within those categories.
+ * Simple to start (java -jar Ochan.jar) and simple to use. (create a category, and start posting)
+
+==What is missing?==
+ * Paging
+ * User Tripcodes
+ * Unique sequences per category
+ * Middle tier deployment capability
+ * Administration (banning, deleting threads/posts)
+
+==What is broken?==
+ * Extjs wont render on a Playstation Portable or a Playstation 3.
