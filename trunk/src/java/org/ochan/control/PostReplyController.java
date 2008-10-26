@@ -47,6 +47,9 @@ public class PostReplyController extends SimpleFormController {
 	@Override
 	protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
 		PostReplyForm prf = (PostReplyForm)command;
+		//save the username in the session.
+		request.getSession().setAttribute("author", prf.getAuthor());
+		
 		//Copying the byte array to be a Byte array. fun..
 		Byte[] bytes = null;
 		if (prf.getFileUrl() == null || "".equals(prf.getFileUrl().trim())){

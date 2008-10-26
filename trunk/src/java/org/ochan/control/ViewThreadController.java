@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.ochan.entity.Post;
 import org.ochan.entity.TextPost;
 import org.ochan.entity.Thread;
@@ -14,7 +15,6 @@ import org.ochan.service.ThreadService;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 
-import antlr.StringUtils;
 
 public class ViewThreadController implements Controller {
 
@@ -96,7 +96,7 @@ public class ViewThreadController implements Controller {
 							stop = x.length();
 						}
 						String num = x.substring(0,stop);
-						if (!org.apache.commons.lang.StringUtils.isNumeric(num)){
+						if (!StringUtils.isNumeric(num)){
 							//(the <br> bit)
 							stop = stop - 4;
 							num = x.substring(0,stop);
@@ -109,6 +109,12 @@ public class ViewThreadController implements Controller {
 		}
 		
 		controlModel.put("thread", t);
+		String author = (String)arg0.getSession().getAttribute("author");
+		if (StringUtils.isNotEmpty(author)){
+			controlModel.put("author", author);
+		}else{
+			controlModel.put("author", "Anonymous");
+		}
 
 		return new ModelAndView(viewName, controlModel);
 	}

@@ -237,7 +237,7 @@ public class ThumbnailController implements Controller {
 
 				LOG.debug("file length is " + datum.length);
 				response.setContentLength(datum.length);
-				response.setHeader("Content-Disposition", " inline; filename=" + "TODO");
+				response.setHeader("Content-Disposition", " inline; filename=" + id+".jpg");
 				// convert to non-object
 				FileCopyUtils.copy(datum, response.getOutputStream());
 			}

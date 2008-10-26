@@ -166,18 +166,22 @@ public class CategoryListController implements Controller {
 		Post p2 = null;
 		Post p3 = null;
 		for (Thread t : toreturn){
-			Post p = t.getPosts().get(t.getPosts().size() -1); 
-			if ( p instanceof ImagePost){ 
-				if (p1 == null){
-					p1 = p;
-				}else if (p2 == null){
-					p2 = p;
-				}else if (p3 == null){
-					p3 = p;
-				}
-				if (p3 != null){
-					//jump out!
-					break;
+			//walk backwards until we find one
+			//this handles when there is only one post or less than a lot.
+			for (int i = 1; i < t.getPosts().size(); i++){
+				Post p = t.getPosts().get(t.getPosts().size() -i); 
+				if ( p instanceof ImagePost){ 
+					if (p1 == null){
+						p1 = p;
+					}else if (p2 == null){
+						p2 = p;
+					}else if (p3 == null){
+						p3 = p;
+					}
+					if (p3 != null){
+						//jump out!
+						break;
+					}
 				}
 			}
 		}

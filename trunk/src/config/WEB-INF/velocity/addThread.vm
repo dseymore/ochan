@@ -39,6 +39,7 @@
 			    },{
 	                xtype:'textfield',
 	                fieldLabel: 'Author',
+	                value: '${author}',
 	                name: 'author',
 	                anchor:'95%'
 			    },{
