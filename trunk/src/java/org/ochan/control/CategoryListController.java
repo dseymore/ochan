@@ -168,7 +168,10 @@ public class CategoryListController implements Controller {
 		for (Thread t : toreturn){
 			//walk backwards until we find one
 			//this handles when there is only one post or less than a lot.
-			for (int i = 1; i < t.getPosts().size(); i++){
+			for (int i = 1; i < t.getPosts().size() && (
+					!(p1 !=null && !p1.getParent().getIdentifier().equals(t.getIdentifier())) 
+					|| !(p2 != null && !p2.getParent().getIdentifier().equals(t.getIdentifier())) 
+					|| !(p3 != null && !p3.getParent().getIdentifier().equals(t.getIdentifier()))); i++){
 				Post p = t.getPosts().get(t.getPosts().size() -i); 
 				if ( p instanceof ImagePost){ 
 					if (p1 == null){
