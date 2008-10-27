@@ -91,17 +91,19 @@ public class ViewThreadController implements Controller {
 						value.append(x);
 						first = false;
 					}else{
-						int stop = x.indexOf(" ");
-						if (stop <= 0){
-							stop = x.length();
+						//now try and find how long the # is..
+						boolean found = false;
+						for (int i = x.length(); i > -1; i--){
+							String num = x.substring(0,i);
+							if (StringUtils.isNumeric(num)){
+								value.append("<a href=\"#"+num+"\" onclick=\"replyhl("+num+")\">&gt;&gt;"+num+"</a> "+x.substring(i));
+								found = true;
+								break;
+							}
 						}
-						String num = x.substring(0,stop);
-						if (!StringUtils.isNumeric(num)){
-							//(the <br> bit)
-							stop = stop - 4;
-							num = x.substring(0,stop);
+						if(!found){
+							value.append(x);
 						}
-						value.append("<a href=\"#"+num+"\" onclick=\"replyhl("+num+")\">&gt;&gt;"+num+"</a> "+x.substring(stop));
 					}
 				}
 				tp.setComment(value.toString());
