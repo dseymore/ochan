@@ -9,11 +9,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.ochan.entity.Category;
+import org.ochan.entity.Post;
+import org.ochan.entity.TextPost;
 import org.ochan.entity.Thread;
 import org.ochan.service.CategoryService;
 import org.ochan.service.PostService;
 import org.ochan.service.ThreadService;
 import org.ochan.service.ThreadService.ThreadCriteria;
+import org.ochan.util.PostLinksAFixARockerJocker;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 
@@ -93,6 +96,12 @@ public class ViewCategoryController implements Controller {
 		cat.setThreads(threads);
 		for (Thread t : threads){
 			t.setPosts(getPostService().retrieveThreadPosts(t));
+			for (Post p : t.getPosts()){
+				if (p instanceof TextPost){
+					TextPost tp = (TextPost)p;
+					tp.setComment(PostLinksAFixARockerJocker.fixMahLinks(tp, false));
+				}
+			}
 		}
 		controlModel.put("category", cat);
 		
