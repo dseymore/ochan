@@ -12,6 +12,7 @@ import org.ochan.entity.TextPost;
 import org.ochan.entity.Thread;
 import org.ochan.service.PostService;
 import org.ochan.service.ThreadService;
+import org.ochan.util.PostLinksAFixARockerJocker;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 
@@ -81,33 +82,7 @@ public class ViewThreadController implements Controller {
 		//ok, lets walk through the posts, and handle the special html for linking between posts.. TODO - make this a better implementation..
 		for (Post p : t.getPosts()){
 			TextPost tp = (TextPost)p;
-			String[] pieces = tp.getComment().split("&gt;&gt;");
-			if (pieces != null && pieces.length > 1){
-				StringBuilder value = new StringBuilder();
-				boolean first = true;
-				for (String x : pieces){
-					if(first){
-						//first one, nothing to do here.
-						value.append(x);
-						first = false;
-					}else{
-						//now try and find how long the # is..
-						boolean found = false;
-						for (int i = x.length(); i > -1; i--){
-							String num = x.substring(0,i);
-							if (StringUtils.isNumeric(num)){
-								value.append("<a href=\"#"+num+"\" onclick=\"replyhl("+num+")\">&gt;&gt;"+num+"</a> "+x.substring(i));
-								found = true;
-								break;
-							}
-						}
-						if(!found){
-							value.append(x);
-						}
-					}
-				}
-				tp.setComment(value.toString());
-			}
+			tp.setComment(PostLinksAFixARockerJocker.fixMahLinks(tp,true));
 		}
 		
 		controlModel.put("thread", t);
