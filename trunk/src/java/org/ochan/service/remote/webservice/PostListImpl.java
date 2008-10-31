@@ -10,9 +10,11 @@ import javax.ws.rs.ProduceMime;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.ochan.entity.Post;
+import org.ochan.entity.TextPost;
 import org.ochan.service.PostService;
 import org.ochan.service.ThreadService;
 import org.ochan.service.remote.model.RemotePost;
+import org.ochan.util.PostLinksAFixARockerJocker;
 import org.springframework.jmx.export.annotation.ManagedAttribute;
 import org.springframework.jmx.export.annotation.ManagedResource;
 
@@ -88,6 +90,8 @@ public class PostListImpl implements PostList {
 				if (next){
 					//save it
 					remote = new RemotePost(post);
+					//we need to fix the links..
+					remote.setComment(PostLinksAFixARockerJocker.fixMahLinks((TextPost)post, true));
 					break;
 				}else{
 					//see if this one is the current one

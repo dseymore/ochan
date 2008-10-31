@@ -134,8 +134,9 @@
 	        ##NASTY duplication of style in JAVASCRIPT to ... 2 places to edit one style.. sucks. 
 	        function createItem(subject,email,author,url,time,type,id,comment){
 	        	var body = document.getElementById("body");
-	        	var newhr = document.createElement("hr");
 	        	var bigdiv = document.createElement("div");
+	        	bigdiv.setAttribute("id",id);
+	        	bigdiv.setAttribute("class","reply");
 	        	var location = document.createElement("a");
 	        	location.setAttribute("name",id);
 	        	
@@ -157,7 +158,6 @@
 	        	bigdiv.appendChild(newdiv);
 	        	bigdiv.appendChild(table);
 	        	
-	        	body.appendChild(newhr);
 	        	body.appendChild(bigdiv);
 	        	
 	        	var endLocation = document.createElement("a");
