@@ -9,10 +9,11 @@
 		<script language="javascript" type="text/javascript">
 			//variable to keep track of the pages most recent thread id
 	        var currentPostId = 0;
+	        var form = 0;
 	        
 			Ext.onReady(function() {
 	
-	    		var form = new Ext.form.FormPanel({
+	    		form = new Ext.form.FormPanel({
 	    		id: 'threadForm',
 	    		title: 'Reply',
 	    		header: true,
@@ -167,6 +168,14 @@
 	        	window.location.hash="end"+id;
 	        }
 	        	
+	        	
+	        function addId(id){
+	        	var htmleditor = form.findById("comment");
+	        	if(htmleditor instanceof Ext.form.HtmlEditor){
+	        		htmleditor.focus();
+	        		htmleditor.insertAtCursor(">>" + id + "<br>\n");
+	        	}
+	        }
 		</script>
 	</head>
 	#include("/WEB-INF/velocity/style.vm")
@@ -179,7 +188,7 @@
 				</script>
 				<a name="$post.identifier"/>
 				<div>
-					$post.subject&nbsp;&nbsp;<a href="mailto:$post.email">$post.author</a> <a href="$post.url">uri</a> $post.time  &nbsp;&nbsp;&raquo;$post.identifier
+					$post.subject&nbsp;&nbsp;<a href="mailto:$post.email">$post.author</a> <a href="$post.url">uri</a> $post.time  &nbsp;&nbsp;<a href="#" onclick="javascript:addId($post.identifier)">&raquo;$post.identifier</a>
 				</div>
 				<table>
 					<tr>
