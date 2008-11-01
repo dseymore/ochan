@@ -54,7 +54,6 @@
 			        xtype:'htmleditor',
 			        id:'comment',
 			        fieldLabel:'Comment',
-			        height:200,
 			        anchor:'98%'
 			     },{
 				    xtype:'tabpanel',
@@ -173,7 +172,7 @@
 	        	var htmleditor = form.findById("comment");
 	        	if(htmleditor instanceof Ext.form.HtmlEditor){
 	        		htmleditor.focus();
-	        		htmleditor.insertAtCursor(">>" + id + "<br>\n");
+	        		htmleditor.insertAtCursor('<p>&gt;&gt;' + id + '</p>');
 	        	}
 	        }
 		</script>
