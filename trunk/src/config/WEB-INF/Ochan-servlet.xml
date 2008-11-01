@@ -52,6 +52,7 @@
 				<prop key="/**/postReply.Ochan">postReplyController</prop>
 				<prop key="/**/openCategory.Ochan">viewCategoryController</prop>
 				<prop key="/**/thumb.Ochan">thumbnailController</prop>
+				<prop key="/**/zip.Ochan">zipController</prop>
 			</props>
 		</property>
 	</bean>
@@ -116,6 +117,11 @@
 	</bean>
 	
 	<bean name="thumbnailController" class="org.ochan.control.ThumbnailController">
+		<property name="postService" ref="localPostService" />
+		<!--        FIXME - make the service not injected, but, inject a factory that decides whether local or external service-->
+	</bean>
+	
+	<bean name="zipController" class="org.ochan.control.ThreadZipController">
 		<property name="postService" ref="localPostService" />
 		<!--        FIXME - make the service not injected, but, inject a factory that decides whether local or external service-->
 	</bean>

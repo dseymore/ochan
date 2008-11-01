@@ -180,6 +180,9 @@
 	#include("/WEB-INF/velocity/style.vm")
 	<body id="body">
 		<div id="reply"></div>
+		<ul>
+			<li>[<a href="zip.Ochan?identifier=$thread.identifier">Export</a>]</li>
+		</ul>			
 		#foreach($post in ${thread.posts})
 			<div id="$post.identifier" class="reply">
 				<script language="javascript" type="text/javascript">
