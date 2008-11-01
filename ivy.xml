@@ -35,6 +35,7 @@
 		<dependency org="mysql" name="mysql-connector-java" rev="5.+" conf="default->default"/>
 		<dependency org="hsqldb" name="hsqldb" rev="1.8.0.7" conf="default->default"/>
 		<dependency org="com.extjs" name="extjs" rev="2.2" conf="default->default"/>
+		<dependency org="org.roqe" name="jitac" rev="0.2.0" conf="default->default"/>
         <!-- junit is only need in the test configuration-->        
         <dependency org="junit" name="junit" rev="3.8.1" conf="test->default"/>
 		<!-- exclusions -->
