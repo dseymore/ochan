@@ -1,0 +1,117 @@
+<html>
+	<head>
+		<!-- ext js -->
+		<script type="text/javascript" src="#springUrl('/extjs/adapter/ext/ext-base.js')"></script>
+		<script language="javascript" type="text/javascript" src="#springUrl('/extjs/ext-all-debug.js')"></script>
+    	<!-- Include Ext stylesheets here: -->
+	    <link rel="stylesheet" type="text/css" href="#springUrl('/extjs/resources/css/ext-all.css')">
+		<script language="javascript" type="text/javascript">
+			Ext.onReady(function() {
+				Ext.QuickTips.init();
+	
+	    		var form = new Ext.form.FormPanel({
+	    		id: 'threadForm',
+			    labelAlign: 'top',
+			    bodyStyle:'padding:5px 5px 0',
+			    width: 600,
+			    fileUpload: true,
+			    items: [
+			    {
+	                xtype:'fieldset',
+	                title: 'Category',
+	                autoHeight: 'true',
+	                items: [
+	                	#set($index = 0)
+	                	#foreach($cat in ${category})
+	                		#set($index = $index + 1) 
+	                		{
+	                			xtype: 'radio',
+	                			fieldLabel: "$cat.name",
+	                			id: "$cat.identifier",
+	                			name: "categoryIdentifier",
+	                			inputValue: "$cat.identifier"
+	                		}
+	                		#if ($category.size() != $index)
+	                			,
+	                		#end
+						#end
+					]	
+			    },{
+	                xtype:'textfield',
+	                fieldLabel: 'Author',
+	                value: '${author}',
+	                name: 'author',
+	                anchor:'95%'
+			    },{
+	                xtype:'textfield',
+	                fieldLabel: 'Subject',
+	                name: 'subject',
+	                anchor:'95%'
+			    },{
+	                xtype:'textfield',
+	                fieldLabel: 'Email',
+	                name: 'email',
+	                anchor:'95%'
+			    },{
+	                xtype:'textfield',
+	                fieldLabel: 'Url',
+	                name: 'url',
+	                anchor:'95%'
+			    },{
+			        xtype:'htmleditor',
+			        id:'comment',
+			        fieldLabel:'Comment',
+			        height:200,
+			        anchor:'98%'
+			    },{
+				    xtype:'tabpanel',
+            		activeTab: 0,
+            		defaults:{autoHeight:true, bodyStyle:'padding:10px'}, 
+            		items:[{
+            			title: 'Upload Image',
+            			layout: 'form',
+            			items: [{
+		                	xtype:'textfield',
+		                	fieldLabel: 'Image',
+		                	name: 'file',
+		                	inputType: 'file',
+		                	id: 'file',
+		                	anchor:'95%'
+		                }]
+					},{
+						title: 'Remote Image',
+						layout: 'form',
+						items: [{
+	                		xtype: 'textfield',
+	                		fieldLabel: 'Image URL',
+	                		name: 'fileUrl',
+	                		id:	'fileUrl',
+	                		anchor: '95%'
+	                	}]
+	                }]
+			    }],
+			    buttons: [{
+			        text: 'Create',
+			        handler: function() {
+			        	var formPanel = Ext.getCmp('threadForm');
+			        	formPanel.getForm().getEl().dom.submit();
+			        }
+			    }],
+			    onSubmit: Ext.emptyFn, ## overrides the ext form handler
+        		submit: function() {
+        			var formPanel = Ext.getCmp('threadForm'); 
+        			formPanel.getForm().getEl().dom.setAttribute('method', 'POST');
+        			formPanel.getForm().getEl().dom.setAttribute('enctype', 'multipart/form-data');
+        			formPanel.getForm().getEl().dom.setAttribute('Action','#springUrl('/thread.Ochan')');
+            		formPanel.getForm().getEl().dom.submit();
+        		}
+			});
+			 
+			form.render(document.body);
+	        });
+		</script>
+	</head>
+	#include("/WEB-INF/velocity/style.vm")
+	<body>
+	</body>
+</html>

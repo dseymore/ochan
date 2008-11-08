@@ -1,0 +1,47 @@
+<html>
+	<head>
+	</head>
+	#include("/WEB-INF/velocity/style.vm")
+	<body>
+		<!-- Atom feed -->
+		<div style="float: right">
+			<a href="/atom/threads"><img border="0" src="15px-Feed-icon.png" width="15" height="15"></a>
+		</div>
+		<div  id="adminBox" class="box">
+			#include("/WEB-INF/velocity/admin.vm")
+		</div>
+		<div id="categoryBox" class="box">
+			<ul class="categoryList">
+				#foreach($cat in ${category})
+					<li><a href="openCategory.Ochan?identifier=$cat.identifier">$cat.name</a></li>
+				#end
+			</ul>
+		</div>
+		#if ($list.size(${external}) > 0)
+		<div id="externalCategoryList" class="box">
+			<ul>
+				#foreach($cat in ${external})
+					<li><a href="$cat.host">$cat.name</a></li>
+				#end
+			</ul>
+		</div>
+		#end
+		<div id="recentBox" class="box">
+			#if ($P1)
+			<div class="box">
+				<a href="#springUrl('viewThread.Ochan')?identifier=$P1.parent.identifier#$P1.identifier"><img src="#springUrl('/thumb.Ochan')?identifier=$P1.identifier&thumb=true"></a>
+			</div>
+			#end
+			#if ($P2)
+			<div class="box">
+				<a href="#springUrl('viewThread.Ochan')?identifier=$P2.parent.identifier#$P2.identifier"<img src="#springUrl('/thumb.Ochan')?identifier=$P2.identifier&thumb=true"></a>
+			</div>
+			#end
+			#if ($P3)
+			<div class="box">
+				<a href="#springUrl('viewThread.Ochan')?identifier=$P3.parent.identifier#$P3.identifier"<img src="#springUrl('/thumb.Ochan')?identifier=$P3.identifier&thumb=true"></a>
+			</div>
+			#end
+		</div>
+	</body>
+</html> 

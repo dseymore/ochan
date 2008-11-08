@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml-stylesheet type="text/xsl" href="http://www.jayasoft.fr/org/ivyrep/ivy-doc.xsl"?>
+<ivy-module version="1.0">
+    <info organisation="opensymphony" module="quartz" revision="1.6.0" status="release" publication="20070816151455">
+    </info>
+
+
+    <publications>
+        <artifact name="quartz" type="jar" conf="default"/>
+    </publications>
+
+	<dependencies>
+		<dependency org="commons-collections" name="commons-collections" rev="3.1" conf="*->*"/>
+		<dependency org="commons-logging" name="commons-logging" rev="1.0.4" conf="*->*"/>
+		<dependency org="commons-beanutils" name="commons-beanutils" rev="1.7.0" conf="*->*"/>
+		<dependency org="commons-digester" name="commons-digester" rev="1.6" conf="*->*"/>
+	</dependencies>
+
+</ivy-module>
