@@ -94,19 +94,19 @@ public class ViewCategoryController implements Controller {
 		searchCriteria.put(ThreadCriteria.CATEGORY, cat.getIdentifier());
 		List<Thread> threads = getThreadService().retrieveThreads(searchCriteria);
 		cat.setThreads(threads);
-		for (Thread t : threads){
-			t.setPosts(getPostService().retrieveThreadPosts(t));
-			for (Post p : t.getPosts()){
-				if (p instanceof TextPost){
-					TextPost tp = (TextPost)p;
-					tp.setComment(PostLinksAFixARockerJocker.fixMahLinks(tp, false));
+		if (threads != null){
+			for (Thread t : threads){
+				t.setPosts(getPostService().retrieveThreadPosts(t));
+				for (Post p : t.getPosts()){
+					if (p instanceof TextPost){
+						TextPost tp = (TextPost)p;
+						tp.setComment(PostLinksAFixARockerJocker.fixMahLinks(tp, false));
+					}
 				}
 			}
+			Collections.sort(cat.getThreads());
 		}
 		controlModel.put("category", cat);
-		
-		Collections.sort(cat.getThreads());
-		
 		return new ModelAndView(viewName, controlModel);
 	}
 
