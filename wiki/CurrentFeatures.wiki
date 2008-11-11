@@ -7,6 +7,10 @@ This page introduces the reader to the current feature-set of Ochan.
 ==Ajax-enabled Thread Watching==
  * When in 'reply-mode' on a thread, your browser is 'thread-watching'. What this means is that it makes a request for any 'new' posts in the background, and upon discovering one renders it and scrolls your browser to its location on screen. There is also a JMX accessible metric to see how many threads are being watched. 
 
+==Thread Deletion==
+ * All users can 'nominate' a thread for deletion. All users watching a thread can see the status of the deletion (as it goes back and forth from alive (delete link) to about-to-die (undelete link), and the number of actions) in real time. The idea being 'whomever cares the most about the health or death of a thread will maintain it.
+ * Both the number of actions till locking and the queue time before deletion are configurable. 
+
 ==Host encapsulation==
  * In a step to introduce mirroring, clustering, and service partitioning; host encapsulation  was introduced. This allows ochan to be aware of the categories hosted on an alternate Ochan install, and allow users to be directed to those other hosts to view those categories. 
 
