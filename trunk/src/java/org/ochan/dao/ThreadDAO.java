@@ -92,6 +92,9 @@ public class ThreadDAO {
         	if (criteria.get(ThreadCriteria.CATEGORY) != null){
         		queryString.append(" t.category.identifier = :category ");
         	}
+        	if (criteria.get(ThreadCriteria.DELETEQUEUE) != null){
+        		queryString.append(" t.deleteDate != null ");
+        	}
             Query query = em.createQuery(queryString.toString());
             //then add our parameters...
             //may not need these 'ifs'
@@ -113,5 +116,46 @@ public class ThreadDAO {
             }
         }
         return threads;
+    }
+    
+    /**
+     * Deletes the thread.
+     * @param thread
+     */
+    public void delete(Long identifier){
+    	LOG.trace("About to delete thread: " + identifier);
+        EntityManager em = this.entityManagerFactory.createEntityManager();
+        try {
+        	em.getTransaction().begin();
+        	Thread thread = em.find(Thread.class, identifier);
+        	em.remove(thread);
+    		em.getTransaction().commit();
+        	LOG.info("Thread deleted");
+        } catch (Exception e) {
+            LOG.error("Unable to delete thread.",e);
+        } finally {
+            if (em != null) {
+                em.close();
+            }
+        }
+    }
+    
+    /**
+     * Updates a thread
+     * @param thread
+     */
+    public void update(Thread thread){
+    	EntityManager em = this.entityManagerFactory.createEntityManager();
+    	try{
+    		em.getTransaction().begin();
+    		em.merge(thread);
+    		em.getTransaction().commit();
+    	}catch (Exception e) {
+            LOG.error("Unable to update thread: " + thread,e);
+        } finally {
+            if (em != null) {
+                em.close();
+            }
+        }
     }
 }

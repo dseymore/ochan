@@ -137,7 +137,7 @@ public class LocalThreadService implements ThreadService {
 
 	public void deleteThread(Long identifier) {
 		deleteCount++;
-		// TODO Auto-generated method stub
+		threadDAO.delete(identifier);
 	}
 
 	public Thread getThread(Long identifier) {
@@ -162,4 +162,10 @@ public class LocalThreadService implements ThreadService {
 		return result;
 	}
 
+	@Override
+	public void updateThread(Thread thread) {
+		threadDAO.update(thread);
+		
+	}
+	
 }

@@ -1,0 +1,15 @@
+<html>
+	<head>
+		<!-- ext js -->
+		<script type="text/javascript" src="#springUrl('/extjs/adapter/ext/ext-base.js')"></script>
+		<script language="javascript" type="text/javascript" src="#springUrl('/extjs/ext-all-debug.js')"></script>
+    	<!-- Include Ext stylesheets here: -->
+	    <link rel="stylesheet" type="text/css" href="#springUrl('/extjs/resources/css/ext-all.css')">
+	    <script language="javascript" type="text/javascript" src="#springUrl('/quoting.js')"></script>
+	    
+	</head>
+	#include("/WEB-INF/velocity/style.vm")
+	<body id="body">
+		404 Not Found.... you probably came here via a dead thread
+	</body>
+</html>

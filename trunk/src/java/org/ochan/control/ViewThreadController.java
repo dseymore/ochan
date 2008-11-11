@@ -78,19 +78,24 @@ public class ViewThreadController implements Controller {
 		}
 		
 		Thread t = threadService.getThread(identifier);
-		t.setPosts(getPostService().retrieveThreadPosts(t));
-		//ok, lets walk through the posts, and handle the special html for linking between posts.. TODO - make this a better implementation..
-		for (Post p : t.getPosts()){
-			TextPost tp = (TextPost)p;
-			tp.setComment(PostLinksAFixARockerJocker.fixMahLinks(tp,true));
-		}
-		
-		controlModel.put("thread", t);
-		String author = (String)arg0.getSession().getAttribute("author");
-		if (StringUtils.isNotEmpty(author)){
-			controlModel.put("author", author);
+		if (t != null){
+			t.setPosts(getPostService().retrieveThreadPosts(t));
+			//ok, lets walk through the posts, and handle the special html for linking between posts.. TODO - make this a better implementation..
+			for (Post p : t.getPosts()){
+				TextPost tp = (TextPost)p;
+				tp.setComment(PostLinksAFixARockerJocker.fixMahLinks(tp,true));
+			}
+			
+			controlModel.put("thread", t);
+			String author = (String)arg0.getSession().getAttribute("author");
+			if (StringUtils.isNotEmpty(author)){
+				controlModel.put("author", author);
+			}else{
+				controlModel.put("author", "Anonymous");
+			}
 		}else{
-			controlModel.put("author", "Anonymous");
+			//dead thread! 404 thing
+			return new ModelAndView("404",controlModel);
 		}
 
 		return new ModelAndView(viewName, controlModel);

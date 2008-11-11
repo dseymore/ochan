@@ -17,7 +17,7 @@ public interface ThreadService {
      * @author David Seymore 
      * Oct 27, 2007
      */
-    public enum ThreadCriteria{STARTDATE,CATEGORY};
+    public enum ThreadCriteria{STARTDATE,CATEGORY,DELETEQUEUE};
 
     /**
      * 
@@ -53,4 +53,10 @@ public interface ThreadService {
      * @param identifier
      */
     public void deleteThread(Long identifier);
+    
+    /**
+     * 
+     * @param thread
+     */
+    public void updateThread(Thread thread);
 }

@@ -9,11 +9,14 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.quartz.SchedulerFactory;
 import org.quartz.impl.StdSchedulerFactory;
+import org.springframework.context.ApplicationContext;
 import org.springframework.jmx.export.annotation.ManagedAttribute;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
 /**
- * Specialized Quartz Job Bean that allows JMX exposure of cron expression and rescheduling of job. 
+ * Specialized Quartz Job Bean that allows JMX exposure of cron expression and
+ * rescheduling of job.
+ * 
  * @author dseymore
  */
 public abstract class ManagedQuartzJobBean extends QuartzJobBean {
@@ -24,8 +27,9 @@ public abstract class ManagedQuartzJobBean extends QuartzJobBean {
 	 * Spring uses this name to build the group of triggers.
 	 */
 	private static final String SPRING_QUARTZ_GROUP_NAME = "DEFAULT";
+	private static final String APPLICATION_CONTEXT_KEY = "applicationContext";
 
-	//Final so that noone can extend
+	// Final so that noone can extend
 	@Override
 	protected final void executeInternal(JobExecutionContext context) throws JobExecutionException {
 		// We should check if we need to be rescheduled due to a saved
@@ -72,7 +76,7 @@ public abstract class ManagedQuartzJobBean extends QuartzJobBean {
 	@ManagedAttribute(description = "Cron expression for firing job")
 	public String getCron() {
 		LOG.trace("Getting cron setting from preferences or current settings.");
-		return getPreferences().get(getTriggerName()+"cronTab", getCurrentCronSetting());
+		return getPreferences().get(getTriggerName() + "cronTab", getCurrentCronSetting());
 	}
 
 	/**
@@ -83,7 +87,7 @@ public abstract class ManagedQuartzJobBean extends QuartzJobBean {
 	@ManagedAttribute(description = "Cron expression for firing job", persistPolicy = "OnUpdate")
 	public void setCron(String cloCron) {
 		LOG.info("Setting cron expression");
-		getPreferences().put(getTriggerName()+"cronTab", cloCron);
+		getPreferences().put(getTriggerName() + "cronTab", cloCron);
 		try {
 			SchedulerFactory schedulerFactory = new StdSchedulerFactory();
 			CronTrigger t = (CronTrigger) schedulerFactory.getScheduler().getTrigger(getTriggerName(), SPRING_QUARTZ_GROUP_NAME);
@@ -92,6 +96,15 @@ public abstract class ManagedQuartzJobBean extends QuartzJobBean {
 		} catch (Exception e) {
 			LOG.error("Unable to reschedule cron trigger", e);
 		}
+	}
+
+	protected ApplicationContext getApplicationContext(JobExecutionContext context) throws Exception {
+		ApplicationContext appCtx = null;
+		appCtx = (ApplicationContext) context.getScheduler().getContext().get(APPLICATION_CONTEXT_KEY);
+		if (appCtx == null) {
+			throw new JobExecutionException("No application context available in scheduler context for key \"" + APPLICATION_CONTEXT_KEY + "\"");
+		}
+		return appCtx;
 	}
 
 }
