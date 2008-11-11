@@ -124,4 +124,20 @@ public class PostDAO {
             }
         }
     }
+    
+    public void delete(Long identifier){
+    	EntityManager em = this.entityManagerFactory.createEntityManager();
+    	try{
+    		em.getTransaction().begin();
+    		Post post = em.find(Post.class, identifier);
+    		em.remove(post);
+    		em.getTransaction().commit();
+    	}catch (Exception e) {
+            LOG.error("Unable to delete post: " + identifier,e);
+        } finally {
+            if (em != null) {
+                em.close();
+            }
+        }
+    }
 }

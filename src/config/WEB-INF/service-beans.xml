@@ -100,9 +100,22 @@
 	    <property name="triggers">
 	        <list>
 	            <ref bean="activeThreadTrigger" />
+	            <ref bean="deleteThreadTrigger" />
 	        </list>
 	    </property>
+	    <property name="applicationContextSchedulerContextKey">
+            <value>applicationContext</value>
+    	</property>
 	</bean>
+	<bean id="deleteThreadTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="deleteThreadsJob" />
+		<!--  every minute please -->
+		<property name="cronExpression" value="0 */1 * * * ?" />
+	</bean>
+	<bean name="deleteThreadsJob" class="org.springframework.scheduling.quartz.JobDetailBean">
+		<property name="jobClass" value="org.ochan.job.DeleteThreadJob"/>
+	</bean>
+	
 	<bean id="activeThreadTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
     	<property name="jobDetail" ref="activeThreadsJob" />
     	<!-- every minute -->
@@ -113,6 +126,7 @@
     </bean>
     <!--  expose schedule config through JMX -->
 	<bean class="org.ochan.job.ActiveThreadCounterJob"/>
+	<bean class="org.ochan.job.DeleteThreadJob"/>
 	
 
 

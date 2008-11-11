@@ -31,6 +31,15 @@ public class Thread implements Comparable<Thread>{
     
     private Date startDate;
     
+    /**
+     * The date of the deletion process starting
+     */
+    private Date deleteDate;
+    /**
+     * The number of times the thread has been requested to be deleted
+     */
+    private Long deleteCount;
+    
     @ManyToOne
     @JoinColumn(name="CATEGORY_IDENTIFIER", insertable=true, updatable=true)
     private Category category;
@@ -45,17 +54,19 @@ public class Thread implements Comparable<Thread>{
         
     }
     
-    public Thread(Long identifier, Date startDate, Category category,
-            List<Post> posts) {
-        super();
-        this.identifier = identifier;
-        this.startDate = startDate;
-        this.category = category;
-        this.posts = posts;
-    }
-    
-    
-    @Override
+    public Thread(Category category, Long deleteCount, Date deleteDate, Long identifier, List<Post> posts, Date startDate) {
+		super();
+		this.category = category;
+		this.deleteCount = deleteCount;
+		this.deleteDate = deleteDate;
+		this.identifier = identifier;
+		this.posts = posts;
+		this.startDate = startDate;
+	}
+
+
+
+	@Override
 	public int compareTo(Thread o) {
 		return comparator.compare(this, o);
 	}
@@ -108,6 +119,30 @@ public class Thread implements Comparable<Thread>{
     public void setPosts(List<Post> posts) {
         this.posts = posts;
     }
+	/**
+	 * @return the deleteDate
+	 */
+	public Date getDeleteDate() {
+		return deleteDate;
+	}
+	/**
+	 * @param deleteDate the deleteDate to set
+	 */
+	public void setDeleteDate(Date deleteDate) {
+		this.deleteDate = deleteDate;
+	}
+	/**
+	 * @return the deleteCount
+	 */
+	public Long getDeleteCount() {
+		return deleteCount;
+	}
+	/**
+	 * @param deleteCount the deleteCount to set
+	 */
+	public void setDeleteCount(Long deleteCount) {
+		this.deleteCount = deleteCount;
+	}
     
     
 }

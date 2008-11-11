@@ -127,7 +127,7 @@ public class LocalPostService implements PostService {
 	 */
 	public void deletePost(Long identifier) {
 		deleteCount++;
-		// TODO Auto-generated method stub
+		postDAO.delete(identifier);
 
 	}
 

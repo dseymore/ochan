@@ -106,6 +106,7 @@
 	        
 	        ## Sets up the ajax loop
 	        window.setInterval(xyz, 10000)
+	        window.setInterval(threadStat, 1000)
 	        
 	        ## Calls rest url for the next post
 	        function xyz(){
@@ -129,6 +130,48 @@
 						}
 					}
 				});
+	        }
+	        
+	        ### calls the rest url to mark it for deletion
+	        function deleteThread(someParam){
+	        	Ext.Ajax.request({
+	        		url: '/remote/rest/thread/delete/${thread.identifier}/',
+	        		method: 'GET',
+	        		scope: this,
+	        		callback: function(opts, suss, resp){
+	        			var result = Ext.util.JSON.decode(resp.responseText);
+	        			//now we have the stuff
+	        			if (result.RemoteThread.identifier != -1){
+	        				deleteLink = document.getElementById('deletelink');
+	        				if (result.RemoteThread.deleteDate != null){
+	        					deleteLink.innerHTML = 'Undelete ' + result.RemoteThread.deleteCount;
+	        				}else{
+	        					deleteLink.innerHTML = 'Delete ' + result.RemoteThread.deleteCount;
+	        				}
+	        				
+	        			}
+	        		}
+	        	});
+	        }
+	        
+	        function threadStat(){
+	        	Ext.Ajax.request({
+	        		url: '/remote/rest/thread/status/${thread.identifier}/',
+	        		method: 'GET',
+	        		scope: this,
+	        		callback: function(opts, suss, resp){
+	        			var result = Ext.util.JSON.decode(resp.responseText);
+	        			if (result.RemoteThread.identifier != -1){
+	        				deleteLink = document.getElementById('deletelink');
+	        				if (result.RemoteThread.deleteDate != null){
+	        					deleteLink.innerHTML = 'Undelete ' + result.RemoteThread.deleteCount;
+	        				}else{
+	        					deleteLink.innerHTML = 'Delete ' + result.RemoteThread.deleteCount;
+	        				}
+	        				
+	        			}
+	        		}
+	        	});
 	        }
 	        
 	        ##NASTY duplication of style in JAVASCRIPT to ... 2 places to edit one style.. sucks. 
@@ -182,6 +225,14 @@
 		<div id="reply"></div>
 		<ul>
 			<li>[<a href="zip.Ochan?identifier=$thread.identifier">Export</a>]</li>
+			<li>[<a id="deletelink" href="#" onclick="javascript:deleteThread('val')">
+				#if ($thread.deleteDate)Undelete#end
+				#if (!$thread.deleteDate)Delete#end
+				#if ($thread.deleteCount)
+					$thread.deleteCount
+				#end
+				</a>]
+			</li>
 		</ul>			
 		#foreach($post in ${thread.posts})
 			<div id="$post.identifier" class="reply">
