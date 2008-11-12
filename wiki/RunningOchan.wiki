@@ -1,0 +1,17 @@
+#labels Featured,Phase-Support
+#How to run Ochan?
+
+= Requirements =
+* Sun JDK 1.6 update 10 or later
+* Jconsole or jvisualVM (both are in the jdk bin/ directory)
+
+= Steps =
+ # make sure your path is configured correctly so that you have the java command executing the correct version of the jdk. (verify with java -version)
+ # Execute java -jar Ochan.jar (optional add --httpPort=80 to change default port 8080 to port 80, or any port of your choice)
+ # Direct your browser to localhost:8080
+
+
+== Configuration ==
+ # Now that you have it deployed, startup the mbean browser of jconsole or jvisualvm.
+ # Go into System->DeploymentConfiguration and set the absolute url (or hostname if you have a dns name setup) that users use to get to the application, and the port. 
+ # All other defaults are normally acceptable. A configuration catalog will be created in the future.
