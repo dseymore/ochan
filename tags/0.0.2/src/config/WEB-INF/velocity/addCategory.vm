@@ -1,0 +1,49 @@
+<html>
+	<head>
+		<!-- ext js -->
+		<script type="text/javascript" src="#springUrl('/extjs/adapter/ext/ext-base.js')"></script>
+		<script language="javascript" type="text/javascript" src="#springUrl('/extjs/ext-all-debug.js')"></script>
+    	<!-- Include Ext stylesheets here: -->
+	    <link rel="stylesheet" type="text/css" href="#springUrl('/extjs/resources/css/ext-all.css')">
+		<script language="javascript" type="text/javascript">
+			Ext.onReady(function() {
+				Ext.QuickTips.init();
+	
+	    		var form = new Ext.form.FormPanel({
+	    		id: 'categoryForm',
+			    labelAlign: 'top',
+			    bodyStyle:'padding:5px 5px 0',
+			    width: 600,
+			    items: [{
+	                xtype:'textfield',
+	                fieldLabel: 'Name',
+	                name: 'name',
+	                anchor:'95%'
+			    },{
+			        xtype:'htmleditor',
+			        id:'description',
+			        fieldLabel:'Description',
+			        height:200,
+			        anchor:'98%'
+			    }],
+			    buttons: [{
+			        text: 'Create',
+			        handler: function() {
+			        	var formPanel = Ext.getCmp('categoryForm');
+			        	formPanel.getForm().getEl().dom.submit();
+			        }
+			    }],
+			    onSubmit: Ext.emptyFn,
+        		submit: function() {
+            		this.getForm().getEl().dom.submit();
+        		}
+			});
+			 
+			form.render(document.body);
+	        });
+		</script>
+	</head>
+	#include("/WEB-INF/velocity/style.vm")
+	<body>
+	</body>
+</html>
