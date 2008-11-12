@@ -164,11 +164,13 @@
 	        			if (result.RemoteThread.identifier != -1){
 	        				deleteLink = document.getElementById('deletelink');
 	        				if (result.RemoteThread.deleteDate != null){
-	        					deleteLink.innerHTML = 'Undelete ' + result.RemoteThread.deleteCount;
+	        					deleteLink.innerHTML = 'Undelete';
 	        				}else{
-	        					deleteLink.innerHTML = 'Delete ' + result.RemoteThread.deleteCount;
+	        					deleteLink.innerHTML = 'Delete';
 	        				}
-	        				
+	        				if (result.RemoteThread.deleteCount){
+	        					deleteLink.innerHTML = deleteLink.innerHTML + ' ' + result.RemoteThread.deleteCount;
+	        				}
 	        			}
 	        		}
 	        	});
