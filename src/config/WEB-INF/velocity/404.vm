@@ -10,6 +10,8 @@
 	</head>
 	#include("/WEB-INF/velocity/style.vm")
 	<body id="body">
-		404 Not Found.... you probably came here via a dead thread
+		<div align="center">
+			<img src="#springUrl('/404.png')" alt="404 Not Found.... you probably came here via a dead thread"/>
+		</div>
 	</body>
 </html>
