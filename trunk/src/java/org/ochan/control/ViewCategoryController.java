@@ -90,23 +90,28 @@ public class ViewCategoryController implements Controller {
 		Map controlModel = new HashMap();
 		Long identifier = Long.valueOf(arg0.getParameter("identifier"));
 		Category cat = categoryService.getCategory(identifier);
-		Map<ThreadCriteria,Object> searchCriteria = new HashMap<ThreadCriteria,Object>();
-		searchCriteria.put(ThreadCriteria.CATEGORY, cat.getIdentifier());
-		List<Thread> threads = getThreadService().retrieveThreads(searchCriteria);
-		cat.setThreads(threads);
-		if (threads != null){
-			for (Thread t : threads){
-				t.setPosts(getPostService().retrieveThreadPosts(t));
-				for (Post p : t.getPosts()){
-					if (p instanceof TextPost){
-						TextPost tp = (TextPost)p;
-						tp.setComment(PostLinksAFixARockerJocker.fixMahLinks(tp, false));
+		if (cat != null){
+			Map<ThreadCriteria,Object> searchCriteria = new HashMap<ThreadCriteria,Object>();
+			searchCriteria.put(ThreadCriteria.CATEGORY, cat.getIdentifier());
+			List<Thread> threads = getThreadService().retrieveThreads(searchCriteria);
+			cat.setThreads(threads);
+			if (threads != null){
+				for (Thread t : threads){
+					t.setPosts(getPostService().retrieveThreadPosts(t));
+					for (Post p : t.getPosts()){
+						if (p instanceof TextPost){
+							TextPost tp = (TextPost)p;
+							tp.setComment(PostLinksAFixARockerJocker.fixMahLinks(tp, false));
+						}
 					}
 				}
+				Collections.sort(cat.getThreads());
 			}
-			Collections.sort(cat.getThreads());
+			controlModel.put("category", cat);
+		}else{
+			//dead category! 404 thing
+			return new ModelAndView("404",controlModel);
 		}
-		controlModel.put("category", cat);
 		return new ModelAndView(viewName, controlModel);
 	}
 

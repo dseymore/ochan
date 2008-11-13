@@ -5,6 +5,9 @@ import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.FileReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.prefs.Preferences;
@@ -12,9 +15,11 @@ import java.util.prefs.Preferences;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageWriter;
 import javax.imageio.stream.ImageOutputStream;
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.ochan.entity.ImagePost;
@@ -186,16 +191,26 @@ public class ThumbnailController implements Controller {
 					datum[i] = val.byteValue();
 					i++;
 				}
+				//lets try checking if it is an image.. if not, we need to act on it. 
+				BufferedImage image = null;
+				ByteArrayInputStream bais = new ByteArrayInputStream(datum);
+				image = ImageIO.read(bais);
+				if (image == null){
+					//BAD BAD IMAGE!
+					InputStream stream = request.getSession().getServletContext().getResourceAsStream("/WEB-INF/404-image.png");
+					InputStreamReader isr = new InputStreamReader(stream);
+					datum = IOUtils.toByteArray(stream);
+					//and reset the image object. 
+					bais = new ByteArrayInputStream(datum);
+					image = ImageIO.read(bais);
+				}
+				int width = image.getWidth();
+				int height = image.getHeight();
 				if (thumb) {
+					BufferedImage resizedImage = null;
 					//we may need to make a thumbnail
 					if (imagePost.getThumbnail() == null){
 						//yep, make it
-						BufferedImage image = null;
-						BufferedImage resizedImage = null;
-						ByteArrayInputStream bais = new ByteArrayInputStream(datum);
-						image = ImageIO.read(bais);
-						int width = image.getWidth();
-						int height = image.getHeight();
 						if (width > height) {
 							resizedImage = convert(image.getScaledInstance(getThumbWidth().intValue(), -1, Image.SCALE_FAST));
 						} else {
