@@ -92,6 +92,7 @@
 	<bean class="org.ochan.control.ThreadZipController"/>
 	<bean class="org.ochan.util.DeploymentConfiguration"/>
 	<bean class="org.ochan.util.UserCounter"/>
+	<bean class="org.ochan.util.ManagedCommonsMultipartResolver"/>
 	
 	
 	
