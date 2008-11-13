@@ -5,4 +5,9 @@
 		<scope>application</scope>
 		<class>org.apache.velocity.tools.generic.ListTool</class>
 	</tool>
+	<tool>
+		<key>deployment</key>
+		<scope>application</scope>
+		<class>org.ochan.util.DeploymentConfiguration</class>
+	</tool>
 </toolbox>

@@ -1,5 +1,6 @@
 <html>
 	<head>
+		<title>$deployment.getSystemTitle()</title>
 	</head>
 	#include("/WEB-INF/velocity/style.vm")
 	<body>
