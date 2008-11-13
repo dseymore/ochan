@@ -12,6 +12,7 @@ public class DeploymentConfiguration {
 	
 	static final String DEFAULT_HOSTNAME = "localhost";
 	static final String DEFAULT_PORT = "8080";
+	static final String DEFAULT_TITLE = "Ochan (http://code.google.com/p/ochan)";
 	
 	
 	/**
@@ -44,6 +45,31 @@ public class DeploymentConfiguration {
 		PREFERENCES.put("port", port);
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
+	@ManagedAttribute(description="The title of the application deployment")
+	public String getTitle(){
+		return PREFERENCES.get("title", DEFAULT_TITLE);
+	}
 	
+	/**
+	 * 
+	 * @param title
+	 */
+	@ManagedAttribute(description="The title of the application deployment")
+	public void setTitle(String title){
+		PREFERENCES.put("title", title);
+	}
+	
+	/**
+	 * Helper method for all the places that will invariable call this statically.
+	 * @return
+	 */
+	public static String getSystemTitle(){
+		DeploymentConfiguration deploymentConfiguration = new DeploymentConfiguration();
+		return deploymentConfiguration.getTitle();
+	}
 	
 }
