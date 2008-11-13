@@ -125,10 +125,11 @@
 		<property name="postService" ref="localPostService" />
 		<!--        FIXME - make the service not injected, but, inject a factory that decides whether local or external service-->
 	</bean>
-
+	
 	<!--	Requires commons-fileupload-->
-	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
-		<property name="maxUploadSize" value="1000000" /> <!--  a megabyte -->
-	</bean>
+	<bean id="multipartResolver" class="org.ochan.util.ManagedCommonsMultipartResolver"/>
+
+	<!--  custom exception handlers yay! -->
+	<bean id="fileSizeExceptionHandler" class="org.ochan.exception.handler.FileSizeHandlerExceptionResolver"/>
 
 </beans>
