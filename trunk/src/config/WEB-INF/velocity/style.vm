@@ -28,5 +28,7 @@
 	
 	.reply{background-color: rgb(209,210,255);}
 	
+	.newthread{background-color: rgb(209,210,255);}
+	
 	.replyhl{background-color: rgb(153, 187, 232);}
 </style>

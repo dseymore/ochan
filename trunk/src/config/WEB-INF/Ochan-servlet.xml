@@ -45,8 +45,6 @@
 	<bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
 		<property name="mappings">
 			<props>
-				<prop key="/**/category.Ochan">categoryAddController</prop>
-				<prop key="/**/thread.Ochan">threadAddController</prop>
 				<prop key="/**/categoryList.Ochan">categoryListController</prop>
 				<prop key="/**/viewThread.Ochan">viewThreadController</prop>
 				<prop key="/**/postReply.Ochan">postReplyController</prop>
@@ -55,29 +53,6 @@
 				<prop key="/**/zip.Ochan">zipController</prop>
 			</props>
 		</property>
-	</bean>
-
-	<bean name="categoryAddController" class="org.ochan.control.CategoryAddController">
-		<property name="commandName" value="command" />
-		<property name="commandClass" value="org.ochan.form.CategoryForm" />
-		<property name="formView" value="addCategory" />
-		<property name="successView" value="forward:categoryList.Ochan" />
-		<property name="bindOnNewForm" value="true" />
-		<property name="sessionForm" value="true" />
-		<property name="service" ref="localCategoryService" />
-		<!--        FIXME - make the service not injected, but, inject a factory that decides whether local or external service-->
-	</bean>
-	
-	<bean name="threadAddController" class="org.ochan.control.ThreadAddController">
-		<property name="commandName" value="command" />
-		<property name="commandClass" value="org.ochan.form.ThreadForm" />
-		<property name="formView" value="addThread" />
-		<property name="successView" value="forward:categoryList.Ochan" />
-		<property name="bindOnNewForm" value="true" />
-		<property name="sessionForm" value="true" />
-		<property name="categoryService" ref="localCategoryService" />
-		<property name="threadService" ref="localThreadService" />
-		<!--        FIXME - make the service not injected, but, inject a factory that decides whether local or external service-->
 	</bean>
 	
 	<bean name="postReplyController" class="org.ochan.control.PostReplyController">
@@ -109,6 +84,11 @@
 	</bean>
 	
 	<bean name="viewCategoryController" class="org.ochan.control.ViewCategoryController">
+        <property name="commandName" value="command" />
+		<property name="commandClass" value="org.ochan.form.ThreadForm" />
+		<property name="formView" value="addThread" />
+		<property name="bindOnNewForm" value="true" />
+		<property name="sessionForm" value="true" />
 		<property name="viewName" value="viewCategory" />
 		<property name="categoryService" ref="localCategoryService" />
 		<property name="threadService" ref="localThreadService" />

@@ -12,6 +12,9 @@ import org.ochan.dao.CategoryDAO;
 import org.ochan.entity.Category;
 import org.ochan.service.CategoryService;
 import org.springframework.jmx.export.annotation.ManagedAttribute;
+import org.springframework.jmx.export.annotation.ManagedOperation;
+import org.springframework.jmx.export.annotation.ManagedOperationParameter;
+import org.springframework.jmx.export.annotation.ManagedOperationParameters;
 import org.springframework.jmx.export.annotation.ManagedResource;
 import org.springframework.jmx.export.notification.NotificationPublisher;
 import org.springframework.jmx.export.notification.NotificationPublisherAware;
@@ -87,6 +90,11 @@ public class LocalCategoryService implements CategoryService, NotificationPublis
 		this.categoryDAO = categoryDAO;
 	}
 
+	@ManagedOperation(description="Create a new Category!")
+	@ManagedOperationParameters({
+		@ManagedOperationParameter(name="name",description="The name of the category"),
+		@ManagedOperationParameter(name="description",description="The description of the category")
+	})
 	public void createCategory(String name, String description) {
 		createCount++;
 		publisher.sendNotification(new Notification("Create",this,createCount, "Creating a new category named: " + name));
