@@ -116,13 +116,13 @@
 				#end
 			#end
 
-			<div class="box">
+			<div>
 				Started: $thread.startDate [<a href="viewThread.Ochan?identifier=$thread.identifier">Reply</a>] [<a href="zip.Ochan?identifier=$thread.identifier">Export</a>] <i>$allPostsCount posts and $allImagePostsCount images.</i><br>
 				#if ($thread.deleteDate) <span style="color: red">Thread marked for deletion</span>#end
 				#foreach($post in $thread.posts)
 					<!-- Only print the first and last post to the thread -->
 					#if ($velocityCount == 1 || $velocityCount == ($list.size($thread.posts)) )
-					<div>
+					<div class="reply" style="#if ($velocityCount == ($list.size($thread.posts)) && $velocityCount != 1 ) margin-left: 40px; border-left-width: 1px; border-left-style: solid; #end"> 
 						<div>
 							$post.subject
 						</div>
@@ -133,7 +133,7 @@
 									<a href="#springUrl('/thumb.Ochan')?identifier=$post.identifier"><img src="#springUrl('/thumb.Ochan')?identifier=$post.identifier&thumb=true"></a>
 								</td>
 								#end
-								<td>
+								<td valign="top">
 									<a name="$post.identifier"/>
 									<div>
 										<a href="mailto:$post.email">$post.author</a> <a href="$post.url">$post.url</a> $post.time
