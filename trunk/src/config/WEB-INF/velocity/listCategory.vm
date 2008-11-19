@@ -9,7 +9,7 @@
 			<a href="/atom/threads"><img border="0" src="15px-Feed-icon.png" width="15" height="15"></a>
 		</div>
 		<div  id="adminBox" class="box">
-			#include("/WEB-INF/velocity/admin.vm")
+			$announcement
 		</div>
 		<div id="categoryBox" class="box">
 			<ul class="categoryList">
