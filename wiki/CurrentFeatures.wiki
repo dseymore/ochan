@@ -11,6 +11,10 @@ This page introduces the reader to the current feature-set of Ochan.
  * All users can 'nominate' a thread for deletion. All users watching a thread can see the status of the deletion (as it goes back and forth from alive (delete link) to about-to-die (undelete link), and the number of actions) in real time. The idea being 'whomever cares the most about the health or death of a thread will maintain it.
  * Both the number of actions till locking and the queue time before deletion are configurable. 
 
+==Announcement & Title==
+ * The announcement section of the main page is configurable via JMX
+ * The title of the generated pages is configurable via JMX
+
 ==Host encapsulation==
  * In a step to introduce mirroring, clustering, and service partitioning; host encapsulation  was introduced. This allows ochan to be aware of the categories hosted on an alternate Ochan install, and allow users to be directed to those other hosts to view those categories. 
 
@@ -20,7 +24,7 @@ This page introduces the reader to the current feature-set of Ochan.
 ==Basic Features==
  * Author capturing, with optional email. 
  * Every post can have a subject, an image, and some HTML (WYSIWYG editor) text. 
- * Each instance of ochan can have multiple categories.
+ * Each instance of ochan can have multiple categories. (Configurable via JMX)
  * Currently, there are an unlimited number of categories, and posts within those categories.
  * Simple to start (java -jar Ochan.jar) and simple to use. (create a category, and start posting)
 
