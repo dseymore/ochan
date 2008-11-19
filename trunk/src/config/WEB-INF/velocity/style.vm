@@ -26,7 +26,9 @@
 	
 	.categoryItem{display: inline;}
 	
-	.reply{background-color: rgb(209,210,255);}
+	.reply{border-top-width: 0px; border-right-width: 0px; border-bottom-width: 1px;
+		border-left-width: 0px; border-top-style: solid; border-right-style: solid;
+		border-bottom-style: solid; border-left-style: solid; background-color: rgb(240,240,255); vertical-align: text-top;}
 	
 	.newthread{background-color: rgb(209,210,255);}
 	
