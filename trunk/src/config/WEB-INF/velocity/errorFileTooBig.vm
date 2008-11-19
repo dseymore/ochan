@@ -11,7 +11,9 @@
 	#include("/WEB-INF/velocity/style.vm")
 	<body id="body">
 		<div align="center">
-			You've tried to upload something way too big.
+			You've tried to upload something way too big. The current limit for the system is ${currentLimit} bytes.
+			<br><br>
+			<a href="">Return to thread</a>
 		</div>
 	</body>
 </html>

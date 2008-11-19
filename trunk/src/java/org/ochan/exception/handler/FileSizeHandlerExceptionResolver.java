@@ -1,8 +1,12 @@
 package org.ochan.exception.handler;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.ochan.util.ManagedCommonsMultipartResolver;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.ModelAndView;
@@ -17,7 +21,10 @@ public class FileSizeHandlerExceptionResolver implements HandlerExceptionResolve
 	@Override
 	public ModelAndView resolveException(HttpServletRequest arg0, HttpServletResponse arg1, Object arg2, Exception arg3) {
 		if (arg3 instanceof MaxUploadSizeExceededException){
-			return new ModelAndView("errorFileTooBig");
+			Map<String,Object> stuff = new HashMap<String,Object>();
+			ManagedCommonsMultipartResolver commonsMultipartResolver = new ManagedCommonsMultipartResolver();
+			stuff.put("currentLimit", commonsMultipartResolver.getMaxUploadSize());
+			return new ModelAndView("errorFileTooBig", stuff);
 		}
 		//pass this thing.
 		return null;

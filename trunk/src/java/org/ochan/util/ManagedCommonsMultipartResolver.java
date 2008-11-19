@@ -2,6 +2,7 @@ package org.ochan.util;
 
 import java.util.prefs.Preferences;
 
+import org.apache.commons.fileupload.FileUpload;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.jmx.export.annotation.ManagedAttribute;
@@ -31,7 +32,7 @@ public class ManagedCommonsMultipartResolver extends CommonsMultipartResolver {
 		super();
 		//we have to set the value at startup.. its not used via getter
 		LOG.info("Resetting max file upload size");
-		this.setMaxUploadSize(Long.valueOf(this.getMaxUploadSize()).longValue());
+		super.setMaxUploadSize(Long.valueOf(this.getMaxUploadSize()).longValue());
 	}
 	
 	@ManagedAttribute(description="The filesize in bytes for the maximum upload size")
@@ -46,10 +47,23 @@ public class ManagedCommonsMultipartResolver extends CommonsMultipartResolver {
 			//if we get this far, things are all right!
 			PREFERENCES.put("maxSize", value);
 			//call the method of my super!
-			this.setMaxUploadSize(val.longValue());
+			//calling our static reference.. which is the ref to the one SPRING is using.. yay, no restart needed!
+			super.setMaxUploadSize(val.longValue());
 		}catch(Exception e){
 			LOG.error("unable to set max file upload size:", e);
 		}
 	}
+
+	/**
+	 * Need to set it into the dude .. we're getting .. 
+	 */
+	@Override
+	public FileUpload getFileUpload() {
+		FileUpload upload = super.getFileUpload();
+		upload.setFileSizeMax(Long.valueOf(this.getMaxUploadSize()));
+		upload.setSizeMax(Long.valueOf(this.getMaxUploadSize()));
+		return upload;
+	}
+	
 	
 }
