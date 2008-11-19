@@ -45,6 +45,8 @@
 	</bean>
 	<bean id="externalCategoryDAO" class="org.ochan.dao.ExternalCategoryDAO" />
 	
+	<bean id="localAnnouncementService" class="org.ochan.service.local.LocalAnnouncementService"/>
+	
 	<!--  xxxxxxxxxxxxxxxxxxxxxxxxx  Service configuration xxxxxxxxxxxxxxxxxxxxxxxxx  -->
 	<bean id="localCategoryService" class="org.ochan.service.local.LocalCategoryService">
 		<property name="categoryDAO" ref="categoryDAO"/>

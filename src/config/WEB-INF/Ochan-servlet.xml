@@ -74,6 +74,7 @@
 		<property name="postService" ref="localPostService" />
 		<!--        FIXME - make the service not injected, but, inject a factory that decides whether local or external service-->
 		<property name="cache" ref="threadCache"/>
+		<property name="announcementService" ref="localAnnouncementService"/>
 	</bean>
 	
 	<bean name="viewThreadController" class="org.ochan.control.ViewThreadController">

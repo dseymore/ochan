@@ -20,6 +20,7 @@ import org.ochan.entity.ExternalCategory;
 import org.ochan.entity.ImagePost;
 import org.ochan.entity.Post;
 import org.ochan.entity.Thread;
+import org.ochan.service.AnnouncementService;
 import org.ochan.service.CategoryService;
 import org.ochan.service.ExternalCategoryService;
 import org.ochan.service.PostService;
@@ -37,6 +38,7 @@ public class CategoryListController implements Controller {
 	private PostService postService;
 	private Ehcache cache;
 	private String viewName;
+	private AnnouncementService announcementService;
 
 	/**
 	 * @return the categoryService
@@ -112,6 +114,14 @@ public class CategoryListController implements Controller {
 	 */
 	public void setExternalCategoryService(ExternalCategoryService externalCategoryService) {
 		this.externalCategoryService = externalCategoryService;
+	}
+
+	
+	/**
+	 * @param announcementService the announcementService to set
+	 */
+	public void setAnnouncementService(AnnouncementService announcementService) {
+		this.announcementService = announcementService;
 	}
 
 	/**
@@ -193,6 +203,8 @@ public class CategoryListController implements Controller {
 		controlModel.put("P1",p1);
 		controlModel.put("P2",p2);
 		controlModel.put("P3",p3);
+		
+		controlModel.put("announcement",announcementService.getAnnouncement());
 		return new ModelAndView(viewName, controlModel);
 	}
 
