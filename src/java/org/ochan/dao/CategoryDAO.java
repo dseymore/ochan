@@ -11,6 +11,7 @@ import javax.persistence.Query;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.ochan.entity.Category;
+import org.ochan.entity.Post;
 import org.ochan.service.CategoryService.CategoryCriteria;
 
 public class CategoryDAO {
@@ -102,5 +103,21 @@ public class CategoryDAO {
             }
         }
         return results;
+    }
+   
+    public void delete(Long identifier){
+    	EntityManager em = this.entityManagerFactory.createEntityManager();
+    	try{
+    		em.getTransaction().begin();
+    		Category cat = em.find(Category.class, identifier);
+    		em.remove(cat);
+    		em.getTransaction().commit();
+    	}catch (Exception e) {
+            LOG.error("Unable to delete cat: " + identifier,e);
+        } finally {
+            if (em != null) {
+                em.close();
+            }
+        }
     }
 }
