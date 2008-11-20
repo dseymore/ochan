@@ -108,9 +108,14 @@ public class LocalCategoryService implements CategoryService, NotificationPublis
 
 	}
 
+	@ManagedOperation(description="Delete a Category!")
+	@ManagedOperationParameters({
+		@ManagedOperationParameter(name="identifier",description="The id of the category as a Long object (L at the end)")
+	})
 	public void deleteCategory(Long identifier) {
 		// TODO Auto-generated method stub
 		deleteCount++;
+		categoryDAO.delete(identifier);
 	}
 
 	public Category getCategory(Long identifier) {
