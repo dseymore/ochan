@@ -52,6 +52,7 @@ http://abdera.apache.org http://abdera.apache.org/schemas/abdera-spring.xsd">
 	<!--  no client ATM -->
 	<bean id="threadSupportBean" class="org.ochan.service.remote.webservice.ThreadSupportImpl">
 		<property name="threadService" ref="localThreadService" />
+		<property name="postService" ref="localPostService" />
 	</bean>
 	<!--  rest service endpoint -->
 	<jaxrs:server id="restEndpoint" address="/rest/">

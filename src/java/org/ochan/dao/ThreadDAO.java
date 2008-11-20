@@ -92,6 +92,9 @@ public class ThreadDAO {
         	if (criteria.get(ThreadCriteria.CATEGORY) != null){
         		queryString.append(" t.category.identifier = :category ");
         	}
+        	if (criteria.get(ThreadCriteria.NEWERTHAN) != null){
+        		queryString.append(" t.identifier > :maxidentifier ");
+        	}
         	if (criteria.get(ThreadCriteria.DELETEQUEUE) != null){
         		queryString.append(" t.deleteDate != null ");
         	}
@@ -101,6 +104,9 @@ public class ThreadDAO {
             if (criteria.get(ThreadCriteria.CATEGORY) != null){
             	query.setParameter("category", criteria.get(ThreadCriteria.CATEGORY));
         	}
+            if (criteria.get(ThreadCriteria.NEWERTHAN) != null){
+            	query.setParameter("maxidentifier", criteria.get(ThreadCriteria.NEWERTHAN));
+            }
             List results = query.getResultList();
             if (results.size() > 0){
             	threads = new ArrayList<Thread>();

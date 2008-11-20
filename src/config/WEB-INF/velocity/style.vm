@@ -33,4 +33,16 @@
 	.newthread{background-color: rgb(209,210,255);}
 	
 	.replyhl{background-color: rgb(153, 187, 232);}
+	
+	.msg .x-box-mc {
+    	font-size:14px;
+	}
+	#msg-div {
+	    position:absolute;
+	    left:35%;
+	    top:10px;
+	    width:250px;
+	    z-index:20000;
+	}
+	
 </style>
