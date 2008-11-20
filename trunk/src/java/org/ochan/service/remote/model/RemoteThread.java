@@ -10,18 +10,20 @@ public class RemoteThread {
 	private Long identifier;
 	private Date deleteDate;
 	private Long deleteCount;
+	private RemotePost firstPost;
 	
 	public RemoteThread(){
 		
 	}
 	
-	public RemoteThread(Long deleteCount, Date deleteDate, Long identifier) {
+	public RemoteThread(Long deleteCount, Date deleteDate, RemotePost firstPost, Long identifier) {
 		super();
 		this.deleteCount = deleteCount;
 		this.deleteDate = deleteDate;
+		this.firstPost = firstPost;
 		this.identifier = identifier;
 	}
-	
+
 	/**
 	 * @return the identifier
 	 */
@@ -58,6 +60,21 @@ public class RemoteThread {
 	public void setDeleteCount(Long deleteCount) {
 		this.deleteCount = deleteCount;
 	}
+
+	/**
+	 * @return the firstPost
+	 */
+	public RemotePost getFirstPost() {
+		return firstPost;
+	}
+
+	/**
+	 * @param firstPost the firstPost to set
+	 */
+	public void setFirstPost(RemotePost firstPost) {
+		this.firstPost = firstPost;
+	}
+	
 	
 	
 	
