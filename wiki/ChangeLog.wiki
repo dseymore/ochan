@@ -1,0 +1,15 @@
+#labels Phase-QA,Phase-Support
+==Rev 99 "Where'd my Images go!"==
+As part of [http://code.google.com/p/ochan/issues/detail?id=10 Issue #10]
+
+The ImagePost entity was a heavily cached entity. however, that caching was inadvertently caching the entire binary data.. but, not in a useful way.. it was only being used for the atom feeds and the front page... and not even to retrieve the binary data.. just wasting memory. 
+
+With the config of "-Xmx2056m -Xms1024m -XX:MaxPermSize=512m" and the same sample set of posts.. ram usage was down from 1,000 to 250 megabytes. 
+
+===Before===
+
+http://ochan.googlecode.com/files/ochan-0.0.3-mem.png
+
+===After===
+
+http://ochan.googlecode.com/files/ochan-r99-mem.png
