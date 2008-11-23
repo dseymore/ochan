@@ -22,6 +22,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.ochan.entity.ImagePost;
 import org.ochan.entity.Post;
+import org.ochan.service.BlobService;
 import org.ochan.service.PostService;
 import org.springframework.jmx.export.annotation.ManagedAttribute;
 import org.springframework.jmx.export.annotation.ManagedOperation;
@@ -40,7 +41,8 @@ public class ThumbnailController implements Controller {
 	private static final Preferences PREFS = Preferences.userNodeForPackage(ThumbnailController.class);
 
 	private PostService postService;
-
+	private BlobService blobService;
+	
 	/**
 	 * The default width of a thumbnail
 	 */
@@ -166,7 +168,13 @@ public class ThumbnailController implements Controller {
 	public void setPostService(PostService postService) {
 		this.postService = postService;
 	}
-
+	
+	/**
+	 * @param blobService the blobService to set
+	 */
+	public void setBlobService(BlobService blobService) {
+		this.blobService = blobService;
+	}
 	/**
 	 * 
 	 */
@@ -180,79 +188,82 @@ public class ThumbnailController implements Controller {
 			Post p = postService.getPost(id);
 			if (p instanceof ImagePost) {
 				ImagePost imagePost = (ImagePost) p;
-				Byte[] data = imagePost.getData();
-				// convert to non-object
-				//DATUM is out output
-				byte[] datum = new byte[data.length];
-				int i = 0;
-				for (Byte val : data) {
-					datum[i] = val.byteValue();
-					i++;
-				}
-				//lets try checking if it is an image.. if not, we need to act on it. 
-				BufferedImage image = null;
-				ByteArrayInputStream bais = new ByteArrayInputStream(datum);
-				image = ImageIO.read(bais);
-				if (image == null){
-					//BAD BAD IMAGE!
-					InputStream stream = request.getSession().getServletContext().getResourceAsStream("/WEB-INF/404-image.png");
-					InputStreamReader isr = new InputStreamReader(stream);
-					datum = IOUtils.toByteArray(stream);
-					//and reset the image object. 
-					bais = new ByteArrayInputStream(datum);
+				Byte[] data = blobService.getBlob(imagePost.getImageIdentifier());
+				if (data != null){
+					// convert to non-object
+					//DATUM is out output
+					byte[] datum = new byte[data.length];
+					int i = 0;
+					for (Byte val : data) {
+						datum[i] = val.byteValue();
+						i++;
+					}
+					//lets try checking if it is an image.. if not, we need to act on it. 
+					BufferedImage image = null;
+					ByteArrayInputStream bais = new ByteArrayInputStream(datum);
 					image = ImageIO.read(bais);
-				}
-				int width = image.getWidth();
-				int height = image.getHeight();
-				if (thumb) {
-					BufferedImage resizedImage = null;
-					//we may need to make a thumbnail
-					if (imagePost.getThumbnail() == null){
-						//yep, make it
-						if (width > height) {
-							resizedImage = convert(image.getScaledInstance(getThumbWidth().intValue(), -1, Image.SCALE_FAST));
-						} else {
-							resizedImage = convert(image.getScaledInstance(-1, getThumbHeight().intValue(), Image.SCALE_FAST));
-						}
-						Iterator writers = ImageIO.getImageWritersByMIMEType("image/jpeg");
-						ImageWriter imgWriter = (ImageWriter) writers.next();
-						ByteArrayOutputStream baos = new ByteArrayOutputStream();
-						ImageOutputStream imgStream = ImageIO.createImageOutputStream(baos);
-						imgWriter.setOutput(imgStream);
-						imgWriter.write(resizedImage);
-						datum = baos.toByteArray();
-						//store the thumbnail data in the post and persist
-						{
-							Byte[] thumbData = new Byte[datum.length];
-							for (int j = 0; j < datum.length; j++){
-								thumbData[j] = new Byte(datum[j]);
+					if (image == null){
+						//BAD BAD IMAGE!
+						InputStream stream = request.getSession().getServletContext().getResourceAsStream("/WEB-INF/404-image.png");
+						InputStreamReader isr = new InputStreamReader(stream);
+						datum = IOUtils.toByteArray(stream);
+						//and reset the image object. 
+						bais = new ByteArrayInputStream(datum);
+						image = ImageIO.read(bais);
+					}
+					int width = image.getWidth();
+					int height = image.getHeight();
+					if (thumb) {
+						BufferedImage resizedImage = null;
+						//we may need to make a thumbnail
+						if (imagePost.getThumbnailIdentifier() == null){
+							//yep, make it
+							if (width > height) {
+								resizedImage = convert(image.getScaledInstance(getThumbWidth().intValue(), -1, Image.SCALE_FAST));
+							} else {
+								resizedImage = convert(image.getScaledInstance(-1, getThumbHeight().intValue(), Image.SCALE_FAST));
 							}
-							imagePost.setThumbnail(thumbData);
-							postService.updatePost(imagePost);
-						}
-					}else{
-						//take the imagePost's thumnbail and make it outputable
-						datum = new byte[imagePost.getThumbnail().length];
-						int x = 0;
-						for (Byte val : imagePost.getThumbnail()) {
-							datum[x] = val.byteValue();
-							x++;
+							Iterator writers = ImageIO.getImageWritersByMIMEType("image/jpeg");
+							ImageWriter imgWriter = (ImageWriter) writers.next();
+							ByteArrayOutputStream baos = new ByteArrayOutputStream();
+							ImageOutputStream imgStream = ImageIO.createImageOutputStream(baos);
+							imgWriter.setOutput(imgStream);
+							imgWriter.write(resizedImage);
+							datum = baos.toByteArray();
+							//store the thumbnail data in the post and persist
+							{
+								Byte[] thumbData = new Byte[datum.length];
+								for (int j = 0; j < datum.length; j++){
+									thumbData[j] = new Byte(datum[j]);
+								}
+								imagePost.setThumbnailIdentifier(blobService.saveBlob(thumbData));
+								postService.updatePost(imagePost);
+							}
+						}else{
+							//take the imagePost's thumnbail and make it outputable
+							Byte[] thumbnailArray = blobService.getBlob(imagePost.getThumbnailIdentifier());
+							datum = new byte[thumbnailArray.length];
+							int x = 0;
+							for (Byte val : thumbnailArray) {
+								datum[x] = val.byteValue();
+								x++;
+							}
 						}
 					}
+					// pick one
+					// response.setContentType("image/gif");
+					// response.setContentType("image/x-png");
+					response.setContentType("image/jpeg");
+					response.setHeader("Cache-Control", "no-cache");
+					response.setHeader("Pragma", "no-cache");
+					response.setDateHeader("Expires", 0);
+	
+					LOG.debug("file length is " + datum.length);
+					response.setContentLength(datum.length);
+					response.setHeader("Content-Disposition", " inline; filename=" + id+".jpg");
+					// convert to non-object
+					FileCopyUtils.copy(datum, response.getOutputStream());
 				}
-				// pick one
-				// response.setContentType("image/gif");
-				// response.setContentType("image/x-png");
-				response.setContentType("image/jpeg");
-				response.setHeader("Cache-Control", "no-cache");
-				response.setHeader("Pragma", "no-cache");
-				response.setDateHeader("Expires", 0);
-
-				LOG.debug("file length is " + datum.length);
-				response.setContentLength(datum.length);
-				response.setHeader("Content-Disposition", " inline; filename=" + id+".jpg");
-				// convert to non-object
-				FileCopyUtils.copy(datum, response.getOutputStream());
 			}
 		} catch (Exception e) {
 			LOG.error("Unable to create thumbnail", e);

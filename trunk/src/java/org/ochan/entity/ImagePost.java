@@ -5,7 +5,6 @@ import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
-import javax.persistence.Lob;
 import javax.persistence.Table;
 
 @Entity
@@ -13,11 +12,8 @@ import javax.persistence.Table;
 @Table(name="IMAGE_POST")
 public class ImagePost extends TextPost{
     
-    @Lob
-    private Byte[] data;
-    
-    @Lob 
-    private Byte[] thumbnail;
+	private Long imageIdentifier;
+	private Long thumbnailIdentifier;
     
     
     public ImagePost(){
@@ -37,39 +33,41 @@ public class ImagePost extends TextPost{
      * @param subject
      * @param time
      */
-    public ImagePost(Long identifier, Thread parent, String author, String email, String url, String comment, Byte[] data, Byte[] thumnbail, String subject, Date time) {
+    public ImagePost(Long identifier, Thread parent, String author, String email, String url, String comment, Long imageIdentifier, Long thumbnailIdentifier, String subject, Date time) {
         super(identifier, parent, author, email, url, comment, subject, time);
-        this.data = data;
-        this.thumbnail = thumnbail;
-    }
-
-    /**
-     * @return the data
-     */
-    public Byte[] getData() {
-        return data;
-    }
-
-    /**
-     * @param data the data to set
-     */
-    public void setData(Byte[] data) {
-        this.data = data;
+        this.imageIdentifier = imageIdentifier;
+        this.thumbnailIdentifier = thumbnailIdentifier;
     }
 
 	/**
-	 * @return the thumbnail
+	 * @return the imageIdentifier
 	 */
-	public Byte[] getThumbnail() {
-		return thumbnail;
+	public Long getImageIdentifier() {
+		return imageIdentifier;
 	}
 
 	/**
-	 * @param thumbnail the thumbnail to set
+	 * @param imageIdentifier the imageIdentifier to set
 	 */
-	public void setThumbnail(Byte[] thumbnail) {
-		this.thumbnail = thumbnail;
+	public void setImageIdentifier(Long imageIdentifier) {
+		this.imageIdentifier = imageIdentifier;
 	}
+
+	/**
+	 * @return the thumbnailIdentifier
+	 */
+	public Long getThumbnailIdentifier() {
+		return thumbnailIdentifier;
+	}
+
+	/**
+	 * @param thumbnailIdentifier the thumbnailIdentifier to set
+	 */
+	public void setThumbnailIdentifier(Long thumbnailIdentifier) {
+		this.thumbnailIdentifier = thumbnailIdentifier;
+	}
+   
+    
     
     
 }

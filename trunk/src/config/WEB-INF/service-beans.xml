@@ -44,6 +44,7 @@
 		<property name="postDao" ref="postDAO" />
 	</bean>
 	<bean id="externalCategoryDAO" class="org.ochan.dao.ExternalCategoryDAO" />
+	<bean id="blobDAO" class="org.ochan.dao.BlobDAO"/>
 	
 	<bean id="localAnnouncementService" class="org.ochan.service.local.LocalAnnouncementService"/>
 	
@@ -55,15 +56,21 @@
 	<bean id="localThreadService" class="org.ochan.service.local.LocalThreadService">
 		<property name="threadDAO" ref="threadDAO"/>
 		<property name="categoryService" ref="localCategoryService"/>
+		<property name="blobService" ref="localBlobService"/>
 	</bean>
 	
 	<bean id="localPostService" class="org.ochan.service.local.LocalPostService">
 		<property name="postDAO" ref="postDAO"/>
 		<property name="threadService" ref="localThreadService"/>
+		<property name="blobService" ref="localBlobService"/>
 	</bean>
 	
 	<bean id="localExternalCategoryService" class="org.ochan.service.local.LocalExternalCategoryService">
 		<property name="externalCategoryDAO" ref="externalCategoryDAO"/>
+	</bean>
+	
+	<bean id="localBlobService" class="org.ochan.service.local.LocalBlobService">
+		<property name="blobDAO" ref="blobDAO"/>
 	</bean>
 	
 	<!--  JMX! -->

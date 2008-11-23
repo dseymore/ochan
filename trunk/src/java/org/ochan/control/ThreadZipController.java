@@ -14,6 +14,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.ochan.entity.ImagePost;
 import org.ochan.entity.Post;
+import org.ochan.service.BlobService;
 import org.ochan.service.PostService;
 import org.springframework.jmx.export.annotation.ManagedAttribute;
 import org.springframework.jmx.export.annotation.ManagedOperation;
@@ -33,6 +34,7 @@ public class ThreadZipController implements Controller{
 	private static final Preferences PREFS = Preferences.userNodeForPackage(ThreadZipController.class);
 
 	private PostService postService;
+	private BlobService blobService;
 
 	/**
 	 * The default zip generation length of time that would cause an exception to be logged
@@ -116,6 +118,12 @@ public class ThreadZipController implements Controller{
 	}
 	
 	/**
+	 * @param blobService the blobService to set
+	 */
+	public void setBlobService(BlobService blobService) {
+		this.blobService = blobService;
+	}
+	/**
 	 * For a parameter of 'identifier' that is a thread, it creates a zip output of all the images. 
 	 */
 	public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -136,13 +144,14 @@ public class ThreadZipController implements Controller{
 				//if its an image
 				if (post instanceof ImagePost){
 					ImagePost image = (ImagePost)post;
+					Byte[] fullImageBytes = blobService.getBlob(image.getImageIdentifier());
 					//create a zip entry
 					ZipEntry zipentry = new ZipEntry(post.getIdentifier() + ".jpg");
 			        zipfile.putNextEntry(zipentry);
 			        //expensive object to primitive (but simple)
-			        byte[] datum = new byte[image.getData().length];
+			        byte[] datum = new byte[fullImageBytes.length];
 					int i = 0;
-					for (Byte val : image.getData()) {
+					for (Byte val : fullImageBytes) {
 						datum[i] = val.byteValue();
 						i++;
 					}
