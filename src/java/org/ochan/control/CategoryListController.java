@@ -205,8 +205,12 @@ public class CategoryListController implements Controller {
 		controlModel.put("P3",p3);
 		
 		//find the current most-recent thread's id.. we're gonna use that to see new threads happen :)
-		long max = toreturn.get(0).getIdentifier().longValue();
-		controlModel.put("currentThread",String.valueOf(max));
+		if (toreturn != null && toreturn.size() > 0){
+			long max = toreturn.get(0).getIdentifier().longValue();
+			controlModel.put("currentThread",String.valueOf(max));
+		}else{
+			controlModel.put("currentThread","0");
+		}
 		
 		controlModel.put("announcement",announcementService.getAnnouncement());
 		return new ModelAndView(viewName, controlModel);

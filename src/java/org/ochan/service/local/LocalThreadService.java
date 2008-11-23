@@ -11,6 +11,7 @@ import org.ochan.entity.ImagePost;
 import org.ochan.entity.Post;
 import org.ochan.entity.TextPost;
 import org.ochan.entity.Thread;
+import org.ochan.service.BlobService;
 import org.ochan.service.CategoryService;
 import org.ochan.service.ThreadService;
 import org.springframework.jmx.export.annotation.ManagedAttribute;
@@ -21,6 +22,7 @@ public class LocalThreadService implements ThreadService {
 
 	private ThreadDAO threadDAO;
 	private CategoryService categoryService;
+	private BlobService blobService;
 
 	// STATS
 	private static long createCount = 0;
@@ -94,6 +96,15 @@ public class LocalThreadService implements ThreadService {
 	public void setCategoryService(CategoryService categoryService) {
 		this.categoryService = categoryService;
 	}
+	
+	
+
+	/**
+	 * @param blobService the blobService to set
+	 */
+	public void setBlobService(BlobService blobService) {
+		this.blobService = blobService;
+	}
 
 	/**
 	 * 
@@ -111,7 +122,7 @@ public class LocalThreadService implements ThreadService {
 		Post post = null;
 		if (file != null && file.length > 0) {
 			post = new ImagePost();
-			((ImagePost) post).setData(file);
+			((ImagePost) post).setImageIdentifier(blobService.saveBlob(file));
 		} else {
 			post = new TextPost();
 		}
