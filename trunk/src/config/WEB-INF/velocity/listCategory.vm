@@ -138,5 +138,11 @@
 			</div>
 			#end
 		</div>
+		<div class="box" id="statsbox">
+			<ul>
+				<li>Number of Files: $totalNumberOfFiles </li>
+				<li>Total Content Size: $number.format($totalContentSize) bytes</li>
+			</ul>
+		</div>
 	</body>
 </html> 
