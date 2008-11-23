@@ -66,15 +66,31 @@ public class BlobDAO {
     	EntityManager em = this.entityManagerFactory.createEntityManager();
     	try{
     		em.getTransaction().begin();
-    		Category cat = em.find(Category.class, identifier);
-    		em.remove(cat);
+    		Blob blob = em.find(Blob.class, identifier);
+    		em.remove(blob);
     		em.getTransaction().commit();
     	}catch (Exception e) {
-            LOG.error("Unable to delete cat: " + identifier,e);
+            LOG.error("Unable to delete blob: " + identifier,e);
         } finally {
             if (em != null) {
                 em.close();
             }
         }
+    }
+    
+    public List<Long> getIdentifiers(){
+    	EntityManager em = this.entityManagerFactory.createEntityManager();
+        try {
+            Query query = em.createQuery("SELECT b.identifier FROM Blob b");
+            List results = query.getResultList();
+            return (List<Long>)results;
+        } catch (Exception e) {
+            LOG.error("Unable to get Ids.",e);
+        } finally {
+            if (em != null) {
+                em.close();
+            }
+        }
+        return null;
     }
 }

@@ -137,6 +137,17 @@ public class LocalPostService implements PostService {
 	 */
 	public void deletePost(Long identifier) {
 		deleteCount++;
+		Post p = getPost(identifier);
+		//we have to clean up our blobs too.. 
+		if (p instanceof ImagePost){
+			ImagePost ip = (ImagePost)p;
+			if (ip.getImageIdentifier() != null){
+				blobService.deleteBlob(ip.getImageIdentifier());
+			}
+			if (ip.getThumbnailIdentifier() != null){
+				blobService.deleteBlob(ip.getThumbnailIdentifier());
+			}
+		}
 		postDAO.delete(identifier);
 
 	}
