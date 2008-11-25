@@ -142,6 +142,9 @@
 			<ul>
 				<li>Number of Files: $totalNumberOfFiles </li>
 				<li>Total Content Size: $number.format($totalContentSize) bytes</li>
+				<li>Threads: $totalNumberOfThreads</li>
+				<li>Posts: $totalNumberOfPosts</li>
+				<li>Posts with Images: $totalNumberOfImagePosts</li>
 			</ul>
 		</div>
 	</body>
