@@ -216,6 +216,9 @@ public class CategoryListController implements Controller {
 		//STATISTICS! YAY!
 		controlModel.put("totalContentSize", StatsGeneratorJob.getSizeOfAllFiles());
 		controlModel.put("totalNumberOfFiles", StatsGeneratorJob.getNumberOfFiles());
+		controlModel.put("totalNumberOfPosts", StatsGeneratorJob.getNumberOfPosts());
+		controlModel.put("totalNumberOfImagePosts", StatsGeneratorJob.getNumberOfImagePosts());
+		controlModel.put("totalNumberOfThreads", StatsGeneratorJob.getNumberOfThreads());
 		
 		controlModel.put("announcement",announcementService.getAnnouncement());
 		return new ModelAndView(viewName, controlModel);
