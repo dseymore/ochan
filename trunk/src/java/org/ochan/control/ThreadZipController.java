@@ -46,6 +46,9 @@ public class ThreadZipController implements Controller{
 	private static long numberOfZips = 0;
 	private static long lastTimeInMillis = 0;
 	
+	private static long totalGenerationTimeInMillis = 0;
+	private static long lastGenerationTimeInMillis = 0;
+	
 	/**
 	 * 
 	 * @return
@@ -76,6 +79,19 @@ public class ThreadZipController implements Controller{
 		}
 		return 0;
 	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	@ManagedAttribute(description="The average time in milliseconds the system is encountering on generating zip requests")
+	public long getAverageGenerationTimeInMillis(){
+		if (totalGenerationTimeInMillis != 0 && numberOfZips != 0){
+			return totalGenerationTimeInMillis / numberOfZips;
+		}
+		return 0;
+	}
+	
 	/**
 	 * 
 	 * @return
@@ -88,7 +104,7 @@ public class ThreadZipController implements Controller{
 	 * 
 	 * @return
 	 */
-	@ManagedAttribute(description="The last time we generated a zip in milliseconds")
+	@ManagedAttribute(description="The last time we generated & transferred a zip in milliseconds")
 	public long getLastTimeInMIllis(){
 		return lastTimeInMillis;
 	}
@@ -96,9 +112,26 @@ public class ThreadZipController implements Controller{
 	 * 
 	 * @return
 	 */
-	@ManagedAttribute(description="The total time in milliseconds it has taken to generate all zips")
+	@ManagedAttribute(description="The total time in milliseconds it has taken to generate & transferred all zips")
 	public long getTotalTimeInMIllis(){
 		return totalTimeInMillis;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	@ManagedAttribute(description="The last time we generated a zip in milliseconds")
+	public long getLastGenerationTimeInMillis(){
+		return lastGenerationTimeInMillis;
+	}
+	/**
+	 * 
+	 * @return
+	 */
+	@ManagedAttribute(description="The total time in milliseconds it has taken to generate all zips")
+	public long getTotalGenerationTimeInMIllis(){
+		return totalGenerationTimeInMillis;
 	}
 	
 
@@ -162,6 +195,9 @@ public class ThreadZipController implements Controller{
 			//close the zip
 			zipfile.close();
 			byte[] datum = bos.toByteArray();
+			long generationEnd = new Date().getTime();
+			lastGenerationTimeInMillis = generationEnd - start;
+			totalGenerationTimeInMillis += generationEnd - start;
 			//start response
 			response.setContentType("application/zip");
 			response.setHeader("Cache-Control", "no-cache");
@@ -180,7 +216,7 @@ public class ThreadZipController implements Controller{
 		long end = new Date().getTime();
 		// compute total time
 		lastTimeInMillis = end - start;
-		totalTimeInMillis += lastTimeInMillis;
+		totalTimeInMillis += end - start;
 		
 		if (lastTimeInMillis > getTimeLength()){
 			LOG.warn("Zip times are getting excessive: " + lastTimeInMillis + " ms. for thread id:" + request.getParameter("identifier"));

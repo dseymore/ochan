@@ -10,7 +10,6 @@ import javax.persistence.Query;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.ochan.entity.Blob;
-import org.ochan.entity.Category;
 
 public class BlobDAO {
 
