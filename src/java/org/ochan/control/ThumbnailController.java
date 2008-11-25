@@ -57,9 +57,14 @@ public class ThumbnailController implements Controller {
 	private static final String LOG_ON_THIS_TIME = "200"; 
 	
 	//statistics are goooood
-	private static long totalTimeInMillis = 0;
 	private static long numberOfThumbs = 0;
+	private static long lastResizeTimeInMillis = 0;
+	private static long totalResizeTimeInMillis = 0;
+	
+	private static long numberOfRequests = 0;
 	private static long lastTimeInMillis = 0;
+	private static long totalTimeInMillis = 0;	
+	
 	
 	/**
 	 * 
@@ -123,8 +128,8 @@ public class ThumbnailController implements Controller {
 	 */
 	@ManagedAttribute(description="The average time in milliseconds the system is encountering on thumnbail requests")
 	public long getAverageTimeInMillis(){
-		if (totalTimeInMillis != 0 && numberOfThumbs != 0){
-			return totalTimeInMillis / numberOfThumbs;
+		if (totalTimeInMillis != 0 && numberOfRequests != 0){
+			return totalTimeInMillis / numberOfRequests;
 		}
 		return 0;
 	}
@@ -141,6 +146,43 @@ public class ThumbnailController implements Controller {
 	 * @return
 	 */
 	@ManagedAttribute(description="The last time we generated a thumb in milliseconds")
+	public long getLastResizeTimeInMillis(){
+		return lastResizeTimeInMillis;
+	}
+	/**
+	 * 
+	 * @return
+	 */
+	@ManagedAttribute(description="The total time in milliseconds it has taken to generate all thumbs")
+	public long getTotalResizeTimeInMIllis(){
+		return totalResizeTimeInMillis;
+	}
+	
+
+	/**
+	 * 
+	 * @return
+	 */
+	@ManagedAttribute(description="The average time in milliseconds the system is encountering on thumnbail resize requests")
+	public long getAverageResizeTimeInMillis(){
+		if (totalResizeTimeInMillis != 0 && numberOfThumbs != 0){
+			return totalResizeTimeInMillis / numberOfThumbs;
+		}
+		return 0;
+	}
+	/**
+	 * 
+	 * @return
+	 */
+	@ManagedAttribute(description="The number of images that have been requested")
+	public long getNumberOfRequests(){
+		return numberOfRequests;
+	}
+	/**
+	 * 
+	 * @return
+	 */
+	@ManagedAttribute(description="The last time we generated retrieved in milliseconds")
 	public long getLastTimeInMIllis(){
 		return lastTimeInMillis;
 	}
@@ -148,7 +190,7 @@ public class ThumbnailController implements Controller {
 	 * 
 	 * @return
 	 */
-	@ManagedAttribute(description="The total time in milliseconds it has taken to generate all thumbs")
+	@ManagedAttribute(description="The total time in milliseconds it has taken to retrieve all images")
 	public long getTotalTimeInMIllis(){
 		return totalTimeInMillis;
 	}
@@ -182,7 +224,7 @@ public class ThumbnailController implements Controller {
 		// capture start of call
 		long start = new Date().getTime();
 		try {
-			numberOfThumbs++;
+			numberOfRequests++;
 			Long id = Long.valueOf(request.getParameter("identifier"));
 			boolean thumb = request.getParameter("thumb") != null;
 			Post p = postService.getPost(id);
@@ -217,6 +259,8 @@ public class ThumbnailController implements Controller {
 						BufferedImage resizedImage = null;
 						//we may need to make a thumbnail
 						if (imagePost.getThumbnailIdentifier() == null){
+							long startThumb = new Date().getTime();
+							numberOfThumbs++;
 							//yep, make it
 							if (width > height) {
 								resizedImage = convert(image.getScaledInstance(getThumbWidth().intValue(), -1, Image.SCALE_FAST));
@@ -239,6 +283,9 @@ public class ThumbnailController implements Controller {
 								imagePost.setThumbnailIdentifier(blobService.saveBlob(thumbData));
 								postService.updatePost(imagePost);
 							}
+							long endThumb = new Date().getTime();
+							lastResizeTimeInMillis = endThumb - startThumb;
+							totalResizeTimeInMillis += endThumb - startThumb;
 						}else{
 							//take the imagePost's thumnbail and make it outputable
 							Byte[] thumbnailArray = blobService.getBlob(imagePost.getThumbnailIdentifier());
@@ -272,7 +319,7 @@ public class ThumbnailController implements Controller {
 		long end = new Date().getTime();
 		// compute total time
 		lastTimeInMillis = end - start;
-		totalTimeInMillis += lastTimeInMillis;
+		totalTimeInMillis += end - start;
 		
 		if (lastTimeInMillis > getTimeLength()){
 			LOG.warn("Thumbnail times are getting excessive: " + lastTimeInMillis + " ms. for thumb id:" + request.getParameter("identifier"));
