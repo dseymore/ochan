@@ -81,6 +81,17 @@
 	                		id:	'fileUrl',
 	                		anchor: '95%'
 	                	}]
+	                },{
+	                    title: 'Upload Zipfile of Images',
+	                    layout: 'form',
+	                    items: [{
+	                        xtype:'textfield',
+	                        fieldLabel: 'Zip File',
+	                        name: 'zipFile',
+	                        inputType: 'file',
+	                        id: 'zipFile',
+	                        anchor:'95%'
+	                    }]
 	                }]
 			    }],
 			    buttons: [{
