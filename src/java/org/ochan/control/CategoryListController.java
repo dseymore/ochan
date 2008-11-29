@@ -205,12 +205,16 @@ public class CategoryListController implements Controller {
 		controlModel.put("P2",p2);
 		controlModel.put("P3",p3);
 		
-		//find the current most-recent thread's id.. we're gonna use that to see new threads happen :)
-		if (toreturn != null && toreturn.size() > 0){
-			long max = toreturn.get(0).getIdentifier().longValue();
-			controlModel.put("currentThread",String.valueOf(max));
-		}else{
-			controlModel.put("currentThread","0");
+		//find the current most-recent thread's id
+		{
+			Map<ThreadCriteria, Object> critiera = new HashMap<ThreadCriteria, Object>();
+			critiera.put(ThreadCriteria.MAX, "1");
+			List<Thread> xyz = threadService.retrieveThreads(critiera);
+			if (xyz != null && xyz.size() > 0){
+				controlModel.put("currentThread",xyz.get(0).getIdentifier());
+			}else{
+				controlModel.put("currentThread","0");
+			}
 		}
 		
 		//STATISTICS! YAY!

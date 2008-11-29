@@ -98,6 +98,9 @@ public class ThreadDAO {
         	if (criteria.get(ThreadCriteria.DELETEQUEUE) != null){
         		queryString.append(" t.deleteDate != null ");
         	}
+        	if (criteria.get(ThreadCriteria.MAX) != null){
+        		queryString.append(" t.identifier IN (select max(x.identifier) from Thread x) ");
+        	}
             Query query = em.createQuery(queryString.toString());
             //then add our parameters...
             //may not need these 'ifs'
