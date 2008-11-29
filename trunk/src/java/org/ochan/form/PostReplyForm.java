@@ -10,6 +10,7 @@ public class PostReplyForm {
 	private String comment;
 	private byte[] file;
 	private String fileUrl;
+	private byte[] zipFile;
 
 	/**
 	 * @return the parent
@@ -125,6 +126,20 @@ public class PostReplyForm {
 
 	public void setFileUrl(String fileUrl) {
 		this.fileUrl = fileUrl;
+	}
+
+	/**
+	 * @return the zipFile
+	 */
+	public byte[] getZipFile() {
+		return zipFile;
+	}
+
+	/**
+	 * @param zipFile the zipFile to set
+	 */
+	public void setZipFile(byte[] zipFile) {
+		this.zipFile = zipFile;
 	}
 
 	/**
