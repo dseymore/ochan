@@ -1,0 +1,15 @@
+<ivy-module version="1.0">
+        <info organisation="com.ctc"
+                module="wstx-asl"
+                revision="3.9.2"
+                status="release"
+                publication="20070904173519"
+                default="true"
+        />
+        <configurations>
+                <conf name="default" visibility="public"/>
+        </configurations>
+        <publications>
+                <artifact name="wstx-asl" type="jar" ext="jar" conf="default"/>
+        </publications>
+</ivy-module>

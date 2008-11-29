@@ -1,0 +1,151 @@
+<html>
+	<head>
+		<!-- ext js -->
+		<script type="text/javascript" src="#springUrl('/extjs/adapter/ext/ext-base.js')"></script>
+		<script language="javascript" type="text/javascript" src="#springUrl('/extjs/ext-all-debug.js')"></script>
+    	<!-- Include Ext stylesheets here: -->
+	    <link rel="stylesheet" type="text/css" href="#springUrl('/extjs/resources/css/ext-all.css')">
+		<title>$deployment.getSystemTitle()</title>
+	</head>
+	#include("/WEB-INF/velocity/style.vm")
+	<script language="javascript" type="text/javascript">
+		<!-- some stuff from extjs samples.. I liked it.. -->
+		Ext.example = function(){
+		    var msgCt;
+		
+		    function createBox(t, s){
+		        return ['<div class="msg">',
+		                '<div class="x-box-tl"><div class="x-box-tr"><div class="x-box-tc"></div></div></div>',
+		                '<div class="x-box-ml"><div class="x-box-mr"><div class="x-box-mc"><a href="#springUrl('viewThread.Ochan')?identifier=', t, '"><img src="#springUrl('/thumb.Ochan')?identifier=', s, '&thumb=true"></a></div></div></div>',
+		                '<div class="x-box-bl"><div class="x-box-br"><div class="x-box-bc"></div></div></div>',
+		                '</div>'].join('');
+		    }
+		    function createBoxSubject(t, s){
+		        return ['<div class="msg">',
+		                '<div class="x-box-tl"><div class="x-box-tr"><div class="x-box-tc"></div></div></div>',
+		                '<div class="x-box-ml"><div class="x-box-mr"><div class="x-box-mc"><a href="#springUrl('viewThread.Ochan')?identifier=', t,'"/>', s, '</a></div></div></div>',
+		                '<div class="x-box-bl"><div class="x-box-br"><div class="x-box-bc"></div></div></div>',
+		                '</div>'].join('');
+		    }
+		    return {
+		        msg : function(threadId, something, type){
+		            if(!msgCt){
+		                msgCt = Ext.DomHelper.insertFirst(document.body, {id:'msg-div'}, true);
+		            }
+		            msgCt.alignTo(document, 't-t');
+		            if (type == 'IMAGE'){
+		            	var m = Ext.DomHelper.append(msgCt, {html:createBox(threadId, something)}, true);
+		            }else{
+		            	var s = String.format.apply(String, Array.prototype.slice.call(arguments, 1));
+		            	var m = Ext.DomHelper.append(msgCt, {html:createBoxSubject(threadId, s)}, true);
+		            }
+		            m.slideIn('t').pause(1).ghost("t", {remove:true});
+		        },
+		
+		        init : function(){
+		            var t = Ext.get('exttheme');
+		            if(!t){ // run locally?
+		                return;
+		            }
+		            var theme = 'aero';
+		            if(theme){
+		                t.dom.value = theme;
+		                Ext.getBody().addClass('x-'+theme);
+		            }
+		            t.on('change', function(){
+		                setTimeout(function(){
+		                    window.location.reload();
+		                }, 1250);
+		            });
+		
+		            var lb = Ext.get('lib-bar');
+		            if(lb){
+		                lb.show();
+		            }
+		        }
+		    };
+		}();
+				
+	
+	
+			//variable to keep track of the pages most recent thread id
+	        var currentThreadId = $currentThread;
+	        
+			## Sets up the ajax loop
+	        window.setInterval(xyz, 10000)
+	        
+	        ## Calls rest url for the next post
+	        function xyz(){
+	        	Ext.Ajax.request({
+					url: '/remote/rest/thread/next/' + currentThreadId + '/',
+					method: 'GET',
+					scope:this,
+					callback: function(opts, suss, resp){
+						var result = Ext.util.JSON.decode(resp.responseText);
+						//notification time!
+						if (result != undefined && result.RemoteThread.identifier != -1){
+							//if it an image post, just show the image!
+							if (result.RemoteThread.firstPost.type == 'IMAGE'){
+								Ext.example.msg(result.RemoteThread.identifier, result.RemoteThread.firstPost.identifier, result.RemoteThread.firstPost.type);
+							}else{
+								//else, show the subject
+								Ext.example.msg(result.RemoteThread.identifier, result.RemoteThread.firstPost.subject, result.RemoteThread.firstPost.type);
+							}
+							currentThreadId = result.RemoteThread.identifier;
+						}
+					}
+				});
+	        }
+	</script>
+	<body>
+		<!-- Atom feed -->
+		<div style="float: right">
+			<a href="/atom/threads"><img border="0" src="15px-Feed-icon.png" width="15" height="15"></a>
+		</div>
+		<div  id="adminBox" class="box">
+			$announcement
+		</div>
+		<div id="categoryBox" class="box">
+			<ul class="categoryList">
+				#foreach($cat in ${category})
+					<li><a href="openCategory.Ochan?identifier=$cat.identifier">$cat.name</a></li>
+				#end
+			</ul>
+		</div>
+		#if ($list.size(${external}) > 0)
+		<div id="externalCategoryList" class="box">
+			<ul>
+				#foreach($cat in ${external})
+					<li><a href="$cat.host">$cat.name</a></li>
+				#end
+			</ul>
+		</div>
+		#end
+		<div id="recentBox" class="box">
+			#if ($P1)
+			<div class="box">
+				<a href="#springUrl('viewThread.Ochan')?identifier=$P1.parent.identifier#$P1.identifier"><img src="#springUrl('/thumb.Ochan')?identifier=$P1.identifier&thumb=true"></a>
+			</div>
+			#end
+			#if ($P2)
+			<div class="box">
+				<a href="#springUrl('viewThread.Ochan')?identifier=$P2.parent.identifier#$P2.identifier"<img src="#springUrl('/thumb.Ochan')?identifier=$P2.identifier&thumb=true"></a>
+			</div>
+			#end
+			#if ($P3)
+			<div class="box">
+				<a href="#springUrl('viewThread.Ochan')?identifier=$P3.parent.identifier#$P3.identifier"<img src="#springUrl('/thumb.Ochan')?identifier=$P3.identifier&thumb=true"></a>
+			</div>
+			#end
+		</div>
+		<div class="box" id="statsbox">
+			<ul>
+				<li>Number of Files: $totalNumberOfFiles </li>
+				<li>Total Content Size: $number.format($totalContentSize) bytes</li>
+				<li>Threads: $totalNumberOfThreads</li>
+				<li>Posts: $totalNumberOfPosts</li>
+				<li>Posts with Images: $totalNumberOfImagePosts</li>
+			</ul>
+		</div>
+	</body>
+</html> 

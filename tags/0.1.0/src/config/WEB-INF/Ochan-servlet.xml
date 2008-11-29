@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+                           http://www.springframework.org/schema/tx
+                           http://www.springframework.org/schema/tx/spring-tx-2.0.xsd
+                           http://www.springframework.org/schema/aop
+                           http://www.springframework.org/schema/aop/spring-aop-2.0.xsd">
+
+	<!--  get the main applicationContext for the servlet to link to -->
+<!--	<import resource="service-beans.xml" />-->
+<!--	<import resource="cxf-beans.xml" />-->
+
+	<!-- xxxxxxxxxxxxxxxxxxxxxxxxx frontend configuration xxxxxxxxxxxxxxxxxxxxxxxxx  -->
+	<!--  xxxxxxxxxxxxxxxxxxxxxxxxx  VELOCITY xxxxxxxxxxxxxxxxxxxxxxxxx  -->
+
+	<!-- 
+		This bean sets up the Velocity environment for us based on a root path for templates.
+		Optionally, a properties file can be specified for more control over the Velocity
+		environment, but the defaults are pretty sane for file based template loading.
+	-->
+	<bean id="velocityConfig" class="org.springframework.web.servlet.view.velocity.VelocityConfigurer">
+		<property name="resourceLoaderPath">
+			<value>/</value>
+		</property>
+	</bean>
+
+	<!-- 
+		View resolvers can also be configured with ResourceBundles or XML files. If you need
+		different view resolving based on Locale, you have to use the resource bundle resolver.
+	-->
+	<bean id="viewResolver" class="org.springframework.web.servlet.view.velocity.VelocityViewResolver">
+		<property name="cache" value="true" />
+		<property name="prefix" value="/WEB-INF/velocity/" />
+		<property name="suffix" value=".vm" />
+		<!-- if you want to use the Spring Velocity macros, set this property to true -->
+		<property name="exposeSpringMacroHelpers" value="true" />
+		<property name="toolboxConfigLocation" value="/WEB-INF/toolbox.xml"/>
+	</bean>
+
+	<!--  xxxxxxxxxxxxxxxxxxxxxxxxx  Spring MVC xxxxxxxxxxxxxxxxxxxxxxxxx   -->
+
+	<!--  simple mapping of urls to handlers -->
+	<bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+		<property name="mappings">
+			<props>
+				<prop key="/**/categoryList.Ochan">categoryListController</prop>
+				<prop key="/**/viewThread.Ochan">viewThreadController</prop>
+				<prop key="/**/postReply.Ochan">postReplyController</prop>
+				<prop key="/**/openCategory.Ochan">viewCategoryController</prop>
+				<prop key="/**/thumb.Ochan">thumbnailController</prop>
+				<prop key="/**/zip.Ochan">zipController</prop>
+			</props>
+		</property>
+	</bean>
+	
+	<bean name="postReplyController" class="org.ochan.control.PostReplyController">
+		<property name="commandName" value="command" />
+		<property name="commandClass" value="org.ochan.form.PostReplyForm" />
+		<property name="formView" value="viewThread" />
+		<property name="successView" value="forward:viewThread.Ochan" />
+		<property name="bindOnNewForm" value="true" />
+		<property name="sessionForm" value="true" />
+		<property name="postService" ref="localPostService" />
+		<!--        FIXME - make the service not injected, but, inject a factory that decides whether local or external service-->
+	</bean>
+	
+	<bean name="categoryListController" class="org.ochan.control.CategoryListController">
+		<property name="viewName" value="listCategory" />
+		<property name="categoryService" ref="localCategoryService" />
+		<property name="threadService" ref="localThreadService" />
+		<property name="externalCategoryService" ref="localExternalCategoryService"/>
+		<property name="postService" ref="localPostService" />
+		<!--        FIXME - make the service not injected, but, inject a factory that decides whether local or external service-->
+		<property name="cache" ref="threadCache"/>
+		<property name="announcementService" ref="localAnnouncementService"/>
+	</bean>
+	
+	<bean name="viewThreadController" class="org.ochan.control.ViewThreadController">
+		<property name="viewName" value="viewThread" />
+		<property name="threadService" ref="localThreadService" />
+		<property name="postService" ref="localPostService" />
+		<!--        FIXME - make the service not injected, but, inject a factory that decides whether local or external service-->
+	</bean>
+	
+	<bean name="viewCategoryController" class="org.ochan.control.ViewCategoryController">
+        <property name="commandName" value="command" />
+		<property name="commandClass" value="org.ochan.form.ThreadForm" />
+		<property name="formView" value="addThread" />
+		<property name="bindOnNewForm" value="true" />
+		<property name="sessionForm" value="true" />
+		<property name="viewName" value="viewCategory" />
+		<property name="categoryService" ref="localCategoryService" />
+		<property name="threadService" ref="localThreadService" />
+		<property name="postService" ref="localPostService" />
+		<!--        FIXME - make the service not injected, but, inject a factory that decides whether local or external service-->
+	</bean>
+	
+	<bean name="thumbnailController" class="org.ochan.control.ThumbnailController">
+		<property name="postService" ref="localPostService" />
+		<property name="blobService" ref="localBlobService"/>
+		<!--        FIXME - make the service not injected, but, inject a factory that decides whether local or external service-->
+	</bean>
+	
+	<bean name="zipController" class="org.ochan.control.ThreadZipController">
+		<property name="postService" ref="localPostService" />
+		<property name="blobService" ref="localBlobService"/>
+		<!--        FIXME - make the service not injected, but, inject a factory that decides whether local or external service-->
+	</bean>
+	
+	<!--	Requires commons-fileupload-->
+	<bean id="multipartResolver" class="org.ochan.util.ManagedCommonsMultipartResolver"/>
+
+	<!--  custom exception handlers yay! -->
+	<bean id="fileSizeExceptionHandler" class="org.ochan.exception.handler.FileSizeHandlerExceptionResolver"/>
+
+</beans>

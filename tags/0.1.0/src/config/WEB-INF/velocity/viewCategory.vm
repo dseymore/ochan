@@ -1,0 +1,152 @@
+<html>
+    <head>
+        <title>$deployment.getSystemTitle()</title>
+        <!-- ext js -->
+        <script type="text/javascript" src="#springUrl('/extjs/adapter/ext/ext-base.js')"></script>
+        <script language="javascript" type="text/javascript" src="#springUrl('/extjs/ext-all-debug.js')"></script>
+        <!-- Include Ext stylesheets here: -->
+        <link rel="stylesheet" type="text/css" href="#springUrl('/extjs/resources/css/ext-all.css')">
+        <script language="javascript" type="text/javascript">
+            Ext.onReady(function() {
+                var form = new Ext.form.FormPanel({
+                    id: 'threadForm',
+                    title: 'New Thread',
+	    			header: true,
+                    labelAlign: 'top',
+                    bodyStyle:'padding:5px 5px 0',
+                    width: 600,
+                    fileUpload: true,
+                    items: [
+                        {
+                            xtype:'hidden',
+                            name: 'identifier',
+                            value: ${category.identifier}
+                        },{
+                            xtype:'hidden',
+                            name: 'categoryIdentifier',
+                            value: ${category.identifier}
+                        },{
+                            xtype:'textfield',
+                            fieldLabel: 'Author',
+                            value: '${author}',
+                            name: 'author',
+                            anchor:'95%'
+                        },{
+                            xtype:'textfield',
+                            fieldLabel: 'Subject',
+                            name: 'subject',
+                            anchor:'95%'
+                        },{
+                            xtype:'textfield',
+                            fieldLabel: 'Email',
+                            name: 'email',
+                            anchor:'95%'
+                        },{
+                            xtype:'textfield',
+                            fieldLabel: 'Url',
+                            name: 'url',
+                            anchor:'95%'
+                        },{
+                            xtype:'htmleditor',
+                            id:'comment',
+                            fieldLabel:'Comment',
+                            anchor:'98%'
+                        },{
+                            xtype:'tabpanel',
+                            activeTab: 0,
+                            defaults:{autoHeight:true, bodyStyle:'padding:10px'},
+                            items:[{
+                                title: 'Upload Image',
+                                layout: 'form',
+                                items: [{
+                                    xtype:'textfield',
+                                    fieldLabel: 'Image',
+                                    name: 'file',
+                                    inputType: 'file',
+                                    id: 'file',
+                                    anchor:'95%'
+                                }]
+                            },{
+                                title: 'Remote Image',
+                                layout: 'form',
+                                items: [{
+                                    xtype: 'textfield',
+                                    fieldLabel: 'Image URL',
+                                    name: 'fileUrl',
+                                    id:    'fileUrl',
+                                    anchor: '95%'
+                                }]
+                            }]
+                        }],
+                    buttons: [{
+                        text: 'Create',
+                        handler: function() {
+                            var formPanel = Ext.getCmp('threadForm');
+                            formPanel.getForm().getEl().dom.submit();
+                        }
+                    }],
+                    onSubmit: Ext.emptyFn, ## overrides the ext form handler
+                        submit: function() {
+                        var formPanel = Ext.getCmp('threadForm');
+                        formPanel.getForm().getEl().dom.setAttribute('method', 'POST');
+                        formPanel.getForm().getEl().dom.setAttribute('enctype', 'multipart/form-data');
+                        formPanel.getForm().getEl().dom.setAttribute('Action', '#springUrl('/openCategory.Ochan')');
+                        formPanel.getForm().getEl().dom.submit();
+                    },
+					renderTo: 'newthread',
+					frame: true
+				});
+				
+				Ext.QuickTips.init();
+			});
+        </script>
+    </head>
+    #include("/WEB-INF/velocity/style.vm")
+    <body>
+    	<div id="newthread">
+        </div>
+        #foreach($thread in ${category.threads})
+			<!-- lets do the match first -->
+			#set($allPostsCount = 0)
+			#set($allImagePostsCount = 0)
+			#foreach($post in $thread.posts)
+				#set($allPostsCount = $allPostsCount + 1)
+				#if ($post.getClass().getName() == 'org.ochan.entity.ImagePost')
+					#set($allImagePostsCount = $allImagePostsCount + 1)
+				#end
+			#end
+
+			<div>
+				Started: $thread.startDate [<a href="viewThread.Ochan?identifier=$thread.identifier">Reply</a>] [<a href="zip.Ochan?identifier=$thread.identifier">Export</a>] <i>$allPostsCount posts and $allImagePostsCount images.</i><br>
+				#if ($thread.deleteDate) <span style="color: red">Thread marked for deletion</span>#end
+				#foreach($post in $thread.posts)
+					<!-- Only print the first and last post to the thread -->
+					#if ($velocityCount == 1 || $velocityCount == ($list.size($thread.posts)) )
+					<div class="reply" style="#if ($velocityCount == ($list.size($thread.posts)) && $velocityCount != 1 ) margin-left: 40px; border-left-width: 1px; border-left-style: solid; #end"> 
+						<div>
+							$post.subject
+						</div>
+						<table>
+							<tr>
+								#if ($post.getClass().getName() == 'org.ochan.entity.ImagePost')
+								<td>
+									<a href="#springUrl('/thumb.Ochan')?identifier=$post.identifier"><img src="#springUrl('/thumb.Ochan')?identifier=$post.identifier&thumb=true"></a>
+								</td>
+								#end
+								<td valign="top">
+									<a name="$post.identifier"/>
+									<div>
+										<a href="mailto:$post.email">$post.author</a> <a href="$post.url">$post.url</a> $post.time
+									</div>
+									$post.comment
+								</td>
+							</tr>
+						</table>
+					</div>
+					#end
+				#end
+			</div>
+		#end
+        <p/>
+    </body>
+</html>
