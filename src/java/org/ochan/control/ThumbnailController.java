@@ -7,6 +7,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.SocketException;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.prefs.Preferences;
@@ -312,6 +313,9 @@ public class ThumbnailController implements Controller {
 					FileCopyUtils.copy(datum, response.getOutputStream());
 				}
 			}
+		} catch (SocketException se){
+			//this happens when a socket is closed mid-stream.
+			LOG.trace("Socket exception",se);
 		} catch (Exception e) {
 			LOG.error("Unable to create thumbnail", e);
 		}

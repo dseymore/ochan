@@ -1,6 +1,7 @@
 package org.ochan.control;
 
 import java.io.ByteArrayOutputStream;
+import java.net.SocketException;
 import java.util.Date;
 import java.util.List;
 import java.util.prefs.Preferences;
@@ -209,6 +210,9 @@ public class ThreadZipController implements Controller{
 			response.setHeader("Content-Disposition", " inline; filename=" + id+".zip");
 			// convert to non-object
 			FileCopyUtils.copy(datum, response.getOutputStream());
+		} catch (SocketException se){
+			//this happens when a socket is closed mid-stream.
+			LOG.trace("Socket exception",se);
 		} catch (Exception e) {
 			LOG.error("Unable to create thumbnail", e);
 		}
