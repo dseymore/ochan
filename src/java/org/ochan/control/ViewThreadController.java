@@ -10,6 +10,7 @@ import org.apache.commons.lang.StringUtils;
 import org.ochan.entity.Post;
 import org.ochan.entity.TextPost;
 import org.ochan.entity.Thread;
+import org.ochan.service.CategoryService;
 import org.ochan.service.PostService;
 import org.ochan.service.ThreadService;
 import org.ochan.util.PostLinksAFixARockerJocker;
@@ -19,6 +20,7 @@ import org.springframework.web.servlet.mvc.Controller;
 
 public class ViewThreadController implements Controller {
 
+	private CategoryService categoryService;
 	private ThreadService threadService;
 	private PostService postService;
 	private String viewName;
@@ -51,6 +53,13 @@ public class ViewThreadController implements Controller {
 	 */
 	public void setPostService(PostService postService) {
 		this.postService = postService;
+	}
+	
+	/**
+	 * @param categoryService the categoryService to set
+	 */
+	public void setCategoryService(CategoryService categoryService) {
+		this.categoryService = categoryService;
 	}
 
 	/**
@@ -85,6 +94,8 @@ public class ViewThreadController implements Controller {
 				TextPost tp = (TextPost)p;
 				tp.setComment(PostLinksAFixARockerJocker.fixMahLinks(tp,true));
 			}
+			
+			controlModel.put("category", categoryService.getCategory(t.getCategory().getIdentifier()));
 			
 			controlModel.put("thread", t);
 			String author = (String)arg0.getSession().getAttribute("author");
