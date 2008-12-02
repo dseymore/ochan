@@ -81,6 +81,7 @@
 		<property name="viewName" value="viewThread" />
 		<property name="threadService" ref="localThreadService" />
 		<property name="postService" ref="localPostService" />
+		<property name="categoryService" ref="localCategoryService" />
 		<!--        FIXME - make the service not injected, but, inject a factory that decides whether local or external service-->
 	</bean>
 	
