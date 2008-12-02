@@ -104,7 +104,7 @@
     #include("/WEB-INF/velocity/style.vm")
     <body>
     	<div class="navigationBox">
-			<a href="$deployment.hostname:$deployment.port">Home</a> >> <a href="openCategory.Ochan?identifier=$category.identifier">$category.name</a>
+			<a href="http://$deployment.hostname:$deployment.port">Home</a> >> <a href="openCategory.Ochan?identifier=$category.identifier">$category.name</a>
 		</div>
     	<div id="newthread">
         </div>
