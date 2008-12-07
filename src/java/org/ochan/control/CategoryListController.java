@@ -181,7 +181,7 @@ public class CategoryListController implements Controller {
 			boolean foundOne = false;
 			//walk backwards until we find one
 			//this handles when there is only one post or less than a lot.
-			for (int i = 1; i < t.getPosts().size() && !foundOne && (
+			for (int i = 1; i <= t.getPosts().size() && !foundOne && (
 					!(p1 !=null && !p1.getParent().getIdentifier().equals(t.getIdentifier())) 
 					|| !(p2 != null && !p2.getParent().getIdentifier().equals(t.getIdentifier())) 
 					|| !(p3 != null && !p3.getParent().getIdentifier().equals(t.getIdentifier()))); i++){
