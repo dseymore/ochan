@@ -3,6 +3,7 @@ package org.ochan.control;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -98,6 +99,14 @@ public class ViewThreadController implements Controller {
 			controlModel.put("category", categoryService.getCategory(t.getCategory().getIdentifier()));
 			
 			controlModel.put("thread", t);
+			
+			//lets play with cookies to remember the author name
+			for(Cookie cookie : arg0.getCookies()){
+				if ("ochanAuthor".equals(cookie.getName())){
+					arg0.getSession().setAttribute("author",cookie.getValue());
+				}
+			}
+			
 			String author = (String)arg0.getSession().getAttribute("author");
 			if (StringUtils.isNotEmpty(author)){
 				controlModel.put("author", author);

@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -225,6 +226,15 @@ public class CategoryListController implements Controller {
 		controlModel.put("totalNumberOfThreads", StatsGeneratorJob.getNumberOfThreads());
 		
 		controlModel.put("announcement",announcementService.getAnnouncement());
+		
+		
+		//lets play with cookies to remember the author name
+		for(Cookie cookie : arg0.getCookies()){
+			if ("ochanAuthor".equals(cookie.getName())){
+				arg0.getSession().setAttribute("author",cookie.getValue());
+			}
+		}
+		
 		return new ModelAndView(viewName, controlModel);
 	}
 

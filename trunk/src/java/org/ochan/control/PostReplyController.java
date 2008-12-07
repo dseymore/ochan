@@ -7,6 +7,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -23,6 +24,7 @@ import org.springframework.web.servlet.view.RedirectView;
 public class PostReplyController extends SimpleFormController {
 	
 	private PostService postService;
+    public static final int SECONDS_PER_YEAR = 60*60*24*365;
 	
 	
 	/**
@@ -55,6 +57,20 @@ public class PostReplyController extends SimpleFormController {
 		PostReplyForm prf = (PostReplyForm)command;
 		//save the username in the session.
 		request.getSession().setAttribute("author", prf.getAuthor());
+		
+		boolean found = false;
+		//lets play with cookies to remember the author name
+		for(Cookie cookie : request.getCookies()){
+			if ("ochanAuthor".equals(cookie.getName())){
+				found = true;
+				cookie.setValue(prf.getAuthor());
+			}
+		}
+		if (!found){
+			Cookie cookie = new Cookie("ochanAuthor",prf.getAuthor());
+			cookie.setMaxAge(SECONDS_PER_YEAR);
+			response.addCookie(cookie);
+		}
 		
 		//handle anything that isnt a zip upload
 		if(prf.getZipFile() == null || prf.getZipFile().length == 0){
