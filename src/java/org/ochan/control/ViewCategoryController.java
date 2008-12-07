@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -33,6 +34,9 @@ import org.springframework.web.servlet.view.RedirectView;
 
 public class ViewCategoryController extends SimpleFormController {
     private static final Log LOG = LogFactory.getLog(ViewCategoryController.class);
+    
+    public static final int SECONDS_PER_YEAR = 60*60*24*365;
+
 
     private CategoryService categoryService;
     private ThreadService threadService;
@@ -148,6 +152,20 @@ public class ViewCategoryController extends SimpleFormController {
         ThreadForm tf = (ThreadForm) o;
         //save the username in the session.
         request.getSession().setAttribute("author", tf.getAuthor());
+
+		boolean found = false;
+		//lets play with cookies to remember the author name
+		for(Cookie cookie : request.getCookies()){
+			if ("ochanAuthor".equals(cookie.getName())){
+				found = true;
+				cookie.setValue(tf.getAuthor());
+			}
+		}
+		if (!found){
+			Cookie cookie = new Cookie("ochanAuthor",tf.getAuthor());
+			cookie.setMaxAge(SECONDS_PER_YEAR);
+			response.addCookie(cookie);
+		}
 
         boolean isMultipart = ServletFileUpload.isMultipartContent(request);
         LOG.error("Multipart?: " + isMultipart);
