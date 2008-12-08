@@ -155,10 +155,12 @@ public class ViewCategoryController extends SimpleFormController {
 
 		boolean found = false;
 		//lets play with cookies to remember the author name
-		for(Cookie cookie : request.getCookies()){
-			if ("ochanAuthor".equals(cookie.getName())){
-				found = true;
-				cookie.setValue(tf.getAuthor());
+		if (request.getCookies() != null){
+			for(Cookie cookie : request.getCookies()){
+				if ("ochanAuthor".equals(cookie.getName())){
+					found = true;
+					cookie.setValue(tf.getAuthor());
+				}
 			}
 		}
 		if (!found){

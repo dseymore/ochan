@@ -229,12 +229,13 @@ public class CategoryListController implements Controller {
 		
 		
 		//lets play with cookies to remember the author name
-		for(Cookie cookie : arg0.getCookies()){
-			if ("ochanAuthor".equals(cookie.getName())){
-				arg0.getSession().setAttribute("author",cookie.getValue());
+		if (arg0.getCookies() != null){
+			for(Cookie cookie : arg0.getCookies()){
+				if ("ochanAuthor".equals(cookie.getName())){
+					arg0.getSession().setAttribute("author",cookie.getValue());
+				}
 			}
 		}
-		
 		return new ModelAndView(viewName, controlModel);
 	}
 
