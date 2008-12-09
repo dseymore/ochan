@@ -14,6 +14,7 @@ import org.ochan.entity.Thread;
 import org.ochan.service.CategoryService;
 import org.ochan.service.PostService;
 import org.ochan.service.ThreadService;
+import org.ochan.util.DeploymentConfiguration;
 import org.ochan.util.PostLinksAFixARockerJocker;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
@@ -113,6 +114,8 @@ public class ViewThreadController implements Controller {
 			}else{
 				controlModel.put("author", "Anonymous");
 			}
+			
+			controlModel.put("blockPosts",DeploymentConfiguration.enforcePostLimit(t.getPosts().size()));
 		}else{
 			//dead thread! 404 thing
 			return new ModelAndView("404",controlModel);
