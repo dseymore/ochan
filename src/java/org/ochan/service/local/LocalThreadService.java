@@ -15,6 +15,9 @@ import org.ochan.service.BlobService;
 import org.ochan.service.CategoryService;
 import org.ochan.service.ThreadService;
 import org.springframework.jmx.export.annotation.ManagedAttribute;
+import org.springframework.jmx.export.annotation.ManagedOperation;
+import org.springframework.jmx.export.annotation.ManagedOperationParameter;
+import org.springframework.jmx.export.annotation.ManagedOperationParameters;
 import org.springframework.jmx.export.annotation.ManagedResource;
 
 @ManagedResource(description = "Local Thread Service", objectName = "Ochan:service=local,name=LocalThreadService", logFile = "jmx.log")
@@ -146,6 +149,10 @@ public class LocalThreadService implements ThreadService {
 		threadDAO.create(threadToCreate);
 	}
 
+	@ManagedOperation(description="Delete a Thread (delete the posts first...)!")
+	@ManagedOperationParameters({
+		@ManagedOperationParameter(name="identifier",description="The id of the thread as a Long object (L at the end)")
+	})
 	public void deleteThread(Long identifier) {
 		deleteCount++;
 		threadDAO.delete(identifier);

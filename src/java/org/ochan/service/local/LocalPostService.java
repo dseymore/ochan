@@ -13,6 +13,9 @@ import org.ochan.service.BlobService;
 import org.ochan.service.PostService;
 import org.ochan.service.ThreadService;
 import org.springframework.jmx.export.annotation.ManagedAttribute;
+import org.springframework.jmx.export.annotation.ManagedOperation;
+import org.springframework.jmx.export.annotation.ManagedOperationParameter;
+import org.springframework.jmx.export.annotation.ManagedOperationParameters;
 import org.springframework.jmx.export.annotation.ManagedResource;
 
 @ManagedResource(description = "Local Post Service", objectName = "Ochan:service=local,name=LocalPostService", logFile = "jmx.log")
@@ -135,6 +138,10 @@ public class LocalPostService implements PostService {
 	/**
 	 * @see org.ochan.service.PostService#deletePost(java.lang.Long)
 	 */
+	@ManagedOperation(description="Delete a Post!")
+	@ManagedOperationParameters({
+		@ManagedOperationParameter(name="identifier",description="The id of the post as a Long object (L at the end)")
+	})
 	public void deletePost(Long identifier) {
 		deleteCount++;
 		Post p = getPost(identifier);
