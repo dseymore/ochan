@@ -76,7 +76,6 @@
 		<servlet-name>velocity</servlet-name>
 		<url-pattern>*.vm</url-pattern>
 	</servlet-mapping>
-	
 
 	<servlet>
 		<servlet-name>Ochan</servlet-name>
@@ -87,6 +86,20 @@
 		<servlet-name>Ochan</servlet-name>
 		<url-pattern>*.Ochan</url-pattern>
 	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>Ochan</servlet-name>
+		<url-pattern>/chan/*</url-pattern>
+	</servlet-mapping>
+	<filter>
+    	<filter-name>PathParameterFilter</filter-name>
+    	<filter-class>carbonfive.spring.web.pathparameter.ParameterizedPathFilter</filter-class>
+  	</filter>
+	<filter-mapping>
+    	<filter-name>PathParameterFilter</filter-name>
+    	<url-pattern>/chan/*</url-pattern>
+  	</filter-mapping>
+	
+	
 	<!-- so that the welcome calls the servlet -->
 	<servlet-mapping>
 		<servlet-name>Ochan</servlet-name>

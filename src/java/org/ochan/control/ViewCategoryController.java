@@ -103,6 +103,10 @@ public class ViewCategoryController extends SimpleFormController {
 
     @Override
     protected ModelAndView showForm(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, BindException e, Map map) throws Exception {
+    	if (StringUtils.isEmpty(httpServletRequest.getParameter("identifier"))){
+    		return new ModelAndView(new RedirectView("/categoryList.Ochan"));
+    	}
+    	
         Map controlModel = new HashMap();
         Long identifier = Long.valueOf(httpServletRequest.getParameter("identifier"));
         Category cat = categoryService.getCategory(identifier);
@@ -138,7 +142,10 @@ public class ViewCategoryController extends SimpleFormController {
                 controlModel.put("author", "Anonymous");
             }
             
-            controlModel.put("blockPosts",DeploymentConfiguration.enforceThreadLimit(cat.getThreads().size()));
+            //categories, unlike threads, can have 0 children.
+            if (cat.getThreads() != null){
+            	controlModel.put("blockPosts",DeploymentConfiguration.enforceThreadLimit(cat.getThreads().size()));
+            }
         } else {
             //dead category! 404 thing
             return new ModelAndView("404", controlModel);

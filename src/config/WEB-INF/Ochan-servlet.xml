@@ -55,6 +55,25 @@
 		</property>
 	</bean>
 	
+	<!-- 
+	/ = categoryList
+	/chan/X/ = category X (viewCategoryController) 
+	/chan/thread/42/ = Category X thread 42 (viewThreadController)
+	/chan/img/42 = Image 42 (thumbnailController) (still have to pass thumb as parameter)
+	/chan/zip/42 = zip of thread 42
+	 -->
+	<bean class="carbonfive.spring.web.pathparameter.ParameterizedUrlHandlerMapping">
+	   <property name="alwaysUseFullPath" value="true"/>
+		<property name="mappings">
+			<props>
+				<prop key="/chan/(*:identifier)">viewCategoryController</prop>
+				<prop key="/chan/thread/(*:identifier)">viewThreadController</prop>
+				<prop key="/chan/img/(*:identifier)">thumbnailController</prop>
+				<prop key="/chan/zip/(*:identifier)">zipController</prop>
+			</props>
+		</property>
+	</bean>
+	
 	<bean name="postReplyController" class="org.ochan.control.PostReplyController">
 		<property name="commandName" value="command" />
 		<property name="commandClass" value="org.ochan.form.PostReplyForm" />

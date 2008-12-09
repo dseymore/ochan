@@ -203,7 +203,7 @@
 	        	var row = document.createElement("tr");
 	        	var cell1 = document.createElement("td");
 	        	if (type == 'IMAGE'){
-	        		cell1.innerHTML = "<a href=\"#springUrl('/thumb.Ochan')?identifier=" + id + "\"><img src=\"#springUrl('/thumb.Ochan')?identifier=" + id + "&thumb=true\"></a>";
+	        		cell1.innerHTML = "<a href=\"#springUrl('/chan/img/')" + id + "\"><img src=\"#springUrl('/chan/img/')" + id + "?thumb=true\"></a>";
 	        	}
 	        	var cell2 = document.createElement("td");
 	        	cell2.innerHTML = comment;
@@ -237,13 +237,13 @@
 	#include("/WEB-INF/velocity/style.vm")
 	<body id="body">
 		<div class="navigationBox">
-			<a href="http://$deployment.hostname:$deployment.port">Home</a> >> <a href="openCategory.Ochan?identifier=$category.identifier">$category.name</a> >> <a href="viewThread.Ochan?identifier=$thread.identifier">$thread.identifier</a>
+			<a href="http://$deployment.hostname:$deployment.port">Home</a> >> <a href="#springUrl('/chan/')$category.identifier">$category.name</a> >> <a href="#springUrl('/chan/thread/')$thread.identifier">$thread.identifier</a>
 		</div>
 		#if (!$blockPosts)
 		<div id="reply"></div>
 		#end
 		<ul>
-			<li>[<a href="zip.Ochan?identifier=$thread.identifier">Export</a>]</li>
+			<li>[<a href="#springUrl('/chan/zip/')$thread.identifier">Export</a>]</li>
 			<li>[<a id="deletelink" href="#" onclick="javascript:deleteThread('val')">
 				#if ($thread.deleteDate)Undelete#end
 				#if (!$thread.deleteDate)Delete#end
@@ -266,7 +266,7 @@
 					<tr>
 					#if ($post.getClass().getName() == 'org.ochan.entity.ImagePost')
 						<td>
-							<a href="#springUrl('/thumb.Ochan')?identifier=$post.identifier"><img src="#springUrl('/thumb.Ochan')?identifier=$post.identifier&thumb=true"></a>
+							<a href="#springUrl('/chan/img/')$post.identifier"><img src="#springUrl('/chan/img/')$post.identifier?thumb=true"></a>
 						</td>
 					#end
 						<td>
