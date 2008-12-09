@@ -129,11 +129,13 @@ public class ViewCategoryController extends SimpleFormController {
             }
             controlModel.put("category", cat);
             //lets play with cookies to remember the author name
-			for(Cookie cookie : httpServletRequest.getCookies()){
-				if ("ochanAuthor".equals(cookie.getName())){
-					httpServletRequest.getSession().setAttribute("author",cookie.getValue());
+            if (httpServletRequest.getCookies() != null){
+				for(Cookie cookie : httpServletRequest.getCookies()){
+					if ("ochanAuthor".equals(cookie.getName())){
+						httpServletRequest.getSession().setAttribute("author",cookie.getValue());
+					}
 				}
-			}
+            }
             
             String author = (String) httpServletRequest.getSession().getAttribute("author");
             if (StringUtils.isNotEmpty(author)) {
