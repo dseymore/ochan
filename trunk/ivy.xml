@@ -62,6 +62,7 @@
 		<dependency org="com.sun.xml.bind" name="jaxb-xjc" rev="2.1.7" conf="default->default"/>
 		<dependency org="com.sun.xml" name="jaxb-impl" rev="2.1.7" conf="default->default"/>
 		<dependency org="net.sf.ehcache" name="ehcache" rev="1.2.3" conf="default->default"/>
+		<dependency org="carbonfive" name="pathparameter" rev="r686" conf="default->default"/>
     </dependencies>
 </ivy-module>
 

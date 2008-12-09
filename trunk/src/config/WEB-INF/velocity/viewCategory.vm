@@ -104,7 +104,7 @@
     #include("/WEB-INF/velocity/style.vm")
     <body>
     	<div class="navigationBox">
-			<a href="http://$deployment.hostname:$deployment.port">Home</a> >> <a href="openCategory.Ochan?identifier=$category.identifier">$category.name</a>
+			<a href="http://$deployment.hostname:$deployment.port">Home</a> >> <a href="#springUrl('/chan/')$category.identifier">$category.name</a>
 		</div>
 		#if (!$blockPosts)
     	<div id="newthread">
@@ -122,7 +122,7 @@
 			#end
 
 			<div>
-				Started: $thread.startDate [<a href="viewThread.Ochan?identifier=$thread.identifier">Reply</a>] [<a href="zip.Ochan?identifier=$thread.identifier">Export</a>] <i>$allPostsCount posts and $allImagePostsCount images.</i><br>
+				Started: $thread.startDate [<a href="#springUrl('/chan/thread/')$thread.identifier">Reply</a>] [<a href="#springUrl('/chan/zip/')$thread.identifier">Export</a>] <i>$allPostsCount posts and $allImagePostsCount images.</i><br>
 				#if ($thread.deleteDate) <span style="color: red">Thread marked for deletion</span>#end
 				#foreach($post in $thread.posts)
 					<!-- Only print the first and last post to the thread -->
@@ -135,7 +135,7 @@
 							<tr>
 								#if ($post.getClass().getName() == 'org.ochan.entity.ImagePost')
 								<td>
-									<a href="#springUrl('/thumb.Ochan')?identifier=$post.identifier"><img src="#springUrl('/thumb.Ochan')?identifier=$post.identifier&thumb=true"></a>
+									<a href="#springUrl('/chan/img/')$post.identifier"><img src="#springUrl('/chan/img/')$post.identifier?thumb=true"></a>
 								</td>
 								#end
 								<td valign="top">
