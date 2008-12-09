@@ -23,6 +23,7 @@ import org.ochan.service.CategoryService;
 import org.ochan.service.PostService;
 import org.ochan.service.ThreadService;
 import org.ochan.service.ThreadService.ThreadCriteria;
+import org.ochan.util.DeploymentConfiguration;
 import org.ochan.util.PostLinksAFixARockerJocker;
 import org.ochan.util.RemoteFileGrabber;
 import org.springframework.validation.BindException;
@@ -123,12 +124,21 @@ public class ViewCategoryController extends SimpleFormController {
                 Collections.sort(cat.getThreads());
             }
             controlModel.put("category", cat);
+            //lets play with cookies to remember the author name
+			for(Cookie cookie : httpServletRequest.getCookies()){
+				if ("ochanAuthor".equals(cookie.getName())){
+					httpServletRequest.getSession().setAttribute("author",cookie.getValue());
+				}
+			}
+            
             String author = (String) httpServletRequest.getSession().getAttribute("author");
             if (StringUtils.isNotEmpty(author)) {
                 controlModel.put("author", author);
             } else {
                 controlModel.put("author", "Anonymous");
             }
+            
+            controlModel.put("blockPosts",DeploymentConfiguration.enforceThreadLimit(cat.getThreads().size()));
         } else {
             //dead category! 404 thing
             return new ModelAndView("404", controlModel);

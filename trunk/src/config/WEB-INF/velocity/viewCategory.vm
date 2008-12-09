@@ -106,8 +106,10 @@
     	<div class="navigationBox">
 			<a href="http://$deployment.hostname:$deployment.port">Home</a> >> <a href="openCategory.Ochan?identifier=$category.identifier">$category.name</a>
 		</div>
+		#if (!$blockPosts)
     	<div id="newthread">
         </div>
+        #end
         #foreach($thread in ${category.threads})
 			<!-- lets do the match first -->
 			#set($allPostsCount = 0)

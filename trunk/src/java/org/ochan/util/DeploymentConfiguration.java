@@ -13,8 +13,9 @@ public class DeploymentConfiguration {
 	static final String DEFAULT_HOSTNAME = "localhost";
 	static final String DEFAULT_PORT = "8080";
 	static final String DEFAULT_TITLE = "Ochan (http://code.google.com/p/ochan)";
-	
-	
+	static final String POST_LIMIT = "-1";
+	static final String THREAD_LIMIT = "-1";
+		
 	/**
 	 * @return the hostname
 	 */
@@ -71,5 +72,61 @@ public class DeploymentConfiguration {
 		DeploymentConfiguration deploymentConfiguration = new DeploymentConfiguration();
 		return deploymentConfiguration.getTitle();
 	}
+	
+	/**
+	 * @return the postLimit
+	 */
+	@ManagedAttribute(description="The maximum number of posts in a thread before disabling posting")
+	public String getPostLimit() {
+		return PREFERENCES.get("postLimit", POST_LIMIT);
+	}
+	/**
+	 * @param postLimit the postLimit to set
+	 */
+	@ManagedAttribute(description="The maximum number of posts in a thread before disabling posting")
+	public void setPostLimit(String postLimit) {
+		Long.valueOf(postLimit);
+		PREFERENCES.put("postLimit",postLimit);
+	}
+	/**
+	 * @return the threadLimit
+	 */
+	@ManagedAttribute(description="The maximum number of threads in a category before disabling posting")
+	public String getThreadLimit() {
+		return PREFERENCES.get("threadLimit", THREAD_LIMIT);
+	}
+	/**
+	 * @param threadLimit the threadLimit to set
+	 */
+	@ManagedAttribute(description="The maximum number of threads in a category before disabling posting")
+	public void setThreadLimit(String threadLimit) {
+		Long.valueOf(threadLimit);
+		PREFERENCES.put("threadLimit",threadLimit);
+	}
+	/**
+	 * Helper method to test whether to enforce post limit
+	 * @param count
+	 * @return
+	 */
+	public static boolean enforcePostLimit(int count){
+		DeploymentConfiguration dc = new DeploymentConfiguration();
+		if (!"-1".equals(dc.getPostLimit()) && Long.valueOf(dc.getPostLimit()).longValue() <= count){
+			return true;
+		}
+		return false;
+	}
+	/**
+	 * Helper method to test whether to enforce thread limit
+	 * @param count
+	 * @return
+	 */
+	public static boolean enforceThreadLimit(int count){
+		DeploymentConfiguration dc = new DeploymentConfiguration();
+		if (!"-1".equals(dc.getThreadLimit()) && Long.valueOf(dc.getThreadLimit()).longValue() <= count){
+			return true;
+		}
+		return false;
+	}
+	
 	
 }

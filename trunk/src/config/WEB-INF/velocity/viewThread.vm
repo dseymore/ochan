@@ -239,7 +239,9 @@
 		<div class="navigationBox">
 			<a href="http://$deployment.hostname:$deployment.port">Home</a> >> <a href="openCategory.Ochan?identifier=$category.identifier">$category.name</a> >> <a href="viewThread.Ochan?identifier=$thread.identifier">$thread.identifier</a>
 		</div>
+		#if (!$blockPosts)
 		<div id="reply"></div>
+		#end
 		<ul>
 			<li>[<a href="zip.Ochan?identifier=$thread.identifier">Export</a>]</li>
 			<li>[<a id="deletelink" href="#" onclick="javascript:deleteThread('val')">
