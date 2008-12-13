@@ -279,7 +279,7 @@ public class ThreadCollectionAdapter extends AbstractEntityCollectionAdapter<Thr
 	@Override
 	protected String getLink(String name, Thread entryObj, IRI feedIri, RequestContext request) {
 		DeploymentConfiguration config = new DeploymentConfiguration(); 
-		String link = "http://"+config.getHostname() + ":" + config.getPort() + "/viewThread.Ochan?identifier="+entryObj.getIdentifier();
+		String link = "http://"+config.getHostname() + ":" + config.getPort() + "/chan/thread/" +entryObj.getIdentifier();
 		return link;
 	}
 
