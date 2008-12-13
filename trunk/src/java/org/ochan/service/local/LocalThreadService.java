@@ -11,6 +11,7 @@ import org.ochan.entity.ImagePost;
 import org.ochan.entity.Post;
 import org.ochan.entity.TextPost;
 import org.ochan.entity.Thread;
+import org.ochan.job.DeleteThreadJob;
 import org.ochan.service.BlobService;
 import org.ochan.service.CategoryService;
 import org.ochan.service.ThreadService;
@@ -156,6 +157,20 @@ public class LocalThreadService implements ThreadService {
 	public void deleteThread(Long identifier) {
 		deleteCount++;
 		threadDAO.delete(identifier);
+	}
+	
+
+	@ManagedOperation(description="Unlock a locked thread & reset it's count")
+	@ManagedOperationParameters({
+		@ManagedOperationParameter(name="identifier",description="The id of the thread as a Long object (L at the end)")
+	})
+	public void unlockAndResetThread(Long identifier) {
+		Thread t = getThread(identifier);
+		if (t != null && DeleteThreadJob.isDeleteLocked(t.getDeleteCount())){
+			t.setDeleteCount(null);
+			t.setDeleteDate(null);
+			updateThread(t);
+		}
 	}
 
 	public Thread getThread(Long identifier) {

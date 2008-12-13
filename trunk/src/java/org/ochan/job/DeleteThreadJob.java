@@ -18,6 +18,9 @@ import org.quartz.JobExecutionContext;
 import org.quartz.StatefulJob;
 import org.springframework.context.ApplicationContext;
 import org.springframework.jmx.export.annotation.ManagedAttribute;
+import org.springframework.jmx.export.annotation.ManagedOperation;
+import org.springframework.jmx.export.annotation.ManagedOperationParameter;
+import org.springframework.jmx.export.annotation.ManagedOperationParameters;
 import org.springframework.jmx.export.annotation.ManagedResource;
 
 @ManagedResource(description = "Delete Thread Background Job", objectName = "Ochan:type=job,name=DeleteThreadJob", logFile = "jmx.log")
@@ -69,8 +72,11 @@ public class DeleteThreadJob extends ManagedQuartzJobBean implements StatefulJob
 			Long now = new Date().getTime();
 			if (deleteables != null){
 				for (Thread t: deleteables){
-					if (t.getDeleteDate() != null && t.getDeleteDate().getTime() + Long.valueOf(getDeleteWaitTime()).longValue() < now){
+					if (t.getDeleteDate() != null 
+							&& t.getDeleteDate().getTime() + Long.valueOf(getDeleteWaitTime()).longValue() < now 
+							&& !DeleteThreadJob.isDeleteLocked(t.getDeleteCount())){
 						//if it has a delete date, and IT + the window to undo are less than now, its expired.. time to delete.
+						//AND it isnt locked
 						LOG.info("Deleting thread: " +  t.getIdentifier());
 						List<Post> posts = postService.retrieveThreadPosts(t);
 						for (Post p: posts){
@@ -144,7 +150,18 @@ public class DeleteThreadJob extends ManagedQuartzJobBean implements StatefulJob
 		}
 	}
 	
-	
-	
-	
+	/**
+	 * Given the current lock count of a thread, confirms or denies its lock status.
+	 * @param currentCount
+	 * @return
+	 */
+	public static boolean isDeleteLocked(Long currentCount){
+		DeleteThreadJob dtj = new DeleteThreadJob();
+		Long lockThreshold = Long.valueOf(dtj.getDeleteMarksBeforeLock());
+		if (currentCount == null || lockThreshold == null){
+			return false;
+		}
+		return currentCount.longValue() > lockThreshold.longValue();
+	}
+		
 }
