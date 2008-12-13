@@ -74,11 +74,18 @@ public class ThreadSupportImpl implements ThreadSupport {
 	public RemoteThread status(@PathParam("threadId") String id) {
 		LOG.info("getting status for " + id);
 		Thread thread = threadService.getThread(Long.valueOf(id));
-		RemoteThread remoteThread = new RemoteThread(thread.getDeleteCount(), thread.getDeleteDate(), null, thread.getIdentifier(), DeleteThreadJob.isDeleteLocked(thread.getDeleteCount()));
-		return remoteThread;
+		//we may have had a thread delete while someone watched it. 
+		if (thread != null){
+			RemoteThread remoteThread = new RemoteThread(thread.getDeleteCount(), thread.getDeleteDate(), null, thread.getIdentifier(), DeleteThreadJob.isDeleteLocked(thread.getDeleteCount()));
+			return remoteThread;
+		}
+		return null;
 	}
 
-	
+
+	/**
+	 * Supports TOAST on the main page.
+	 */
 	@Override
 	@ProduceMime("application/json")
 	@GET
