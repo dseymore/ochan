@@ -155,12 +155,15 @@
 	        			//now we have the stuff
 	        			if (result.RemoteThread.identifier != -1){
 	        				deleteLink = document.getElementById('deletelink');
-	        				if (result.RemoteThread.deleteDate != null){
-	        					deleteLink.innerHTML = 'Undelete ' + result.RemoteThread.deleteCount;
+	        				if (result.RemoteThread.locked){
+	        					deleteLink.innerHTML = 'Thread Locked';
 	        				}else{
-	        					deleteLink.innerHTML = 'Delete ' + result.RemoteThread.deleteCount;
+		        				if (result.RemoteThread.deleteDate != null){
+		        					deleteLink.innerHTML = 'Undelete ' + result.RemoteThread.deleteCount;
+		        				}else{
+		        					deleteLink.innerHTML = 'Delete ' + result.RemoteThread.deleteCount;
+		        				}
 	        				}
-	        				
 	        			}
 	        		}
 	        	});
@@ -175,14 +178,18 @@
 	        			var result = Ext.util.JSON.decode(resp.responseText);
 	        			if (result.RemoteThread.identifier != -1){
 	        				deleteLink = document.getElementById('deletelink');
-	        				if (result.RemoteThread.deleteDate != null){
-	        					deleteLink.innerHTML = 'Undelete';
+	        				if (result.RemoteThread.locked){
+	        					deleteLink.innerHTML = 'Thread Locked';
 	        				}else{
-	        					deleteLink.innerHTML = 'Delete';
-	        				}
-	        				if (result.RemoteThread.deleteCount){
-	        					deleteLink.innerHTML = deleteLink.innerHTML + ' ' + result.RemoteThread.deleteCount;
-	        				}
+		        				if (result.RemoteThread.deleteDate != null){
+		        					deleteLink.innerHTML = 'Undelete';
+		        				}else{
+		        					deleteLink.innerHTML = 'Delete';
+		        				}
+		        				if (result.RemoteThread.deleteCount){
+		        					deleteLink.innerHTML = deleteLink.innerHTML + ' ' + result.RemoteThread.deleteCount;
+		        				}
+		        			}
 	        			}
 	        		}
 	        	});

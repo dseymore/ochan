@@ -11,17 +11,19 @@ public class RemoteThread {
 	private Date deleteDate;
 	private Long deleteCount;
 	private RemotePost firstPost;
+	private boolean locked; 
 	
 	public RemoteThread(){
 		
 	}
 	
-	public RemoteThread(Long deleteCount, Date deleteDate, RemotePost firstPost, Long identifier) {
+	public RemoteThread(Long deleteCount, Date deleteDate, RemotePost firstPost, Long identifier, boolean locked) {
 		super();
 		this.deleteCount = deleteCount;
 		this.deleteDate = deleteDate;
 		this.firstPost = firstPost;
 		this.identifier = identifier;
+		this.locked = locked;
 	}
 
 	/**
@@ -73,6 +75,20 @@ public class RemoteThread {
 	 */
 	public void setFirstPost(RemotePost firstPost) {
 		this.firstPost = firstPost;
+	}
+
+	/**
+	 * @return the locked
+	 */
+	public boolean isLocked() {
+		return locked;
+	}
+
+	/**
+	 * @param locked the locked to set
+	 */
+	public void setLocked(boolean locked) {
+		this.locked = locked;
 	}
 	
 	

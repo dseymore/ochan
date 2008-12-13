@@ -14,6 +14,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.ochan.entity.Post;
 import org.ochan.entity.Thread;
+import org.ochan.job.DeleteThreadJob;
 import org.ochan.service.PostService;
 import org.ochan.service.ThreadService;
 import org.ochan.service.ThreadService.ThreadCriteria;
@@ -62,7 +63,7 @@ public class ThreadSupportImpl implements ThreadSupport {
 		thread.setDeleteCount(Long.valueOf(count.longValue() + 1));
 		threadService.updateThread(thread);
 
-		RemoteThread remoteThread = new RemoteThread(thread.getDeleteCount(), thread.getDeleteDate(), null, thread.getIdentifier());
+		RemoteThread remoteThread = new RemoteThread(thread.getDeleteCount(), thread.getDeleteDate(), null, thread.getIdentifier(), DeleteThreadJob.isDeleteLocked(thread.getDeleteCount()));
 		return remoteThread;
 	}
 
@@ -73,7 +74,7 @@ public class ThreadSupportImpl implements ThreadSupport {
 	public RemoteThread status(@PathParam("threadId") String id) {
 		LOG.info("getting status for " + id);
 		Thread thread = threadService.getThread(Long.valueOf(id));
-		RemoteThread remoteThread = new RemoteThread(thread.getDeleteCount(), thread.getDeleteDate(), null, thread.getIdentifier());
+		RemoteThread remoteThread = new RemoteThread(thread.getDeleteCount(), thread.getDeleteDate(), null, thread.getIdentifier(), DeleteThreadJob.isDeleteLocked(thread.getDeleteCount()));
 		return remoteThread;
 	}
 
@@ -93,7 +94,7 @@ public class ThreadSupportImpl implements ThreadSupport {
 				if (posts.size() > 0){
 					RemotePost toReturnPost = new RemotePost(posts.get(0));
 					RemoteThread toReturn = new RemoteThread(thread.getDeleteCount(), 
-							thread.getDeleteDate(), toReturnPost, thread.getIdentifier());
+							thread.getDeleteDate(), toReturnPost, thread.getIdentifier(), DeleteThreadJob.isDeleteLocked(thread.getDeleteCount()));
 					return toReturn;
 				}
 			}
