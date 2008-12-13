@@ -122,7 +122,7 @@
 			#end
 
 			<div>
-				Started: $thread.startDate [<a href="#springUrl('/chan/thread/')$thread.identifier">Reply</a>] [<a href="#springUrl('/chan/zip/')$thread.identifier">Export</a>] <i>$allPostsCount posts and $allImagePostsCount images.</i><br>
+				Started: $thread.startDate [<a href="#springUrl('/chan/thread/')$thread.identifier">View Entire Thread</a>] [<a href="#springUrl('/chan/zip/')$thread.identifier">Export</a>] <i>$allPostsCount posts and $allImagePostsCount images.</i><br>
 				#if ($thread.deleteDate) <span style="color: red">Thread marked for deletion</span>#end
 				#foreach($post in $thread.posts)
 					<!-- Only print the first and last post to the thread -->
