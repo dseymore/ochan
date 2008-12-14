@@ -1,9 +1,10 @@
 <html>
     <head>
+	<META HTTP-EQUIV="Pragma" CONTENT="no-cache">
         <title>$deployment.getSystemTitle()</title>
         <!-- ext js -->
-        <script type="text/javascript" src="#springUrl('/extjs/adapter/ext/ext-base.js')"></script>
-        <script language="javascript" type="text/javascript" src="#springUrl('/extjs/ext-all-debug.js')"></script>
+	<script type="text/javascript" src="#springUrl('/extjs/adapter/ext/ext-base.js')"></script>
+        <script language="javascript" type="text/javascript" src="#springUrl('/extjs/ext-all.js')"></script>
         <!-- Include Ext stylesheets here: -->
         <link rel="stylesheet" type="text/css" href="#springUrl('/extjs/resources/css/ext-all.css')">
         <script language="javascript" type="text/javascript">
@@ -106,9 +107,21 @@
     	<div class="navigationBox">
 			<a href="http://$deployment.hostname:$deployment.port">Home</a> >> <a href="#springUrl('/chan/')$category.identifier">$category.name</a>
 		</div>
-		#if (!$blockPosts)
+	#if (!$blockPosts)
     	<div id="newthread">
         </div>
+	<div style="display: none;">
+		<form action="/openCategory.Ochan" method="POST">
+			<input type="hidden" name="identifier" value="${category.identifier}"/>
+			<input type="hidden" name="categoryIdentifier" value="${category.identifier}"/>
+			<input type="hidden" name="email" value=""/>
+			<input type="hidden" name="url" value=""/>
+			<input type="text" name="author" value="${author}"><br>
+			<input type="text" name="subject">
+			<textarea name="comment"></textarea>
+			<input type="submit"/>
+		</form>
+	</div>
         #end
         #foreach($thread in ${category.threads})
 			<!-- lets do the match first -->

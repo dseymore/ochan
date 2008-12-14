@@ -1,9 +1,10 @@
 <html>
 	<head>
+		<META HTTP-EQUIV="Pragma" CONTENT="no-cache">
 		<title>$deployment.getSystemTitle()</title>
 		<!-- ext js -->
 		<script type="text/javascript" src="#springUrl('/extjs/adapter/ext/ext-base.js')"></script>
-		<script language="javascript" type="text/javascript" src="#springUrl('/extjs/ext-all-debug.js')"></script>
+		<script language="javascript" type="text/javascript" src="#springUrl('/extjs/ext-all.js')"></script>
     	<!-- Include Ext stylesheets here: -->
 	    <link rel="stylesheet" type="text/css" href="#springUrl('/extjs/resources/css/ext-all.css')">
 	    <script language="javascript" type="text/javascript" src="#springUrl('/quoting.js')"></script>
@@ -248,6 +249,18 @@
 		</div>
 		#if (!$blockPosts)
 		<div id="reply"></div>
+		<div style="display: none;">
+        	        <form action="/postReply.Ochan" method="POST">
+               		<input type="hidden" name="parent" value="${thread.identifier}"/>
+	                        <input type="hidden" name="email" value=""/>
+                	        <input type="hidden" name="url" value=""/>
+        	                <input type="text" name="author" value="${author}"><br>
+                       		<input type="text" name="subject">
+	                        <textarea name="comment"></textarea>
+        	                <input type="submit"/>
+                	</form>
+	        </div>
+
 		#end
 		<ul>
 			<li>[<a href="#springUrl('/chan/zip/')$thread.identifier">Export</a>]</li>
