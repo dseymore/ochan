@@ -1,5 +1,6 @@
 <html>
 	<head>
+		<link REL="SHORTCUT ICON" HREF="#springUrl('/favicon.png')">
 		<!-- ext js -->
 		<script type="text/javascript" src="#springUrl('/extjs/adapter/ext/ext-base.js')"></script>
 		<script language="javascript" type="text/javascript" src="#springUrl('/extjs/ext-all-debug.js')"></script>
