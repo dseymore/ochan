@@ -20,6 +20,7 @@ import org.ochan.service.ThreadService;
 import org.ochan.service.ThreadService.ThreadCriteria;
 import org.ochan.service.remote.model.RemotePost;
 import org.ochan.service.remote.model.RemoteThread;
+import org.springframework.jmx.export.annotation.ManagedAttribute;
 
 @Path("/thread/")
 public class ThreadSupportImpl implements ThreadSupport {
@@ -29,6 +30,8 @@ public class ThreadSupportImpl implements ThreadSupport {
 	private ThreadService threadService;
 	private PostService postService;
 
+	private static Long NEXT_THREAD_GET_COUNT = new Long(0);
+	
 	/**
 	 * @param threadService
 	 *            the threadService to set
@@ -42,6 +45,14 @@ public class ThreadSupportImpl implements ThreadSupport {
 	 */
 	public void setPostService(PostService postService) {
 		this.postService = postService;
+	}
+	
+	/**
+	 * @return the nextGetCount
+	 */
+	@ManagedAttribute(description="The number of calls received for a next thread. This is used by the ActiveWatcherCounterJob to determine how many watcher windows are open.")
+	public Long getNextGetCount() {
+		return NEXT_THREAD_GET_COUNT;
 	}
 
 	@Override
@@ -91,6 +102,7 @@ public class ThreadSupportImpl implements ThreadSupport {
 	@GET
 	@Path("/next/{threadId}/")
 	public RemoteThread next(@PathParam("threadId") String threadId){
+		NEXT_THREAD_GET_COUNT++;
 		try{
 			Map<ThreadCriteria, Object> criteria = new HashMap<ThreadCriteria, Object>();
 			criteria.put(ThreadCriteria.NEWERTHAN, Long.valueOf(threadId));

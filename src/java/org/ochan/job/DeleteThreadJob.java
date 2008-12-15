@@ -18,9 +18,6 @@ import org.quartz.JobExecutionContext;
 import org.quartz.StatefulJob;
 import org.springframework.context.ApplicationContext;
 import org.springframework.jmx.export.annotation.ManagedAttribute;
-import org.springframework.jmx.export.annotation.ManagedOperation;
-import org.springframework.jmx.export.annotation.ManagedOperationParameter;
-import org.springframework.jmx.export.annotation.ManagedOperationParameters;
 import org.springframework.jmx.export.annotation.ManagedResource;
 
 @ManagedResource(description = "Delete Thread Background Job", objectName = "Ochan:type=job,name=DeleteThreadJob", logFile = "jmx.log")

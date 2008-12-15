@@ -133,7 +133,7 @@
     	<property name="cronExpression" value="0 */1 * * * ?" />
 	</bean>
 	<bean name="activeThreadsJob" class="org.springframework.scheduling.quartz.JobDetailBean">
-        <property name="jobClass" value="org.ochan.job.ActiveThreadCounterJob"/>
+        <property name="jobClass" value="org.ochan.job.ActiveWatcherCounterJob"/>
     </bean>
     <!-- stats generation job.. for like.. total content counter.. yay! -->
     <bean id="statsGeneratorTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
@@ -146,7 +146,7 @@
     </bean>
     
     <!--  expose schedule config through JMX -->
-	<bean class="org.ochan.job.ActiveThreadCounterJob"/>
+	<bean class="org.ochan.job.ActiveWatcherCounterJob"/>
 	<bean class="org.ochan.job.DeleteThreadJob"/>
 	<bean class="org.ochan.job.StatsGeneratorJob"/>
 
