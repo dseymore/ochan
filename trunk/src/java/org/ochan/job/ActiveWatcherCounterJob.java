@@ -6,6 +6,7 @@ import java.util.prefs.Preferences;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.ochan.service.remote.webservice.PostListImpl;
+import org.ochan.service.remote.webservice.ThreadSupportImpl;
 import org.ochan.util.ManagedQuartzJobBean;
 import org.quartz.JobExecutionContext;
 import org.quartz.StatefulJob;
@@ -13,17 +14,17 @@ import org.springframework.jmx.export.annotation.ManagedAttribute;
 import org.springframework.jmx.export.annotation.ManagedResource;
 
 /**
- * This class queries the PostList restful service to see how many requests its
+ * This class queries the PostList & ThreadSupport restful services to see how many requests its
  * served... and then does the math to estimate the number of thread watchers
  * currently operating.
  * 
  * @author David Seymore Jul 27, 2008
  */
-@ManagedResource(description = "Active Thread Watcher Service", objectName = "Ochan:type=job,name=ActiveThreadWatcher", logFile = "jmx.log")
-public class ActiveThreadCounterJob extends ManagedQuartzJobBean implements StatefulJob {
+@ManagedResource(description = "Active Watcher Counter Service", objectName = "Ochan:type=job,name=ActiveWatcherCounter", logFile = "jmx.log")
+public class ActiveWatcherCounterJob extends ManagedQuartzJobBean implements StatefulJob {
 
-	private static final Log LOG = LogFactory.getLog(ActiveThreadCounterJob.class.getName());
-	private static Preferences PREFERENCES = Preferences.userNodeForPackage(ActiveThreadCounterJob.class);
+	private static final Log LOG = LogFactory.getLog(ActiveWatcherCounterJob.class.getName());
+	private static Preferences PREFERENCES = Preferences.userNodeForPackage(ActiveWatcherCounterJob.class);
 
 	/**
 	 * the length of time between each thread watchers request
@@ -31,36 +32,44 @@ public class ActiveThreadCounterJob extends ManagedQuartzJobBean implements Stat
 	public static long REQUEST_REST_LENGTH = 10000;
 	
 	private static Long lastWatcherAmount = new Long(0);
+	private static Long lastSitterAmount = new Long(0);
 	
 	//place to store the last starting point
-	private static Long lastGetCount = new Long(0);
+	private static Long lastThreadGetCount = new Long(0);
+	private static Long lastMainGetCount = new Long(0);
 	private static Long lastGetTime = new Date().getTime();
 	
 	
 
 	// staticly held because we only care about reaching a static property
 	private static PostListImpl postList = new PostListImpl();
+	private static ThreadSupportImpl threadList = new ThreadSupportImpl();
 
 	@Override
 	public void executeOnSchedule(JobExecutionContext context) {
 		LOG.info("Job running");
-		Long currentCount = postList.getNextGetCount();
+		Long currentThreadCount = postList.getNextGetCount();
+		Long currentMainCount = threadList.getNextGetCount();
 		long now = new Date().getTime();
-		if (lastGetCount.longValue() != 0){
+		if (lastThreadGetCount.longValue() != 0){
 			//how many have there been?
-			long difference = currentCount.longValue() - lastGetCount.longValue();
+			long differenceThread = currentThreadCount.longValue() - lastThreadGetCount.longValue();
+			long differenceMain = currentMainCount.longValue() - lastMainGetCount.longValue();
 			long timeframe = now - lastGetTime;
 			long divisor = timeframe / REQUEST_REST_LENGTH;
 			if (divisor == 1){
 				//if its only been the time it takes for a recycle, then its just the number of gets
 				//this is HIGHLY unlikely though.. and is a shitty job schedule to be running (not to mention expensive)
-				lastWatcherAmount = difference;
+				lastWatcherAmount = differenceThread;
+				lastSitterAmount = differenceMain;
 			}else{
-				lastWatcherAmount = difference / divisor;
+				lastWatcherAmount = differenceThread / divisor;
+				lastSitterAmount = differenceMain / divisor;
 			}
 		}
 		//set for next time
-		lastGetCount = currentCount;
+		lastThreadGetCount = currentThreadCount;
+		lastMainGetCount = currentMainCount;
 		lastGetTime = now;
 	}
 
@@ -78,8 +87,13 @@ public class ActiveThreadCounterJob extends ManagedQuartzJobBean implements Stat
 	 * @return the lastWatcherAmount
 	 */
 	@ManagedAttribute(description="Based on the time of the job, this rounds out a value of the number of thread watchers currently open.")
-	public Long getLastWatcherAmount() {
+	public Long getLastThreadWatcherAmount() {
 		return lastWatcherAmount;
+	}
+	
+	@ManagedAttribute(description="Based on the time of the job, this rounds out a value of the number of Main Page watchers currently open.")
+	public Long getLastMainPageWatcherAmount(){
+		return lastSitterAmount;
 	}
 
 	

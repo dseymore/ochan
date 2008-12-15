@@ -59,7 +59,7 @@ public class PostListImpl implements PostList {
 	/**
 	 * @return the nextGetCount
 	 */
-	@ManagedAttribute(description="The number of calls received for a next post. This is used by the ActiveThreadCounterJob to determine how many thread watches are open.")
+	@ManagedAttribute(description="The number of calls received for a next post. This is used by the ActiveWatcherCounterJob to determine how many thread watches are open.")
 	public Long getNextGetCount() {
 		return NEXT_POST_GET_COUNT;
 	}
