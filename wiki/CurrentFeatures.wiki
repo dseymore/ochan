@@ -7,9 +7,16 @@ This page introduces the reader to the current feature-set of Ochan.
 ==Ajax-enabled Thread Watching==
  * When in 'reply-mode' on a thread, your browser is 'thread-watching'. What this means is that it makes a request for any 'new' posts in the background, and upon discovering one renders it and scrolls your browser to its location on screen. There is also a JMX accessible metric to see how many threads are being watched. 
 
+==Ajax-enabled Thread Awareness==
+ * When sitting on the main page, 'toast' appears to inform the user of new threads that have just been created. There is also a JMX accesible metric to see how many users are watching the main page. 
+
 ==Thread Deletion==
  * All users can 'nominate' a thread for deletion. All users watching a thread can see the status of the deletion (as it goes back and forth from alive (delete link) to about-to-die (undelete link), and the number of actions) in real time. The idea being 'whomever cares the most about the health or death of a thread will maintain it.
- * Both the number of actions till locking and the queue time before deletion are configurable. 
+ * Both the number of actions till locking and the queue time before deletion are configurable.
+
+==Thread Images Export & Import==
+ * A thread's images can be exported directly to a zip file.
+ * When in a Thread view, you can upload a zipfile of images and a post will be created for each image. 
 
 ==Announcement & Title==
  * The announcement section of the main page is configurable via JMX
@@ -25,15 +32,16 @@ This page introduces the reader to the current feature-set of Ochan.
  * Author capturing, with optional email. 
  * Every post can have a subject, an image, and some HTML (WYSIWYG editor) text. 
  * Each instance of ochan can have multiple categories. (Configurable via JMX)
- * Currently, there are an unlimited number of categories, and posts within those categories.
+ * Currently, there are an unlimited number of categories, and posts within those categories. (Thought, post & thread limits can be conifugred)
  * Simple to start (java -jar Ochan.jar) and simple to use. (create a category, and start posting)
+ * Hidden 'non-rich-client' forms for text-based browser support.
 
 ==What is missing?==
  * Paging
  * User Tripcodes
  * Unique sequences per category
  * Middle tier deployment capability
- * Administration (banning, deleting threads/posts)
+ * Administration (banning)
 
 ==What is broken?==
  * Extjs wont render on a Playstation Portable or a Playstation 3.
