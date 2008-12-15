@@ -1,5 +1,7 @@
 <html>
 	<head>
+		<link REL="SHORTCUT ICON" HREF="#springUrl('/favicon.png')">
+		<META HTTP-EQUIV="Pragma" CONTENT="no-cache">
 		<!-- ext js -->
 		<script type="text/javascript" src="#springUrl('/extjs/adapter/ext/ext-base.js')"></script>
 		<script language="javascript" type="text/javascript" src="#springUrl('/extjs/ext-all.js')"></script>
@@ -100,7 +102,7 @@
 	<body>
 		<!-- Atom feed -->
 		<div style="float: right">
-			<a href="/atom/threads"><img border="0" src="#springUrl('/15px-Feed-icon.png')" width="15" height="15"></a>
+			<a href="#springUrl('/atom/threads')"><img border="0" src="#springUrl('/15px-Feed-icon.png')" width="15" height="15"></a>
 		</div>
 		<div id="adminBox" class="box">
 			$announcement

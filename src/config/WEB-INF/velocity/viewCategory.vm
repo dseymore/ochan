@@ -1,6 +1,7 @@
 <html>
     <head>
-	<META HTTP-EQUIV="Pragma" CONTENT="no-cache">
+		<META HTTP-EQUIV="Pragma" CONTENT="no-cache">
+		<link REL="SHORTCUT ICON" HREF="#springUrl('/favicon.png')">
         <title>$deployment.getSystemTitle()</title>
         <!-- ext js -->
 	<script type="text/javascript" src="#springUrl('/extjs/adapter/ext/ext-base.js')"></script>
