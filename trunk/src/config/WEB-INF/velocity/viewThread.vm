@@ -207,7 +207,7 @@
 	        	location.setAttribute("name",id);
 	        	
 	        	var newdiv = document.createElement("div");
-	        	newdiv.innerHTML = subject + "&nbsp;&nbsp;<a href=\"mailto:" + email + "\">" + author + "</a> " + "<a href=\"" + url + "\">uri</a>" + time + "&nbsp;&nbsp;&raquo;" + id;
+	        	newdiv.innerHTML = subject + "&nbsp;&nbsp;<a href=\"mailto:" + email + "\">" + author + "</a> " + "<a href=\"" + url + "\">uri</a>" + time + "&nbsp;&nbsp;<a href=\"#\" onclick=\"javascript:addId(" + id +  ")\">&raquo;" + id + "</a>";
 	        	var table = document.createElement("table");
 	        	var row = document.createElement("tr");
 	        	var cell1 = document.createElement("td");
