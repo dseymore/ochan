@@ -3,6 +3,7 @@ package org.ochan.control;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -11,8 +12,12 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.ochan.entity.Post;
+import org.ochan.exception.ThreadOverPostLimitException;
 import org.ochan.form.PostReplyForm;
 import org.ochan.service.PostService;
+import org.ochan.service.ThreadService;
+import org.ochan.util.DeploymentConfiguration;
 import org.ochan.util.RemoteFileGrabber;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.ServletRequestDataBinder;
@@ -23,6 +28,7 @@ import org.springframework.web.servlet.view.RedirectView;
 
 public class PostReplyController extends SimpleFormController {
 	
+	private ThreadService threadService;
 	private PostService postService;
     public static final int SECONDS_PER_YEAR = 60*60*24*365;
 	
@@ -40,6 +46,12 @@ public class PostReplyController extends SimpleFormController {
 		this.postService = postService;
 	}
 	
+	/**
+	 * @param threadService the threadService to set
+	 */
+	public void setThreadService(ThreadService threadService) {
+		this.threadService = threadService;
+	}
 	@Override
 	protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws ServletException {
 		// to actually be able to convert Multipart instance to byte[]
@@ -55,6 +67,15 @@ public class PostReplyController extends SimpleFormController {
 	@Override
 	protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
 		PostReplyForm prf = (PostReplyForm)command;
+		//do we block?
+		org.ochan.entity.Thread t = threadService.getThread(Long.valueOf(prf.getParent()));
+		List<Post> posts = postService.retrieveThreadPosts(t);
+		if(DeploymentConfiguration.enforcePostLimit(posts.size())){
+			ThreadOverPostLimitException xyz = new ThreadOverPostLimitException();
+			xyz.setThreadId(t.getIdentifier());
+			throw xyz;
+		}
+		
 		//save the username in the session.
 		request.getSession().setAttribute("author", prf.getAuthor());
 		
