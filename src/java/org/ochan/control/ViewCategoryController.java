@@ -18,6 +18,7 @@ import org.ochan.entity.Category;
 import org.ochan.entity.Post;
 import org.ochan.entity.TextPost;
 import org.ochan.entity.Thread;
+import org.ochan.exception.CategoryOverThreadLimitException;
 import org.ochan.form.ThreadForm;
 import org.ochan.service.CategoryService;
 import org.ochan.service.PostService;
@@ -169,6 +170,18 @@ public class ViewCategoryController extends SimpleFormController {
         //FIXME: cut and paste from ThreadAddController... ick
         // move this to a service?
         ThreadForm tf = (ThreadForm) o;
+        
+        //handling limits        
+        Map<ThreadCriteria, Object> searchCriteria = new HashMap<ThreadCriteria, Object>();
+        Long catId = Long.valueOf(tf.getCategoryIdentifier());
+        searchCriteria.put(ThreadCriteria.CATEGORY, catId);
+        List<Thread> threads = getThreadService().retrieveThreads(searchCriteria);
+        if (DeploymentConfiguration.enforceThreadLimit(threads.size())){
+        	CategoryOverThreadLimitException exception = new CategoryOverThreadLimitException();
+        	exception.setCategoryId(catId);
+        	throw exception;
+        }
+        
         //save the username in the session.
         request.getSession().setAttribute("author", tf.getAuthor());
 

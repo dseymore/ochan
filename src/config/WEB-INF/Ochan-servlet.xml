@@ -82,6 +82,7 @@
 		<property name="bindOnNewForm" value="true" />
 		<property name="sessionForm" value="true" />
 		<property name="postService" ref="localPostService" />
+		<property name="threadService" ref="localThreadService" />
 		<!--        FIXME - make the service not injected, but, inject a factory that decides whether local or external service-->
 	</bean>
 	
@@ -134,5 +135,7 @@
 
 	<!--  custom exception handlers yay! -->
 	<bean id="fileSizeExceptionHandler" class="org.ochan.exception.handler.FileSizeHandlerExceptionResolver"/>
+	<bean id="threadOverPostLimitExceptionHandler" class="org.ochan.exception.handler.ThreadOverPostLimitExceptionResolver"/>
+	<bean id="categoryOverThreadLimitExceptionResolver" class="org.ochan.exception.handler.CategoryOverThreadLimitExceptionResolver"/>
 
 </beans>
