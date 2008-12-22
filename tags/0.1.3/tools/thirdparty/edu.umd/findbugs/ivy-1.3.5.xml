@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ivy-module version="1.0">
+	<info organisation="edu.umd"
+		module="findbugs"
+		revision="1.3.5"
+		status="release"
+		publication="20080506180835"
+	/>
+	<publications>
+		<artifact name="findbugs" type="jar" ext="jar"/>
+		<artifact name="findbugs-ant" type="jar" ext="jar"/>
+		<!-- doing something a bit out of line of ivy.. but.. I dont want evictions or whatever to happen to a test-time project, and i'm super lazy right now -->
+		<artifact name="dependencies" type="zip" ext="zip"/>
+	</publications>
+</ivy-module>

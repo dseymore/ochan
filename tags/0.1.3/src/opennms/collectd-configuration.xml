@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<?castor class-name="org.opennms.netmgt.collectd.CollectdConfiguration"?>
+<collectd-configuration 
+	threads="50">
+
+	<package name="example1">
+		<filter>IPADDR != '0.0.0.0'</filter>	 
+		<include-range begin="1.1.1.1" end="254.254.254.254"/>
+		
+		<service name="SNMP" interval="300000" user-defined="false" status="on">
+			<parameter key="collection" value="default"/>
+                        <parameter key="thresholding-enabled" value="true"/>
+		</service>
+
+	</package>
+	
+	<collector service="SNMP"         class-name="org.opennms.netmgt.collectd.SnmpCollector"/>
+
+	<!-- JMX collection -->
+	<package name="jmx">
+		<filter>IPADDR IPLIKE *.*.*.*</filter>
+		<include-range begin="127.0.0.1" end="127.0.0.1"/>
+		<service name="JVM" interval="60000" user-defined="false" status="on">
+			<parameter key="port" value="801"/>
+			<parameter key="retry" value="2"/>
+			<parameter key="timeout" value="3000"/>
+			     <!--
+				      <property key="username" value="<username>"/>
+				      <property key="password" value="<password>"/>
+			     -->
+			<parameter key="protocol" value="rmi"/>
+			<parameter key="urlPath" value="/jmxrmi"/>
+			<parameter key="ds-name" value="jmx"/>
+			<parameter key="friendly-name" value="jmx"/>
+			<!-- This must match the collection name in the jmx-datacollection.xml that defines the set of mbeans you want -->
+			<parameter key="collection" value="jsr160"/>
+		   </service>
+	 </package>
+	 <!-- this links the collector to your service defined in the jboss package.  -->
+	 <collector service="JVM" class-name="org.opennms.netmgt.collectd.Jsr160Collector"/>
+
+
+</collectd-configuration>
+
