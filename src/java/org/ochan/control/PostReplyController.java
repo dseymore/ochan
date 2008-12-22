@@ -70,7 +70,7 @@ public class PostReplyController extends SimpleFormController {
 		//do we block?
 		org.ochan.entity.Thread t = threadService.getThread(Long.valueOf(prf.getParent()));
 		List<Post> posts = postService.retrieveThreadPosts(t);
-		if(DeploymentConfiguration.enforcePostLimit(posts.size())){
+		if(posts != null && DeploymentConfiguration.enforcePostLimit(posts.size())){
 			ThreadOverPostLimitException xyz = new ThreadOverPostLimitException();
 			xyz.setThreadId(t.getIdentifier());
 			throw xyz;
