@@ -176,7 +176,7 @@ public class ViewCategoryController extends SimpleFormController {
         Long catId = Long.valueOf(tf.getCategoryIdentifier());
         searchCriteria.put(ThreadCriteria.CATEGORY, catId);
         List<Thread> threads = getThreadService().retrieveThreads(searchCriteria);
-        if (DeploymentConfiguration.enforceThreadLimit(threads.size())){
+        if (threads != null && DeploymentConfiguration.enforceThreadLimit(threads.size())){
         	CategoryOverThreadLimitException exception = new CategoryOverThreadLimitException();
         	exception.setCategoryId(catId);
         	throw exception;
