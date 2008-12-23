@@ -37,7 +37,7 @@
 
 	<!-- how many active sessions is winstone maintaining -->
         <mbean name="Sessions" objectname="System:type=statistics,name=UserCounter">
-                <attrib name="SessionCount" alias="SessionCount" type="gauge"/>
+                <attrib name="SessionCount" alias="SessionCount" type="counter"/>
         </mbean>
         <!-- zip file generation -->
         <mbean name="ThreadZip" objectname="Ochan:util=controller,name=ThreadZip">
@@ -77,9 +77,41 @@
                 <attrib name="ImagePostCount" alias="ImagePostCount" type="gauge"/>
                 <attrib name="LastSearchTime" alias="LastSearchTime" type="gauge"/>
                 <attrib name="PostCount" alias="PostCount" type="gauge"/>
-                <attrib name="ThreadCount" alias="ThreadCount" type="gauge"/>
+                <attrib name="ThreadCount" alias="StatThreadCount" type="gauge"/>
         </mbean>
 
+
+	<mbean name="PostWebService" objectname="Ochan:name=Post,type=rest">
+		<attrib name="NextGetCount" alias="PostNextGetCount" type="counter"/>
+	</mbean>
+
+	<mbean name="LocalPostService" objectname="Ochan:name=LocalPostService,service=local">
+		<attrib name="CreateCount" alias="LocalPostCreateCount" type="counter"/>
+		<attrib name="DeleteCount" alias="LocalPostDeleteCount" type="counter"/>
+		<attrib name="GetCount" alias="LocalPostGetCount" type="counter"/>
+		<attrib name="LastSearchTime" alias="LocalPostSearchTime" type="gauge"/>
+	</mbean>
+
+	<mbean name="LocalBlobService" objectname="Ochan:name=LocalBlobService,service=local">
+		<attrib name="CreateCount" alias="LocalBlobCreateCount" type="counter"/>
+	        <attrib name="DeleteCount" alias="LocalBlobDeleteCount" type="counter"/>
+	        <attrib name="GetCount" alias="LocalBlobGetCount" type="counter"/>
+	        <attrib name="LastSearchTime" alias="LocalBlobSearchTime" type="gauge"/>
+	</mbean>
+
+	<mbean name="LocalThreadService" objectname="Ochan:name=LocalThreadService,service=local">
+		<attrib name="CreateCount" alias="LocalThreadCreateCount" type="counter"/>
+	        <attrib name="DeleteCount" alias="LocalThreadDeleteCount" type="counter"/>
+	        <attrib name="GetCount" alias="LocalThreadGetCount" type="counter"/>
+	        <attrib name="LastSearchTime" alias="LocalThreadSearchTime" type="gauge"/>
+	</mbean>
+
+	<mbean name="LocalCategoryService" objectname="Ochan:name=LocalCategoryService,service=local">
+		<attrib name="CreateCount" alias="LocalCategoryCreateCount" type="counter"/>
+	        <attrib name="DeleteCount" alias="LocalCategoryDeleteCount" type="counter"/>
+	        <attrib name="GetCount" alias="LocalCategoryGetCount" type="counter"/>
+	        <attrib name="LastSearchTime" alias="LocalCategorySearchTime" type="gauge"/>
+	</mbean>
 
        </mbeans>   
     </jmx-collection>
