@@ -29,7 +29,7 @@ public class PostLinksAFixARockerJocker {
 							value.append("<a href=\"");
 							if (!samepage){
 								//lets add the url for the thred viewer
-								value.append("/viewThread.Ochan?identifier=").append(dude.getParent().getIdentifier());
+								value.append("/chan/thread/").append(dude.getParent().getIdentifier());
 							}
 							value.append("#").append(num).append("\" onclick=\"replyhl(").append(num).append(")");
 							if (!samepage){

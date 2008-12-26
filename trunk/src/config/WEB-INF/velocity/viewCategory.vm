@@ -125,7 +125,7 @@
 	</div>
         #end
         #foreach($thread in ${category.threads})
-			<!-- lets do the match first -->
+			<!-- lets do the math first -->
 			#set($allPostsCount = 0)
 			#set($allImagePostsCount = 0)
 			#foreach($post in $thread.posts)
@@ -140,8 +140,8 @@
 				#if (!$deletejob.isDeleteLocked($thread.deleteCount)) #if ($thread.deleteDate) <span style="color: red">Thread marked for deletion</span>#end #end
 				#foreach($post in $thread.posts)
 					<!-- Only print the first and last post to the thread -->
-					#if ($velocityCount == 1 || $velocityCount == ($list.size($thread.posts)) )
-					<div class="reply" style="#if ($velocityCount == ($list.size($thread.posts)) && $velocityCount != 1 ) margin-left: 40px; border-left-width: 1px; border-left-style: solid; #end"> 
+					#if ($velocityCount == 1 || $velocityCount > ($list.size($thread.posts) - $deployment.getUnderBumpCountLong()) )
+					<div class="reply" style="#if ($velocityCount > ($list.size($thread.posts) - $deployment.getUnderBumpCountLong()) && $velocityCount != 1 ) margin-left: 40px; border-left-width: 1px; border-left-style: solid; #end"> 
 						<div>
 							$post.subject
 						</div>

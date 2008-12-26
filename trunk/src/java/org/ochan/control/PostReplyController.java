@@ -145,7 +145,7 @@ public class PostReplyController extends SimpleFormController {
 				entry = zip.getNextEntry();
 			}
 		}
-		return new ModelAndView(new RedirectView("viewThread.Ochan?identifier="+prf.getParent()));
+		return new ModelAndView(new RedirectView("/chan/thread/"+prf.getParent()));
 	}
 	
 	
