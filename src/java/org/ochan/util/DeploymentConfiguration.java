@@ -15,6 +15,7 @@ public class DeploymentConfiguration {
 	static final String DEFAULT_TITLE = "Ochan (http://code.google.com/p/ochan)";
 	static final String POST_LIMIT = "-1";
 	static final String THREAD_LIMIT = "-1";
+	static final String UNDER_BUMP = "2";
 		
 	/**
 	 * @return the hostname
@@ -95,6 +96,22 @@ public class DeploymentConfiguration {
 	public String getThreadLimit() {
 		return PREFERENCES.get("threadLimit", THREAD_LIMIT);
 	}
+
+	@ManagedAttribute(description="The number of posts to show under the thread in the category view after the starting post..")
+	public void setUnderBumpCount(String postCount){
+		Long.valueOf(postCount);
+		PREFERENCES.put("underbump", postCount);
+	}
+
+	@ManagedAttribute(description="The number of posts to show under the thread in the category view after the starting post..")
+	public String getUnderBumpCount(){
+		return PREFERENCES.get("underbump", UNDER_BUMP);
+	}
+
+	public Long getUnderBumpCountLong(){
+		return Long.valueOf(this.getUnderBumpCount());
+	}
+
 	/**
 	 * @param threadLimit the threadLimit to set
 	 */
