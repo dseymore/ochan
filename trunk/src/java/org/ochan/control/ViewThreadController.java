@@ -176,6 +176,8 @@ public class ViewThreadController extends SimpleFormController {
 				if ("ochanAuthor".equals(cookie.getName())){
 					found = true;
 					cookie.setValue(prf.getAuthor());
+					cookie.setPath("/");
+					response.addCookie(cookie);
 				}
 			}
 		}
