@@ -68,4 +68,12 @@ public interface PostService {
      * @param identifier
      */
     public void deletePost(Long identifier);
+    
+    
+    /**
+     * 
+     * @param author
+     * @return
+     */
+    public String computerAuthor(String author);
 }

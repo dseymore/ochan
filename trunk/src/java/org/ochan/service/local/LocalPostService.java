@@ -120,6 +120,22 @@ public class LocalPostService implements PostService {
 	public void setBlobService(BlobService blobService) {
 		this.blobService = blobService;
 	}
+	
+	public String computerAuthor(String author){
+		if (author != null && author.contains("#") && author.length() != author.lastIndexOf("#") + 1){
+			int startOfTrip = author.indexOf("#");
+			boolean securetrip = author.lastIndexOf("#") != startOfTrip;
+			String code = securetrip ? this.getTripcodeSeed() + author.substring(author.lastIndexOf("#") + 1) : author.substring(startOfTrip + 1);
+			StringBuffer tripfag = new StringBuffer();
+			tripfag.append("!");
+			if (securetrip){
+				tripfag.append("!");
+			}
+			tripfag.append(new String(Base64.encodeBase64(code.getBytes())));
+			return author.substring(0,startOfTrip) + tripfag.toString(); 
+		}
+		return author;
+	}
 
 	/**
 	 * @see org.ochan.service.PostService#createPost(java.lang.Long,
@@ -136,20 +152,7 @@ public class LocalPostService implements PostService {
 			//save the data!!!.. get the ID!!!
 			((ImagePost) p).setImageIdentifier(blobService.saveBlob(file));
 		}
-		p.setAuthor(author);
-		//TRIPCODE!!
-		if (author != null && author.contains("#") && author.length() != author.lastIndexOf("#") + 1){
-			int startOfTrip = author.indexOf("#");
-			boolean securetrip = author.lastIndexOf("#") != startOfTrip;
-			String code = securetrip ? this.getTripcodeSeed() + author.substring(author.lastIndexOf("#") + 1) : author.substring(startOfTrip + 1);
-			StringBuffer tripfag = new StringBuffer();
-			tripfag.append("!");
-			if (securetrip){
-				tripfag.append("!");
-			}
-			tripfag.append(new String(Base64.encodeBase64(code.getBytes())));
-			p.setAuthor(author.substring(0,startOfTrip) + tripfag); 
-		}
+		p.setAuthor(computerAuthor(author));
 		p.setSubject(subject);
 		p.setEmail(email);
 		p.setUrl(url);

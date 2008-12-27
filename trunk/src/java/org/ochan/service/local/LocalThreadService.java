@@ -14,6 +14,7 @@ import org.ochan.entity.Thread;
 import org.ochan.job.DeleteThreadJob;
 import org.ochan.service.BlobService;
 import org.ochan.service.CategoryService;
+import org.ochan.service.PostService;
 import org.ochan.service.ThreadService;
 import org.springframework.jmx.export.annotation.ManagedAttribute;
 import org.springframework.jmx.export.annotation.ManagedOperation;
@@ -27,6 +28,7 @@ public class LocalThreadService implements ThreadService {
 	private ThreadDAO threadDAO;
 	private CategoryService categoryService;
 	private BlobService blobService;
+	private PostService postService;
 
 	// STATS
 	private static long createCount = 0;
@@ -102,6 +104,12 @@ public class LocalThreadService implements ThreadService {
 	}
 	
 	
+	/**
+	 * @param postService the postService to set
+	 */
+	public void setPostService(PostService postService) {
+		this.postService = postService;
+	}
 
 	/**
 	 * @param blobService the blobService to set
@@ -130,7 +138,7 @@ public class LocalThreadService implements ThreadService {
 		} else {
 			post = new TextPost();
 		}
-		post.setAuthor(author);
+		post.setAuthor(postService.computerAuthor(author));
 		post.setSubject(subject);
 		((TextPost) post).setComment(content);
 		post.setEmail(email);
