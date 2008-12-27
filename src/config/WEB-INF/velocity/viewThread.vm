@@ -102,7 +102,7 @@
 			        	var formPanel = Ext.getCmp('threadForm'); 
 			        	formPanel.getForm().getEl().dom.setAttribute('method', 'POST');
         				formPanel.getForm().getEl().dom.setAttribute('enctype', 'multipart/form-data');
-			        	formPanel.getForm().getEl().dom.setAttribute('Action','#springUrl('/postReply.Ochan')');
+			        	formPanel.getForm().getEl().dom.setAttribute('Action','#springUrl('/chan/thread/')${thread.identifier}');
 			        	formPanel.getForm().getEl().dom.submit();
 			        }
 			    }],

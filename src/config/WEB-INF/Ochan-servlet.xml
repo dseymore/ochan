@@ -47,7 +47,6 @@
 			<props>
 				<prop key="/**/categoryList.Ochan">categoryListController</prop>
 				<prop key="/**/viewThread.Ochan">viewThreadController</prop>
-				<prop key="/**/postReply.Ochan">postReplyController</prop>
 				<prop key="/**/openCategory.Ochan">viewCategoryController</prop>
 				<prop key="/**/thumb.Ochan">thumbnailController</prop>
 				<prop key="/**/zip.Ochan">zipController</prop>
@@ -74,18 +73,6 @@
 		</property>
 	</bean>
 	
-	<bean name="postReplyController" class="org.ochan.control.PostReplyController">
-		<property name="commandName" value="command" />
-		<property name="commandClass" value="org.ochan.form.PostReplyForm" />
-		<property name="formView" value="viewThread" />
-		<property name="successView" value="forward:viewThread.Ochan" />
-		<property name="bindOnNewForm" value="true" />
-		<property name="sessionForm" value="true" />
-		<property name="postService" ref="localPostService" />
-		<property name="threadService" ref="localThreadService" />
-		<!--        FIXME - make the service not injected, but, inject a factory that decides whether local or external service-->
-	</bean>
-	
 	<bean name="categoryListController" class="org.ochan.control.CategoryListController">
 		<property name="viewName" value="listCategory" />
 		<property name="categoryService" ref="localCategoryService" />
@@ -98,6 +85,11 @@
 	</bean>
 	
 	<bean name="viewThreadController" class="org.ochan.control.ViewThreadController">
+		<property name="commandName" value="command" />
+		<property name="commandClass" value="org.ochan.form.PostReplyForm" />
+		<property name="formView" value="viewThread" />
+		<property name="bindOnNewForm" value="true" />
+		<property name="sessionForm" value="true" />
 		<property name="viewName" value="viewThread" />
 		<property name="threadService" ref="localThreadService" />
 		<property name="postService" ref="localPostService" />
