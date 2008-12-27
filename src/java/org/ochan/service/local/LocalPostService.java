@@ -1,9 +1,14 @@
 package org.ochan.service.local;
 
+import java.nio.charset.Charset;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.prefs.Preferences;
 
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.codec.language.DoubleMetaphone;
+import org.apache.commons.codec.language.Soundex;
 import org.ochan.dao.PostDAO;
 import org.ochan.entity.ImagePost;
 import org.ochan.entity.Post;
@@ -21,6 +26,7 @@ import org.springframework.jmx.export.annotation.ManagedResource;
 @ManagedResource(description = "Local Post Service", objectName = "Ochan:service=local,name=LocalPostService", logFile = "jmx.log")
 public class LocalPostService implements PostService {
 
+	private static final Preferences PREFERENCES = Preferences.userNodeForPackage(LocalPostService.class);
 	private PostDAO postDAO;
 	private ThreadService threadService;
 	private BlobService blobService;
@@ -66,6 +72,16 @@ public class LocalPostService implements PostService {
 		return lastSearchTime;
 	}
 
+	@ManagedAttribute(description = "The starting seed to the tripdcode. (for secure tripcodes)")
+	public String getTripcodeSeed(){
+		return PREFERENCES.get("tripcode","");
+	}
+	
+	@ManagedAttribute(description = "The starting seed to the tripdcode. (for secure tripcodes)")
+	public void setTripcodeSeed(String seed){
+		PREFERENCES.put("tripcode",seed);
+	}
+	
 	// END STATS
 
 	/**
@@ -121,6 +137,19 @@ public class LocalPostService implements PostService {
 			((ImagePost) p).setImageIdentifier(blobService.saveBlob(file));
 		}
 		p.setAuthor(author);
+		//TRIPCODE!!
+		if (author != null && author.contains("#") && author.length() != author.lastIndexOf("#") + 1){
+			int startOfTrip = author.indexOf("#");
+			boolean securetrip = author.lastIndexOf("#") != startOfTrip;
+			String code = securetrip ? this.getTripcodeSeed() + author.substring(author.lastIndexOf("#") + 1) : author.substring(startOfTrip + 1);
+			StringBuffer tripfag = new StringBuffer();
+			tripfag.append("!");
+			if (securetrip){
+				tripfag.append("!");
+			}
+			tripfag.append(new String(Base64.encodeBase64(code.getBytes())));
+			p.setAuthor(author.substring(0,startOfTrip) + tripfag); 
+		}
 		p.setSubject(subject);
 		p.setEmail(email);
 		p.setUrl(url);

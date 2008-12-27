@@ -192,6 +192,8 @@ public class ViewCategoryController extends SimpleFormController {
 				if ("ochanAuthor".equals(cookie.getName())){
 					found = true;
 					cookie.setValue(tf.getAuthor());
+					cookie.setPath("/");
+					response.addCookie(cookie);
 				}
 			}
 		}
