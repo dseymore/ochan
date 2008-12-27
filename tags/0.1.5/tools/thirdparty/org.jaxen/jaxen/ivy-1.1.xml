@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ivy-module version="1.0">
+	<info organisation="org.jaxen"
+		module="jaxen"
+		revision="1.1"
+		status="integration"
+		publication="20080608083149"
+	/>
+	<publications>
+                <artifact name="jaxen" type="jar" ext="jar"/>
+	</publications>
+</ivy-module>

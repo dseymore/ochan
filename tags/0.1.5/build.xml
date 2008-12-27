@@ -1,0 +1,153 @@
+<project name="configurations" default="dist" xmlns:ivy="antlib:fr.jayasoft.ivy.ant">
+	<!-- some variables used -->
+	<property name="build.dir" value="scratch" />
+	<property name="src.dir" value="src" />
+	<property name="lib.dir" value="${build.dir}/lib" />
+	<property name="ivy.cache.item.path" value="${user.home}${file.separator}.ivy${file.separator}cache${file.separator}[organization]${file.separator}[module]${file.separator}[type]s${file.separator}"/>
+	<property name="ivy.item.path" value="${ivy.cache.item.path}[artifact]-[revision].[ext]"/>
+
+	<!-- checks for ivy -->
+	<target name="-check-for-ivy">
+		<available property="have.ivy" resource="fr/jayasoft/ivy/ant/antlib.xml" />
+	</target>
+
+	<!-- create ivy taskdef if ivy is available -->
+	<target name="-ivy-define" depends="-check-for-ivy" unless="have.ivy">
+		<taskdef resource="fr/jayasoft/ivy/ant/antlib.xml" uri="antlib:fr.jayasoft.ivy.ant">
+			<classpath>
+				<fileset dir="${basedir}/tools/">
+					<include name="ivy*.jar" />
+					<include name="lib/*.jar" />
+				</fileset>
+			</classpath>
+		</taskdef>
+
+		<ivy:configure file="${basedir}/ivyconf.xml" />
+	</target>
+
+	<target name="compile" description="--> compile and run the project" depends="-ivy-define">
+		<mkdir dir="${build.dir}" />
+		<mkdir dir="${build.dir}/classes" />
+		<mkdir dir="${build.dir}/report" />
+		<ivy:configure file="ivyconf.xml" />
+		<ivy:resolve conf="default" />
+		<!-- place the libraries into the scratch -->
+		<ivy:retrieve conf="default" type="jar" pattern="${lib.dir}/[artifact]-[revision].[ext]" />
+		<!-- make a fancy report -->
+		<ivy:report todir="${basedir}/scratch/report" />
+		<!-- set a property for the artifacts -->
+		<ivy:artifactproperty name="[module].[artifact]" value="${ivy.item.path}" />
+		
+		<javac srcdir="${src.dir}/java/" debug="true" destdir="${build.dir}/classes/">
+			<classpath>
+				<fileset dir="${lib.dir}">
+					<include name="**/*.jar" />
+				</fileset>
+			</classpath>
+		</javac>
+	</target>
+
+	<target name="jarPersistence">
+		<jar destfile="${lib.dir}/persistence-Ochan.jar">
+			<metainf dir="src/config/META-INF/" />
+		</jar>
+	</target>
+
+	<target name="war" depends="compile,jarPersistence">
+		<!-- we need to unzip the extjs stuff so that we can consume it -->
+		<mkdir dir="${basedir}/scratch/extjs"/>
+		<mkdir dir="${basedir}/scratch/extjs/extjs"/>
+		<unzip src="${extjs.extjs}" dest="${basedir}/scratch/extjs/extjs"/>
+		<war destfile="${build.dir}/Ochan.war" webxml="src/config/WEB-INF/web.xml">
+			<webinf dir="src/config/WEB-INF/" />
+			<!-- <metainf dir="src/config/META-INF/"/>-->
+			<fileset dir="src/root" />
+			<fileset dir="scratch/extjs"/>
+			<!-- javascript & toolsets -->
+			<lib dir="${lib.dir}" />
+			<classes dir="${build.dir}/classes" />
+		</war>
+	</target>
+
+	<target name="dist" depends="war">
+		<!-- step one. unjar the winstone -->
+		<ivy:artifactproperty name="[module].[artifact].[type]" value="${user.home}${file.separator}.ivy${file.separator}cache${file.separator}[organization]${file.separator}[module]${file.separator}[type]s${file.separator}[artifact]-[revision].[ext]" />
+		<mkdir dir="${basedir}/scratch/winstone"/>
+		<unjar src="${winstone.winstone.jar}" dest="${basedir}/scratch/winstone"/>
+		<!-- step two, place the war in its path -->
+		<copy file="${basedir}/scratch/Ochan.war" tofile="${basedir}/scratch/winstone/embedded.war"/>
+		<!-- step three, jar it back up -->
+		<jar destfile="${basedir}/scratch/Ochan.jar" manifest="${basedir}/scratch/winstone/META-INF/MANIFEST.MF" basedir="${basedir}/scratch/winstone/" excludes="**/MANIFEST.MF"/>
+		<delete file="${basedir}/scratch/ivy.xml"/>
+		<!-- and then toss our 'artifacts' into the ivy library -->
+		<ivy:publish resolver="filesystem" artifactspattern="${basedir}/scratch/[artifact].[ext]" />
+	</target>
+
+	<target name="clean">
+		<delete dir="${build.dir}" />
+	</target>
+
+	<target name="clean-cache" depends="clean" description="--> clean the ivy cache">
+		<ivy:cleancache />
+	</target>
+
+	<target name="pmd" depends="-ivy-define">
+		<ivy:resolve conf="test" />
+		<ivy:artifactproperty name="[module].[artifact]" value="${ivy.item.path}" />
+		<mkdir dir="${build.dir}"/>
+		<mkdir dir="${build.dir}/pmd"/>
+		<unzip src="${pmd.pmd-bin}" dest="${build.dir}/pmd"/>
+		<taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask">
+                <classpath>
+                		<!-- TODO - fix the pmd.. really.. seriously.... small enough that we can -->
+						<fileset file="${build.dir}/pmd/pmd-4.2.2.jar"/>
+                </classpath>
+        </taskdef>
+		<pmd shortFilenames="true">
+			<ruleset>basic</ruleset>
+			<ruleset>imports</ruleset>
+			<ruleset>unusedcode</ruleset>
+			<formatter type="xml" toFile="${build.dir}/pmd_report.xml" />
+			<fileset dir="src/java/">
+				<include name="**/*.java" />
+			</fileset>
+		</pmd>
+		
+		<!-- lets do CPD too! -->
+		<taskdef name="cpd" classname="net.sourceforge.pmd.cpd.CPDTask">
+            <classpath>
+            		<!-- TODO - fix the pmd.. really.. seriously.... small enough that we can -->
+					<fileset file="${build.dir}/pmd/pmd-4.2.2.jar"/>
+            </classpath>
+    	</taskdef>
+		<cpd minimumTokenCount="100" outputFile="${build.dir}/cpd_report.xml" format="xml">
+			<fileset dir="src/java/">
+				<include name="**/*.java" />
+			</fileset>
+		</cpd>
+	</target>
+	
+	<target name="findbugs" depends="compile">
+		<ivy:resolve conf="test" />
+		<ivy:artifactproperty name="[module].[artifact]" value="${ivy.item.path}" />
+		<taskdef name="findbugs" classname="edu.umd.cs.findbugs.anttask.FindBugsTask">
+                <classpath>
+                        <fileset file="${findbugs.findbugs}"/>
+						<fileset file="${findbugs.findbugs-ant}"/>
+                </classpath>
+        </taskdef>
+		<mkdir dir="${build.dir}/findbugs"/>
+		<copy file="${findbugs.findbugs}" tofile="${build.dir}/findbugs/findbugs.jar"/>
+		<copy file="${findbugs.findbugs-ant}" tofile="${build.dir}/findbugs/findbugs-ant.jar"/>
+		<unzip src="${findbugs.dependencies}" dest="${build.dir}/findbugs/"/>
+		<findbugs home="${build.dir}/findbugs/"
+			output="xml"
+			outputFile="${build.dir}${file.separator}ochan-fb.xml" >
+			<sourcePath path="${basedir}/src/java" />
+			<class location="${basedir}/scratch/classes"/>
+			<!-- may be needed for missing classes... -->
+			<!-- <auxClasspath pathref="ivy.classpath"/> -->
+		</findbugs>
+	</target>
+
+</project>

@@ -1,0 +1,119 @@
+<?xml version="1.0"?>
+<jmx-datacollection-config
+    rrdRepository = "/opt/opennms/share/rrd/snmp/">
+    <jmx-collection name="jsr160">
+        <rrd step = "60">
+	    <!-- every minute for a week -->
+            <rra>RRA:AVERAGE:0.5:1:10080</rra>
+	    <!-- every 10 minutes for a year-->
+            <rra>RRA:AVERAGE:0.5:10:52560</rra>
+            <rra>RRA:MIN:0.5:10:52560</rra>
+            <rra>RRA:MAX:0.5:10:52560</rra>
+        </rrd>
+      
+        <mbeans>   
+          <mbean name="JMV Memory" objectname="java.lang:type=OperatingSystem">  
+              <attrib name="FreePhysicalMemorySize"   alias="FreeMemory"       type="gauge"/> 
+              <attrib name="TotalPhysicalMemorySize"  alias="TotalMemory"      type="gauge"/>  
+              <attrib name="FreeSwapSpaceSize"        alias="FreeSwapSpace"    type="gauge"/> 
+              <attrib name="TotalSwapSpaceSize"       alias="TotalSwapSpace"   type="gauge"/> 
+          </mbean>  
+          <mbean name="JMV Threading" objectname="java.lang:type=Threading">  
+              <attrib name="ThreadCount"           alias="ThreadCount"          type="gauge"/>  
+              <attrib name="PeakThreadCount"       alias="PeakThreadCount"      type="gauge"/>  
+              <attrib name="DaemonThreadCount"     alias="DaemonThreadCount"    type="gauge"/>  
+              <attrib name="CurrentThreadCpuTime"  alias="CurThreadCpuTime"     type="gauge"/>  
+          </mbean> 
+
+          <mbean name="JMV MemoryPool" objectname="java.lang:type=MemoryPool">  
+              <attrib name="CollectionUsageThresholdCount"  alias="CollectionUsage"       type="counter"/>  
+          </mbean> 
+
+          <mbean name="JMV ClassLoading" objectname="java.lang:type=ClassLoading">  
+              <attrib name="TotalLoadedClassCount"  alias="TotLoadedClasses"   type="gauge"/>  
+              <attrib name="LoadedClassCount"       alias="LoadedClasses"      type="gauge"/>  
+              <attrib name="UnloadedClassCount"     alias="UnloadedClass"      type="gauge"/>  
+          </mbean> 
+
+	<!-- how many active sessions is winstone maintaining -->
+        <mbean name="Sessions" objectname="System:type=statistics,name=UserCounter">
+                <attrib name="SessionCount" alias="SessionCount" type="counter"/>
+        </mbean>
+        <!-- zip file generation -->
+        <mbean name="ThreadZip" objectname="Ochan:util=controller,name=ThreadZip">
+		<attrib name="AverageGenerationTimeInMillis" alias="ZipAverageGenerationTime" type="gauge"/>
+                <attrib name="AverageTimeInMillis" alias="ZipAverageTime" type="gauge"/>
+                <attrib name="LastGenerationTimeInMillis" alias="ZipLastGenerationTime" type="gauge"/>
+                <attrib name="LastTimeInMIllis" alias="ZipLastTime" type="gauge"/>
+                <attrib name="NumberOfZips" alias="ZipNumberOfZips" type="counter"/>
+                <attrib name="TotalGenerationTimeInMIllis" alias="ZipTotalGenerationTime" type="counter"/>
+                <attrib name="TotalTimeInMIllis" alias="ZipTotalTime" type="counter"/>
+        </mbean>
+        <!-- thumbnail and image generation -->
+        <mbean name="Thumbnailer" objectname="Ochan:util=controller,name=Thumnbailer">
+		<attrib name="AverageResizeTimeInMillis" alias="ThumbAverageResizeTime" type="gauge"/>
+                <attrib name="AverageTimeInMillis" alias="ThumbAverageTime" type="gauge"/>
+                <attrib name="LastResizeTimeInMillis" alias="ThumbLastResizeTime" type="gauge"/>
+                <attrib name="LastTimeInMIllis" alias="ThumbLastTime" type="gauge"/>
+                <attrib name="NumberOfThumbs" alias="ThumbNumberOfThumbs" type="counter"/>
+                <attrib name="NumberOfRequests" alias="ThumbNumberOfRequests" type="counter"/>
+                <attrib name="TotalResizeTimeInMIllis" alias="ThumbTotalResizeTime" type="counter"/>
+                <attrib name="TotalTimeInMIllis" alias="ThumbTotalTime" type="counter"/>
+        </mbean>
+        <!-- atom feed overhead -->
+        <mbean name="ThreadCollector" objectname="Ochan:type=feed,name=ThreadCollector">
+                <attrib name="GetCount" alias="GetCount" type="counter"/>
+                <attrib name="LastSearchTime" alias="ThreadLastSearchTime" type="gauge"/>
+        </mbean>
+        <!-- Active Watcher Counter -->
+        <mbean name="ActiveWatcher" objectname="Ochan:type=job,name=ActiveWatcherCounter">
+                <attrib name="LastMainPageWatcherAmount" alias="MainPageWatchers" type="gauge"/>
+                <attrib name="LastThreadWatcherAmount" alias="ThreadWatchers" type="gauge"/>
+        </mbean>
+        <!-- General Statistics -->
+        <mbean name="Statistics" objectname="Ochan:type=job,name=StatisticsGeneration">
+                <attrib name="DataSize" alias="DataSizeBytes" type="gauge"/>
+                <attrib name="FileCount" alias="FileCount" type="gauge"/>
+                <attrib name="ImagePostCount" alias="ImagePostCount" type="gauge"/>
+                <attrib name="LastSearchTime" alias="LastSearchTime" type="gauge"/>
+                <attrib name="PostCount" alias="PostCount" type="gauge"/>
+                <attrib name="ThreadCount" alias="StatThreadCount" type="gauge"/>
+        </mbean>
+
+
+	<mbean name="PostWebService" objectname="Ochan:name=Post,type=rest">
+		<attrib name="NextGetCount" alias="PostNextGetCount" type="counter"/>
+	</mbean>
+
+	<mbean name="LocalPostService" objectname="Ochan:name=LocalPostService,service=local">
+		<attrib name="CreateCount" alias="LocalPostCreateCount" type="counter"/>
+		<attrib name="DeleteCount" alias="LocalPostDeleteCount" type="counter"/>
+		<attrib name="GetCount" alias="LocalPostGetCount" type="counter"/>
+		<attrib name="LastSearchTime" alias="LocalPostSearchTime" type="gauge"/>
+	</mbean>
+
+	<mbean name="LocalBlobService" objectname="Ochan:name=LocalBlobService,service=local">
+		<attrib name="CreateCount" alias="LocalBlobCreateCount" type="counter"/>
+	        <attrib name="DeleteCount" alias="LocalBlobDeleteCount" type="counter"/>
+	        <attrib name="GetCount" alias="LocalBlobGetCount" type="counter"/>
+	        <attrib name="LastSearchTime" alias="LocalBlobSearchTime" type="gauge"/>
+	</mbean>
+
+	<mbean name="LocalThreadService" objectname="Ochan:name=LocalThreadService,service=local">
+		<attrib name="CreateCount" alias="LocalThreadCreateCount" type="counter"/>
+	        <attrib name="DeleteCount" alias="LocalThreadDeleteCount" type="counter"/>
+	        <attrib name="GetCount" alias="LocalThreadGetCount" type="counter"/>
+	        <attrib name="LastSearchTime" alias="LocalThreadSearchTime" type="gauge"/>
+	</mbean>
+
+	<mbean name="LocalCategoryService" objectname="Ochan:name=LocalCategoryService,service=local">
+		<attrib name="CreateCount" alias="LocalCategoryCreateCount" type="counter"/>
+	        <attrib name="DeleteCount" alias="LocalCategoryDeleteCount" type="counter"/>
+	        <attrib name="GetCount" alias="LocalCategoryGetCount" type="counter"/>
+	        <attrib name="LastSearchTime" alias="LocalCategorySearchTime" type="gauge"/>
+	</mbean>
+
+       </mbeans>   
+    </jmx-collection>
+
+</jmx-datacollection-config>
