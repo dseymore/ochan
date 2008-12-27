@@ -106,11 +106,13 @@ public class ThreadSupportImpl implements ThreadSupport {
 		try{
 			Map<ThreadCriteria, Object> criteria = new HashMap<ThreadCriteria, Object>();
 			criteria.put(ThreadCriteria.NEWERTHAN, Long.valueOf(threadId));
+			
 			List<Thread> threads = threadService.retrieveThreads(criteria);
 			if (threads != null && threads.size() > 0){
 				Thread thread = threads.get(0);
 				List<Post> posts = postService.retrieveThreadPosts(thread);
-				if (posts.size() > 0){
+				//we have posts AND they've had 10 seconds to brew up their thumbnail
+				if (posts.size() > 0 && posts.get(0).getTime().getTime() + 10000 < new Date().getTime()){
 					RemotePost toReturnPost = new RemotePost(posts.get(0));
 					RemoteThread toReturn = new RemoteThread(thread.getDeleteCount(), 
 							thread.getDeleteDate(), toReturnPost, thread.getIdentifier(), DeleteThreadJob.isDeleteLocked(thread.getDeleteCount()));
