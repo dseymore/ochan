@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:jaxws="http://cxf.apache.org/jaxws"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+                           http://www.springframework.org/schema/tx
+                           http://www.springframework.org/schema/tx/spring-tx-2.0.xsd
+                           http://www.springframework.org/schema/aop
+                           http://www.springframework.org/schema/aop/spring-aop-2.0.xsd
+                           http://cxf.apache.org/jaxws 
+                           http://cxf.apache.org/schemas/jaxws.xsd">
+
+	<!-- xxxxxxxxxxxxxxxxxxxxxxxxx  JPA configuration  xxxxxxxxxxxxxxxxxxxxxxxxx -->
+	<!-- enables interpretation of the @Required annotation to ensure that dependency injection actually occures -->
+	<bean class="org.springframework.beans.factory.annotation.RequiredAnnotationBeanPostProcessor" />
+
+	<!-- enables interpretation of the @PersistenceUnit/@PersistenceContext annotations providing convenient
+		access to EntityManagerFactory/EntityManager -->
+	<bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
+
+	<!-- uses the persistence unit defined in the META-INF/persistence.xml JPA configuration file -->
+	<bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalEntityManagerFactoryBean">
+		<property name="persistenceUnitName" value="DefaultPersistenceUnit" />
+	</bean>
+
+	<!-- transaction manager for use with a single JPA EntityManagerFactory for transactional data access
+		to a single datasource -->
+	<bean id="jpaTransactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+		<property name="entityManagerFactory" ref="entityManagerFactory" />
+	</bean>
+
+	<!-- enables interpretation of the @Transactional annotation for declerative transaction managment
+		using the specified JpaTransactionManager -->
+	<tx:annotation-driven transaction-manager="jpaTransactionManager" proxy-target-class="false" />
+
+	<!-- enables interpretation of the @Configurable annotation for domain object dependency injection -->
+	<aop:spring-configured />
+
+	<!--  xxxxxxxxxxxxxxxxxxxxxxxxx  DAO configuration xxxxxxxxxxxxxxxxxxxxxxxxx  -->
+	<bean id="categoryDAO" class="org.ochan.dao.CategoryDAO" />
+	<bean id="postDAO" class="org.ochan.dao.PostDAO" />
+	<bean id="threadDAO" class="org.ochan.dao.ThreadDAO">
+		<property name="postDao" ref="postDAO" />
+	</bean>
+	<bean id="externalCategoryDAO" class="org.ochan.dao.ExternalCategoryDAO" />
+	<bean id="blobDAO" class="org.ochan.dao.BlobDAO"/>
+	
+	<bean id="localAnnouncementService" class="org.ochan.service.local.LocalAnnouncementService"/>
+	
+	<!--  xxxxxxxxxxxxxxxxxxxxxxxxx  Service configuration xxxxxxxxxxxxxxxxxxxxxxxxx  -->
+	<bean id="localCategoryService" class="org.ochan.service.local.LocalCategoryService">
+		<property name="categoryDAO" ref="categoryDAO"/>
+	</bean>
+	
+	<bean id="localThreadService" class="org.ochan.service.local.LocalThreadService">
+		<property name="threadDAO" ref="threadDAO"/>
+		<property name="categoryService" ref="localCategoryService"/>
+		<property name="blobService" ref="localBlobService"/>
+	</bean>
+	
+	<bean id="localPostService" class="org.ochan.service.local.LocalPostService">
+		<property name="postDAO" ref="postDAO"/>
+		<property name="threadService" ref="localThreadService"/>
+		<property name="blobService" ref="localBlobService"/>
+	</bean>
+	
+	<bean id="localExternalCategoryService" class="org.ochan.service.local.LocalExternalCategoryService">
+		<property name="externalCategoryDAO" ref="externalCategoryDAO"/>
+	</bean>
+	
+	<bean id="localBlobService" class="org.ochan.service.local.LocalBlobService">
+		<property name="blobDAO" ref="blobDAO"/>
+	</bean>
+	
+	<!--  JMX! -->
+	<bean id="exporter" class="org.springframework.jmx.export.MBeanExporter">
+        <property name="assembler" ref="assembler"/>
+        <property name="namingStrategy" ref="namingStrategy"/>
+        <property name="autodetect" value="true"/>
+    </bean>
+
+    <bean id="jmxAttributeSource"
+          class="org.springframework.jmx.export.annotation.AnnotationJmxAttributeSource"/>
+
+    <!-- will create management interface using annotation metadata -->
+    <bean id="assembler"
+          class="org.springframework.jmx.export.assembler.MetadataMBeanInfoAssembler">
+        <property name="attributeSource" ref="jmxAttributeSource"/>
+    </bean>
+
+    <!-- will pick up the ObjectName from the annotation -->
+    <bean id="namingStrategy"
+          class="org.springframework.jmx.export.naming.MetadataNamingStrategy">
+        <property name="attributeSource" ref="jmxAttributeSource"/>
+    </bean>
+	<!--  JMX-ABLES -->
+	<bean class="org.ochan.util.StatisticalErrorAppender"/>
+	<bean class="org.ochan.util.LoggingConfiguration"/>
+	<bean class="org.ochan.control.ThumbnailController"/>
+	<bean class="org.ochan.control.ThreadZipController"/>
+	<bean class="org.ochan.util.DeploymentConfiguration"/>
+	<bean class="org.ochan.util.UserCounter"/>
+	<bean class="org.ochan.util.ManagedCommonsMultipartResolver"/>
+	
+	
+	
+	<!--  Quartz Jobs! -->
+	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+	    <property name="triggers">
+	        <list>
+	            <ref bean="activeThreadTrigger" />
+	            <ref bean="deleteThreadTrigger" />
+	            <ref bean="statsGeneratorTrigger" />
+	        </list>
+	    </property>
+	    <property name="applicationContextSchedulerContextKey">
+            <value>applicationContext</value>
+    	</property>
+	</bean>
+	<bean id="deleteThreadTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="deleteThreadsJob" />
+		<!--  every minute please -->
+		<property name="cronExpression" value="0 */1 * * * ?" />
+	</bean>
+	<bean name="deleteThreadsJob" class="org.springframework.scheduling.quartz.JobDetailBean">
+		<property name="jobClass" value="org.ochan.job.DeleteThreadJob"/>
+	</bean>
+	
+	<bean id="activeThreadTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+    	<property name="jobDetail" ref="activeThreadsJob" />
+    	<!-- every minute -->
+    	<property name="cronExpression" value="0 */1 * * * ?" />
+	</bean>
+	<bean name="activeThreadsJob" class="org.springframework.scheduling.quartz.JobDetailBean">
+        <property name="jobClass" value="org.ochan.job.ActiveWatcherCounterJob"/>
+    </bean>
+    <!-- stats generation job.. for like.. total content counter.. yay! -->
+    <bean id="statsGeneratorTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+    	<property name="jobDetail" ref="statsGenerationJob" />
+    	<!-- every minute -->
+    	<property name="cronExpression" value="0 */1 * * * ?" />
+	</bean>
+	<bean name="statsGenerationJob" class="org.springframework.scheduling.quartz.JobDetailBean">
+        <property name="jobClass" value="org.ochan.job.StatsGeneratorJob"/>
+    </bean>
+    
+    <!--  expose schedule config through JMX -->
+	<bean class="org.ochan.job.ActiveWatcherCounterJob"/>
+	<bean class="org.ochan.job.DeleteThreadJob"/>
+	<bean class="org.ochan.job.StatsGeneratorJob"/>
+
+
+	<!--  lets try ehcache -->
+	<!-- Configure CacheManager from specified config location -->
+	<bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+	    <property name="configLocation"><value>WEB-INF/ehcache.xml</value></property>
+	</bean>
+	
+	<bean id="threadCache" class="org.springframework.cache.ehcache.EhCacheFactoryBean">
+	        <property name="cacheManager"><ref local="cacheManager"/></property>
+	        <property name="cacheName"><value>myCache1</value></property>
+	        <property name="maxElementsInMemory"><value>20000</value></property>
+	        <property name="overflowToDisk"><value>true</value></property>
+	        <property name="eternal"><value>false</value></property>
+	        <property name="timeToLive"><value>120</value></property>
+	        <property name="timeToIdle"><value>120</value></property>
+	</bean>
+
+</beans>

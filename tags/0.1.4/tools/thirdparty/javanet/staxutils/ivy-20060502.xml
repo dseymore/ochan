@@ -1,0 +1,11 @@
+<ivy-module version="1.0">
+	<info organisation="javanet"
+		module="staxutils"
+		revision="20060502"
+		status="integration"
+		publication="20060502112002"
+	/>
+	<publications>
+		<artifact name="stax-utils" type="jar" ext="jar"/>
+	</publications>
+</ivy-module>

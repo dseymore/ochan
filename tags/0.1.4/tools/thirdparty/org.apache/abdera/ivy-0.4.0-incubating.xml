@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ivy-module version="1.0">
+	<info organisation="org.apache"
+		module="abdera"
+		revision="0.4.0-incubating"
+		status="integration"
+		publication="20080608083149"
+	/>
+	<publications>
+		<artifact name="abdera" type="jar" ext="jar"/>
+		<artifact name="apache-abdera" type="source" ext="src.jar"/>
+	</publications>
+	<dependencies>
+		<dependency org="org.jaxen" name="jaxen" rev="1.1"/>
+	</dependencies>
+</ivy-module>
