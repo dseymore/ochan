@@ -57,6 +57,7 @@
 		<property name="threadDAO" ref="threadDAO"/>
 		<property name="categoryService" ref="localCategoryService"/>
 		<property name="blobService" ref="localBlobService"/>
+		<property name="postService" ref="localPostService"/>
 	</bean>
 	
 	<bean id="localPostService" class="org.ochan.service.local.LocalPostService">
