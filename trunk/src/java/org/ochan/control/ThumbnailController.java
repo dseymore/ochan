@@ -302,8 +302,8 @@ public class ThumbnailController implements Controller {
 					// response.setContentType("image/gif");
 					// response.setContentType("image/x-png");
 					response.setContentType("image/jpeg");
-//					response.setHeader("Cache-Control", "no-cache");
-//					response.setHeader("Pragma", "no-cache");
+					//caching please.. expire after a day
+					response.setHeader("Cache-Control", "max-age=86400, public");
 					response.setDateHeader("Expires", 0);
 	
 					LOG.debug("file length is " + datum.length);
