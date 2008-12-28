@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.SocketException;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.prefs.Preferences;
 
@@ -65,6 +66,8 @@ public class ThumbnailController implements Controller {
 	private static long numberOfRequests = 0;
 	private static long lastTimeInMillis = 0;
 	private static long totalTimeInMillis = 0;	
+	
+	public static final int MILLISECONDS_IN_A_DAY = 60*60*24*1000;
 	
 	
 	/**
@@ -304,7 +307,7 @@ public class ThumbnailController implements Controller {
 					response.setContentType("image/jpeg");
 					//caching please.. expire after a day
 					response.setHeader("Cache-Control", "max-age=86400, public");
-					response.setDateHeader("Expires", 0);
+					response.setDateHeader("Expires", new Date().getTime() + MILLISECONDS_IN_A_DAY);
 	
 					LOG.debug("file length is " + datum.length);
 					response.setContentLength(datum.length);
