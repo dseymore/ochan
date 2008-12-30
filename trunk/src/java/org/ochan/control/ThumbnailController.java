@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.ochan.entity.ImagePost;
@@ -266,18 +267,75 @@ public class ThumbnailController implements Controller {
 			Long id = Long.valueOf(request.getParameter("identifier"));
 			boolean thumb = request.getParameter("thumb") != null;
 			Post p = postService.getPost(id);
+			ImagePost imagePost = (ImagePost) p;
+			byte[] datum = null;
+			//if imagepost
 			if (p instanceof ImagePost) {
-				ImagePost imagePost = (ImagePost) p;
-				Byte[] data = blobService.getBlob(imagePost.getImageIdentifier());
-				if (data != null){
-					// convert to non-object
-					//DATUM is out output
-					byte[] datum = new byte[data.length];
-					int i = 0;
-					for (Byte val : data) {
-						datum[i] = val.byteValue();
-						i++;
+				//if thumb
+				if (thumb) {
+					BufferedImage resizedImage = null;
+					//we may need to make a thumbnail
+					if (imagePost.getThumbnailIdentifier() == null){
+						Byte[] data = blobService.getBlob(imagePost.getImageIdentifier());
+						if (data != null){
+							//oh well.. we're in a bad spot
+							LOG.info("Unable to make thumbnail of an imagepost with no image data.");
+						}
+						datum = ArrayUtils.toPrimitive(data);
+						//lets try checking if it is an image.. if not, we need to act on it. 
+						BufferedImage image = null;
+						ByteArrayInputStream bais = new ByteArrayInputStream(datum);
+						image = ImageIO.read(bais);
+						if (image == null){
+							//BAD BAD IMAGE!
+							InputStream stream = request.getSession().getServletContext().getResourceAsStream("/WEB-INF/404-image.png");
+							InputStreamReader isr = new InputStreamReader(stream);
+							datum = IOUtils.toByteArray(stream);
+							//and reset the image object. 
+							bais = new ByteArrayInputStream(datum);
+							image = ImageIO.read(bais);
+						}
+						int width = image.getWidth();
+						int height = image.getHeight();
+						long startThumb = new Date().getTime();
+						numberOfThumbs++;
+						//yep, make it
+						if (width > height) {
+							resizedImage = convert(image.getScaledInstance(getThumbWidth().intValue(), -1, Image.SCALE_FAST));
+						} else {
+							resizedImage = convert(image.getScaledInstance(-1, getThumbHeight().intValue(), Image.SCALE_FAST));
+						}
+						Iterator writers = ImageIO.getImageWritersByMIMEType("image/jpeg");
+						ImageWriter imgWriter = (ImageWriter) writers.next();
+						ByteArrayOutputStream baos = new ByteArrayOutputStream();
+						ImageOutputStream imgStream = ImageIO.createImageOutputStream(baos);
+						imgWriter.setOutput(imgStream);
+						//parameters for compression
+						ImageWriteParam param = imgWriter.getDefaultWriteParam();
+						param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+						param.setCompressionQuality(getThumbnailQuality());
+						//write the image!
+						imgWriter.write(null, new IIOImage(resizedImage,null,null),param);
+						datum = baos.toByteArray();
+						//store the thumbnail data in the post and persist
+						{
+							Byte[] thumbData = new Byte[datum.length];
+							thumbData = ArrayUtils.toObject(datum);
+							imagePost.setThumbnailIdentifier(blobService.saveBlob(thumbData));
+							postService.updatePost(imagePost);
+						}
+						long endThumb = new Date().getTime();
+						lastResizeTimeInMillis = endThumb - startThumb;
+						totalResizeTimeInMillis += endThumb - startThumb;
+					}else{
+						//take the imagePost's thumnbail and make it outputable
+						Byte[] thumbnailArray = blobService.getBlob(imagePost.getThumbnailIdentifier());
+						datum = ArrayUtils.toPrimitive(thumbnailArray);
 					}
+				}else{
+					//if not thumb
+					Byte[] data = blobService.getBlob(imagePost.getImageIdentifier());
+					datum = ArrayUtils.toPrimitive(data);
 					//lets try checking if it is an image.. if not, we need to act on it. 
 					BufferedImage image = null;
 					ByteArrayInputStream bais = new ByteArrayInputStream(datum);
@@ -291,70 +349,19 @@ public class ThumbnailController implements Controller {
 						bais = new ByteArrayInputStream(datum);
 						image = ImageIO.read(bais);
 					}
-					int width = image.getWidth();
-					int height = image.getHeight();
-					if (thumb) {
-						BufferedImage resizedImage = null;
-						//we may need to make a thumbnail
-						if (imagePost.getThumbnailIdentifier() == null){
-							long startThumb = new Date().getTime();
-							numberOfThumbs++;
-							//yep, make it
-							if (width > height) {
-								resizedImage = convert(image.getScaledInstance(getThumbWidth().intValue(), -1, Image.SCALE_FAST));
-							} else {
-								resizedImage = convert(image.getScaledInstance(-1, getThumbHeight().intValue(), Image.SCALE_FAST));
-							}
-							Iterator writers = ImageIO.getImageWritersByMIMEType("image/jpeg");
-							ImageWriter imgWriter = (ImageWriter) writers.next();
-							ByteArrayOutputStream baos = new ByteArrayOutputStream();
-							ImageOutputStream imgStream = ImageIO.createImageOutputStream(baos);
-							imgWriter.setOutput(imgStream);
-							//parameters for compression
-							ImageWriteParam param = imgWriter.getDefaultWriteParam();
-							param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
-							param.setCompressionQuality(getThumbnailQuality());
-							//write the image!
-							imgWriter.write(null, new IIOImage(resizedImage,null,null),param);
-							datum = baos.toByteArray();
-							//store the thumbnail data in the post and persist
-							{
-								Byte[] thumbData = new Byte[datum.length];
-								for (int j = 0; j < datum.length; j++){
-									thumbData[j] = new Byte(datum[j]);
-								}
-								imagePost.setThumbnailIdentifier(blobService.saveBlob(thumbData));
-								postService.updatePost(imagePost);
-							}
-							long endThumb = new Date().getTime();
-							lastResizeTimeInMillis = endThumb - startThumb;
-							totalResizeTimeInMillis += endThumb - startThumb;
-						}else{
-							//take the imagePost's thumnbail and make it outputable
-							Byte[] thumbnailArray = blobService.getBlob(imagePost.getThumbnailIdentifier());
-							datum = new byte[thumbnailArray.length];
-							int x = 0;
-							for (Byte val : thumbnailArray) {
-								datum[x] = val.byteValue();
-								x++;
-							}
-						}
-					}
-					// pick one
-					// response.setContentType("image/gif");
-					// response.setContentType("image/x-png");
-					response.setContentType("image/jpeg");
-					//caching please.. expire after a day
-					response.setHeader("Cache-Control", "max-age=86400, public");
-					response.setDateHeader("Expires", new Date().getTime() + MILLISECONDS_IN_A_DAY);
-	
-					LOG.debug("file length is " + datum.length);
-					response.setContentLength(datum.length);
-					response.setHeader("Content-Disposition", " inline; filename=" + id+".jpg");
-					// convert to non-object
-					FileCopyUtils.copy(datum, response.getOutputStream());
 				}
 			}
+			
+			response.setContentType("image/jpeg");
+			//caching please.. expire after a day
+			response.setHeader("Cache-Control", "max-age=86400, public");
+			response.setDateHeader("Expires", new Date().getTime() + MILLISECONDS_IN_A_DAY);
+
+			LOG.debug("file length is " + datum.length);
+			response.setContentLength(datum.length);
+			response.setHeader("Content-Disposition", " inline; filename=" + id+".jpg");
+			// convert to non-object
+			FileCopyUtils.copy(datum, response.getOutputStream());
 		} catch (SocketException se){
 			//this happens when a socket is closed mid-stream.
 			LOG.trace("Socket exception",se);
