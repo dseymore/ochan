@@ -9,11 +9,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.SocketException;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.prefs.Preferences;
 
+import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
+import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
 import javax.imageio.stream.ImageOutputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -56,7 +57,13 @@ public class ThumbnailController implements Controller {
 	/**
 	 * The default thumbnail generation length of time that would cause an exception to be logged
 	 */
-	private static final String LOG_ON_THIS_TIME = "200"; 
+	private static final String LOG_ON_THIS_TIME = "200";
+	
+	/**
+	 * The default thumbnail image quality of 80%.. which is probably better quality than it needs to be.. 
+	 * .5 works very well for a good match of size & quality for most images. 
+	 */
+	private static final String THUMBNAIL_IMAGE_QUALITY = ".8";
 	
 	//statistics are goooood
 	private static long numberOfThumbs = 0;
@@ -69,6 +76,33 @@ public class ThumbnailController implements Controller {
 	
 	public static final int MILLISECONDS_IN_A_DAY = 60*60*24*1000;
 	
+	
+	/**
+	 * @return the thumbnailImageQuality
+	 */
+	@ManagedAttribute(description="The quality of the thumbnail compression from 0 to 1.")
+	public String getThumbnailImageQuality() {
+		return PREFS.get("quality", THUMBNAIL_IMAGE_QUALITY); 
+	}
+	/**
+	 * @param thumbnailImageQuality the thumbnailImageQuality to set
+	 */
+	@ManagedAttribute(description="The quality of the thumbnail compression from 0 to 1.")
+	public void setThumbnailImageQuality(String thumbnailImageQuality) {
+		Float f = Float.valueOf(thumbnailImageQuality);
+		if (f.doubleValue() >= 0 && f.doubleValue() <= 1){
+			PREFS.put("quality", thumbnailImageQuality);
+		}
+	}
+	
+	/**
+	 * The current thumbnail image quality.
+	 * @return
+	 */
+	private float getThumbnailQuality(){
+		Float f = Float.valueOf(getThumbnailImageQuality());
+		return f;
+	}
 	
 	/**
 	 * 
@@ -276,7 +310,12 @@ public class ThumbnailController implements Controller {
 							ByteArrayOutputStream baos = new ByteArrayOutputStream();
 							ImageOutputStream imgStream = ImageIO.createImageOutputStream(baos);
 							imgWriter.setOutput(imgStream);
-							imgWriter.write(resizedImage);
+							//parameters for compression
+							ImageWriteParam param = imgWriter.getDefaultWriteParam();
+							param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+							param.setCompressionQuality(getThumbnailQuality());
+							//write the image!
+							imgWriter.write(null, new IIOImage(resizedImage,null,null),param);
 							datum = baos.toByteArray();
 							//store the thumbnail data in the post and persist
 							{
