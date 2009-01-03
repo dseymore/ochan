@@ -27,6 +27,8 @@ import org.ochan.service.ThreadService.ThreadCriteria;
 import org.ochan.util.DeploymentConfiguration;
 import org.ochan.util.PostLinksAFixARockerJocker;
 import org.ochan.util.RemoteFileGrabber;
+import org.springframework.jmx.export.annotation.ManagedAttribute;
+import org.springframework.jmx.export.annotation.ManagedResource;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
@@ -34,6 +36,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 import org.springframework.web.servlet.view.RedirectView;
 
+@ManagedResource(description = "ViewCategory", objectName = "Ochan:util=controller,name=ViewCategory", logFile = "jmx.log")
 public class ViewCategoryController extends SimpleFormController {
     private static final Log LOG = LogFactory.getLog(ViewCategoryController.class);
     
@@ -45,6 +48,17 @@ public class ViewCategoryController extends SimpleFormController {
     private PostService postService;
     private String viewName;
 
+    private static long numberOfRequests = 0;
+    
+	/**
+	 * Statistics
+	 * @return
+	 */
+	@ManagedAttribute(description="The number of thumbnails that have been requested")
+	public long getNumberOfRequests(){
+		return numberOfRequests;
+	}
+	
     /**
      * @return the categoryService
      */
@@ -104,6 +118,7 @@ public class ViewCategoryController extends SimpleFormController {
 
     @Override
     protected ModelAndView showForm(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, BindException e, Map map) throws Exception {
+    	numberOfRequests++;
     	if (StringUtils.isEmpty(httpServletRequest.getParameter("identifier"))){
     		return new ModelAndView(new RedirectView("/categoryList.Ochan"));
     	}

@@ -29,9 +29,12 @@ import org.ochan.service.PostService;
 import org.ochan.service.ThreadService;
 import org.ochan.service.CategoryService.CategoryCriteria;
 import org.ochan.service.ThreadService.ThreadCriteria;
+import org.springframework.jmx.export.annotation.ManagedAttribute;
+import org.springframework.jmx.export.annotation.ManagedResource;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 
+@ManagedResource(description = "ViewMainPage", objectName = "Ochan:util=controller,name=ViewMainPage", logFile = "jmx.log")
 public class CategoryListController implements Controller {
 
 	private CategoryService categoryService;
@@ -42,6 +45,17 @@ public class CategoryListController implements Controller {
 	private String viewName;
 	private AnnouncementService announcementService;
 
+	
+	private static long numberOfRequests = 0; 
+	/**
+	 * Statistics
+	 * @return
+	 */
+	@ManagedAttribute(description="The number of thumbnails that have been requested")
+	public long getNumberOfRequests(){
+		return numberOfRequests;
+	}
+	
 	/**
 	 * @return the categoryService
 	 */
@@ -133,6 +147,7 @@ public class CategoryListController implements Controller {
 	 *      javax.servlet.http.HttpServletResponse)
 	 */
 	public ModelAndView handleRequest(HttpServletRequest arg0, HttpServletResponse arg1) throws Exception {
+		numberOfRequests++;
 		List<Category> categories = getCategoryService().retrieveCategories(new HashMap<CategoryCriteria, String>());
 		for (Category category : categories){
 			Map<ThreadCriteria,Object> searchCriteria = new HashMap<ThreadCriteria,Object>();

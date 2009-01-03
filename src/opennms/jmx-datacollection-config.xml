@@ -60,6 +60,15 @@
                 <attrib name="TotalResizeTimeInMIllis" alias="ThumbTotalResizeTime" type="counter"/>
                 <attrib name="TotalTimeInMIllis" alias="ThumbTotalTime" type="counter"/>
         </mbean>
+        <mbean name="ViewCategory" objectname="Ochan:util=controller,name=ViewCategory">
+        	<attrib name="NumberOfRequests" alias="viewcatreqs" type="counter"/>
+        </mbean>
+        <mbean name="ViewThread" objectname="Ochan:util=controller,name=ViewThread">
+        	<attrib name="NumberOfRequests" alias="viewthreadreqs" type="counter"/>
+        </mbean>
+        <mbean name="ViewMainPage" objectname="Ochan:util=controller,name=ViewMainPage">
+        	<attrib name="NumberOfRequests" alias="viewmainreqs" type="counter"/>
+        </mbean>
         <!-- atom feed overhead -->
         <mbean name="ThreadCollector" objectname="Ochan:type=feed,name=ThreadCollector">
                 <attrib name="GetCount" alias="GetCount" type="counter"/>
