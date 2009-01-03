@@ -26,6 +26,8 @@ import org.ochan.service.ThreadService;
 import org.ochan.util.DeploymentConfiguration;
 import org.ochan.util.PostLinksAFixARockerJocker;
 import org.ochan.util.RemoteFileGrabber;
+import org.springframework.jmx.export.annotation.ManagedAttribute;
+import org.springframework.jmx.export.annotation.ManagedResource;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
@@ -34,6 +36,7 @@ import org.springframework.web.servlet.mvc.SimpleFormController;
 import org.springframework.web.servlet.view.RedirectView;
 
 
+@ManagedResource(description = "ViewThread", objectName = "Ochan:util=controller,name=ViewThread", logFile = "jmx.log")
 public class ViewThreadController extends SimpleFormController {
 
 	private CategoryService categoryService;
@@ -41,6 +44,18 @@ public class ViewThreadController extends SimpleFormController {
 	private PostService postService;
 	private String viewName;
 	public static final int SECONDS_PER_YEAR = 60*60*24*365;
+	
+	
+	private static long numberOfRequests = 0; 
+	
+	/**
+	 * Statistics
+	 * @return
+	 */
+	@ManagedAttribute(description="The number of thumbnails that have been requested")
+	public long getNumberOfRequests(){
+		return numberOfRequests;
+	}
 
 	/**
 	 * @return the threadService
@@ -104,6 +119,7 @@ public class ViewThreadController extends SimpleFormController {
 
 	@Override
 	protected ModelAndView showForm(HttpServletRequest arg0, HttpServletResponse httpServletResponse, BindException e, Map map) throws Exception {
+		numberOfRequests++;
 		Map controlModel = new HashMap();
 		Long identifier = null; 
 		if (arg0.getParameter("identifier") != null){

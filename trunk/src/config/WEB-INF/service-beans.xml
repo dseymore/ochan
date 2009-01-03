@@ -100,6 +100,9 @@
 	<bean class="org.ochan.util.LoggingConfiguration"/>
 	<bean class="org.ochan.control.ThumbnailController"/>
 	<bean class="org.ochan.control.ThreadZipController"/>
+	<bean class="org.ochan.control.CategoryListController"/>
+	<bean class="org.ochan.control.ViewCategoryController"/>
+	<bean class="org.ochan.control.ViewThreadController"/>
 	<bean class="org.ochan.util.DeploymentConfiguration"/>
 	<bean class="org.ochan.util.UserCounter"/>
 	<bean class="org.ochan.util.ManagedCommonsMultipartResolver"/>
