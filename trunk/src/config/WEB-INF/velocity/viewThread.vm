@@ -20,82 +20,94 @@
 	    		id: 'threadForm',
 	    		title: 'Reply',
 	    		header: true,
-			    labelAlign: 'top',
+			    labelAlign: 'right',
+			    labelWidth: 55,
 			    bodyStyle:'padding:5px 5px 0',
 			    width: 600,
 			    //collapsible: true,
 			    fileUpload: true,
 			    url: '#springUrl('/postReply.Ochan')',
 			    items: [
+			    new Ext.form.FieldSet({
+                	title: 'Details',
+                	autoHeight: true,
+                	defaultType: 'textfield',
+                	items: [{
+	                	fieldLabel: 'Author',
+		                value: '${author}',
+		                name: 'author',
+		                width: '190px',
+		                anchor:'95%'
+		            },{
+		                fieldLabel: 'Subject',
+		                name: 'subject',
+		                anchor:'95%'
+				    },{
+		                fieldLabel: 'Email',
+		                name: 'email',
+		                anchor:'95%'
+				    },{
+		                fieldLabel: 'Url',
+		                name: 'url',
+		                anchor:'95%'
+                	}]
+                }),
 			    {
 	                xtype:'hidden',
 	                value: '${thread.identifier}',
 	                name: 'parent',
 	                anchor:'95%'
 			    },{
-	                xtype:'textfield',
-	                fieldLabel: 'Author',
-	                value: '${author}',
-	                name: 'author',
-	                anchor:'95%'
-			    },{
-	                xtype:'textfield',
-	                fieldLabel: 'Subject',
-	                name: 'subject',
-	                anchor:'95%'
-			    },{
-	                xtype:'textfield',
-	                fieldLabel: 'Email',
-	                name: 'email',
-	                anchor:'95%'
-			    },{
-	                xtype:'textfield',
-	                fieldLabel: 'Url',
-	                name: 'url',
-	                anchor:'95%'
-			    },{
-			        xtype:'htmleditor',
-			        id:'comment',
-			        fieldLabel:'Comment',
-			        anchor:'98%'
-			     },{
-				    xtype:'tabpanel',
-            		activeTab: 0,
-            		defaults:{autoHeight:true, bodyStyle:'padding:10px'}, 
-            		items:[{
-            			title: 'Upload Image',
-            			layout: 'form',
-            			items: [{
-		                	xtype:'textfield',
-		                	fieldLabel: 'Image',
-		                	name: 'file',
-		                	inputType: 'file',
-		                	id: 'file',
-		                	anchor:'95%'
-		                }]
+		        	xtype:'htmleditor',
+		        	hideLabel: true,
+		        	id:'comment',
+		        	anchor:'98%'
+		        	//enableColors: false,
+        			//enableAlignments: false,
+        			//enableFont: false,
+        			//enableFontSize: false,
+        			//enableFormat: false,
+        			//enableLists: false,
+					//enableSourceEdit: false,
+					//enableLinks: false,
+		     	},{
+			    	xtype:'tabpanel',
+        			activeTab: 0,
+        			defaults:{autoHeight:true, bodyStyle:'padding:10px'},
+        			items:[{
+        				title: 'Upload Image',
+        				layout: 'form',
+        				items: [{
+	                		xtype:'textfield',
+	                		fieldLabel: 'Image',
+	                		name: 'file',
+	                		inputType: 'file',
+	                		id: 'file',
+	                		anchor:'95%'
+	                	}]
 					},{
 						title: 'Remote Image',
 						layout: 'form',
 						items: [{
-	                		xtype: 'textfield',
-	                		fieldLabel: 'Image URL',
-	                		name: 'fileUrl',
-	                		id:	'fileUrl',
-	                		anchor: '95%'
-	                	}]
-	                },{
-	                    title: 'Upload Zipfile of Images',
-	                    layout: 'form',
-	                    items: [{
-	                        xtype:'textfield',
-	                        fieldLabel: 'Zip File',
-	                        name: 'zipFile',
-	                        inputType: 'file',
-	                        id: 'zipFile',
-	                        anchor:'95%'
-	                    }]
-	                }]
-			    }],
+                			xtype: 'textfield',
+                			fieldLabel: 'URL',
+                			name: 'fileUrl',
+                			id:	'fileUrl',
+                			anchor: '95%'
+                		}]
+                	},{
+                    	title: 'Upload Zipfile of Images',
+                    	layout: 'form',
+                    	items: [{
+                        	xtype:'textfield',
+                        	fieldLabel: 'Zip File',
+                        	name: 'zipFile',
+                        	inputType: 'file',
+                        	id: 'zipFile',
+                        	anchor:'95%'
+                    	}]
+                	}]
+		    	}],
 			    buttons: [{
 			        text: 'Reply',
 			        handler: function() {
