@@ -16,6 +16,10 @@ public class DeploymentConfiguration {
 	static final String POST_LIMIT = "-1";
 	static final String THREAD_LIMIT = "-1";
 	static final String UNDER_BUMP = "2";
+	static final String DO_PINGBACK = "true";
+	
+	private String performPingBackTracking;
+	
 		
 	/**
 	 * @return the hostname
@@ -119,6 +123,22 @@ public class DeploymentConfiguration {
 	public void setThreadLimit(String threadLimit) {
 		Long.valueOf(threadLimit);
 		PREFERENCES.put("threadLimit",threadLimit);
+	}
+	
+	/**
+	 * @return the performPingBackTracking
+	 */
+	@ManagedAttribute(description="true or false, pings google analytics to track the number of deployments. ")
+	public String getPerformPingBackTracking() {
+		return PREFERENCES.get("performPingBackTracking",DO_PINGBACK);
+	}
+	/**
+	 * @param performPingBackTracking the performPingBackTracking to set
+	 */
+	@ManagedAttribute(description="true or false, pings google analytics to track the number of deployments. ")
+	
+	public void setPerformPingBackTracking(String performPingBackTracking) {
+		PREFERENCES.put("performPingBackTracking",performPingBackTracking);
 	}
 	/**
 	 * Helper method to test whether to enforce post limit

@@ -52,6 +52,12 @@
 			org.ochan.util.UserCounter
 		</listener-class>
 	</listener>
+	
+	<listener>
+		<listener-class>
+			org.ochan.util.GoogleAnalyticsDeploymentListener
+		</listener-class>
+	</listener>
 
 <!--	<servlet>-->
 <!--		<servlet-name>dummy</servlet-name>-->
