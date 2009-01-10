@@ -17,6 +17,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.apache.commons.lang.StringUtils;
 import org.ochan.entity.comparator.AscendingThreadComparator;
 
 @Entity
@@ -50,11 +51,13 @@ public class Thread implements Comparable<Thread>{
     @Transient
     private Comparator<Thread> comparator = new AscendingThreadComparator();
     
+    private String enabled = "Y";
+    
     public Thread(){
         
     }
     
-    public Thread(Category category, Long deleteCount, Date deleteDate, Long identifier, List<Post> posts, Date startDate) {
+    public Thread(Category category, Long deleteCount, Date deleteDate, Long identifier, List<Post> posts, Date startDate, String enabled) {
 		super();
 		this.category = category;
 		this.deleteCount = deleteCount;
@@ -62,6 +65,9 @@ public class Thread implements Comparable<Thread>{
 		this.identifier = identifier;
 		this.posts = posts;
 		this.startDate = startDate;
+		if (StringUtils.isNotBlank(enabled)){
+			this.enabled = enabled;
+		}
 	}
 
 
@@ -143,6 +149,25 @@ public class Thread implements Comparable<Thread>{
 	public void setDeleteCount(Long deleteCount) {
 		this.deleteCount = deleteCount;
 	}
-    
+
+	/**
+	 * @return the enabled
+	 */
+	public String getEnabled() {
+		return enabled;
+	}
+
+	/**
+	 * @param enabled the enabled to set
+	 */
+	public void setEnabled(String enabled) {
+		this.enabled = enabled;
+	}
+	
+	@Transient
+    public boolean isEnabled(){
+		return StringUtils.equals("Y", enabled);
+	}
+	
     
 }

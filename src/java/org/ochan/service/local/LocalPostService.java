@@ -1,14 +1,12 @@
 package org.ochan.service.local;
 
-import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.prefs.Preferences;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.codec.language.DoubleMetaphone;
-import org.apache.commons.codec.language.Soundex;
 import org.ochan.dao.PostDAO;
 import org.ochan.entity.ImagePost;
 import org.ochan.entity.Post;
@@ -161,6 +159,9 @@ public class LocalPostService implements PostService {
 		// retrieve our parent thread
 		Thread t = threadService.getThread(parentIdentifier);
 		t.setPosts(this.retrieveThreadPosts(t));
+		if (t.getPosts() == null){
+			t.setPosts(new ArrayList<Post>());
+		}
 		t.getPosts().add(p);
 		p.setParent(t);
 
