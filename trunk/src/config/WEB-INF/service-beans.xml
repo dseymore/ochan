@@ -40,9 +40,7 @@
 	<!--  xxxxxxxxxxxxxxxxxxxxxxxxx  DAO configuration xxxxxxxxxxxxxxxxxxxxxxxxx  -->
 	<bean id="categoryDAO" class="org.ochan.dao.CategoryDAO" />
 	<bean id="postDAO" class="org.ochan.dao.PostDAO" />
-	<bean id="threadDAO" class="org.ochan.dao.ThreadDAO">
-		<property name="postDao" ref="postDAO" />
-	</bean>
+	<bean id="threadDAO" class="org.ochan.dao.ThreadDAO"/>
 	<bean id="externalCategoryDAO" class="org.ochan.dao.ExternalCategoryDAO" />
 	<bean id="blobDAO" class="org.ochan.dao.BlobDAO"/>
 	

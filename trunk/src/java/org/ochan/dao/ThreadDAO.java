@@ -11,7 +11,6 @@ import javax.persistence.Query;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.ochan.entity.Post;
 import org.ochan.entity.Thread;
 import org.ochan.service.ThreadService.ThreadCriteria;
 
@@ -19,14 +18,10 @@ public class ThreadDAO {
     private static final Log LOG = LogFactory.getLog(ThreadDAO.class);
 
     private EntityManagerFactory entityManagerFactory;
-    private PostDAO postDao;
 
     @PersistenceUnit(name = "DefaultPersistenceUnit")
     public void setEntityManagerFactory(EntityManagerFactory emf) {
         this.entityManagerFactory = emf;
-    }
-    public void setPostDao(PostDAO postDao) {
-        this.postDao = postDao;
     }
 
 
@@ -39,14 +34,7 @@ public class ThreadDAO {
             em.getTransaction().begin();
             em.persist(thread);
             em.getTransaction().commit();
-            //now save the post(s) (potentially more that just one)
-            for(Post p : thread.getPosts()){
-                if (p.getParent() == null){
-                    p.setParent(thread);
-                }
-                postDao.create(p);
-            }
-            LOG.debug("persist complete.");
+            LOG.debug("persist complete. id: " + thread.getIdentifier());
         } catch (Exception e) {
             LOG.error("Unable to persist thread",e);
         } finally {
@@ -101,6 +89,7 @@ public class ThreadDAO {
         	if (criteria.get(ThreadCriteria.MAX) != null){
         		queryString.append(" t.identifier IN (select max(x.identifier) from Thread x) ");
         	}
+        	queryString.append(" and (t.enabled = null OR t.enabled != :enabled) ");
             Query query = em.createQuery(queryString.toString());
             //then add our parameters...
             //may not need these 'ifs'
@@ -110,6 +99,7 @@ public class ThreadDAO {
             if (criteria.get(ThreadCriteria.NEWERTHAN) != null){
             	query.setParameter("maxidentifier", criteria.get(ThreadCriteria.NEWERTHAN));
             }
+            query.setParameter("enabled","N");
             List results = query.getResultList();
             if (results.size() > 0){
             	threads = new ArrayList<Thread>();

@@ -127,35 +127,18 @@ public class LocalThreadService implements ThreadService {
 		Thread threadToCreate = new Thread();
 		// mark the moment
 		Date now = new Date();
-
 		Category cat = categoryService.getCategory(categoryId);
-		// make a post
-		List<Post> posts = new ArrayList<Post>();
-		Post post = null;
-		if (file != null && file.length > 0) {
-			post = new ImagePost();
-			((ImagePost) post).setImageIdentifier(blobService.saveBlob(file));
-		} else {
-			post = new TextPost();
-		}
-		post.setAuthor(postService.computerAuthor(author));
-		post.setSubject(subject);
-		((TextPost) post).setComment(content);
-		post.setEmail(email);
-		post.setUrl(url);
-		post.setTime(now);
-		// relate
-		post.setParent(threadToCreate);
-		// group
-		posts.add(post);
-
 		// relate categories
 		threadToCreate.setCategory(cat);
 		// relate posts
-		threadToCreate.setPosts(posts);
 		threadToCreate.setStartDate(now);
-
+		threadToCreate.setEnabled("N");
 		threadDAO.create(threadToCreate);
+		
+		postService.createPost(threadToCreate.getIdentifier(), author, subject, email, url, content, file);
+		threadToCreate.setEnabled("Y");
+		threadDAO.update(threadToCreate);
+		
 	}
 
 	@ManagedOperation(description="Delete a Thread (delete the posts first...)!")
