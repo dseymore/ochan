@@ -247,6 +247,6 @@ public class ViewCategoryController extends SimpleFormController {
         Map<String, String> dataMap = new HashMap<String, String>();
         dataMap.put("identifier", tf.getCategoryIdentifier());
 
-        return new ModelAndView(new RedirectView("openCategory.Ochan"), dataMap);
+        return new ModelAndView(new RedirectView("/chan/" + tf.getCategoryIdentifier()));
     }
 }
