@@ -286,7 +286,7 @@ public class ThumbnailController implements Controller {
 						BufferedImage image = null;
 						ByteArrayInputStream bais = new ByteArrayInputStream(datum);
 						image = ImageIO.read(bais);
-						if (image == null){
+						if (image == null || p == null){
 							//BAD BAD IMAGE!
 							InputStream stream = request.getSession().getServletContext().getResourceAsStream("/WEB-INF/404-image.png");
 							InputStreamReader isr = new InputStreamReader(stream);
@@ -340,7 +340,7 @@ public class ThumbnailController implements Controller {
 					BufferedImage image = null;
 					ByteArrayInputStream bais = new ByteArrayInputStream(datum);
 					image = ImageIO.read(bais);
-					if (image == null){
+					if (image == null || p == null){
 						//BAD BAD IMAGE!
 						InputStream stream = request.getSession().getServletContext().getResourceAsStream("/WEB-INF/404-image.png");
 						InputStreamReader isr = new InputStreamReader(stream);
@@ -350,6 +350,11 @@ public class ThumbnailController implements Controller {
 						image = ImageIO.read(bais);
 					}
 				}
+			}else{
+				//deleted image
+				InputStream stream = request.getSession().getServletContext().getResourceAsStream("/WEB-INF/404-image.png");
+				InputStreamReader isr = new InputStreamReader(stream);
+				datum = IOUtils.toByteArray(stream);
 			}
 			
 			response.setContentType("image/jpeg");
