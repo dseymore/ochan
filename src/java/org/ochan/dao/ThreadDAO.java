@@ -75,19 +75,22 @@ public class ThreadDAO {
     	LOG.trace("Searching for threads with criteria.");
         EntityManager em = this.entityManagerFactory.createEntityManager();
         try {
-        	StringBuffer queryString = new StringBuffer("SELECT t FROM Thread t where ");
+        	StringBuffer queryString = new StringBuffer("SELECT t FROM Thread t where  1=1 ");
         	//build our string ... nasty
         	if (criteria.get(ThreadCriteria.CATEGORY) != null){
-        		queryString.append(" t.category.identifier = :category ");
+        		queryString.append(" and t.category.identifier = :category ");
         	}
         	if (criteria.get(ThreadCriteria.NEWERTHAN) != null){
-        		queryString.append(" t.identifier > :maxidentifier ");
+        		queryString.append(" and t.identifier > :maxidentifier ");
         	}
         	if (criteria.get(ThreadCriteria.DELETEQUEUE) != null){
-        		queryString.append(" t.deleteDate != null ");
+        		queryString.append(" and t.deleteDate != null ");
+        	}
+        	if (criteria.get(ThreadCriteria.NOTDELETED) != null){
+        		queryString.append(" and t.deleteDate = null ");
         	}
         	if (criteria.get(ThreadCriteria.MAX) != null){
-        		queryString.append(" t.identifier IN (select max(x.identifier) from Thread x) ");
+        		queryString.append(" and t.identifier IN (select max(x.identifier) from Thread x) ");
         	}
         	queryString.append(" and (t.enabled = null OR t.enabled != :enabled) ");
             Query query = em.createQuery(queryString.toString());
