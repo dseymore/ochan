@@ -17,7 +17,7 @@ public interface ThreadService {
      * @author David Seymore 
      * Oct 27, 2007
      */
-    public enum ThreadCriteria{STARTDATE,CATEGORY,DELETEQUEUE,NEWERTHAN,MAX};
+    public enum ThreadCriteria{STARTDATE,CATEGORY,DELETEQUEUE,NOTDELETED,NEWERTHAN,MAX};
 
     /**
      * 
