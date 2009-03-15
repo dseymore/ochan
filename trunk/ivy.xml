@@ -64,6 +64,8 @@
 		<dependency org="com.sun.xml" name="jaxb-impl" rev="2.1.7" conf="default->default"/>
 		<dependency org="net.sf.ehcache" name="ehcache" rev="1.2.3" conf="default->default"/>
 		<dependency org="carbonfive" name="pathparameter" rev="r686" conf="default->default"/>
+		<!-- Sleepy Cat! -->
+		<dependency org="com.sleepycat" name="je" rev="3.3.75" conf="default->default"/>
     </dependencies>
 </ivy-module>
 
