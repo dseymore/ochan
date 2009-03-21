@@ -47,13 +47,9 @@
 		</javac>
 	</target>
 
-	<target name="jarPersistence">
-		<jar destfile="${lib.dir}/persistence-Ochan.jar">
-			<metainf dir="src/config/META-INF/" />
-		</jar>
-	</target>
 
-	<target name="war" depends="compile,jarPersistence">
+
+	<target name="war" depends="compile">
 		<!-- we need to unzip the extjs stuff so that we can consume it -->
 		<mkdir dir="${basedir}/scratch/extjs"/>
 		<mkdir dir="${basedir}/scratch/extjs/extjs"/>

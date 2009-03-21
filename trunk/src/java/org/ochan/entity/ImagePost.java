@@ -2,14 +2,6 @@ package org.ochan.entity;
 
 import java.util.Date;
 
-import javax.persistence.Entity;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.Table;
-
-@Entity
-@Inheritance(strategy = InheritanceType.JOINED)
-@Table(name="IMAGE_POST")
 public class ImagePost extends TextPost{
     
 	private Long imageIdentifier;

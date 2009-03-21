@@ -2,18 +2,8 @@ package org.ochan.entity;
 
 import java.util.Date;
 
-import javax.persistence.Entity;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.Lob;
-import javax.persistence.Table;
-
-@Entity
-@Inheritance(strategy = InheritanceType.JOINED)
-@Table(name="TEXT_POST")
 public class TextPost extends Post{
 
-    @Lob
     private String comment;
     
     public TextPost(){
