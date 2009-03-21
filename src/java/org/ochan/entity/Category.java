@@ -2,38 +2,16 @@ package org.ochan.entity;
 
 import java.util.List;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Lob;
-import javax.persistence.OneToMany;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
-import javax.persistence.Version;
-
-@Entity
-@Table(name="CATEGORY")
 public class Category {
 
     private String name;
     
-    @Lob
     private String longDescription;
     
-    @Id
-    @Column(updatable =false, unique=true)
-    @SequenceGenerator(name="CATEGORY_SEQUENCE", allocationSize=1)
-    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="CATEGORY_SEQUENCE")
     private Long identifier;
     
-    @OneToMany(mappedBy="category", fetch=FetchType.LAZY)
     private List<Thread> threads;
     
-    @Version
-    @Column(name="OPTLOCK")
     private Integer version;
     
     public Category(){

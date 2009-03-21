@@ -27,14 +27,9 @@
 		<!-- persistence -->
 		<dependency org="org.springframework" name="spring-jpa" rev="2.+" conf="default->default"/>
 		<dependency org="org.springframework" name="spring-aspects" rev="2.+" conf="default->default"/>
-		<dependency org="org.springframework" name="spring-hibernate3" rev="2.+" conf="default->default"/>
-		<dependency org="org.hibernate" name="hibernate-annotations" rev="3.+" conf="default->default"/>
-		<dependency org="org.hibernate" name="hibernate-entitymanager" rev="3.+" conf="default->default"/>
-		<dependency org="javax.persistence" name="persistence-api" rev="1.+" conf="default->default"/> 
+		<dependency org="antlr" name="antlr" rev="2.7.6" conf="default->default"/>
 		<!-- database driver  -->
-		<dependency org="mysql" name="mysql-connector-java" rev="5.+" conf="default->default"/>
-		<dependency org="hsqldb" name="hsqldb" rev="1.8.0.7" conf="default->default"/>
-		<dependency org="org.h2" name="h2" rev="2009-01-24" conf="default->default"/>
+		
 		<dependency org="com.extjs" name="extjs" rev="2.2" conf="default->default"/>
 		<dependency org="org.roqe" name="jitac" rev="0.2.0" conf="default->default"/>
         <!-- junit is only need in the test configuration-->        

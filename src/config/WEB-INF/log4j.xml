@@ -10,7 +10,7 @@
 	<appender name="ErrorStastics" class="org.ochan.util.StatisticalErrorAppender"/>
 	
 	<root>
-		<priority value="ERROR" />
+		<priority value="WARN" />
 		<appender-ref ref="ConsoleAppender" />
 		<appender-ref ref="ErrorStastics" />
 	</root>
