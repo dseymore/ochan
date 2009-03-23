@@ -61,6 +61,7 @@
 		<dependency org="carbonfive" name="pathparameter" rev="r686" conf="default->default"/>
 		<!-- Sleepy Cat! -->
 		<dependency org="com.sleepycat" name="je" rev="3.3.75" conf="default->default"/>
+		<dependency org="org.javasimon" name="javasimon-core" rev="2.0-alpha1" conf="default->default"/>
     </dependencies>
 </ivy-module>
 

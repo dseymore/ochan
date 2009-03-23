@@ -1,11 +1,13 @@
 package org.ochan.dpl.service;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.javasimon.SimonManager;
+import org.javasimon.Split;
+import org.javasimon.Stopwatch;
 import org.ochan.dpl.BlobDPL;
 import org.ochan.dpl.BlobStatDPL;
 import org.ochan.dpl.SleepyEnvironment;
@@ -27,11 +29,9 @@ public class LocalBlobService implements BlobService {
 
 	private static long deleteCount = 0;
 
-	private static long lastSearchTime = 0;
-
-	private static long lastSaveTime = 0;
-	
-	private static long lastGetTime = 0;
+	private static Stopwatch saveStopWatch = SimonManager.getStopwatch(LocalBlobService.class.getName() + "Save");
+	private static Stopwatch searchStopWatch = SimonManager.getStopwatch(LocalBlobService.class.getName() + "Search");
+	private static Stopwatch getStopWatch = SimonManager.getStopwatch(LocalBlobService.class.getName() + "Get");
 
 	/**
 	 * @return the createCount
@@ -60,25 +60,25 @@ public class LocalBlobService implements BlobService {
 	/**
 	 * @return the lastSearchTime
 	 */
-	@ManagedAttribute(description = "The time in milliseconds of the last call to search for a list of all blobs.")
+	@ManagedAttribute(description = "The time in nanoseconds of the last call to search for a list of all blobs.")
 	public long getLastSearchTime() {
-		return lastSearchTime;
+		return searchStopWatch.getLast();
 	}
 
 	/**
 	 * @return
 	 */
-	@ManagedAttribute(description = "The time in milliseconds of the last call to save a blob.")
+	@ManagedAttribute(description = "The time in nanoseconds of the last call to save a blob.")
 	public long getLastSaveTime() {
-		return lastSaveTime;
+		return saveStopWatch.getLast();
 	}
-	
+
 	/**
 	 * @return
 	 */
-	@ManagedAttribute(description = "The time in milliseconds of the last call to get a blob.")
+	@ManagedAttribute(description = "The time in nanoseconds of the last call to get a blob.")
 	public long getLastGetTime() {
-		return lastGetTime;
+		return getStopWatch.getLast();
 	}
 
 	// END STATS
@@ -106,8 +106,7 @@ public class LocalBlobService implements BlobService {
 
 	@Override
 	public List<Long> getAllIds() {
-		// capture start of call
-		long start = new Date().getTime();
+		Split split = searchStopWatch.start();
 		List<Long> ids = new ArrayList<Long>();
 		try {
 			EntityCursor<Long> blobs = environment.blobByIdentifier.keys();
@@ -117,36 +116,31 @@ public class LocalBlobService implements BlobService {
 			blobs.close();
 		} catch (Exception e) {
 			LOG.error("Blob delete fail.", e);
+		} finally {
+			split.stop();
 		}
-		// capture end of call
-		long end = new Date().getTime();
-		// compute total time
-		lastSearchTime = end - start;
+		split.stop();
 		return ids;
 	}
 
 	@Override
 	public Byte[] getBlob(Long identifier) {
 		getCount++;
-		// capture start of call
-		long start = new Date().getTime();
+		Split split = getStopWatch.start();
 		try {
 			BlobDPL blob = environment.blobByIdentifier.get(identifier);
 			return blob.getData();
 		} catch (Exception e) {
 			LOG.error("Blob delete fail.", e);
+		} finally {
+			split.stop();
 		}
-		// capture end of call
-		long end = new Date().getTime();
-		// compute total time
-		lastGetTime = end - start;
 		return null;
 	}
 
 	@Override
 	public Long saveBlob(Byte[] byteArray) {
-		// capture start of call
-		long start = new Date().getTime();
+		Split split = saveStopWatch.start();
 		createCount++;
 		try {
 			BlobDPL dpl = new BlobDPL();
@@ -159,11 +153,10 @@ public class LocalBlobService implements BlobService {
 			return dpl.getIdentifier();
 		} catch (Exception e) {
 			LOG.error("Blob delete fail.", e);
+		} finally {
+			split.stop();
 		}
-		// capture end of call
-		long end = new Date().getTime();
-		// compute total time
-		lastSaveTime = end - start;
+		split.stop();
 		return null;
 	}
 
