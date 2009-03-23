@@ -5,6 +5,7 @@ import java.io.File;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.sleepycat.je.DatabaseConfig;
 import com.sleepycat.je.Environment;
 import com.sleepycat.je.EnvironmentConfig;
 import com.sleepycat.persist.EntityStore;
@@ -29,6 +30,9 @@ public class SleepyEnvironment {
 	public  PrimaryIndex<Long, BlobDPL> blobByIdentifier;
 	
 	public PrimaryIndex<Long, ExternalCategoryDPL> externalCategoryByIdentifier;
+	
+	public PrimaryIndex<Long, BlobStatDPL> blobStatisticsByIdentifier;
+	public SecondaryIndex<Long, Long, BlobStatDPL> blobStatisticsByBlobIdentifier;
 
 	public SleepyEnvironment() {
 		try {
@@ -37,6 +41,7 @@ public class SleepyEnvironment {
 			myEnvConfig.setLocking(false);
 			StoreConfig storeConfig = new StoreConfig();
 			storeConfig.setAllowCreate(true);
+			storeConfig.setDeferredWrite(true);
 
 			// Open the environment and entity store
 			LOG.warn(System.getProperty("user.dir"));
@@ -55,34 +60,8 @@ public class SleepyEnvironment {
 			
 			externalCategoryByIdentifier = entityStore.getPrimaryIndex(Long.class, ExternalCategoryDPL.class);
 			
-			
-//			LOG.warn("Staring new category");
-//			CategoryDPL cat = new CategoryDPL();
-//			cat.setDescription("");
-//			cat.setName("foo");
-//			categoryByIdentifier.put(cat);
-//			LOG.warn("Category id: " + cat.getIdentifier());
-//			
-//			ThreadDPL thread = new ThreadDPL();
-//			thread.setCategory(cat.getIdentifier());
-//			thread.setStartDate(new Date());
-//			threadByIdentifier.put(thread);
-//			LOG.warn("Thread id: " + thread.getIdentifier());
-//			
-//			BlobDPL blob = new BlobDPL();
-//			blob.setData(RemoteFileGrabber.getDataFromUrl("http://www.google.com/logos/spring09.gif"));
-//			blobByIdentifier.put(blob);
-//			LOG.warn("Blob: "  + blob.getIdentifier());
-//			
-//			PostDPL post = new PostDPL();
-//			post.setComment("!!");
-//			post.setParent(thread.getIdentifier());
-//			post.setImageIdentifier(blob.getIdentifier());
-//			post.setThumbnailIdentifier(blob.getIdentifier());
-//			post.setType(PostType.IMAGE);
-//			postByIdentifier.put(post);
-//			LOG.warn("Post: " + post.getIdentifier());
-//			
+			blobStatisticsByIdentifier = entityStore.getPrimaryIndex(Long.class, BlobStatDPL.class);
+			blobStatisticsByBlobIdentifier = entityStore.getSecondaryIndex(blobStatisticsByIdentifier, Long.class, "blobIdentifier");
 			
 		} catch (Exception e) {
 			LOG.error("Unable to start the database.", e);

@@ -11,4 +11,6 @@ public interface BlobService {
 	public void deleteBlob(Long identifier);
 	
 	public List<Long> getAllIds();
+	
+	public int getBlobSize(Long identifier);
 }

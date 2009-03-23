@@ -94,13 +94,10 @@ public class StatsGeneratorJob extends ManagedQuartzJobBean implements StatefulJ
 			long size = 0;
 			List<Long> blobIds = blobService.getAllIds();
 			for (Long id : blobIds){
-				Byte[] data = blobService.getBlob(id);
+				//Byte[] data = blobService.getBlob(id);
 				//its possible that the thing got deleted between the list time and the 
 				//get time.. 
-				if (data != null){
-					//the number of bytes
-					size = size + data.length;
-				}
+				size = size + blobService.getBlobSize(id);
 			}
 			sizeOfAllFiles = Long.valueOf(size);
 			numberOfFiles = Long.valueOf(blobIds.size());
