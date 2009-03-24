@@ -14,6 +14,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.ochan.entity.Post;
 import org.ochan.entity.TextPost;
@@ -209,12 +210,7 @@ public class ViewThreadController extends SimpleFormController {
 			Byte[] bytes = null;
 			if (prf.getFileUrl() == null || "".equals(prf.getFileUrl().trim())){
 		        if (prf.getFile() != null && prf.getFile().length > 0){
-		            bytes = new Byte[prf.getFile().length];
-		            int invariant = 0;
-		            for( byte b : prf.getFile()){
-		                bytes[invariant] = new Byte(b);
-		                invariant++;
-		            }
+		        	bytes = ArrayUtils.toObject(prf.getFile());
 		        }
 			}else{
 				//URL
@@ -243,12 +239,7 @@ public class ViewThreadController extends SimpleFormController {
 		        dest.close();
 				zip.closeEntry();
 				data = baos.toByteArray();
-				Byte[] bytes = new Byte[data.length];
-	            int invariant = 0;
-	            for( byte b : data){
-	                bytes[invariant] = new Byte(b);
-	                invariant++;
-	            }
+				Byte[] bytes = ArrayUtils.toObject(data);
 				postService.createPost(Long.valueOf(prf.getParent()), prf.getAuthor(), prf.getSubject(), prf.getEmail(), prf.getUrl(), prf.getComment(), bytes);
 				entry = zip.getNextEntry();
 			}

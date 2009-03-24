@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -226,11 +227,7 @@ public class ViewCategoryController extends SimpleFormController {
             // Copying the byte array to be a Byte array. fun..
             if (tf.getFile() != null && tf.getFile().length > 0) {
                 bytes = new Byte[tf.getFile().length];
-                int invariant = 0;
-                for (byte b : tf.getFile()) {
-                    bytes[invariant] = new Byte(b);
-                    invariant++;
-                }
+                bytes = ArrayUtils.toObject(tf.getFile());
             }
         } else {
             bytes = RemoteFileGrabber.getDataFromUrl(tf.getFileUrl());

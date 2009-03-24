@@ -67,6 +67,14 @@ public class SleepyEnvironment {
 			LOG.error("Unable to start the database.", e);
 		}
 	}
+	
+	/**
+	 * @return the environment
+	 */
+	public Environment getEnvironment() {
+		return environment;
+	}
+
 
 	public void close() {
 		try {
