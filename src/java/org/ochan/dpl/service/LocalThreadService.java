@@ -95,11 +95,16 @@ public class LocalThreadService implements ThreadService {
 			ThreadDPL thread = new ThreadDPL();
 			thread.setCategory(category);
 			thread.setStartDate(new Date());
-
+			thread.setEnabled(false);
+			
 			// save the thread
 			environment.threadByIdentifier.put(thread);
 			// save the post
 			postService.createPost(thread.getIdentifier(), author, subject, email, url, content, file);
+			//and then update. 
+			thread.setEnabled(true);
+			environment.threadByIdentifier.put(thread);
+			
 		} catch (Exception e) {
 			LOG.error("Unable to store a new thread.", e);
 		}
@@ -282,7 +287,7 @@ public class LocalThreadService implements ThreadService {
 		Thread t = new Thread();
 		t.setDeleteCount(thread.getDeleteCount());
 		t.setDeleteDate(thread.getDeleteDate());
-		t.setEnabled("Y");
+		t.setEnabled(thread.isEnabled() ? "Y" : "N");
 		t.setIdentifier(thread.getIdentifier());
 		t.setStartDate(thread.getStartDate());
 		t.setCategory(c);

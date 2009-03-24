@@ -69,8 +69,11 @@
 	<bean class="org.ochan.util.DeploymentConfiguration"/>
 	<bean class="org.ochan.util.UserCounter"/>
 	<bean class="org.ochan.util.ManagedCommonsMultipartResolver"/>
-	
-	
+
+	<!-- loader utility to help us generate data from a script -->
+	<bean class="org.ochan.util.LoaderUtility" id="loader">
+		<property name="threadService" ref="localThreadService"/>
+	</bean>	
 	
 	<!--  Quartz Jobs! -->
 	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
@@ -80,6 +83,7 @@
 	            <ref bean="deleteThreadTrigger" />
 	            <ref bean="statsGeneratorTrigger" />
 	            <ref bean="nominateThreadTrigger" />
+	            <ref bean="checkpointTrigger" />
 	        </list>
 	    </property>
 	    <property name="applicationContextSchedulerContextKey">
@@ -94,6 +98,16 @@
 	<bean name="deleteThreadsJob" class="org.springframework.scheduling.quartz.JobDetailBean">
 		<property name="jobClass" value="org.ochan.job.DeleteThreadJob"/>
 	</bean>
+	
+	<bean id="checkpointTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="checkpointJob" />
+		<!--  every ten minutes please -->
+		<property name="cronExpression" value="0 */10 * * * ?" />
+	</bean>
+	<bean name="checkpointJob" class="org.springframework.scheduling.quartz.JobDetailBean">
+		<property name="jobClass" value="org.ochan.job.SleepyCheckpointerJob"/>
+	</bean>
+	
 	
 	<bean id="nominateThreadTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
 		<property name="jobDetail" ref="nominateThreadJob" />
@@ -116,7 +130,7 @@
     <bean id="statsGeneratorTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
     	<property name="jobDetail" ref="statsGenerationJob" />
     	<!-- every hour -->
-    	<property name="cronExpression" value="0 1 * * * ?" />
+    	<property name="cronExpression" value="0 */1 * * * ?" />
 	</bean>
 	<bean name="statsGenerationJob" class="org.springframework.scheduling.quartz.JobDetailBean">
         <property name="jobClass" value="org.ochan.job.StatsGeneratorJob"/>
@@ -126,6 +140,7 @@
 	<bean class="org.ochan.job.ActiveWatcherCounterJob"/>
 	<bean class="org.ochan.job.DeleteThreadJob"/>
 	<bean class="org.ochan.job.StatsGeneratorJob"/>
+	<bean class="org.ochan.job.SleepyCheckpointerJob"/>
 	<bean class="org.ochan.job.ThreadDeathNominationJob"/>
 	
 

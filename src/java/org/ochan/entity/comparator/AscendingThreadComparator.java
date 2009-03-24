@@ -24,10 +24,15 @@ public class AscendingThreadComparator implements Comparator<Thread> {
 	 * @return
 	 */
 	public static long lastPostDate(Thread t) {
-		List<Post> p = t.getPosts();
-		Collections.sort(p);
-		// take the last one, and return its time
-		Post post = p.get(p.size() -1);
-		return post.getTime().getTime();
+		if (t.isEnabled()){
+			List<Post> p = t.getPosts();
+			Collections.sort(p);
+			// take the last one, and return its time
+			Post post = p.get(p.size() -1);
+			return post.getTime().getTime();
+		}else{
+			//bye bye
+			return -1;
+		}
 	}
 }

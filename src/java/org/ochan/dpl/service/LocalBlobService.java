@@ -115,7 +115,7 @@ public class LocalBlobService implements BlobService {
 			}
 			blobs.close();
 		} catch (Exception e) {
-			LOG.error("Blob delete fail.", e);
+			LOG.error("Get blob ids fail.", e);
 		} finally {
 			split.stop();
 		}
@@ -131,7 +131,7 @@ public class LocalBlobService implements BlobService {
 			BlobDPL blob = environment.blobByIdentifier.get(identifier);
 			return blob.getData();
 		} catch (Exception e) {
-			LOG.error("Blob delete fail.", e);
+			LOG.error("Blob get fail.", e);
 		} finally {
 			split.stop();
 		}
@@ -152,7 +152,7 @@ public class LocalBlobService implements BlobService {
 			environment.blobStatisticsByIdentifier.put(stat);
 			return dpl.getIdentifier();
 		} catch (Exception e) {
-			LOG.error("Blob delete fail.", e);
+			LOG.error("Blob save fail.", e);
 		} finally {
 			split.stop();
 		}
@@ -163,9 +163,11 @@ public class LocalBlobService implements BlobService {
 	public int getBlobSize(Long identifier) {
 		try {
 			BlobStatDPL stat = environment.blobStatisticsByBlobIdentifier.get(identifier);
-			return stat.getSize();
+			if (stat != null){
+				return stat.getSize();
+			}
 		} catch (Exception e) {
-			LOG.error("Blob delete fail.", e);
+			LOG.warn("Blob get size fail.", e);
 		}
 		return 0;
 	}
