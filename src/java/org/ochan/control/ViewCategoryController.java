@@ -220,7 +220,7 @@ public class ViewCategoryController extends SimpleFormController {
 		}
 
         boolean isMultipart = ServletFileUpload.isMultipartContent(request);
-        LOG.error("Multipart?: " + isMultipart);
+        LOG.info("Multipart?: " + isMultipart);
 
         Byte[] bytes = null;
         if (tf.getFileUrl() == null || "".equals(tf.getFileUrl().trim())) {

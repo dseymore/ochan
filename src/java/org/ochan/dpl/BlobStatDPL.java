@@ -17,6 +17,12 @@ public class BlobStatDPL {
 	private int size;
 	
 	/**
+	 * @return the identifier
+	 */
+	public Long getIdentifier() {
+		return identifier;
+	}
+	/**
 	 * @return the blobIdentifier
 	 */
 	public Long getBlobIdentifier() {

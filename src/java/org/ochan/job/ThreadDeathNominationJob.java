@@ -92,7 +92,7 @@ public class ThreadDeathNominationJob extends ManagedQuartzJobBean implements St
 						lastThread.setDeleteDate(new Date());
 						Long count = lastThread.getDeleteCount();
 						if (count == null) {
-							count = new Long(0);
+							count = Long.valueOf(0);
 						}
 						lastThread.setDeleteCount(Long.valueOf(count.longValue() + 1));
 						//update it doood!

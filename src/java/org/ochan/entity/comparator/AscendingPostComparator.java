@@ -1,10 +1,16 @@
 package org.ochan.entity.comparator;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 import org.ochan.entity.Post;
 
-public class AscendingPostComparator implements Comparator<Post> {
+public class AscendingPostComparator implements Comparator<Post>, Serializable {
+
+	/**
+	 * Generated Serial Ver. ID
+	 */
+	private static final long serialVersionUID = -116675767405495720L;
 
 	/**
 	 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)

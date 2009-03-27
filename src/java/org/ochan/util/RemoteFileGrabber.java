@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.net.URL;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -25,11 +26,7 @@ public class RemoteFileGrabber {
 			URL dest = new URL(url);
 			InputStream is = dest.openConnection().getInputStream();
 			byte[] bits = IOUtils.toByteArray(is);
-
-			Byte[] bytes = new Byte[bits.length];
-			for (int i = 0; i < bits.length; i++) {
-				bytes[i] = new Byte(bits[i]);
-			}
+			Byte[] bytes = ArrayUtils.toObject(bits);
 			return bytes;
 		} catch (Exception e) {
 			// Fail at download
