@@ -289,8 +289,8 @@ public class ThumbnailController implements Controller {
 						if (image == null || p == null){
 							//BAD BAD IMAGE!
 							InputStream stream = request.getSession().getServletContext().getResourceAsStream("/WEB-INF/404-image.png");
-							InputStreamReader isr = new InputStreamReader(stream);
 							datum = IOUtils.toByteArray(stream);
+							stream.close();
 							//and reset the image object. 
 							bais = new ByteArrayInputStream(datum);
 							image = ImageIO.read(bais);
@@ -319,8 +319,7 @@ public class ThumbnailController implements Controller {
 						datum = baos.toByteArray();
 						//store the thumbnail data in the post and persist
 						{
-							Byte[] thumbData = new Byte[datum.length];
-							thumbData = ArrayUtils.toObject(datum);
+							Byte[] thumbData = ArrayUtils.toObject(datum);
 							imagePost.setThumbnailIdentifier(blobService.saveBlob(thumbData));
 							postService.updatePost(imagePost);
 						}
@@ -343,8 +342,8 @@ public class ThumbnailController implements Controller {
 					if (image == null || p == null){
 						//BAD BAD IMAGE!
 						InputStream stream = request.getSession().getServletContext().getResourceAsStream("/WEB-INF/404-image.png");
-						InputStreamReader isr = new InputStreamReader(stream);
 						datum = IOUtils.toByteArray(stream);
+						stream.close();
 						//and reset the image object. 
 						bais = new ByteArrayInputStream(datum);
 						image = ImageIO.read(bais);
@@ -353,8 +352,8 @@ public class ThumbnailController implements Controller {
 			}else{
 				//deleted image
 				InputStream stream = request.getSession().getServletContext().getResourceAsStream("/WEB-INF/404-image.png");
-				InputStreamReader isr = new InputStreamReader(stream);
 				datum = IOUtils.toByteArray(stream);
+				stream.close();
 			}
 			
 			response.setContentType("image/jpeg");

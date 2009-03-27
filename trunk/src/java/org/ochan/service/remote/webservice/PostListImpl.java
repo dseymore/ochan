@@ -26,7 +26,7 @@ public class PostListImpl implements PostList {
 	private PostService postService;
 	private ThreadService threadService;
 	
-	private static Long NEXT_POST_GET_COUNT = new Long(0);
+	private static Long NEXT_POST_GET_COUNT = Long.valueOf(0);
 	
 	/**
 	 * @return the postService
@@ -106,7 +106,7 @@ public class PostListImpl implements PostList {
 			}
 		}
 		RemotePost rp = new RemotePost();
-		rp.setIdentifier(new Long(-1));
+		rp.setIdentifier(Long.valueOf(-1));
 		return rp;
 	}
 	

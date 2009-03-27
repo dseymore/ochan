@@ -30,7 +30,7 @@ public class ThreadSupportImpl implements ThreadSupport {
 	private ThreadService threadService;
 	private PostService postService;
 
-	private static Long NEXT_THREAD_GET_COUNT = new Long(0);
+	private static Long NEXT_THREAD_GET_COUNT = Long.valueOf(0);
 	
 	/**
 	 * @param threadService
@@ -69,7 +69,7 @@ public class ThreadSupportImpl implements ThreadSupport {
 		}
 		Long count = thread.getDeleteCount();
 		if (count == null) {
-			count = new Long(0);
+			count = Long.valueOf(0);
 		}
 		thread.setDeleteCount(Long.valueOf(count.longValue() + 1));
 		threadService.updateThread(thread);
@@ -123,7 +123,7 @@ public class ThreadSupportImpl implements ThreadSupport {
 			LOG.error("unable to find next thread?", e);
 		}
 		RemoteThread rt = new RemoteThread();
-		rt.setIdentifier(new Long(-1));
+		rt.setIdentifier(Long.valueOf(-1));
 		return rt;
 	}
 }

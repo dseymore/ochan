@@ -1,5 +1,6 @@
 package org.ochan.entity.comparator;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -7,7 +8,13 @@ import java.util.List;
 import org.ochan.entity.Post;
 import org.ochan.entity.Thread;
 
-public class AscendingThreadComparator implements Comparator<Thread> {
+public class AscendingThreadComparator implements Comparator<Thread>, Serializable {
+
+	
+	/**
+	 * Genereated Serial Ver ID
+	 */
+	private static final long serialVersionUID = -2790487850308252589L;
 
 	@Override
 	public int compare(Thread o1, Thread o2) {

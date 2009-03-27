@@ -54,8 +54,8 @@ public class StatisticalErrorAppender implements Appender {
 				if (errorCountMap.get(exception.getClass()) == null) {
 					errorCountMap.put(exception.getClass().getName(), new Integer(1));
 				} else {
-					Integer currentCount = errorCountMap.get(exception.getClass());
-					errorCountMap.put(exception.getClass().getName(), new Integer(currentCount.intValue() + 1));
+					Integer currentCount = errorCountMap.get(exception.getClass().getName());
+					errorCountMap.put(exception.getClass().getName(), Integer.valueOf(currentCount.intValue() + 1));
 				}
 			}
 		}

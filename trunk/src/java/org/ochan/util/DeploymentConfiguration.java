@@ -17,9 +17,6 @@ public class DeploymentConfiguration {
 	static final String THREAD_LIMIT = "-1";
 	static final String UNDER_BUMP = "2";
 	static final String DO_PINGBACK = "true";
-	
-	private String performPingBackTracking;
-	
 		
 	/**
 	 * @return the hostname

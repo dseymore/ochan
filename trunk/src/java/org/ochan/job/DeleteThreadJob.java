@@ -33,7 +33,7 @@ public class DeleteThreadJob extends ManagedQuartzJobBean implements StatefulJob
 	/**
 	 * Default delete expiry time of 5 minutes
 	 */
-	private static final Long TIME_BEFORE_DELETE = new Long(300000);
+	private static final Long TIME_BEFORE_DELETE = Long.valueOf(300000);
 	
 	private ThreadService threadService;
 	private PostService postService;

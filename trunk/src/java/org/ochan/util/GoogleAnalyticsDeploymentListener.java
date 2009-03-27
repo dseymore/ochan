@@ -87,8 +87,8 @@ public class GoogleAnalyticsDeploymentListener implements ServletContextListener
 						buffer.append(URL_17);
 						
 						LOG.info("About to hit google analytics URL for deployment tracking: " + buffer.toString());
-					
-						Byte[] data = RemoteFileGrabber.getDataFromUrl(buffer.toString());
+						//make the call!
+						RemoteFileGrabber.getDataFromUrl(buffer.toString());
 					}catch(Exception e){
 						LOG.error("An error here shouldn't stop anything, but, logging for debugging",e);
 					}	
