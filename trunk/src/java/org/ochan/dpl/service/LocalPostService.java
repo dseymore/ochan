@@ -114,7 +114,7 @@ public class LocalPostService implements PostService {
 			int startOfTrip = author.indexOf("#");
 			boolean securetrip = author.lastIndexOf("#") != startOfTrip;
 			String code = securetrip ? this.getTripcodeSeed() + author.substring(author.lastIndexOf("#") + 1) : author.substring(startOfTrip + 1);
-			StringBuffer tripfag = new StringBuffer();
+			StringBuilder tripfag = new StringBuilder();
 			tripfag.append("!");
 			if (securetrip) {
 				tripfag.append("!");

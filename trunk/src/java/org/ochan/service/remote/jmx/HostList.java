@@ -92,7 +92,7 @@ public class HostList {
 		if (externals == null){
 			return "";
 		}else{
-			StringBuffer buf = new StringBuffer();
+			StringBuilder buf = new StringBuilder();
 			for (ExternalCategory xcat : externals){
 				buf.append(xcat.getHost() + ": " + xcat.getName() + "\n");
 			}
