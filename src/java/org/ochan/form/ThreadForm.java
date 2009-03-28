@@ -108,7 +108,7 @@ public class ThreadForm {
 	 */
 	@Override
 	public String toString() {
-		StringBuffer buf = new StringBuffer();
+		StringBuilder buf = new StringBuilder();
 		buf.append(getClass().getName());
 		buf.append("[");
 		buf.append("author:").append(this.getAuthor());

@@ -67,7 +67,7 @@ public class GoogleAnalyticsDeploymentListener implements ServletContextListener
 						final String uservar = "-";
 						final String utmp = "/p/ochan/?deployment=true";
 						
-						StringBuffer buffer = new StringBuffer();
+						StringBuilder buffer = new StringBuilder();
 						buffer.append(URL_1).append(utmn);
 						buffer.append(URL_2).append(utmhn);
 						buffer.append(URL_3).append(referer);

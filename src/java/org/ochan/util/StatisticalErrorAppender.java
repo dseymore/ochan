@@ -28,7 +28,7 @@ public class StatisticalErrorAppender implements Appender {
 	 */
 	@ManagedAttribute(description = "Makes a report of all excpetions.")
 	public String getStatus() {
-		StringBuffer buf = new StringBuffer();
+		StringBuilder buf = new StringBuilder();
 		for (String key : errorCountMap.keySet()) {
 			buf.append(key + " | " + errorCountMap.get(key) + "\n");
 		}
