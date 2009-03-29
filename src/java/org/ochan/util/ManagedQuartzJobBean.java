@@ -1,7 +1,9 @@
 package org.ochan.util;
 
+import java.util.Date;
 import java.util.prefs.Preferences;
 
+import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.quartz.CronTrigger;
@@ -11,6 +13,7 @@ import org.quartz.SchedulerFactory;
 import org.quartz.impl.StdSchedulerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.jmx.export.annotation.ManagedAttribute;
+import org.springframework.jmx.export.annotation.ManagedOperation;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
 /**
@@ -28,6 +31,7 @@ public abstract class ManagedQuartzJobBean extends QuartzJobBean {
 	 */
 	private static final String SPRING_QUARTZ_GROUP_NAME = "DEFAULT";
 	private static final String APPLICATION_CONTEXT_KEY = "applicationContext";
+	private static Date lastRunTime;
 
 	// Final so that noone can extend
 	@Override
@@ -38,6 +42,7 @@ public abstract class ManagedQuartzJobBean extends QuartzJobBean {
 			LOG.info("Rescheduleing " + getTriggerName() + "cron job to be the preferences stored value.");
 			setCron(getCron());
 		} else {
+			lastRunTime = new Date();
 			// Now call the specific implementation
 			executeOnSchedule(context);
 		}
@@ -96,6 +101,14 @@ public abstract class ManagedQuartzJobBean extends QuartzJobBean {
 		} catch (Exception e) {
 			LOG.error("Unable to reschedule cron trigger", e);
 		}
+	}
+	
+	@ManagedOperation(description= "The last time the job was run.")
+	public String lastRunTime(){
+		if (lastRunTime == null){
+			return "Never!";
+		}
+		return DateFormatUtils.ISO_DATETIME_FORMAT.format(lastRunTime);
 	}
 
 	protected ApplicationContext getApplicationContext(JobExecutionContext context) throws Exception {

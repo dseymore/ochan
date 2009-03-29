@@ -35,8 +35,9 @@ public class ThreadDeathNominationJob extends ManagedQuartzJobBean implements St
 	private static Preferences PREFERENCES = Preferences.userNodeForPackage(ThreadDeathNominationJob.class);
 
 	private static final int THREADS_BEFORE_NOMINATION = 10;
-	
 
+	private static final int THREADS_MARKED_AT_A_TIME = 1;
+	
 	private ThreadService threadService;
 	private PostService postService;
 	private CategoryService categoryService;
@@ -86,17 +87,22 @@ public class ThreadDeathNominationJob extends ManagedQuartzJobBean implements St
 					}
 					//count up the number of 'non-delete-queue' threads
 					if (threads != null && threads.size() > countBeforeNominating){
-						//mark the the most unrecently touched one delete worthy
+						//mark the the most unrecently touched ones delete worthy
 						Collections.sort(threads);
-						Thread lastThread = threads.get(threads.size() - 1);
-						lastThread.setDeleteDate(new Date());
-						Long count = lastThread.getDeleteCount();
-						if (count == null) {
-							count = Long.valueOf(0);
+						for (int i = Integer.valueOf(getNumberOfThreadsToMark()); i > 0; i--){
+							//if it keeps us within the range of the max number of threads, lets kill it. 
+							if (threads.size() - i > Integer.valueOf(getThreadCountBeforeNominating())){
+								Thread lastThread = threads.get(threads.size() - i);
+								lastThread.setDeleteDate(new Date());
+								Long count = lastThread.getDeleteCount();
+								if (count == null) {
+									count = Long.valueOf(0);
+								}
+								lastThread.setDeleteCount(Long.valueOf(count.longValue() + 1));
+								//update it doood!
+								threadService.updateThread(lastThread);
+							}
 						}
-						lastThread.setDeleteCount(Long.valueOf(count.longValue() + 1));
-						//update it doood!
-						threadService.updateThread(lastThread);
 					}
 				}
 			}
@@ -136,6 +142,24 @@ public class ThreadDeathNominationJob extends ManagedQuartzJobBean implements St
 	public void setThreadCountBeforeNominating(String threadCountBeforeNominating) {
 		if (StringUtils.isNumeric(threadCountBeforeNominating)){
 			PREFERENCES.put("threadCountBeforeNominating", threadCountBeforeNominating);
+		}
+	}
+
+	/**
+	 * @return the numberOfThreadsToMark
+	 */
+	@ManagedAttribute(description="The number of threads that can be marked each time the category is scanned.")
+	public String getNumberOfThreadsToMark() {
+		return PREFERENCES.get("numberOfThreadsToMark", String.valueOf(THREADS_MARKED_AT_A_TIME));
+	}
+
+	/**
+	 * @param numberOfThreadsToMark the numberOfThreadsToMark to set
+	 */
+	@ManagedAttribute(description="The number of threads that can be marked each time the category is scanned.")
+	public void setNumberOfThreadsToMark(String numberOfThreadsToMark) {
+		if (StringUtils.isNumeric(numberOfThreadsToMark)){
+			PREFERENCES.put("numberOfThreadsToMark", numberOfThreadsToMark);
 		}
 	}
 

@@ -29,6 +29,8 @@ public class SleepyCheckpointerJob extends ManagedQuartzJobBean {
 			//checkpoint every 500Kb
 			checkpointConfig.setKBytes(500);
 			environment.getEnvironment().checkpoint(checkpointConfig);
+			//and lets sync it.. so that we aren't filling up memory forever. 
+			environment.getEnvironment().sync();
 			if (LOG.isWarnEnabled()){
 				StatsConfig statsConfig = new StatsConfig();
 				EnvironmentStats stats = environment.getEnvironment().getStats(statsConfig);
