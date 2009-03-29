@@ -72,6 +72,11 @@ public class LoaderUtility {
 				threadService.createThread(categoryId, "Author", "Subject", "http://www.google.com", "email", "Content", bytes);
 				create.stop();
 				fis.close();
+			}else{
+				//there is no file
+				Split create = createThreadTime.start();
+				threadService.createThread(categoryId, "Author", "Subject", "http://www.google.com", "email", "Content", null);
+				create.stop();
 			}
 		}catch(Exception e){
 			LOG.error("Unable to create your damn thread, homey.",e);
