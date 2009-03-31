@@ -19,6 +19,7 @@ public class CategoryDPL implements Serializable{
 
 	private String name;
 	private String description;
+	private String code; 
 	
 	/**
 	 * @return the identifier
@@ -49,6 +50,18 @@ public class CategoryDPL implements Serializable{
 	 */
 	public void setDescription(String description) {
 		this.description = description;
+	}
+	/**
+	 * @return the code
+	 */
+	public String getCode() {
+		return code;
+	}
+	/**
+	 * @param code the code to set
+	 */
+	public void setCode(String code) {
+		this.code = code;
 	}
 	
 	

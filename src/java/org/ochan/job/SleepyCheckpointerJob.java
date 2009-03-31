@@ -11,9 +11,12 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.jmx.export.annotation.ManagedResource;
 
 import com.sleepycat.je.CheckpointConfig;
-import com.sleepycat.je.EnvironmentStats;
-import com.sleepycat.je.StatsConfig;
 
+/**
+ * This class runs the filesystem sync & log checkpoint process of the berkeleydb database. 
+ * @author David Seymore 
+ * Mar 29, 2009
+ */
 @ManagedResource(description = "Sleepycat Persistence Checkpoint Background Job", objectName = "Ochan:type=job,name=CheckpointJob", logFile = "jmx.log")
 public class SleepyCheckpointerJob extends ManagedQuartzJobBean {
 
@@ -31,11 +34,6 @@ public class SleepyCheckpointerJob extends ManagedQuartzJobBean {
 			environment.getEnvironment().checkpoint(checkpointConfig);
 			//and lets sync it.. so that we aren't filling up memory forever. 
 			environment.getEnvironment().sync();
-			if (LOG.isWarnEnabled()){
-				StatsConfig statsConfig = new StatsConfig();
-				EnvironmentStats stats = environment.getEnvironment().getStats(statsConfig);
-				LOG.warn(stats);
-			}
 		}catch(Exception e){
 			LOG.fatal("Unable to get spring context for services.");
 		}
@@ -50,5 +48,4 @@ public class SleepyCheckpointerJob extends ManagedQuartzJobBean {
 	public String getTriggerName() {
 		return "checkpointTrigger";
 	}
-
 }

@@ -84,6 +84,7 @@
 	            <ref bean="statsGeneratorTrigger" />
 	            <ref bean="nominateThreadTrigger" />
 	            <ref bean="checkpointTrigger" />
+	            <ref bean="sleepyStatsTrigger" />
 	        </list>
 	    </property>
 	    <property name="applicationContextSchedulerContextKey">
@@ -107,6 +108,14 @@
 	<bean name="checkpointJob" class="org.springframework.scheduling.quartz.JobDetailBean">
 		<property name="jobClass" value="org.ochan.job.SleepyCheckpointerJob"/>
 	</bean>
+	<bean id="sleepyStatsTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+    	<property name="jobDetail" ref="sleepyStatisticsJob" />
+    	<!-- every minute -->
+    	<property name="cronExpression" value="0 */1 * * * ?" />
+	</bean>
+	<bean name="sleepyStatisticsJob" class="org.springframework.scheduling.quartz.JobDetailBean">
+        <property name="jobClass" value="org.ochan.job.SleepyStatisticsJob"/>
+    </bean>
 	
 	
 	<bean id="nominateThreadTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
@@ -129,7 +138,7 @@
     <!-- stats generation job.. for like.. total content counter.. yay! -->
     <bean id="statsGeneratorTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
     	<property name="jobDetail" ref="statsGenerationJob" />
-    	<!-- every hour -->
+    	<!-- every minute -->
     	<property name="cronExpression" value="0 */1 * * * ?" />
 	</bean>
 	<bean name="statsGenerationJob" class="org.springframework.scheduling.quartz.JobDetailBean">
@@ -142,6 +151,7 @@
 	<bean class="org.ochan.job.StatsGeneratorJob"/>
 	<bean class="org.ochan.job.SleepyCheckpointerJob"/>
 	<bean class="org.ochan.job.ThreadDeathNominationJob"/>
+	<bean class="org.ochan.job.SleepyStatisticsJob"/>
 	
 
 	<!--  lets try ehcache -->
