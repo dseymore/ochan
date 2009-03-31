@@ -6,7 +6,6 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.SocketException;
 import java.util.Date;
 import java.util.Iterator;
@@ -22,12 +21,19 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.javasimon.SimonManager;
+import org.javasimon.Split;
+import org.javasimon.StatProcessorType;
+import org.javasimon.Stopwatch;
+import org.ochan.dpl.service.LocalBlobService;
 import org.ochan.entity.ImagePost;
 import org.ochan.entity.Post;
 import org.ochan.service.BlobService;
 import org.ochan.service.PostService;
+import org.ochan.util.Throttler;
 import org.springframework.jmx.export.annotation.ManagedAttribute;
 import org.springframework.jmx.export.annotation.ManagedOperation;
 import org.springframework.jmx.export.annotation.ManagedOperationParameter;
@@ -75,7 +81,23 @@ public class ThumbnailController implements Controller {
 	private static long lastTimeInMillis = 0;
 	private static long totalTimeInMillis = 0;	
 	
+	
 	public static final int MILLISECONDS_IN_A_DAY = 60*60*24*1000;
+	
+	public static final Long REQUESTS_PER_MINUTE = Long.valueOf(120);
+	public static final Long GENERATIONS_PER_MINUTE = Long.valueOf(10);
+	
+	private static Stopwatch requestWaitTime = SimonManager.getStopwatch(LocalBlobService.class.getName() + "Request");
+	private static Stopwatch generateWaitTime = SimonManager.getStopwatch(LocalBlobService.class.getName() + "Generate");
+	
+	@ManagedAttribute(description="The average time a requests waits around being throttled")
+	public double getRequestWaitTime(){
+		return requestWaitTime.getStatProcessor().getMean();
+	}
+	@ManagedAttribute(description="The average time a thumbnail generation request waits around being throttled")
+	public double getGenerateWaitTime(){
+		return generateWaitTime.getStatProcessor().getMean();
+	}
 	
 	
 	/**
@@ -93,6 +115,28 @@ public class ThumbnailController implements Controller {
 		Float f = Float.valueOf(thumbnailImageQuality);
 		if (f.doubleValue() >= 0 && f.doubleValue() <= 1){
 			PREFS.put("quality", thumbnailImageQuality);
+		}
+	}
+	
+	//image generation is actually incredibly expensive.. so.. lets throttle that shit.
+	@ManagedAttribute(description="The number of requests the thumbnailer will pump out a minute")
+	public String getRequestsPerMinute(){
+		return PREFS.get("requestsPerMinute", REQUESTS_PER_MINUTE.toString());
+	}
+	@ManagedAttribute(description="The number of requests the thumbnailer will pump out a minute")
+	public void setRequestsPerMinute(String requestsPerMinute){
+		if (StringUtils.isNumeric(requestsPerMinute)){
+			PREFS.put("requestsPerMinute", requestsPerMinute);
+		}
+	}
+	@ManagedAttribute(description="The number of thumbnails that can be generated per minute")
+	public String getThumbnailGenerationsPerMinute(){
+		return PREFS.get("generationsPerMinute", GENERATIONS_PER_MINUTE.toString());
+	}
+	@ManagedAttribute(description="The number of thumbnails that can be generated per minute")
+	public void setThumbnailGenerationsPerMinute(String generationsPerMinute){
+		if (StringUtils.isNumeric(generationsPerMinute)){
+			PREFS.put("generationsPerMinute",generationsPerMinute);
 		}
 	}
 	
@@ -256,10 +300,22 @@ public class ThumbnailController implements Controller {
 	public void setBlobService(BlobService blobService) {
 		this.blobService = blobService;
 	}
+	
+	public ThumbnailController() {
+		super();
+		requestWaitTime.setStatProcessor(StatProcessorType.BASIC.create());
+		generateWaitTime.setStatProcessor(StatProcessorType.BASIC.create());
+	}
+
+
 	/**
 	 * 
 	 */
 	public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		Split requestSplit = requestWaitTime.start();
+		Throttler requestThrottler = new Throttler(Long.valueOf(getRequestsPerMinute()).intValue(),60000);
+		requestThrottler.StartRequest();
+		requestSplit.stop();
 		// capture start of call
 		long start = new Date().getTime();
 		try {
@@ -274,6 +330,15 @@ public class ThumbnailController implements Controller {
 				//if thumb
 				if (thumb) {
 					BufferedImage resizedImage = null;
+					if (imagePost.getThumbnailIdentifier() == null){
+						Split generateSplit = generateWaitTime.start();
+						Throttler generateThrottler = new Throttler(Long.valueOf(getThumbnailGenerationsPerMinute()).intValue(),60000);
+						generateThrottler.StartRequest();
+						generateSplit.stop();
+						//now that we've waited, lets look it up again... with no throttle
+						imagePost = (ImagePost)postService.getPost(id);
+					}
+					
 					//we may need to make a thumbnail
 					if (imagePost.getThumbnailIdentifier() == null){
 						Byte[] data = blobService.getBlob(imagePost.getImageIdentifier());
@@ -285,6 +350,8 @@ public class ThumbnailController implements Controller {
 						//lets try checking if it is an image.. if not, we need to act on it. 
 						BufferedImage image = null;
 						ByteArrayInputStream bais = new ByteArrayInputStream(datum);
+						//this might be the wrong direction.. 
+						ImageIO.setUseCache(false);
 						image = ImageIO.read(bais);
 						if (image == null || p == null){
 							//BAD BAD IMAGE!

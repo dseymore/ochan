@@ -9,6 +9,9 @@
 		
 	#categoryBox{padding-right-value: 0.5em; padding-left-value: 0.5em; 
 		background-color: rgb(240,240,255); width: 300px;}
+		
+	#externalCategoryList{padding-right-value: 0.5em; padding-left-value: 0.5em; 
+		background-color: rgb(240,240,255); width: 300px;}
 	
 	#statsBox{padding-right-value: 0.5em; padding-left-value: 0.5em; 
 		background-color: rgb(240,240,255); width: 300px;}

@@ -14,6 +14,8 @@ public class Category {
     
     private Integer version;
     
+    private String code;
+    
     public Category(){
         
     }
@@ -90,6 +92,20 @@ public class Category {
     public void setVersion(Integer version) {
         this.version = version;
     }
+
+	/**
+	 * @return the code
+	 */
+	public String getCode() {
+		return code;
+	}
+
+	/**
+	 * @param code the code to set
+	 */
+	public void setCode(String code) {
+		this.code = code;
+	}
     
     
     

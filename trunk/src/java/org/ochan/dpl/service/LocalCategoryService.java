@@ -159,6 +159,7 @@ public class LocalCategoryService implements CategoryService {
 		cat.setIdentifier(catdpl.getIdentifier());
 		cat.setLongDescription(catdpl.getDescription());
 		cat.setName(catdpl.getName());
+		cat.setCode(catdpl.getCode());
 		return cat;
 	}
 
