@@ -59,7 +59,7 @@ You should see output like:
  TOTALS      355527      19
 }}}
 
-I dont know what to do about that yet, though. I get the impression that there is a way to delete those, but, deleting it outright is bad. 
+The next time the cleaner/checkpoint job runs, all of the 0% utilization files will be deleted, freeing your disk's extraneous obligations. 
 
 = Reference Documentation =
   * [http://www.oracle.com/technology/documentation/berkeley-db/je/GettingStartedGuide/index.html JE Getting Started Guide]
