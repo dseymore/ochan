@@ -16,3 +16,22 @@
  # Go into System->DeploymentConfiguration and set the absolute url (or hostname if you have a dns name setup) that users use to get to the application, and the port. 
  # Go to Ochan->local->CategoryService and Add at least one category to begin your imageboard. 
  # All other defaults are normally acceptable. A configuration catalog will be created in the future.
+
+
+== Some startup arguments that may help ==
+=== Bumping up the maximum memory.. 1GiB===
+{{{
+-Xmx1024M
+}}}
+=== Using concurrent garbage collection ===
+{{{
+-XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode 
+}}}
+=== Flagging the service as headless (maybe required for thumbnails) ===
+{{{
+-Djava.awt.headless=true
+}}}
+=== Opening up remote management without a password (FIREWALL THIS!) ===
+{{{
+-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.local.only=false  -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=8000 
+}}}
