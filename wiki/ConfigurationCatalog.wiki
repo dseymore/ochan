@@ -1,11 +1,14 @@
 =Ochan:name=Post,type=rest=
+{{{
 Attributes:
  NextGetCount: The number of calls received for a next post. This is used by the ActiveWatcherCounterJob to determine how many thread watches are open. (type=java.lang.Long)
 Operations:
  getNextGetCount: The number of calls received for a next post. This is used by the ActiveWatcherCounterJob to determine how many thread watches are open.
   Parameters 0, return type=java.lang.Long
+}}}
 
 =Ochan:utility=RemoteHostList=
+{{{
 Attributes:
  ExternalHosts: Returns a list of all hosts (type=java.lang.String)
 Operations:
@@ -16,9 +19,10 @@ Operations:
   Parameters 0, return type=void
  getExternalHosts: Returns a list of all hosts
   Parameters 0, return type=java.lang.String
-
+}}}
 
 =Ochan:name=LocalPostService,service=local=
+{{{
 Attributes:
  CreateCount: The number of calls to create a category (type=long)
  DeleteCount: The number of calls to delete a category. (type=long)
@@ -36,8 +40,10 @@ Operations:
  deletePost: Delete a Post!
   Parameters 1, return type=void
    name=identifier type=java.lang.Long The id of the post as a Long object (L at the end)
+}}}
 
 =Ochan:name=LocalAnnouncementService,service=local=
+{{{
 Attributes:
  Announcement: Retrieve the current announcement. (type=java.lang.String)
 Operations:
@@ -46,9 +52,10 @@ Operations:
  setAnnouncement: Retrieve the current announcement.
   Parameters 1, return type=void
    name=p1 type=java.lang.String 
-
+}}}
 
 =Ochan:name=LocalBlobService,service=local=
+{{{
 Attributes:
  CreateCount: The number of calls to create a blob (type=long)
  DeleteCount: The number of calls to delete a blob. (type=long)
@@ -69,8 +76,10 @@ Operations:
   Parameters 0, return type=long
  getLastGetTime: The time in nanoseconds of the last call to get a blob.
   Parameters 0, return type=long
+}}}
 
 =Ochan:name=LocalThreadService,service=local=
+{{{
 Attributes:
  CreateCount: The number of calls to create a thread (type=long)
  DeleteCount: The number of calls to delete a thread. (type=long)
@@ -91,10 +100,11 @@ Operations:
  unlockAndResetThread: Unlock a locked thread & reset it's count
   Parameters 1, return type=void
    name=identifier type=java.lang.Long The id of the thread as a Long object (L at the end)
-
+}}}
 
 
 =Ochan:name=LocalCategoryService,service=local=
+{{{
 Attributes:
  CreateCount: The number of calls to create a category (type=long)
  DeleteCount: The number of calls to delete a category. (type=long)
@@ -116,9 +126,10 @@ Operations:
  deleteCategory: Delete a Category!
   Parameters 1, return type=void
    name=identifier type=java.lang.Long The id of the category as a Long object (L at the end)
-
+}}}
 
 =Ochan:name=StatisticsGeneration,type=job=
+{{{
 Attributes:
  Cron: Cron expression for firing job (type=java.lang.String)
  DataSize: The size in bytes of all files stored. (type=java.lang.Long)
@@ -145,15 +156,19 @@ Operations:
  setCron: Cron expression for firing job
   Parameters 1, return type=void
    name=p1 type=java.lang.String
+}}}
 
-=Ochan:name=ErrorStatistics,utility=logging=Attributes:
+=Ochan:name=ErrorStatistics,utility=logging=
+{{{
+Attributes:
  Status: Makes a report of all excpetions. (type=java.lang.String)
 Operations:
  getStatus: Makes a report of all excpetions.
   Parameters 0, return type=java.lang.String
-
+}}}
 
 =Ochan:name=ThreadCollector,type=feed=
+{{{
 Attributes:
  GetCount: The number of calls to get the feed (type=long)
  LastSearchTime: The time in milliseconds of the last call to search for threads. (type=long)
@@ -162,9 +177,10 @@ Operations:
   Parameters 0, return type=long
  getLastSearchTime: The time in milliseconds of the last call to search for threads.
   Parameters 0, return type=long
-
+}}}
 
 =Ochan:name=ActiveWatcherCounter,type=job=
+{{{
 Attributes:
  Cron: Cron expression for firing job (type=java.lang.String)
  LastMainPageWatcherAmount: Based on the time of the job, this rounds out a value of the number of Main Page watchers currently open. (type=java.lang.Long)
@@ -179,8 +195,10 @@ Operations:
  setCron: Cron expression for firing job
   Parameters 1, return type=void
    name=p1 type=java.lang.String
+}}}
 
 =Ochan:name=DeleteThreadJob,type=job=
+{{{
 Attributes:
  Cron: Cron expression for firing job (type=java.lang.String)
  DeleteMarksBeforeLock: The number of times a thread can be marked deleted, and then marked opposite, before being locked. (type=java.lang.String)
@@ -201,8 +219,10 @@ Operations:
  setCron: Cron expression for firing job
   Parameters 1, return type=void
    name=p1 type=java.lang.String
+}}}
 
 =Ochan:name=Thumnbailer,util=controller=
+{{{
 Attributes:
  AverageResizeTimeInMillis: The average time in milliseconds the system is encountering on thumnbail resize requests (type=long)
  AverageTimeInMillis: The average time in milliseconds the system is encountering on thumnbail requests (type=long)
@@ -271,8 +291,10 @@ Operations:
   Parameters 0, return type=long
  getTotalTimeInMIllis: The total time in milliseconds it has taken to retrieve all images
   Parameters 0, return type=long
+}}}
 
 =Ochan:name=ThreadZip,util=controller=
+{{{
 Attributes:
  AverageGenerationTimeInMillis: The average time in milliseconds the system is encountering on generating zip requests (type=long)
  AverageTimeInMillis: The average time in milliseconds the system is encountering on zip requests (type=long)
@@ -302,17 +324,19 @@ Operations:
   Parameters 0, return type=long
  getTotalGenerationTimeInMIllis: The total time in milliseconds it has taken to generate all zips
   Parameters 0, return type=long
-
+}}}
 
 =System:name=UserCounter,type=statistics=
+{{{
 Attributes:
  SessionCount: retrieves the current number of sessions the server is holding on to. (type=int)
 Operations:
  getSessionCount: retrieves the current number of sessions the server is holding on to.
   Parameters 0, return type=int
-
+}}}
 
 =System:name=LoggingConfiguration,type=config=
+{{{
 Operations:
  changeLogFile: Changes the file of the rolling logger, pass in the absolute WRITEABLE path
   Parameters 1, return type=void
@@ -333,8 +357,10 @@ Operations:
  removeRemoteLogger: Removes a remote socket appender.
   Parameters 1, return type=void
    name=name type=java.lang.String Name of the appender to remove
+}}}
 
 =System:name=UploadConfiguration,type=config=
+{{{
 Attributes:
  MaxUploadSize: The filesize in bytes for the maximum upload size (type=java.lang.String)
 Operations:
@@ -343,9 +369,10 @@ Operations:
  setMaxUploadSize: The filesize in bytes for the maximum upload size
   Parameters 1, return type=void
    name=p1 type=java.lang.String 
-
+}}}
 
 =System:name=DeploymentConfiguration,type=config=
+{{{
 Attributes:
  Hostname: The hostname the server is reachable at (type=java.lang.String)
  Port: The port the server is reachable at (type=java.lang.String)
@@ -378,9 +405,11 @@ Operations:
  setPort: The port the server is reachable at
   Parameters 1, return type=void
    name=p1 type=java.lang.String 
+}}}
 
 
 =Ochan:name=SleepycatStatistics,type=job=
+{{{
 Attributes:
  NBINsStripped: NBINsStripped (type=long)
  NCacheMiss: NCacheMiss (type=long)
@@ -464,8 +493,10 @@ Operations:
   Parameters 0, return type=java.lang.Long
  getCreateThreadTime: Getting the time it took to create the thread.
   Parameters 0, return type=java.lang.Long
+}}}
 
 =Ochan:name=CheckpointJob,type=job=
+{{{
 Attributes:
  Cron: Cron expression for firing job (type=java.lang.String)
 Operations:
@@ -476,3 +507,4 @@ Operations:
  setCron: Cron expression for firing job
   Parameters 1, return type=void
    name=p1 type=java.lang.String
+}}}
