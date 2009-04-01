@@ -53,7 +53,9 @@ Attributes:
  CreateCount: The number of calls to create a blob (type=long)
  DeleteCount: The number of calls to delete a blob. (type=long)
  GetCount: The number of calls to get a blob (type=long)
- LastSearchTime: The time in milliseconds of the last call to search for a list of all blobs. (type=long)
+ LastGetTime: The time in nanoseconds of the last call to get a blob. (type=long)
+ LastSaveTime: The time in nanoseconds of the last call to save a blob. (type=long)
+ LastSearchTime: The time in nanoseconds of the last call to search for a list of all blobs. (type=long)
 Operations:
  getCreateCount: The number of calls to create a blob
   Parameters 0, return type=long
@@ -61,11 +63,15 @@ Operations:
   Parameters 0, return type=long
  getDeleteCount: The number of calls to delete a blob.
   Parameters 0, return type=long
- getLastSearchTime: The time in milliseconds of the last call to search for a list of all blobs.
+ getLastSearchTime: The time in nanoseconds of the last call to search for a list of all blobs.
+  Parameters 0, return type=long
+ getLastSaveTime: The time in nanoseconds of the last call to save a blob.
+  Parameters 0, return type=long
+ getLastGetTime: The time in nanoseconds of the last call to get a blob.
   Parameters 0, return type=long
 
-
-=Ochan:name=LocalThreadService,service=local=Attributes:
+=Ochan:name=LocalThreadService,service=local=
+Attributes:
  CreateCount: The number of calls to create a thread (type=long)
  DeleteCount: The number of calls to delete a thread. (type=long)
  GetCount: The number of calls to get a thread. (type=long)
@@ -200,16 +206,40 @@ Operations:
 Attributes:
  AverageResizeTimeInMillis: The average time in milliseconds the system is encountering on thumnbail resize requests (type=long)
  AverageTimeInMillis: The average time in milliseconds the system is encountering on thumnbail requests (type=long)
+ GenerateWaitTime: The average time a thumbnail generation request waits around being throttled (type=double)
  LastResizeTimeInMillis: The last time we generated a thumb in milliseconds (type=long)
  LastTimeInMIllis: The last time we generated retrieved in milliseconds (type=long)
  NumberOfRequests: The number of images that have been requested (type=long)
  NumberOfThumbs: The number of thumbnails that have been requested (type=long)
+ RequestWaitTime: The average time a requests waits around being throttled (type=double)
+ RequestsPerMinute: The number of requests the thumbnailer will pump out a minute (type=java.lang.String)
  ThumbHeight: The height of the image in pixels. (type=java.lang.Long)
  ThumbWidth: The width of the image in pixels. (type=java.lang.Long)
+ ThumbnailGenerationsPerMinute: The number of thumbnails that can be generated per minute (type=java.lang.String)
+ ThumbnailImageQuality: The quality of the thumbnail compression from 0 to 1. (type=java.lang.String)
  TimeLength: The time in milliseconds that is threshold before logging exceptions due to poor performance. (type=java.lang.Long)
  TotalResizeTimeInMIllis: The total time in milliseconds it has taken to generate all thumbs (type=long)
  TotalTimeInMIllis: The total time in milliseconds it has taken to retrieve all images (type=long)
 Operations:
+ getRequestWaitTime: The average time a requests waits around being throttled
+  Parameters 0, return type=double
+ getGenerateWaitTime: The average time a thumbnail generation request waits around being throttled
+  Parameters 0, return type=double
+ getThumbnailImageQuality: The quality of the thumbnail compression from 0 to 1.
+  Parameters 0, return type=java.lang.String
+ setThumbnailImageQuality: The quality of the thumbnail compression from 0 to 1.
+  Parameters 1, return type=void
+   name=p1 type=java.lang.String 
+ getRequestsPerMinute: The number of requests the thumbnailer will pump out a minute
+  Parameters 0, return type=java.lang.String
+ setRequestsPerMinute: The number of requests the thumbnailer will pump out a minute
+  Parameters 1, return type=void
+   name=p1 type=java.lang.String 
+ getThumbnailGenerationsPerMinute: The number of thumbnails that can be generated per minute
+  Parameters 0, return type=java.lang.String
+ setThumbnailGenerationsPerMinute: The number of thumbnails that can be generated per minute
+  Parameters 1, return type=void
+   name=p1 type=java.lang.String 
  getThumbWidth: The width of the image in pixels.
   Parameters 0, return type=java.lang.Long
  setThumbWidth: setThumbWidth
@@ -348,3 +378,101 @@ Operations:
  setPort: The port the server is reachable at
   Parameters 1, return type=void
    name=p1 type=java.lang.String 
+
+
+=Ochan:name=SleepycatStatistics,type=job=
+Attributes:
+ NBINsStripped: NBINsStripped (type=long)
+ NCacheMiss: NCacheMiss (type=long)
+ NCheckpoints: NCheckpoints (type=long)
+ NCleanerDeletions: NCleanerDeletions (type=long)
+ NCleanerEntriesRead: NCleanerEntriesRead (type=long)
+ NCleanerRuns: NCleanerRuns (type=long)
+ NClusterLNsProcessed: NClusterLNsProcessed (type=long)
+ NDeltaINFlush: NDeltaINFlush (type=long)
+ NEvictPasses: NEvictPasses (type=long)
+ NFSyncRequests: NFSyncRequests (type=long)
+ NFSyncTimeouts: NFSyncTimeouts (type=long)
+ NFSyncs: NFSyncs (type=long)
+ NFileOpens: NFileOpens (type=int)
+ NFullBINFlush: NFullBINFlush (type=long)
+ NFullINFlush: NFullINFlush (type=long)
+ NINsCleaned: NINsCleaned (type=long)
+ NINsDead: NINsDead (type=long)
+ NINsMigrated: NINsMigrated (type=long)
+ NINsObsolete: NINsObsolete (type=long)
+ NLNQueueHits: NLNQueueHits (type=long)
+ NLNsCleaned: NLNsCleaned (type=long)
+ NLNsDead: NLNsDead (type=long)
+ NLNsLocked: NLNsLocked (type=long)
+ NLNsMarked: NLNsMarked (type=long)
+ NLNsMigrated: NLNsMigrated (type=long)
+ NLNsObsolete: NLNsObsolete (type=long)
+ NLogBuffers: NLogBuffers (type=int)
+ NMarkedLNsProcessed: NMarkedLNsProcessed (type=long)
+ NNodesExplicitlyEvicted: NNodesExplicitlyEvicted (type=long)
+ NNodesScanned: NNodesScanned (type=long)
+ NNodesSelected: NNodesSelected (type=long)
+ NNotResident: NNotResident (type=long)
+ NOpenFiles: NOpenFiles (type=int)
+ NPendingLNsLocked: NPendingLNsLocked (type=long)
+ NPendingLNsProcessed: NPendingLNsProcessed (type=long)
+ NRandomReadBytes: NRandomReadBytes (type=long)
+ NRandomReads: NRandomReads (type=long)
+ NRandomWriteBytes: NRandomWriteBytes (type=long)
+ NRandomWrites: NRandomWrites (type=long)
+ NRepeatFaultReads: NRepeatFaultReads (type=long)
+ NRepeatIteratorReads: NRepeatIteratorReads (type=long)
+ NRootNodesEvicted: NRootNodesEvicted (type=long)
+ NSequentialReadBytes: NSequentialReadBytes (type=long)
+ NSequentialReads: NSequentialReads (type=long)
+ NSequentialWriteBytes: NSequentialWriteBytes (type=long)
+ NSequentialWrites: NSequentialWrites (type=long)
+ NSharedCacheEnvironments: NSharedCacheEnvironments (type=int)
+ NTempBufferWrites: NTempBufferWrites (type=long)
+ NToBeCleanedLNsProcessed: NToBeCleanedLNsProcessed (type=long)
+ AdminBytes: adminBytes (type=long)
+ BufferBytes: bufferBytes (type=long)
+ CacheTotalBytes: cacheTotalBytes (type=long)
+ CleanerBacklog: cleanerBacklog (type=int)
+ Cron: Cron expression for firing job (type=java.lang.String)
+ CursorsBins: cursorsBins (type=long)
+ DataBytes: dataBytes (type=long)
+ DbClosedBins: dbClosedBins (type=long)
+ EndOfLog: endOfLog (type=long)
+ InCompQueueSize: inCompQueueSize (type=long)
+ LastCheckpointEnd: lastCheckpointEnd (type=long)
+ LastCheckpointId: lastCheckpointId (type=long)
+ LastCheckpointStart: lastCheckpointStart (type=long)
+ LockBytes: lockBytes (type=long)
+ NonEmptyBins: nonEmptyBins (type=long)
+ ProcessedBins: processedBins (type=long)
+ RequiredEvictBytes: requiredEvictBytes (type=long)
+ SharedCacheTotalBytes: sharedCacheTotalBytes (type=long)
+ SplitBins: splitBins (type=long)
+ TotalLogSize: totalLogSize (type=long)
+=Ochan:name=LoaderUtility,type=util (Used for some load testing and batch loads)=
+Attributes:
+ CreateThreadTime: Getting the time it took to create the thread. (type=java.lang.Long)
+ ReadFileTime: Getting the time it took to read the file. (type=java.lang.Long)
+Operations:
+ createThread: Allows threads to be quickly created via jmx
+  Parameters 2, return type=void
+   name=categoryId type=java.lang.Long Category Id
+   name=filepath type=java.lang.String File path
+ getReadFileTime: Getting the time it took to read the file.
+  Parameters 0, return type=java.lang.Long
+ getCreateThreadTime: Getting the time it took to create the thread.
+  Parameters 0, return type=java.lang.Long
+
+=Ochan:name=CheckpointJob,type=job=
+Attributes:
+ Cron: Cron expression for firing job (type=java.lang.String)
+Operations:
+ lastRunTime: The last time the job was run.
+  Parameters 0, return type=java.lang.String
+ getCron: Cron expression for firing job
+  Parameters 0, return type=java.lang.String
+ setCron: Cron expression for firing job
+  Parameters 1, return type=void
+   name=p1 type=java.lang.String
