@@ -31,8 +31,13 @@ public class SleepyCheckpointerJob extends ManagedQuartzJobBean {
 			SleepyEnvironment environment = (SleepyEnvironment)appCtx.getBean("sleepy");
 			//checkpoint every 500Kb
 			checkpointConfig.setKBytes(500);
+			//lets run our cleaner first
+			LOG.debug("Running the cleaner.");
+			environment.getEnvironment().cleanLog();
+			LOG.debug("Running the checkpoint.");
 			environment.getEnvironment().checkpoint(checkpointConfig);
-			//and lets sync it.. so that we aren't filling up memory forever. 
+			//and lets sync it.. so that we aren't filling up memory forever.
+			LOG.debug("Running the sync command.");
 			environment.getEnvironment().sync();
 		}catch(Exception e){
 			LOG.fatal("Unable to get spring context for services.");
