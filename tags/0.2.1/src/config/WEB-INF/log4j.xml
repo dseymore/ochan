@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+
+	<appender name="ConsoleAppender" class="org.apache.log4j.ConsoleAppender">
+		<layout class="org.apache.log4j.SimpleLayout" />
+	</appender>
+
+	<appender name="ErrorStastics" class="org.ochan.util.StatisticalErrorAppender"/>
+	
+	<root>
+		<priority value="WARN" />
+		<appender-ref ref="ConsoleAppender" />
+		<appender-ref ref="ErrorStastics" />
+	</root>
+
+</log4j:configuration>
