@@ -1,4 +1,14 @@
 #labels Phase-QA,Phase-Support
+==Release 0.2.1 (was 0.1.6)==
+"Goodbye Database"
+
+  * The HSQLDB & H2 database backends leveraging JPA & Hibernate have been replaced with BerkeleyDB (JE or Sleepycat. lotsa names)
+  * Configurable Request Throttling for thumbnail generation. 
+  * BerkeleyDB self-management, and monitoring through JMX
+  * External Categories regressioned, and presentation corrected. 
+  * Blob Statistics persistence, saving the trouble of runtime re-computation of disk usage
+  * Job last-run-time in a human readable format
+
 ==Rev 100 "Where'd my Images go!"==
 As part of [http://code.google.com/p/ochan/issues/detail?id=10 Issue #10]
 
