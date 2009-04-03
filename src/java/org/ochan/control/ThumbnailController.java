@@ -87,8 +87,8 @@ public class ThumbnailController implements Controller {
 	public static final Long REQUESTS_PER_MINUTE = Long.valueOf(120);
 	public static final Long GENERATIONS_PER_MINUTE = Long.valueOf(10);
 	
-	private static Stopwatch requestWaitTime = SimonManager.getStopwatch(LocalBlobService.class.getName() + "Request");
-	private static Stopwatch generateWaitTime = SimonManager.getStopwatch(LocalBlobService.class.getName() + "Generate");
+	private static Stopwatch requestWaitTime = SimonManager.getStopwatch(ThumbnailController.class.getName() + "Request");
+	private static Stopwatch generateWaitTime = SimonManager.getStopwatch(ThumbnailController.class.getName() + "Generate");
 	
 	@ManagedAttribute(description="The average time a requests waits around being throttled")
 	public double getRequestWaitTime(){

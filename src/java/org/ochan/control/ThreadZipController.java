@@ -11,12 +11,18 @@ import java.util.zip.ZipOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.javasimon.SimonManager;
+import org.javasimon.Split;
+import org.javasimon.Stopwatch;
+import org.ochan.dpl.service.LocalBlobService;
 import org.ochan.entity.ImagePost;
 import org.ochan.entity.Post;
 import org.ochan.service.BlobService;
 import org.ochan.service.PostService;
+import org.ochan.util.Throttler;
 import org.springframework.jmx.export.annotation.ManagedAttribute;
 import org.springframework.jmx.export.annotation.ManagedOperation;
 import org.springframework.jmx.export.annotation.ManagedOperationParameter;
@@ -41,6 +47,7 @@ public class ThreadZipController implements Controller{
 	 * The default zip generation length of time that would cause an exception to be logged
 	 */
 	private static final String LOG_ON_THIS_TIME = "200"; 
+	public static final Long REQUESTS_PER_MINUTE = Long.valueOf(10);
 	
 	//statistics are goooood
 	private static long totalTimeInMillis = 0;
@@ -49,6 +56,19 @@ public class ThreadZipController implements Controller{
 	
 	private static long totalGenerationTimeInMillis = 0;
 	private static long lastGenerationTimeInMillis = 0;
+	private static Stopwatch requestWaitTime = SimonManager.getStopwatch(ThreadZipController.class.getName() + "Request");
+	
+	
+	@ManagedAttribute(description="The number of requests the thumbnailer will pump out a minute")
+	public String getRequestsPerMinute(){
+		return PREFS.get("requestsPerMinute", REQUESTS_PER_MINUTE.toString());
+	}
+	@ManagedAttribute(description="The number of requests the thumbnailer will pump out a minute")
+	public void setRequestsPerMinute(String requestsPerMinute){
+		if (StringUtils.isNumeric(requestsPerMinute)){
+			PREFS.put("requestsPerMinute", requestsPerMinute);
+		}
+	}
 	
 	/**
 	 * 
@@ -161,6 +181,11 @@ public class ThreadZipController implements Controller{
 	 * For a parameter of 'identifier' that is a thread, it creates a zip output of all the images. 
 	 */
 	public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		//lets add throttling capability
+		Split requestSplit = requestWaitTime.start();
+		Throttler requestThrottler = new Throttler(Long.valueOf(getRequestsPerMinute()).intValue(),60000);
+		requestThrottler.StartRequest();
+		requestSplit.stop();
 		// capture start of call
 		long start = new Date().getTime();
 		try {
