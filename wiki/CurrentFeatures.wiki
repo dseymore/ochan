@@ -35,10 +35,10 @@ This page introduces the reader to the current feature-set of Ochan.
  * Currently, there are an unlimited number of categories, and posts within those categories. (Thought, post & thread limits can be conifugred)
  * Simple to start (java -jar Ochan.jar) and simple to use. (create a category, and start posting)
  * Hidden 'non-rich-client' forms for text-based browser support.
+ * Tripcodes (Type a username as User#Code)
 
 ==What is missing?==
  * Paging
- * User Tripcodes
  * Unique sequences per category
  * Middle tier deployment capability
  * Administration (banning)
