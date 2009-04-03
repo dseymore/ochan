@@ -131,7 +131,7 @@ public class LocalPostService implements PostService {
 		try {
 			PostDPL post = new PostDPL();
 			post.setParent(parentIdentifier);
-			post.setAuthor(author);
+			post.setAuthor(computerAuthor(author));
 			post.setSubject(subject);
 			post.setEmail(email);
 			post.setUrl(url);
