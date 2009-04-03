@@ -59,6 +59,10 @@ public class ThreadZipController implements Controller{
 	private static Stopwatch requestWaitTime = SimonManager.getStopwatch(ThreadZipController.class.getName() + "Request");
 	
 	
+	@ManagedAttribute(description="The average time a requests waits around being throttled")
+	public double getRequestWaitTime(){
+		return requestWaitTime.getStatProcessor().getMean();
+	}
 	@ManagedAttribute(description="The number of requests the thumbnailer will pump out a minute")
 	public String getRequestsPerMinute(){
 		return PREFS.get("requestsPerMinute", REQUESTS_PER_MINUTE.toString());
