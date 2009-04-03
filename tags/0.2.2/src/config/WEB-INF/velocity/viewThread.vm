@@ -1,0 +1,313 @@
+<html>
+	<head>
+		<META HTTP-EQUIV="Pragma" CONTENT="no-cache">
+		<link REL="SHORTCUT ICON" HREF="#springUrl('/favicon.png')">
+		<title>$deployment.getSystemTitle()</title>
+		<!-- ext js -->
+		<script type="text/javascript" src="#springUrl('/extjs/adapter/ext/ext-base.js')"></script>
+		<script language="javascript" type="text/javascript" src="#springUrl('/extjs/ext-all.js')"></script>
+    	<!-- Include Ext stylesheets here: -->
+	    <link rel="stylesheet" type="text/css" href="#springUrl('/extjs/resources/css/ext-all.css')">
+	    <script language="javascript" type="text/javascript" src="#springUrl('/quoting.js')"></script>
+		<script language="javascript" type="text/javascript">
+			//variable to keep track of the pages most recent thread id
+	        var currentPostId = 0;
+	        var form = 0;
+	        
+			Ext.onReady(function() {
+	
+	    		form = new Ext.form.FormPanel({
+	    		id: 'threadForm',
+	    		title: 'Reply',
+	    		header: true,
+			    labelAlign: 'right',
+			    labelWidth: 55,
+			    bodyStyle:'padding:5px 5px 0',
+			    width: 600,
+			    //collapsible: true,
+			    fileUpload: true,
+			    url: '#springUrl('/postReply.Ochan')',
+			    items: [
+			    new Ext.form.FieldSet({
+                	title: 'Details',
+                	autoHeight: true,
+                	defaultType: 'textfield',
+                	items: [{
+	                	fieldLabel: 'Author',
+		                value: '${author}',
+		                name: 'author',
+		                width: '190px',
+		                anchor:'95%'
+		            },{
+		                fieldLabel: 'Subject',
+		                name: 'subject',
+		                anchor:'95%'
+				    },{
+		                fieldLabel: 'Email',
+		                name: 'email',
+		                anchor:'95%'
+				    },{
+		                fieldLabel: 'Url',
+		                name: 'url',
+		                anchor:'95%'
+                	}]
+                }),
+			    {
+	                xtype:'hidden',
+	                value: '${thread.identifier}',
+	                name: 'parent',
+	                anchor:'95%'
+			    },{
+		        	xtype:'htmleditor',
+		        	hideLabel: true,
+		        	id:'comment',
+		        	anchor:'98%'
+		        	//enableColors: false,
+        			//enableAlignments: false,
+        			//enableFont: false,
+        			//enableFontSize: false,
+        			//enableFormat: false,
+        			//enableLists: false,
+					//enableSourceEdit: false,
+					//enableLinks: false,
+		     	},{
+			    	xtype:'tabpanel',
+        			activeTab: 0,
+        			defaults:{autoHeight:true, bodyStyle:'padding:10px'},
+        			items:[{
+        				title: 'Upload Image',
+        				layout: 'form',
+        				items: [{
+	                		xtype:'textfield',
+	                		fieldLabel: 'Image',
+	                		name: 'file',
+	                		inputType: 'file',
+	                		id: 'file',
+	                		anchor:'95%'
+	                	}]
+					},{
+						title: 'Remote Image',
+						layout: 'form',
+						items: [{
+                			xtype: 'textfield',
+                			fieldLabel: 'URL',
+                			name: 'fileUrl',
+                			id:	'fileUrl',
+                			anchor: '95%'
+                		}]
+                	},{
+                    	title: 'Upload Zipfile of Images',
+                    	layout: 'form',
+                    	items: [{
+                        	xtype:'textfield',
+                        	fieldLabel: 'Zip File',
+                        	name: 'zipFile',
+                        	inputType: 'file',
+                        	id: 'zipFile',
+                        	anchor:'95%'
+                    	}]
+                	}]
+		    	}],
+			    buttons: [{
+			        text: 'Reply',
+			        handler: function() {
+			        	var formPanel = Ext.getCmp('threadForm'); 
+			        	formPanel.getForm().getEl().dom.setAttribute('method', 'POST');
+        				formPanel.getForm().getEl().dom.setAttribute('enctype', 'multipart/form-data');
+			        	formPanel.getForm().getEl().dom.setAttribute('Action','#springUrl('/chan/thread/')${thread.identifier}');
+			        	formPanel.getForm().getEl().dom.submit();
+			        }
+			    }],
+			    onSubmit: Ext.emptyFn,
+        		submit: function() {
+            		this.getEl().dom.submit();
+        		},
+        		renderTo: 'reply',
+        		frame: true
+			});
+			 
+			Ext.QuickTips.init();
+			##form.render(document.body);
+	        });
+	        
+	        ## Sets up the ajax loop
+	        window.setInterval(xyz, 10000)
+	        window.setInterval(threadStat, 1000)
+	        
+	        ## Calls rest url for the next post
+	        function xyz(){
+	        	Ext.Ajax.request({
+					url: '/remote/rest/post/next/' + currentPostId + '/',
+					method: 'GET',
+					##success: someFn,
+					##failure: otherFn,
+					##headers: {
+						##'my-header': 'foo'
+					##},
+					##params: Ext.util.JSON.encode(request)
+					scope:this,
+					callback: function(opts, suss, resp){
+						var result = Ext.util.JSON.decode(resp.responseText);
+						//so here, lets make a new table.. yeah? yeah.
+						//alert(result.RemotePost.comment);
+						if (result != undefined && result.RemotePost.identifier != -1){
+							createItem(result.RemotePost.subject, result.RemotePost.email, result.RemotePost.author, result.RemotePost.url, result.RemotePost.time, result.RemotePost.type, result.RemotePost.identifier, result.RemotePost.comment);
+							currentPostId = result.RemotePost.identifier;
+						}
+					}
+				});
+	        }
+	        
+	        ### calls the rest url to mark it for deletion
+	        function deleteThread(someParam){
+	        	Ext.Ajax.request({
+	        		url: '/remote/rest/thread/delete/${thread.identifier}/',
+	        		method: 'GET',
+	        		scope: this,
+	        		callback: function(opts, suss, resp){
+	        			var result = Ext.util.JSON.decode(resp.responseText);
+	        			//now we have the stuff
+	        			if (result.RemoteThread.identifier != -1){
+	        				deleteLink = document.getElementById('deletelink');
+	        				if (result.RemoteThread.locked){
+	        					deleteLink.innerHTML = 'Thread Locked';
+	        				}else{
+		        				if (result.RemoteThread.deleteDate != null){
+		        					deleteLink.innerHTML = 'Undelete ' + result.RemoteThread.deleteCount;
+		        				}else{
+		        					deleteLink.innerHTML = 'Delete ' + result.RemoteThread.deleteCount;
+		        				}
+	        				}
+	        			}
+	        		}
+	        	});
+	        }
+	        
+	        function threadStat(){
+	        	Ext.Ajax.request({
+	        		url: '/remote/rest/thread/status/${thread.identifier}/',
+	        		method: 'GET',
+	        		scope: this,
+	        		callback: function(opts, suss, resp){
+	        			var result = Ext.util.JSON.decode(resp.responseText);
+	        			if (result.RemoteThread.identifier != -1){
+	        				deleteLink = document.getElementById('deletelink');
+	        				if (result.RemoteThread.locked){
+	        					deleteLink.innerHTML = 'Thread Locked';
+	        				}else{
+		        				if (result.RemoteThread.deleteDate != null){
+		        					deleteLink.innerHTML = 'Undelete';
+		        				}else{
+		        					deleteLink.innerHTML = 'Delete';
+		        				}
+		        				if (result.RemoteThread.deleteCount){
+		        					deleteLink.innerHTML = deleteLink.innerHTML + ' ' + result.RemoteThread.deleteCount;
+		        				}
+		        			}
+	        			}
+	        		}
+	        	});
+	        }
+	        
+	        ##NASTY duplication of style in JAVASCRIPT to ... 2 places to edit one style.. sucks. 
+	        function createItem(subject,email,author,url,time,type,id,comment){
+	        	var body = document.getElementById("body");
+	        	var bigdiv = document.createElement("div");
+	        	bigdiv.setAttribute("id",id);
+	        	bigdiv.setAttribute("class","reply");
+	        	var location = document.createElement("a");
+	        	location.setAttribute("name",id);
+	        	
+	        	var newdiv = document.createElement("div");
+	        	newdiv.innerHTML = subject + "&nbsp;&nbsp;<a href=\"mailto:" + email + "\">" + author + "</a> " + "<a href=\"" + url + "\">uri</a>" + time + "&nbsp;&nbsp;<a href=\"#\" onclick=\"javascript:addId(" + id +  ")\">&raquo;" + id + "</a>";
+	        	var table = document.createElement("table");
+	        	var row = document.createElement("tr");
+	        	var cell1 = document.createElement("td");
+	        	if (type == 'IMAGE'){
+	        		cell1.innerHTML = "<a href=\"#springUrl('/chan/img/')" + id + "\"><img src=\"#springUrl('/chan/img/')" + id + "?thumb=true\"></a>";
+	        	}
+	        	var cell2 = document.createElement("td");
+	        	cell2.innerHTML = comment;
+	        	row.appendChild(cell1);
+	        	row.appendChild(cell2);
+	        	table.appendChild(row);
+	        	
+	        	bigdiv.appendChild(location);
+	        	bigdiv.appendChild(newdiv);
+	        	bigdiv.appendChild(table);
+	        	
+	        	body.appendChild(bigdiv);
+	        	
+	        	var endLocation = document.createElement("a");
+	        	endLocation.setAttribute("name","end"+id);
+	        	body.appendChild(endLocation);
+	        		        	
+	        	window.location.hash="end"+id;
+	        }
+	        	
+	        	
+	        function addId(id){
+	        	var htmleditor = form.findById("comment");
+	        	if(htmleditor instanceof Ext.form.HtmlEditor){
+	        		htmleditor.focus();
+	        		htmleditor.insertAtCursor('<p>&gt;&gt;' + id + '</p>');
+	        	}
+	        }
+		</script>
+	</head>
+	#include("/WEB-INF/velocity/style.vm")
+	<body id="body">
+		<div class="navigationBox">
+			<a href="http://$deployment.hostname:$deployment.port">Home</a> >> <a href="#springUrl('/chan/')$category.identifier">$category.name</a> >> <a href="#springUrl('/chan/thread/')$thread.identifier">$thread.identifier</a>
+		</div>
+		#if (!$blockPosts)
+		<div id="reply"></div>
+		<div style="display: none;">
+        	        <form action="/postReply.Ochan" method="POST">
+               		<input type="hidden" name="parent" value="${thread.identifier}"/>
+	                        <input type="hidden" name="email" value=""/>
+                	        <input type="hidden" name="url" value=""/>
+        	                <input type="text" name="author" value="${author}"><br>
+                       		<input type="text" name="subject">
+	                        <textarea name="comment"></textarea>
+        	                <input type="submit"/>
+                	</form>
+	        </div>
+
+		#end
+		<ul>
+			<li>[<a href="#springUrl('/chan/zip/')$thread.identifier">Export</a>]</li>
+			<li>[<a id="deletelink" href="#" onclick="javascript:deleteThread('val')">
+				#if ($thread.deleteDate)Undelete#end
+				#if (!$thread.deleteDate)Delete#end
+				#if ($thread.deleteCount)
+					$thread.deleteCount
+				#end
+				</a>]
+			</li>
+		</ul>			
+		#foreach($post in ${thread.posts})
+			<div id="$post.identifier" class="reply">
+				<script language="javascript" type="text/javascript">
+					currentPostId = $post.identifier;
+				</script>
+				<a name="$post.identifier"/>
+				<div>
+					$post.subject&nbsp;&nbsp;<a href="mailto:$post.email">$post.author</a> <a href="$post.url">uri</a> $post.time  &nbsp;&nbsp;<a href="#" onclick="javascript:addId($post.identifier)">&raquo;$post.identifier</a>
+				</div>
+				<table>
+					<tr>
+					#if ($post.getClass().getName() == 'org.ochan.entity.ImagePost')
+						<td>
+							<a href="#springUrl('/chan/img/')$post.identifier"><img src="#springUrl('/chan/img/')$post.identifier?thumb=true"></a>
+						</td>
+					#end
+						<td>
+							$post.comment
+						</td>
+					</tr>
+				</table>
+			</div>
+		#end
+	</body>
+</html> 
