@@ -1,4 +1,9 @@
 #labels Phase-QA,Phase-Support
+==Release 0.2.2==
+  * Tripcodes are working again
+  * Thread Export throttling capable
+  * Atom feed exposed through html link
+
 ==Release 0.2.1 (was 0.1.6)==
 "Goodbye Database"
 
