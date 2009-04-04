@@ -28,7 +28,6 @@ import org.javasimon.SimonManager;
 import org.javasimon.Split;
 import org.javasimon.StatProcessorType;
 import org.javasimon.Stopwatch;
-import org.ochan.dpl.service.LocalBlobService;
 import org.ochan.entity.ImagePost;
 import org.ochan.entity.Post;
 import org.ochan.service.BlobService;

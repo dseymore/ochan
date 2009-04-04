@@ -20,6 +20,7 @@ import org.ochan.entity.Post;
 import org.ochan.entity.TextPost;
 import org.ochan.entity.Thread;
 import org.ochan.exception.CategoryOverThreadLimitException;
+import org.ochan.exception.NothingToPostException;
 import org.ochan.form.ThreadForm;
 import org.ochan.service.CategoryService;
 import org.ochan.service.PostService;
@@ -139,6 +140,14 @@ public class ViewCategoryController extends SimpleFormController {
                         if (p instanceof TextPost) {
                             TextPost tp = (TextPost) p;
                             tp.setComment(PostLinksAFixARockerJocker.fixMahLinks(tp, false));
+                            //now lets try and truncate what could be a GIGANTIC amount of text
+                            if (tp.getComment().split("</p>",2).length >= 2){
+                            	String[] split = tp.getComment().split("</p>");
+                            	tp.setComment(split[0] + split[1] + "</p>...");
+                            }else if (tp.getComment().split("<br>",2).length >= 2){
+                            	String[] split = tp.getComment().split("<br>");
+                            	tp.setComment(split[0] + split[1] + "<br>...");
+                            }
                         }
                     }
                 }
@@ -188,13 +197,13 @@ public class ViewCategoryController extends SimpleFormController {
         ThreadForm tf = (ThreadForm) o;
         
         //handling limits        
-        Map<ThreadCriteria, Object> searchCriteria = new HashMap<ThreadCriteria, Object>();
-        Long catId = Long.valueOf(tf.getCategoryIdentifier());
-        searchCriteria.put(ThreadCriteria.CATEGORY, catId);
-        List<Thread> threads = getThreadService().retrieveThreads(searchCriteria);
+        final Map<ThreadCriteria, Object> searchCriteria = new HashMap<ThreadCriteria, Object>();
+        final Long categoryIdentifier = Long.valueOf(tf.getCategoryIdentifier());
+        searchCriteria.put(ThreadCriteria.CATEGORY, categoryIdentifier);
+        final List<Thread> threads = getThreadService().retrieveThreads(searchCriteria);
         if (threads != null && DeploymentConfiguration.enforceThreadLimit(threads.size())){
         	CategoryOverThreadLimitException exception = new CategoryOverThreadLimitException();
-        	exception.setCategoryId(catId);
+        	exception.setCategoryId(categoryIdentifier);
         	throw exception;
         }
         
@@ -231,6 +240,12 @@ public class ViewCategoryController extends SimpleFormController {
             }
         } else {
             bytes = RemoteFileGrabber.getDataFromUrl(tf.getFileUrl());
+        }
+        
+        if (StringUtils.isBlank(tf.getComment()) && bytes == null){
+        	NothingToPostException exception = new NothingToPostException();
+        	exception.setCategoryId(categoryIdentifier);
+        	throw exception;
         }
 
         LOG.debug("calling thread service to add thread (form): " + tf);

@@ -129,5 +129,6 @@
 	<bean id="fileSizeExceptionHandler" class="org.ochan.exception.handler.FileSizeHandlerExceptionResolver"/>
 	<bean id="threadOverPostLimitExceptionHandler" class="org.ochan.exception.handler.ThreadOverPostLimitExceptionResolver"/>
 	<bean id="categoryOverThreadLimitExceptionResolver" class="org.ochan.exception.handler.CategoryOverThreadLimitExceptionResolver"/>
+	<bean id="nothingToPostExceptionResolver" class="org.ochan.exception.handler.NothingToPostExceptionResolver"/>
 
 </beans>
