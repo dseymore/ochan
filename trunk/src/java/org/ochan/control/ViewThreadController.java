@@ -16,9 +16,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.ochan.entity.Post;
 import org.ochan.entity.TextPost;
 import org.ochan.entity.Thread;
+import org.ochan.exception.NothingToPostException;
 import org.ochan.exception.ThreadOverPostLimitException;
 import org.ochan.form.PostReplyForm;
 import org.ochan.service.CategoryService;
@@ -40,6 +43,7 @@ import org.springframework.web.servlet.view.RedirectView;
 @ManagedResource(description = "ViewThread", objectName = "Ochan:util=controller,name=ViewThread", logFile = "jmx.log")
 public class ViewThreadController extends SimpleFormController {
 
+	private static final Log LOG = LogFactory.getLog(ViewThreadController.class);
 	private CategoryService categoryService;
 	private ThreadService threadService;
 	private PostService postService;
@@ -175,11 +179,11 @@ public class ViewThreadController extends SimpleFormController {
 	protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
 		PostReplyForm prf = (PostReplyForm)command;
 		//do we block?
-		org.ochan.entity.Thread t = threadService.getThread(Long.valueOf(prf.getParent()));
-		List<Post> posts = postService.retrieveThreadPosts(t);
+		final org.ochan.entity.Thread parentThread = threadService.getThread(Long.valueOf(prf.getParent()));
+		List<Post> posts = postService.retrieveThreadPosts(parentThread);
 		if(posts != null && DeploymentConfiguration.enforcePostLimit(posts.size())){
 			ThreadOverPostLimitException xyz = new ThreadOverPostLimitException();
-			xyz.setThreadId(t.getIdentifier());
+			xyz.setThreadId(parentThread.getIdentifier());
 			throw xyz;
 		}
 		
@@ -216,6 +220,12 @@ public class ViewThreadController extends SimpleFormController {
 				//URL
 				bytes = RemoteFileGrabber.getDataFromUrl(prf.getFileUrl());
 			}
+			if (StringUtils.isBlank(prf.getComment()) && bytes == null){
+	        	NothingToPostException exception = new NothingToPostException();
+	        	exception.setThreadId(parentThread.getIdentifier());
+	        	throw exception;
+	        }
+			
 			//normal image upload or url post
 			postService.createPost(Long.valueOf(prf.getParent()), prf.getAuthor(), prf.getSubject(), prf.getEmail(), prf.getUrl(), prf.getComment(), bytes);
 		}else{
@@ -223,7 +233,11 @@ public class ViewThreadController extends SimpleFormController {
 			ZipInputStream zip = new ZipInputStream(bais);
 			ZipEntry entry = zip.getNextEntry();
 			if (entry == null){
-				//BAD ZIP! TODO- handle it
+				//throwing out an exception
+				LOG.info("Just got a bad zip, throwing out the 'fail to post' exception.");
+				NothingToPostException exception = new NothingToPostException();
+	        	exception.setThreadId(parentThread.getIdentifier());
+	        	throw exception;
 			}
 			while(entry != null){
 				//start with some sort of buffer size
