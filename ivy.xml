@@ -12,6 +12,8 @@
     <publications>
     	<artifact name="Ochan" type="jar" ext="jar" conf="default"/>
     	<artifact name="Ochan" type="war" ext="war" conf="default"/>
+	<artifact name="Ochan-api" type="jar" ext="jar" conf="default"/>
+	<artifact name="Ochan-api" type="source" ext="src.jar" conf="default"/>
 		<!--  TODO snapshot our source code  -->
     </publications>
     <dependencies>
