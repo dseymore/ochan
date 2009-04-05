@@ -5,7 +5,6 @@ import java.io.File;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.sleepycat.je.DatabaseConfig;
 import com.sleepycat.je.Environment;
 import com.sleepycat.je.EnvironmentConfig;
 import com.sleepycat.persist.EntityStore;
@@ -37,11 +36,16 @@ public class SleepyEnvironment {
 	public SleepyEnvironment() {
 		try {
 			EnvironmentConfig myEnvConfig = new EnvironmentConfig();
-			myEnvConfig.setAllowCreate(true);
 			myEnvConfig.setLocking(false);
 			StoreConfig storeConfig = new StoreConfig();
-			storeConfig.setAllowCreate(true);
-			storeConfig.setDeferredWrite(true);
+			if (System.getProperty("bdb.readonly") != null){
+				myEnvConfig.setReadOnly(true);
+				storeConfig.setReadOnly(true);
+			}else{
+				myEnvConfig.setAllowCreate(true);
+				storeConfig.setAllowCreate(true);
+				storeConfig.setDeferredWrite(true);
+			}
 
 			// Open the environment and entity store
 			LOG.warn(System.getProperty("user.dir"));
