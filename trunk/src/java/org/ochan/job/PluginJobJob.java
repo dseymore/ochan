@@ -1,5 +1,6 @@
 package org.ochan.job;
 
+import java.net.URL;
 import java.util.ServiceLoader;
 import java.util.prefs.Preferences;
 
@@ -11,6 +12,8 @@ import org.ochan.util.ManagedQuartzJobBean;
 import org.quartz.JobExecutionContext;
 import org.quartz.StatefulJob;
 import org.springframework.context.ApplicationContext;
+
+import xeus.jcl.JarClassLoader;
 
 /**
  * 
@@ -24,8 +27,14 @@ public class PluginJobJob extends ManagedQuartzJobBean implements StatefulJob{
 	@SuppressWarnings("unchecked")
 	@Override
 	public void executeOnSchedule(JobExecutionContext context) {
-		ServiceLoader<PluginJob> pluginJobServiceLoader = ServiceLoader.load(PluginJob.class);
 		try {
+			JarClassLoader jcl = new JarClassLoader();
+			//FIXME - this shouldn't be hardcoded.. we need this to be configurable. 
+			jcl.add("ochan-rss.jar"); //Load jar file  
+			URL u = jcl.getResource("META-INF/service/org.ochan.api.PluginJob");
+			
+			ServiceLoader<PluginJob> pluginJobServiceLoader = ServiceLoader.load(PluginJob.class,jcl);
+			
 			ApplicationContext appCtx = getApplicationContext(context);
 			ThreadService threadService = (ThreadService)appCtx.getBean("localThreadService");
 			
