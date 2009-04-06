@@ -52,12 +52,14 @@
 			<fileset dir="${build.dir}/classes/">
 				<include name="org/ochan/entity/*.class"/>
 				<include name="org/ochan/service/*.class"/>
+				<include name="org/ochan/api/*.class"/>
 			</fileset>
 		</jar>
 		<jar destfile="${build.dir}/Ochan-api.src.jar">
 			<fileset dir="${src.dir}/java/">
 				<include name="org/ochan/entity/*.java"/>
                                 <include name="org/ochan/service/*.java"/>
+				<include name="org/ochan/api/*.java"/>
                         </fileset>
 		</jar>
 	</target>

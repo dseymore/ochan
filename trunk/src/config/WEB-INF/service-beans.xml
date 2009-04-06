@@ -85,6 +85,7 @@
 	            <ref bean="nominateThreadTrigger" />
 	            <ref bean="checkpointTrigger" />
 	            <ref bean="sleepyStatsTrigger" />
+	            <ref bean="PluginJobJobTrigger" />
 	        </list>
 	    </property>
 	    <property name="applicationContextSchedulerContextKey">
@@ -145,6 +146,16 @@
         <property name="jobClass" value="org.ochan.job.StatsGeneratorJob"/>
     </bean>
     
+    <!-- plugin job job job -->
+    <bean id="PluginJobJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+    	<property name="jobDetail" ref="pluginJobJob" />
+    	<!-- every minute -->
+    	<property name="cronExpression" value="0 */1 * * * ?" />
+	</bean>
+	<bean name="pluginJobJob" class="org.springframework.scheduling.quartz.JobDetailBean">
+        <property name="jobClass" value="org.ochan.job.PluginJobJob"/>
+    </bean>
+    
     <!--  expose schedule config through JMX -->
 	<bean class="org.ochan.job.ActiveWatcherCounterJob"/>
 	<bean class="org.ochan.job.DeleteThreadJob"/>
@@ -152,6 +163,7 @@
 	<bean class="org.ochan.job.SleepyCheckpointerJob"/>
 	<bean class="org.ochan.job.ThreadDeathNominationJob"/>
 	<bean class="org.ochan.job.SleepyStatisticsJob"/>
+	<bean class="org.ochan.job.PluginJobJob"/>
 	
 
 	<!--  lets try ehcache -->

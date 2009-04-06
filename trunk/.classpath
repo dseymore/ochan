@@ -3,6 +3,7 @@
 	<classpathentry kind="src" path="src/java"/>
 	<classpathentry kind="src" path="src/config"/>
 	<classpathentry kind="src" path="test"/>
+	<classpathentry kind="src" path="plugins/rss/src/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.jayasoft.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/ivy.xml/*"/>
 	<classpathentry kind="output" path="bin"/>
