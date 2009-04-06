@@ -1,0 +1,17 @@
+<ivy-module version="1.0">
+    <info organisation="Ogroup" module="ochan-rss" status="integration" >
+        <description>
+		rss feed->thread plugin
+        </description>
+    </info>
+    <configurations>
+        <conf name="default" description="This is the configuration that describes modules need to build our project"/>
+        <conf name="test" extends="default" description="This is this configuration that describes modules need to run test on our project"/>
+    </configurations>
+    <publications>
+        <artifact name="ochan-rss" type="jar" ext="jar" conf="default"/>
+    </publications>
+    <dependencies>
+	<dependency org="Ogroup" name="Ochan" rev="latest.integration" conf="default->default"/>
+    </dependencies>
+</ivy-module>
