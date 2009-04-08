@@ -65,7 +65,7 @@
 		<dependency org="com.sleepycat" name="je" rev="3.3.75" conf="default->default"/>
 		<dependency org="org.javasimon" name="javasimon-core" rev="2.0-alpha1" conf="default->default"/>
 		<!-- jar classloader for plugins -->
-		<dependency org="xeus" name="jcl" rev="1.2.2" conf="default->default"/>
+		<dependency org="xeus" name="jcl" rev="1.2.2-resourcesmod" conf="default->default"/>
     </dependencies>
 </ivy-module>
 
