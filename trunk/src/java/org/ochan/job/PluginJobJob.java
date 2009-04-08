@@ -1,6 +1,5 @@
 package org.ochan.job;
 
-import java.net.URL;
 import java.util.ServiceLoader;
 import java.util.prefs.Preferences;
 
@@ -17,6 +16,8 @@ import xeus.jcl.JarClassLoader;
 
 /**
  * 
+ * This job handles bootstrapping plugins (jar files) that reside in the current working directory. 
+ * 
  * @author David Seymore Apr 5, 2009
  */
 public class PluginJobJob extends ManagedQuartzJobBean implements StatefulJob{
@@ -31,7 +32,6 @@ public class PluginJobJob extends ManagedQuartzJobBean implements StatefulJob{
 			JarClassLoader jcl = new JarClassLoader();
 			//FIXME - this shouldn't be hardcoded.. we need this to be configurable. 
 			jcl.add("ochan-rss.jar"); //Load jar file  
-			URL u = jcl.getResource("META-INF/service/org.ochan.api.PluginJob");
 			
 			ServiceLoader<PluginJob> pluginJobServiceLoader = ServiceLoader.load(PluginJob.class,jcl);
 			
