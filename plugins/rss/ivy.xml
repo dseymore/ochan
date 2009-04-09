@@ -15,5 +15,7 @@
 	<dependency org="Ogroup" name="Ochan" rev="latest.integration" conf="default->default"/>
 	<dependency org="nava.de" name="informa" rev="0.7.0-alpha2" conf="default->default"/>
 	<dependency org="jdom.org" name="jdom" rev="1.0" conf="default->default"/>
+	<dependency org="org.codehaus" name="jettison" rev="1.0.1" conf="default->default"/>
+	<dependency org="commons-logging" name="commons-logging" rev="1.1" conf="default->default"/>
     </dependencies>
 </ivy-module>

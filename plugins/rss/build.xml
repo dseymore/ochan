@@ -38,7 +38,7 @@
                 <!-- set a property for the artifacts -->
                 <ivy:artifactproperty name="[module].[artifact]" value="${ivy.item.path}" />
                 
-                <javac srcdir="${src.dir}/java/" debug="true" destdir="${build.dir}/classes/">
+                <javac srcdir="${src.dir}/java/" debug="true" debugLevel="source,vars,lines" destdir="${build.dir}/classes/">
                         <classpath>
                                 <fileset dir="${lib.dir}">
                                         <include name="**/*.jar" />
