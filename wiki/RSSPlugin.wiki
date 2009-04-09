@@ -5,7 +5,7 @@
 
 
 = Example Configuration =
-* The PluginJob is responsible for configuring all plugins, and has a configuration attribute for the shared json configuraiton string. 
+The PluginJob is responsible for configuring all plugins, and has a configuration attribute for the shared json configuraiton string. 
 
 An example configration string:
 {{{
