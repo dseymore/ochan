@@ -64,6 +64,7 @@
                                 <include name="**/*.class"/>
                         </fileset>
 	                <zipfileset src="${informa.informa}"/>
+			<zipfileset src="${jdom.jdom}"/>
 	                <!--<rule pattern="de.nava.**" result="org.ochan.@1"/>-->
 			<metainf dir="${src.dir}/META-INF/"/>
 		</jarjar>
