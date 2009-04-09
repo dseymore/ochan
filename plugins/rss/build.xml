@@ -68,7 +68,7 @@
 	                <!--<rule pattern="de.nava.**" result="org.ochan.@1"/>-->
 			<metainf dir="${src.dir}/META-INF/"/>
 		</jarjar>
-		<ivy:publish resolver="filesystem" artifactspattern="${basedir}/scratch/[artifact].[ext]" />
+		<ivy:publish resolver="filesystem" artifactspattern="scratch/[artifact].[ext]" />
 	</target>
 	<target name="clean">
                 <delete dir="${build.dir}" />
