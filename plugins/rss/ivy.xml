@@ -14,5 +14,6 @@
     <dependencies>
 	<dependency org="Ogroup" name="Ochan" rev="latest.integration" conf="default->default"/>
 	<dependency org="nava.de" name="informa" rev="0.7.0-alpha2" conf="default->default"/>
+	<dependency org="jdom.org" name="jdom" rev="1.0" conf="default->default"/>
     </dependencies>
 </ivy-module>
