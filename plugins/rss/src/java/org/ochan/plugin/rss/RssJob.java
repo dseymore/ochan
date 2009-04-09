@@ -8,7 +8,10 @@ import java.util.Map;
 
 import org.ochan.api.PluginJob;
 import org.ochan.service.ThreadService;
-
+import de.nava.informa.core.ChannelIF;
+import de.nava.informa.core.ItemIF;
+import de.nava.informa.impl.basic.ChannelBuilder;
+import de.nava.informa.parsers.FeedParser;
 
 
 public class RssJob implements PluginJob{
