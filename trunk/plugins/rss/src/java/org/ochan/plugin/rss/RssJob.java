@@ -25,7 +25,7 @@ public class RssJob implements PluginJob{
 	private Map<String, List<String>> seen = new HashMap<String, List<String>>();
 	private static Date bootupTime = new Date();
 
-	@Override
+
 	public void configure(String json) {
 		configuration = new HashMap<Long, List<String>>();
 		// temporary until we write the configuration utils.
@@ -34,7 +34,6 @@ public class RssJob implements PluginJob{
 		configuration.put(Long.valueOf(1), urls);
 	}
 
-	@Override
 	public void setThreadService(ThreadService service) {
 		this.threadService = service;
 	}
@@ -42,7 +41,6 @@ public class RssJob implements PluginJob{
 	/**
 	 * Uses Informa to parse an RSS Feed. and then does awesome to make sure it doesn't double post. 
 	 */
-	@Override
 	public void execute() {
 		for (Long categoryId : configuration.keySet()){
 			for(String url: configuration.get(categoryId)){
