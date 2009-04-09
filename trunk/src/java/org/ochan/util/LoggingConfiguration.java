@@ -129,6 +129,9 @@ public class LoggingConfiguration implements ServletContextListener {
 		} else if ("fatal".equalsIgnoreCase(level)) {
 			LOG.info("Changing log level to fatal.");
 			setTo = Level.FATAL;
+		} else if ("trace".equalsIgnoreCase(level)) {
+			LOG.info("Changing log level to trace.");
+			setTo = Level.TRACE;
 		}
 
 		if (setTo == null) {

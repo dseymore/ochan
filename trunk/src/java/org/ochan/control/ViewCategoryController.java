@@ -141,10 +141,10 @@ public class ViewCategoryController extends SimpleFormController {
                             TextPost tp = (TextPost) p;
                             tp.setComment(PostLinksAFixARockerJocker.fixMahLinks(tp, false));
                             //now lets try and truncate what could be a GIGANTIC amount of text
-                            if (tp.getComment().split("</p>",2).length >= 2){
+                            if (tp.getComment().split("</p>").length >= 2){
                             	String[] split = tp.getComment().split("</p>");
                             	tp.setComment(split[0] + split[1] + "</p>...");
-                            }else if (tp.getComment().split("<br>",2).length >= 2){
+                            }else if (tp.getComment().split("<br>").length >= 2){
                             	String[] split = tp.getComment().split("<br>");
                             	tp.setComment(split[0] + split[1] + "<br>...");
                             }
