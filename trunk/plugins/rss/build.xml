@@ -51,12 +51,22 @@
 		<!-- thought that bundling the api would fix winstone.. guess not -->
 		<!-- <ivy:artifactproperty name="[module].[artifact].[type]" value="${user.home}${file.separator}.ivy${file.separator}cache${file.separator}[organization]${file.separator}[module]${file.separator}[type]s${file.separator}[artifact]-[revision].[ext]" /> -->
  		<!-- <unjar src="${Ochan.Ochan-api.jar}" dest="${build.dir}/classes/"/> -->
-		<jar destfile="${build.dir}/ochan-rss.jar">
+		<!-- <jar destfile="${build.dir}/ochan-rss.jar">
 			<fileset dir="${build.dir}/classes/">
 				<include name="**/*.class"/>
 			</fileset>
 			<metainf dir="${src.dir}/META-INF/"/>
-		</jar>
+		</jar> -->
+
+		<taskdef name="jarjar" classname="com.tonicsystems.jarjar.JarJarTask" classpath="${basedir}/tools/jarjar-1.0rc7.jar"/>
+		<jarjar jarfile="${build.dir}/ochan-rss.jar">
+			 <fileset dir="${build.dir}/classes/">
+                                <include name="**/*.class"/>
+                        </fileset>
+	                <zipfileset src="${informa.informa}"/>
+	                <!--<rule pattern="de.nava.**" result="org.ochan.@1"/>-->
+			<metainf dir="${src.dir}/META-INF/"/>
+		</jarjar>
 		<ivy:publish resolver="filesystem" artifactspattern="${basedir}/scratch/[artifact].[ext]" />
 	</target>
 	<target name="clean">

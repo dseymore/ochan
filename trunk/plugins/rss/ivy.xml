@@ -13,5 +13,6 @@
     </publications>
     <dependencies>
 	<dependency org="Ogroup" name="Ochan" rev="latest.integration" conf="default->default"/>
+	<dependency org="nava.de" name="informa" rev="0.7.0-alpha2" conf="default->default"/>
     </dependencies>
 </ivy-module>
