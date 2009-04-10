@@ -1,4 +1,9 @@
 #labels Phase-QA,Phase-Support
+==Release 0.2.3==
+  * Job type plugin support
+  * Long/large post truncation on category view
+  * Users can no longer post 'nothing' (empty Zip, no image, or no content)
+
 ==Release 0.2.2==
   * Tripcodes are working again
   * Thread Export throttling capable
