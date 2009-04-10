@@ -1,3 +1,23 @@
+=Ochan:name=PluginJob,type=job=
+{{{
+Attributes:
+ Cron: Cron expression for firing job (type=java.lang.String)
+ PluginConfiguration: Plugin Configuration is a json string (type=java.lang.String)
+Operations:
+ getPluginConfiguration: Plugin Configuration is a json string
+  Parameters 0, return type=java.lang.String
+ setPluginConfiguration: Plugin Configuration is a json string
+  Parameters 1, return type=void
+   name=p1 type=java.lang.String 
+ lastRunTime: The last time the job was run.
+  Parameters 0, return type=java.lang.String
+ getCron: Cron expression for firing job
+  Parameters 0, return type=java.lang.String
+ setCron: Cron expression for firing job
+  Parameters 1, return type=void
+   name=p1 type=java.lang.String
+}}}
+
 =Ochan:name=Post,type=rest=
 {{{
 Attributes:
