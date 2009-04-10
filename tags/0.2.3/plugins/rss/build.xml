@@ -1,0 +1,82 @@
+<project name="configurations" default="dist" xmlns:ivy="antlib:fr.jayasoft.ivy.ant">
+        <!-- some variables used -->
+        <property name="build.dir" value="scratch" />
+        <property name="src.dir" value="src" />
+        <property name="lib.dir" value="${build.dir}/lib" />
+        <property name="ivy.cache.item.path" value="${user.home}${file.separator}.ivy${file.separator}cache${file.separator}[organization]${file.separator}[module]${file.separator}[type]s${file.separator}"/>
+        <property name="ivy.item.path" value="${ivy.cache.item.path}[artifact]-[revision].[ext]"/>
+
+        <!-- checks for ivy -->
+        <target name="-check-for-ivy">
+                <available property="have.ivy" resource="fr/jayasoft/ivy/ant/antlib.xml" />
+        </target>
+
+        <!-- create ivy taskdef if ivy is available -->
+        <target name="-ivy-define" depends="-check-for-ivy" unless="have.ivy">
+                <taskdef resource="fr/jayasoft/ivy/ant/antlib.xml" uri="antlib:fr.jayasoft.ivy.ant">
+                        <classpath>
+                                <fileset dir="${basedir}/../../tools/">
+                                        <include name="ivy*.jar" />
+                                        <include name="lib/*.jar" />
+                                </fileset>
+                        </classpath>
+                </taskdef>
+
+                <ivy:configure file="${basedir}/ivyconf.xml" />
+        </target>
+
+        <target name="compile" description="--> compile and run the project" depends="-ivy-define">
+                <mkdir dir="${build.dir}" />
+                <mkdir dir="${build.dir}/classes" />
+                <mkdir dir="${build.dir}/report" />
+                <ivy:configure file="ivyconf.xml" />
+                <ivy:resolve conf="default" />
+		<!-- place the libraries into the scratch -->
+                <ivy:retrieve conf="default" type="jar" pattern="${lib.dir}/[artifact]-[revision].[ext]" />
+                <!-- make a fancy report -->
+                <ivy:report todir="${basedir}/scratch/report" />
+                <!-- set a property for the artifacts -->
+                <ivy:artifactproperty name="[module].[artifact]" value="${ivy.item.path}" />
+                
+                <javac srcdir="${src.dir}/java/" debug="true" debugLevel="source,vars,lines" destdir="${build.dir}/classes/">
+                        <classpath>
+                                <fileset dir="${lib.dir}">
+                                        <include name="**/*.jar" />
+                                </fileset>
+                        </classpath>
+                </javac>
+        </target>
+
+	<target name="dist" depends="compile">
+		<!-- thought that bundling the api would fix winstone.. guess not -->
+		<!-- <ivy:artifactproperty name="[module].[artifact].[type]" value="${user.home}${file.separator}.ivy${file.separator}cache${file.separator}[organization]${file.separator}[module]${file.separator}[type]s${file.separator}[artifact]-[revision].[ext]" /> -->
+ 		<!-- <unjar src="${Ochan.Ochan-api.jar}" dest="${build.dir}/classes/"/> -->
+		<!-- <jar destfile="${build.dir}/ochan-rss.jar">
+			<fileset dir="${build.dir}/classes/">
+				<include name="**/*.class"/>
+			</fileset>
+			<metainf dir="${src.dir}/META-INF/"/>
+		</jar> -->
+
+		<taskdef name="jarjar" classname="com.tonicsystems.jarjar.JarJarTask" classpath="${basedir}/../../tools/jarjar-1.0rc7.jar"/>
+		<jarjar jarfile="${build.dir}/ochan-rss.jar">
+			 <fileset dir="${build.dir}/classes/">
+                                <include name="**/*.class"/>
+                        </fileset>
+	                <zipfileset src="${informa.informa}"/>
+			<zipfileset src="${jdom.jdom}"/>
+	                <!--<rule pattern="de.nava.**" result="org.ochan.@1"/>-->
+			<metainf dir="${src.dir}/META-INF/"/>
+		</jarjar>
+		<ivy:publish resolver="filesystem" artifactspattern="scratch/[artifact].[ext]" />
+	</target>
+	<target name="clean">
+                <delete dir="${build.dir}" />
+        </target>
+
+        <target name="clean-cache" depends="clean" description="--> clean the ivy cache">
+                <ivy:cleancache />
+        </target>
+
+</project>
+

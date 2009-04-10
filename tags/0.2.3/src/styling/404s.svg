@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="744.09448819"
+   height="1052.3622047"
+   id="svg2"
+   sodipodi:version="0.32"
+   inkscape:version="0.46"
+   sodipodi:docname="404s.svg"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape">
+  <defs
+     id="defs4">
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="744.09448 : 526.18109 : 1"
+       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
+       id="perspective10" />
+    <filter
+       inkscape:collect="always"
+       id="filter3241"
+       x="-0.1205288"
+       width="1.2410576"
+       y="-0.27946504"
+       height="1.5589301">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="14.527977"
+         id="feGaussianBlur3243" />
+    </filter>
+    <filter
+       inkscape:collect="always"
+       id="filter3297"
+       x="-0.077748346"
+       width="1.1554967"
+       y="-0.26283581"
+       height="1.5256716">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="10.482142"
+         id="feGaussianBlur3299" />
+    </filter>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     gridtolerance="10000"
+     guidetolerance="10"
+     objecttolerance="10"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.4"
+     inkscape:cx="155.44135"
+     inkscape:cy="822.71428"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1598"
+     inkscape:window-height="1179"
+     inkscape:window-x="1600"
+     inkscape:window-y="0" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       style="fill:#d1d2ff;fill-opacity:1;stroke:none;stroke-width:2.0999999;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.60674157"
+       id="rect2406"
+       width="355.71426"
+       height="181.42856"
+       x="16.428572"
+       y="10.933612"
+       inkscape:export-filename="/opt/workspace/ochan-google/src/config/WEB-INF/404-image.png"
+       inkscape:export-xdpi="251.08833"
+       inkscape:export-ydpi="251.08833" />
+    <rect
+       style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:2.0999999;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.60674157;filter:url(#filter3241)"
+       id="rect2407"
+       width="288.27206"
+       height="123.41686"
+       x="38.930832"
+       y="41.942505"
+       transform="matrix(0.9851742,3.8799185e-3,-8.0946781e-3,0.828218,8.6994805,17.949161)" />
+    <text
+       xml:space="preserve"
+       style="font-size:61.89808655px;font-style:normal;font-weight:normal;writing-mode:tb-rl;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="98.71019"
+       y="91.487312"
+       id="text2383"
+       transform="scale(1.0044179,0.9956015)"><tspan
+         sodipodi:role="line"
+         id="tspan2385"
+         x="98.71019"
+         y="91.487312"
+         style="font-size:123.7961731px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;writing-mode:lr-tb;font-family:Dobkin;-inkscape-font-specification:Dobkin">404</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:44.02375793px;font-style:normal;font-weight:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="116.25041"
+       y="119.18116"
+       id="text2387"
+       transform="scale(0.9091725,1.0999012)"><tspan
+         sodipodi:role="line"
+         id="tspan2389"
+         x="116.25041"
+         y="119.18116"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Dobkin;-inkscape-font-specification:Dobkin">Not Found</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:17.50298309px;font-style:normal;font-weight:normal;text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="184.90138"
+       y="157.88077"
+       id="text2391"><tspan
+         sodipodi:role="line"
+         id="tspan2393"
+         x="184.90138"
+         y="157.88077"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;text-anchor:middle;font-family:Sans;-inkscape-font-specification:Fixed">Some anonymous</tspan><tspan
+         sodipodi:role="line"
+         x="184.90138"
+         y="179.75949"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;text-anchor:middle;font-family:Sans;-inkscape-font-specification:Fixed"
+         id="tspan2401">didn't upload an image properly</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;writing-mode:tb-rl;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="262.85715"
+       y="135.21931"
+       id="text2395"><tspan
+         sodipodi:role="line"
+         id="tspan2397" /></text>
+    <rect
+       style="fill:#d1d2ff;fill-opacity:1;stroke:none;stroke-width:2.0999999;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.60674157"
+       id="rect3245"
+       width="357.14285"
+       height="119.99999"
+       x="137.85716"
+       y="238.79076"
+       inkscape:export-filename="/opt/workspace/ochan-google/src/root/404.png"
+       inkscape:export-xdpi="225.54001"
+       inkscape:export-ydpi="225.54001" />
+    <rect
+       style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:2.0999999;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.60674157;filter:url(#filter3297)"
+       id="rect3267"
+       width="323.57141"
+       height="95.714287"
+       x="153.71428"
+       y="250.93362"
+       transform="matrix(0.8807947,0,0,0.6716418,37.609272,96.1104)" />
+    <text
+       xml:space="preserve"
+       style="font-size:30.94776535px;font-style:normal;font-weight:normal;writing-mode:tb-rl;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="269.29834"
+       y="291.38712"
+       id="text3247"><tspan
+         sodipodi:role="line"
+         id="tspan3249"
+         x="269.29834"
+         y="291.38712"
+         style="font-size:61.8955307px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;writing-mode:lr-tb;font-family:Dobkin;-inkscape-font-specification:Dobkin">404</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:21.6510601px;font-style:normal;font-weight:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="268.09897"
+       y="318.77972"
+       id="text3251"><tspan
+         sodipodi:role="line"
+         id="tspan3253"
+         x="268.09897"
+         y="318.77972"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Dobkin;-inkscape-font-specification:Dobkin">Not Found</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:19.57560158px;font-style:normal;font-weight:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="148.59363"
+       y="345.26074"
+       id="text3255"><tspan
+         sodipodi:role="line"
+         id="tspan3257"
+         x="148.59363"
+         y="345.26074">That didn't work out as planned...</tspan></text>
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3259"
+       style="fill:black;fill-opacity:1;stroke:none;stroke-opacity:1;stroke-width:1px;stroke-linejoin:miter;stroke-linecap:butt;font-family:Bitstream Vera Sans;font-style:normal;font-weight:normal;font-size:12px;writing-mode:tb"><flowRegion
+         id="flowRegion3261"><rect
+           id="rect3263"
+           width="47.857143"
+           height="40.714287"
+           x="162.14285"
+           y="335.93362" /></flowRegion><flowPara
+         id="flowPara3265" /></flowRoot>  </g>
+</svg>

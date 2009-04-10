@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:jaxws="http://cxf.apache.org/jaxws"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+                           http://www.springframework.org/schema/tx
+                           http://www.springframework.org/schema/tx/spring-tx-2.0.xsd
+                           http://www.springframework.org/schema/aop
+                           http://www.springframework.org/schema/aop/spring-aop-2.0.xsd
+                           http://cxf.apache.org/jaxws 
+                           http://cxf.apache.org/schemas/jaxws.xsd">
+
+	
+	<!-- enables interpretation of the @Configurable annotation for domain object dependency injection -->
+	<aop:spring-configured />
+	
+	<bean id="localAnnouncementService" class="org.ochan.service.local.LocalAnnouncementService"/>
+	
+	<!--  xxxxxxxxxxxxxxxxxxxxxxxxx  Service configuration xxxxxxxxxxxxxxxxxxxxxxxxx  -->
+	<bean class="org.ochan.dpl.SleepyEnvironment" id="sleepy" destroy-method="close"/>
+	<bean id="localCategoryService" class="org.ochan.dpl.service.LocalCategoryService">
+		<property name="environment" ref="sleepy"/>
+	</bean>
+	<bean id="localPostService" class="org.ochan.dpl.service.LocalPostService">
+		<property name="environment" ref="sleepy"/>
+		<property name="blobService" ref="localBlobService"/>
+	</bean>
+	<bean id="localThreadService" class="org.ochan.dpl.service.LocalThreadService">
+		<property name="environment" ref="sleepy"/>
+		<property name="postService" ref="localPostService"/>
+	</bean>
+	<bean id="localBlobService" class="org.ochan.dpl.service.LocalBlobService">
+		<property name="environment" ref="sleepy"/>
+	</bean>
+	<bean id="localExternalCategoryService" class="org.ochan.dpl.service.LocalExternalCategoryService">
+		<property name="environment" ref="sleepy"/>
+	</bean>
+	
+	<!--  JMX! -->
+	<bean id="exporter" class="org.springframework.jmx.export.MBeanExporter">
+        <property name="assembler" ref="assembler"/>
+        <property name="namingStrategy" ref="namingStrategy"/>
+        <property name="autodetect" value="true"/>
+    </bean>
+
+    <bean id="jmxAttributeSource"
+          class="org.springframework.jmx.export.annotation.AnnotationJmxAttributeSource"/>
+
+    <!-- will create management interface using annotation metadata -->
+    <bean id="assembler"
+          class="org.springframework.jmx.export.assembler.MetadataMBeanInfoAssembler">
+        <property name="attributeSource" ref="jmxAttributeSource"/>
+    </bean>
+
+    <!-- will pick up the ObjectName from the annotation -->
+    <bean id="namingStrategy"
+          class="org.springframework.jmx.export.naming.MetadataNamingStrategy">
+        <property name="attributeSource" ref="jmxAttributeSource"/>
+    </bean>
+	<!--  JMX-ABLES -->
+	<bean class="org.ochan.util.StatisticalErrorAppender"/>
+	<bean class="org.ochan.util.LoggingConfiguration"/>
+	<bean class="org.ochan.control.ThumbnailController"/>
+	<bean class="org.ochan.control.ThreadZipController"/>
+	<bean class="org.ochan.control.CategoryListController"/>
+	<bean class="org.ochan.control.ViewCategoryController"/>
+	<bean class="org.ochan.control.ViewThreadController"/>
+	<bean class="org.ochan.util.DeploymentConfiguration"/>
+	<bean class="org.ochan.util.UserCounter"/>
+	<bean class="org.ochan.util.ManagedCommonsMultipartResolver"/>
+
+	<!-- loader utility to help us generate data from a script -->
+	<bean class="org.ochan.util.LoaderUtility" id="loader">
+		<property name="threadService" ref="localThreadService"/>
+	</bean>	
+	
+	<!--  Quartz Jobs! -->
+	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+	    <property name="triggers">
+	        <list>
+	            <ref bean="activeThreadTrigger" />
+	            <ref bean="deleteThreadTrigger" />
+	            <ref bean="statsGeneratorTrigger" />
+	            <ref bean="nominateThreadTrigger" />
+	            <ref bean="checkpointTrigger" />
+	            <ref bean="sleepyStatsTrigger" />
+	            <ref bean="PluginJobJobTrigger" />
+	        </list>
+	    </property>
+	    <property name="applicationContextSchedulerContextKey">
+            <value>applicationContext</value>
+    	</property>
+	</bean>
+	<bean id="deleteThreadTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="deleteThreadsJob" />
+		<!--  every minute please -->
+		<property name="cronExpression" value="0 */1 * * * ?" />
+	</bean>
+	<bean name="deleteThreadsJob" class="org.springframework.scheduling.quartz.JobDetailBean">
+		<property name="jobClass" value="org.ochan.job.DeleteThreadJob"/>
+	</bean>
+	
+	<bean id="checkpointTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="checkpointJob" />
+		<!--  every ten minutes please -->
+		<property name="cronExpression" value="0 */10 * * * ?" />
+	</bean>
+	<bean name="checkpointJob" class="org.springframework.scheduling.quartz.JobDetailBean">
+		<property name="jobClass" value="org.ochan.job.SleepyCheckpointerJob"/>
+	</bean>
+	<bean id="sleepyStatsTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+    	<property name="jobDetail" ref="sleepyStatisticsJob" />
+    	<!-- every minute -->
+    	<property name="cronExpression" value="0 */1 * * * ?" />
+	</bean>
+	<bean name="sleepyStatisticsJob" class="org.springframework.scheduling.quartz.JobDetailBean">
+        <property name="jobClass" value="org.ochan.job.SleepyStatisticsJob"/>
+    </bean>
+	
+	
+	<bean id="nominateThreadTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="nominateThreadJob" />
+		<!--  every minute please, no really.. its super inexpensive -->
+		<property name="cronExpression" value="0 */1 * * * ?" />
+	</bean>
+	<bean name="nominateThreadJob" class="org.springframework.scheduling.quartz.JobDetailBean">
+		<property name="jobClass" value="org.ochan.job.ThreadDeathNominationJob"/>
+	</bean>
+	
+	<bean id="activeThreadTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+    	<property name="jobDetail" ref="activeThreadsJob" />
+    	<!-- every minute -->
+    	<property name="cronExpression" value="0 */1 * * * ?" />
+	</bean>
+	<bean name="activeThreadsJob" class="org.springframework.scheduling.quartz.JobDetailBean">
+        <property name="jobClass" value="org.ochan.job.ActiveWatcherCounterJob"/>
+    </bean>
+    <!-- stats generation job.. for like.. total content counter.. yay! -->
+    <bean id="statsGeneratorTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+    	<property name="jobDetail" ref="statsGenerationJob" />
+    	<!-- every minute -->
+    	<property name="cronExpression" value="0 */1 * * * ?" />
+	</bean>
+	<bean name="statsGenerationJob" class="org.springframework.scheduling.quartz.JobDetailBean">
+        <property name="jobClass" value="org.ochan.job.StatsGeneratorJob"/>
+    </bean>
+    
+    <!-- plugin job job job -->
+    <bean id="PluginJobJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+    	<property name="jobDetail" ref="pluginJobJob" />
+    	<!-- every minute -->
+    	<property name="cronExpression" value="0 */1 * * * ?" />
+	</bean>
+	<bean name="pluginJobJob" class="org.springframework.scheduling.quartz.JobDetailBean">
+        <property name="jobClass" value="org.ochan.job.PluginJobJob"/>
+    </bean>
+    
+    <!--  expose schedule config through JMX -->
+	<bean class="org.ochan.job.ActiveWatcherCounterJob"/>
+	<bean class="org.ochan.job.DeleteThreadJob"/>
+	<bean class="org.ochan.job.StatsGeneratorJob"/>
+	<bean class="org.ochan.job.SleepyCheckpointerJob"/>
+	<bean class="org.ochan.job.ThreadDeathNominationJob"/>
+	<bean class="org.ochan.job.SleepyStatisticsJob"/>
+	<bean class="org.ochan.job.PluginJobJob"/>
+	
+
+	<!--  lets try ehcache -->
+	<!-- Configure CacheManager from specified config location -->
+	<bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+	    <property name="configLocation"><value>WEB-INF/ehcache.xml</value></property>
+	</bean>
+	
+	<bean id="threadCache" class="org.springframework.cache.ehcache.EhCacheFactoryBean">
+	        <property name="cacheManager"><ref local="cacheManager"/></property>
+	        <property name="cacheName"><value>myCache1</value></property>
+	        <property name="maxElementsInMemory"><value>20000</value></property>
+	        <property name="overflowToDisk"><value>true</value></property>
+	        <property name="eternal"><value>false</value></property>
+	        <property name="timeToLive"><value>120</value></property>
+	        <property name="timeToIdle"><value>120</value></property>
+	</bean>
+
+</beans>

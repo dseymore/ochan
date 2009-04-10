@@ -1,0 +1,11 @@
+<ivy-module version="1.0">
+	<info organisation="com.sleepycat"
+		module="je"
+		revision="3.3.75"
+		status="release"
+	/>
+	<publications>
+		<artifact name="je" type="jar" ext="jar"/>
+		<artifact name="je" type="source" ext="src.jar"/>
+	</publications>
+</ivy-module>
