@@ -1,0 +1,20 @@
+<html>
+	<head>
+		<link REL="SHORTCUT ICON" HREF="#springUrl('/favicon.png')">
+		<!-- ext js -->
+		<script type="text/javascript" src="#springUrl('/extjs/adapter/ext/ext-base.js')"></script>
+		<script language="javascript" type="text/javascript" src="#springUrl('/extjs/ext-all-debug.js')"></script>
+    	<!-- Include Ext stylesheets here: -->
+	    <link rel="stylesheet" type="text/css" href="#springUrl('/extjs/resources/css/ext-all.css')">
+	    <script language="javascript" type="text/javascript" src="#springUrl('/quoting.js')"></script>
+	    <title>$deployment.getSystemTitle()</title>
+	</head>
+	#include("/WEB-INF/velocity/style.vm")
+	<body id="body">
+		<div align="center">
+			Your thread cannot be published; you've reached the thread limit for this category. 
+			<br><br>
+			<a href="#springUrl('/chan/')${categoryId}">Return to category</a>
+		</div>
+	</body>
+</html>

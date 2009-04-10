@@ -1,0 +1,16 @@
+<ivy-module version="1.0">
+	<info organisation="nava.de"
+		module="informa"
+		revision="0.7.0-alpha2"
+		status="release"
+		publication="20080624173519"
+		default="true"
+	/>
+	<configurations>
+		<conf name="default" visibility="public"/>
+	</configurations>
+	<publications>
+		<artifact name="informa" type="jar" ext="jar" conf="default"/>
+		<!--<artifact name="jcl" type="source" ext="src.jar" conf="default"/>-->
+	</publications>
+</ivy-module>
