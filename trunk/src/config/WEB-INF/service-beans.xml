@@ -73,6 +73,7 @@
 	<!-- loader utility to help us generate data from a script -->
 	<bean class="org.ochan.util.LoaderUtility" id="loader">
 		<property name="threadService" ref="localThreadService"/>
+		<property name="postService" ref="localPostService"/>
 	</bean>	
 	
 	<!--  Quartz Jobs! -->

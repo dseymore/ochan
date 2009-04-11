@@ -10,6 +10,7 @@ import org.apache.commons.logging.LogFactory;
 import org.javasimon.SimonManager;
 import org.javasimon.Split;
 import org.javasimon.Stopwatch;
+import org.ochan.service.PostService;
 import org.ochan.service.ThreadService;
 import org.springframework.jmx.export.annotation.ManagedAttribute;
 import org.springframework.jmx.export.annotation.ManagedOperation;
@@ -23,7 +24,15 @@ public class LoaderUtility {
 	private static final Log LOG = LogFactory.getLog(LoaderUtility.class);
 	
 	private ThreadService threadService;
+	private PostService postService;
 	
+	/**
+	 * @param postService the postService to set
+	 */
+	public void setPostService(PostService postService) {
+		this.postService = postService;
+	}
+
 	/**
 	 * @param threadService the threadService to set
 	 */
@@ -33,6 +42,7 @@ public class LoaderUtility {
 	
 	private Stopwatch readFileTime = SimonManager.getStopwatch("LoaderUtility.read");
 	private Stopwatch createThreadTime = SimonManager.getStopwatch("LoaderUtility.create");
+	private Stopwatch createPostTime = SimonManager.getStopwatch("LoadUtility.creatPost");
 	
 	/**
 	 * @return the readFileTime
@@ -52,6 +62,14 @@ public class LoaderUtility {
 		return createThreadTime.getLast();
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
+	@ManagedAttribute(description="Getting the time it took to create the post.")
+	public Long getCreatePostTime(){
+		return createPostTime.getLast();
+	}
 
 
 	@ManagedOperation(description="Allows threads to be quickly created via jmx")
@@ -80,6 +98,35 @@ public class LoaderUtility {
 			}
 		}catch(Exception e){
 			LOG.error("Unable to create your damn thread, homey.",e);
+		}
+	}
+	
+	@ManagedOperation(description="Allows posts to be quickly created via jmx")
+	@ManagedOperationParameters({
+		@ManagedOperationParameter(description="Thread Id", name="threadId"),
+		@ManagedOperationParameter(description="File path", name="filepath")
+	})
+	public void createPost(Long threadId, String filepath){
+		Split read = readFileTime.start();
+		File f = new File(filepath);
+		try{
+			if (f.exists() && f.canRead()){
+				FileInputStream fis = new FileInputStream(f);
+				byte[] bits = IOUtils.toByteArray(fis);
+				Byte[] bytes = ArrayUtils.toObject(bits);
+				read.stop();
+				Split create = createPostTime.start();
+				postService.createPost(threadId, "Author", "", "", "", "", bytes);
+				create.stop();
+				fis.close();
+			}else{
+				//there is no file
+				Split create = createPostTime.start();
+				postService.createPost(threadId, "Author", "", "", "", "", null);
+				create.stop();
+			}
+		}catch(Exception e){
+			LOG.error("Unable to create the post.",e);
 		}
 	}
 	
