@@ -36,7 +36,7 @@
                 <!-- make a fancy report -->
                 <ivy:report todir="${basedir}/scratch/report" />
                 <!-- set a property for the artifacts -->
-                <ivy:artifactproperty name="[module].[artifact]" value="${ivy.item.path}" />
+                <ivy:artifactproperty name="[module].[artifact].[type]" value="${ivy.item.path}" />
                 
                 <javac srcdir="${src.dir}/java/" debug="true" debugLevel="source,vars,lines" destdir="${build.dir}/classes/">
                         <classpath>
@@ -63,8 +63,8 @@
 			 <fileset dir="${build.dir}/classes/">
                                 <include name="**/*.class"/>
                         </fileset>
-	                <zipfileset src="${informa.informa}"/>
-			<zipfileset src="${jdom.jdom}"/>
+	                <zipfileset src="${eddie.eddie.jar}"/>
+			<zipfileset src="${jdom.jdom.jar}"/>
 	                <!--<rule pattern="de.nava.**" result="org.ochan.@1"/>-->
 			<metainf dir="${src.dir}/META-INF/"/>
 		</jarjar>

@@ -5,19 +5,20 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Iterator;
+import java.net.URL;
 
 import org.codehaus.jettison.AbstractXMLStreamReader;
 import org.codehaus.jettison.json.JSONObject;
 import org.codehaus.jettison.mapped.MappedXMLStreamReader;
 import org.ochan.api.PluginJob;
 import org.ochan.service.ThreadService;
-import de.nava.informa.core.ChannelIF;
-import de.nava.informa.core.ItemIF;
-import de.nava.informa.impl.basic.ChannelBuilder;
-import de.nava.informa.parsers.FeedParser;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
+import uk.org.catnip.eddie.parser.Parser;
+import uk.org.catnip.eddie.FeedData;
+import uk.org.catnip.eddie.Entry;
+import uk.org.catnip.eddie.Detail;
 
 
 
@@ -108,23 +109,25 @@ public class RssJob implements PluginJob{
 		for (Long categoryId : configuration.keySet()){
 			for(String url: configuration.get(categoryId)){
 				try{
-					ChannelIF channel = FeedParser.parse(new ChannelBuilder(), url);
-					for(ItemIF item : channel.getItems()){
+				 	URL u = new URL(url);
+					Parser p = new Parser();
+					FeedData data = p.parse(u.openStream());
+					Iterator entries = data.entries();
+					while(entries.hasNext()){
+						Entry item = (Entry)entries.next();
 						if (seen.get(url) == null){
-							seen.put(url, new ArrayList());
+							seen.put(url,new ArrayList());
 						}
-						//we do guid & subject because
-						//some people dont do guids, and some people dont do subjects.
-						//also, lets stop OLD things from being put into the category... just in case we restart the ochan or plugin..
-						//just lame to have dupes, or have dupes delete real content. 
-						if ((item.getGuid() == null || !seen.get(url).contains(item.getGuid().getLocation())) 
-								&& (item.getSubject() == null || !seen.get(url).contains(item.getSubject()))
-								&& item.getDate().getTime() >= bootupTime.getTime()){
-							seen.get(url).add(item.getGuid().getLocation());
-							if (item.getSubject() != null){
-								seen.get(url).add(item.getSubject());
-							}
-							threadService.createThread(categoryId, "Ochan-RSS", item.getSubject() == null ? "" : item.getSubject(), item.getLink().toString(), "", item.getDescription(), null);
+                                                //we do guid & subject because
+                                                //some people dont do guids, and some people dont do subjects.
+                                                //also, lets stop OLD things from being put into the category... just in case we restart the ochan or plugin..
+                                                //just lame to have dupes, or have dupes delete real content.
+						//System.out.println(item);
+						String id = item.get("id");
+						
+						if ( (id == null || !seen.get(url).contains(id) ) && item.getModified().getTime() >= bootupTime.getTime()){
+							seen.get(url).add(id);
+							threadService.createThread(categoryId, "Ochan-RSS", item.getTitle() == null ? "" : item.getTitle().getValue(), id, "", item.getSummary().getValue(), null);
 						}
 					}
 				}catch(Exception e){
