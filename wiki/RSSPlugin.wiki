@@ -14,3 +14,11 @@ An example configration string:
 
 = Installation = 
 * Place the ochan-rss.jar plugin jar into the running directory of Ochan. 
+
+= Change Log =
+== 0.2 ==
+* Switched to Eddie RSS library (informa failed some common rss feeds)
+
+== 0.1 ==
+* Json configuration
+* Informa rss library
