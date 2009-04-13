@@ -234,9 +234,9 @@ public class ViewCategoryController extends SimpleFormController {
         Byte[] bytes = null;
         if (tf.getFileUrl() == null || "".equals(tf.getFileUrl().trim())) {
             // Copying the byte array to be a Byte array. fun..
-            if (tf.getFile() != null && tf.getFile().length > 0) {
-                bytes = new Byte[tf.getFile().length];
-                bytes = ArrayUtils.toObject(tf.getFile());
+            if (tf.getFile() != null && tf.getFile().getBytes().length > 0) {
+                bytes = new Byte[tf.getFile().getBytes().length];
+                bytes = ArrayUtils.toObject(tf.getFile().getBytes());
             }
         } else {
             bytes = RemoteFileGrabber.getDataFromUrl(tf.getFileUrl());
