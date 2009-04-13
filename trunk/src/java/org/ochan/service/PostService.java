@@ -29,9 +29,10 @@ public interface PostService {
      * @param email
      * @param url
      * @param comment
-     * @param file
+     * @param file (null if not an image post)
+     * @param filename (null if not an image post)
      */
-    public void createPost(Long parentIdentifier, String author, String subject, String email, String url, String comment, Byte[] file);
+    public void createPost(Long parentIdentifier, String author, String subject, String email, String url, String comment, Byte[] file, String filename);
     
 
     /**

@@ -151,7 +151,7 @@
 						//so here, lets make a new table.. yeah? yeah.
 						//alert(result.RemotePost.comment);
 						if (result != undefined && result.RemotePost.identifier != -1){
-							createItem(result.RemotePost.subject, result.RemotePost.email, result.RemotePost.author, result.RemotePost.url, result.RemotePost.time, result.RemotePost.type, result.RemotePost.identifier, result.RemotePost.comment);
+							createItem(result.RemotePost.subject, result.RemotePost.email, result.RemotePost.author, result.RemotePost.url, result.RemotePost.time, result.RemotePost.type, result.RemotePost.identifier, result.RemotePost.comment, result.RemotePost.filename);
 							currentPostId = result.RemotePost.identifier;
 						}
 					}
@@ -210,7 +210,7 @@
 	        }
 	        
 	        ##NASTY duplication of style in JAVASCRIPT to ... 2 places to edit one style.. sucks. 
-	        function createItem(subject,email,author,url,time,type,id,comment){
+	        function createItem(subject,email,author,url,time,type,id,comment,filename){
 	        	var body = document.getElementById("body");
 	        	var bigdiv = document.createElement("div");
 	        	bigdiv.setAttribute("id",id);
@@ -219,7 +219,7 @@
 	        	location.setAttribute("name",id);
 	        	
 	        	var newdiv = document.createElement("div");
-	        	newdiv.innerHTML = subject + "&nbsp;&nbsp;<a href=\"mailto:" + email + "\">" + author + "</a> " + "<a href=\"" + url + "\">uri</a>" + time + "&nbsp;&nbsp;<a href=\"#\" onclick=\"javascript:addId(" + id +  ")\">&raquo;" + id + "</a>";
+	        	newdiv.innerHTML = subject + "&nbsp;&nbsp;<a href=\"mailto:" + email + "\">" + author + "</a> " + "<a href=\"" + url + "\">uri</a>" + time + "&nbsp;" + filename + "&nbsp;<a href=\"#\" onclick=\"javascript:addId(" + id +  ")\">&raquo;" + id + "</a>";
 	        	var table = document.createElement("table");
 	        	var row = document.createElement("tr");
 	        	var cell1 = document.createElement("td");
@@ -293,7 +293,7 @@
 				</script>
 				<a name="$post.identifier"/>
 				<div>
-					$post.subject&nbsp;&nbsp;<a href="mailto:$post.email">$post.author</a> <a href="$post.url">uri</a> $post.time  &nbsp;&nbsp;<a href="#" onclick="javascript:addId($post.identifier)">&raquo;$post.identifier</a>
+					$post.subject&nbsp;&nbsp;<a href="mailto:$post.email">$post.author</a> <a href="$post.url">uri</a> $post.time  &nbsp;#if($post.filename)$post.filename#end&nbsp;<a href="#" onclick="javascript:addId($post.identifier)">&raquo;$post.identifier</a>
 				</div>
 				<table>
 					<tr>

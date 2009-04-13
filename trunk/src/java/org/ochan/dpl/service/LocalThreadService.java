@@ -89,7 +89,7 @@ public class LocalThreadService implements ThreadService {
 	// END STATS
 
 	@Override
-	public void createThread(Long category, String author, String subject, String url, String email, String content, Byte[] file) {
+	public void createThread(Long category, String author, String subject, String url, String email, String content, Byte[] file, String filename) {
 		createCount++;
 		try {
 			ThreadDPL thread = new ThreadDPL();
@@ -100,7 +100,7 @@ public class LocalThreadService implements ThreadService {
 			// save the thread
 			environment.threadByIdentifier.put(thread);
 			// save the post
-			postService.createPost(thread.getIdentifier(), author, subject, email, url, content, file);
+			postService.createPost(thread.getIdentifier(), author, subject, email, url, content, file, filename);
 			//and then update. 
 			thread.setEnabled(true);
 			environment.threadByIdentifier.put(thread);
