@@ -127,7 +127,7 @@ public class RssJob implements PluginJob{
 						
 						if ( (id == null || !seen.get(url).contains(id) ) && item.getModified().getTime() >= bootupTime.getTime()){
 							seen.get(url).add(id);
-							threadService.createThread(categoryId, "Ochan-RSS", item.getTitle() == null ? "" : item.getTitle().getValue(), id, "", item.getSummary().getValue(), null);
+							threadService.createThread(categoryId, "Ochan-RSS", item.getTitle() == null ? "" : item.getTitle().getValue(), id, "", item.getSummary().getValue(), null, null);
 						}
 					}
 				}catch(Exception e){

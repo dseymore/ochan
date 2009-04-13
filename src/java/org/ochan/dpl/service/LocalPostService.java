@@ -126,7 +126,7 @@ public class LocalPostService implements PostService {
 	}
 
 	@Override
-	public void createPost(Long parentIdentifier, String author, String subject, String email, String url, String comment, Byte[] file) {
+	public void createPost(Long parentIdentifier, String author, String subject, String email, String url, String comment, Byte[] file, String filename) {
 		createCount++;
 		try {
 			PostDPL post = new PostDPL();
@@ -137,6 +137,7 @@ public class LocalPostService implements PostService {
 			post.setUrl(url);
 			post.setComment(comment);
 			post.setTime(new Date());
+			post.setFilename(filename);
 			if (file != null && file.length > 0) {
 				post.setType(PostType.IMAGE);
 				post.setImageIdentifier(blobService.saveBlob(file));
@@ -218,6 +219,7 @@ public class LocalPostService implements PostService {
 			if (post instanceof ImagePost) {
 				dpl.setImageIdentifier(((ImagePost) post).getImageIdentifier());
 				dpl.setThumbnailIdentifier(((ImagePost) post).getThumbnailIdentifier());
+				dpl.setFilename(((ImagePost) post).getFilename());
 			}
 			TextPost tp = (TextPost) post;
 			dpl.setAuthor(tp.getAuthor());
@@ -239,6 +241,7 @@ public class LocalPostService implements PostService {
 			p = new ImagePost();
 			((ImagePost) p).setImageIdentifier(post.getImageIdentifier());
 			((ImagePost) p).setThumbnailIdentifier(post.getThumbnailIdentifier());
+			((ImagePost) p).setFilename(post.getFilename());
 		}
 		p.setAuthor(post.getAuthor());
 		p.setComment(post.getComment());

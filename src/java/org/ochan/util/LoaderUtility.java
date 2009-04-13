@@ -87,13 +87,13 @@ public class LoaderUtility {
 				Byte[] bytes = ArrayUtils.toObject(bits);
 				read.stop();
 				Split create = createThreadTime.start();
-				threadService.createThread(categoryId, "Author", "Subject", "http://www.google.com", "email", "Content", bytes);
+				threadService.createThread(categoryId, "Author", "Subject", "http://www.google.com", "email", "Content", bytes, f.getName());
 				create.stop();
 				fis.close();
 			}else{
 				//there is no file
 				Split create = createThreadTime.start();
-				threadService.createThread(categoryId, "Author", "Subject", "http://www.google.com", "email", "Content", null);
+				threadService.createThread(categoryId, "Author", "Subject", "http://www.google.com", "email", "Content", null, null);
 				create.stop();
 			}
 		}catch(Exception e){
@@ -116,13 +116,13 @@ public class LoaderUtility {
 				Byte[] bytes = ArrayUtils.toObject(bits);
 				read.stop();
 				Split create = createPostTime.start();
-				postService.createPost(threadId, "Author", "", "", "", "", bytes);
+				postService.createPost(threadId, "Author", "", "", "", "", bytes, f.getName());
 				create.stop();
 				fis.close();
 			}else{
 				//there is no file
 				Split create = createPostTime.start();
-				postService.createPost(threadId, "Author", "", "", "", "", null);
+				postService.createPost(threadId, "Author", "", "", "", "", null, null);
 				create.stop();
 			}
 		}catch(Exception e){

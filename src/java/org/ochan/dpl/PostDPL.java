@@ -8,7 +8,7 @@ import com.sleepycat.persist.model.PrimaryKey;
 import com.sleepycat.persist.model.Relationship;
 import com.sleepycat.persist.model.SecondaryKey;
 
-@Entity
+@Entity(version=1)
 public class PostDPL implements Serializable{
 
 	
@@ -36,6 +36,8 @@ public class PostDPL implements Serializable{
 	private Long imageIdentifier;
 	
 	private Long thumbnailIdentifier;
+	
+	private String filename;
 
 	/**
 	 * @return the parent
@@ -182,6 +184,20 @@ public class PostDPL implements Serializable{
 	 */
 	public Long getIdentifier() {
 		return identifier;
+	}
+
+	/**
+	 * @return the filename
+	 */
+	public String getFilename() {
+		return filename;
+	}
+
+	/**
+	 * @param filename the filename to set
+	 */
+	public void setFilename(String filename) {
+		this.filename = filename;
 	}
 
 	

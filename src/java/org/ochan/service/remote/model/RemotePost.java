@@ -34,6 +34,7 @@ public class RemotePost {
 	private String url;
 	private String subject;
 	private Date time;
+	private String filename = "";
 	private PostType type;
 	
 	public RemotePost(){
@@ -47,6 +48,7 @@ public class RemotePost {
 	public RemotePost(Post example){
 		if (example instanceof ImagePost){
 			this.type = PostType.IMAGE;
+			this.filename = ((ImagePost)example).getFilename();
 		}else{
 			this.type = PostType.TEXT;
 		}
@@ -168,6 +170,20 @@ public class RemotePost {
 	 */
 	public void setType(PostType type) {
 		this.type = type;
+	}
+
+	/**
+	 * @return the filename
+	 */
+	public String getFilename() {
+		return filename;
+	}
+
+	/**
+	 * @param filename the filename to set
+	 */
+	public void setFilename(String filename) {
+		this.filename = filename;
 	}
 	
 	

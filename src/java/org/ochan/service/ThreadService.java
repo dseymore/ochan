@@ -27,9 +27,10 @@ public interface ThreadService {
      * @param url
      * @param email
      * @param content
-     * @param file
+     * @param file (null if not an image post)
+     * @param filename (null if not an image post)
      */
-    public void createThread(Long category, String author, String subject, String url, String email, String content, Byte[] file);
+    public void createThread(Long category, String author, String subject, String url, String email, String content, Byte[] file, String filename);
     
 
     /**

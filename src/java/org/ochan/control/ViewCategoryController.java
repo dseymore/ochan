@@ -231,12 +231,14 @@ public class ViewCategoryController extends SimpleFormController {
         boolean isMultipart = ServletFileUpload.isMultipartContent(request);
         LOG.info("Multipart?: " + isMultipart);
 
+        String filename = null;
         Byte[] bytes = null;
         if (tf.getFileUrl() == null || "".equals(tf.getFileUrl().trim())) {
             // Copying the byte array to be a Byte array. fun..
             if (tf.getFile() != null && tf.getFile().getBytes().length > 0) {
                 bytes = new Byte[tf.getFile().getBytes().length];
                 bytes = ArrayUtils.toObject(tf.getFile().getBytes());
+                filename = tf.getFile().getOriginalFilename();
             }
         } else {
             bytes = RemoteFileGrabber.getDataFromUrl(tf.getFileUrl());
@@ -250,7 +252,7 @@ public class ViewCategoryController extends SimpleFormController {
 
         LOG.debug("calling thread service to add thread (form): " + tf);
         try {
-            threadService.createThread(Long.valueOf(tf.getCategoryIdentifier()), tf.getAuthor(), tf.getSubject(), tf.getUrl(), tf.getEmail(), tf.getComment(), bytes);
+            threadService.createThread(Long.valueOf(tf.getCategoryIdentifier()), tf.getAuthor(), tf.getSubject(), tf.getUrl(), tf.getEmail(), tf.getComment(), bytes, filename);
         } catch (Exception ex) {
             //FIXME - handle this so the user gets notified NICELY
             LOG.error("Unable to create thread", ex);
