@@ -140,6 +140,15 @@ public class ThreadCollectionAdapter extends AbstractEntityCollectionAdapter<Thr
 		long start = new Date().getTime();
 		List<Thread> toreturn = new ArrayList<Thread>();
 		Element o = cache.get("1");
+		
+		//Category filtration
+		Long categoryId = null;
+		//lets see if we're getting a specific category, or thread, or the entire bundle. 
+		if (request.getUri().toString() != null && request.getUri().toString().split("/").length > 3){
+			String[] split = request.getUri().toString().split("/");
+			categoryId = Long.valueOf(split[3]);
+		}
+		
 		if (o == null || o.getObjectValue() == null || o.isExpired()){
 			List<Category> categories = categoryService.retrieveCategories(null);
 			for (Category c : categories){
@@ -159,6 +168,18 @@ public class ThreadCollectionAdapter extends AbstractEntityCollectionAdapter<Thr
 		}else{
 			//unsafe!
 			toreturn = (ArrayList<Thread>)o.getObjectValue();
+		}
+		
+		//filtering by category
+		if (categoryId != null){
+			//lets filter it out to be just what we want from this category.
+			List<Thread> threadsForCategory = new ArrayList<Thread>();
+			for (Thread t : toreturn){
+				if (categoryId.equals(t.getCategory().getIdentifier())){
+					threadsForCategory.add(t);
+				}
+			}
+			toreturn = threadsForCategory;
 		}
 		
 		// capture end of call

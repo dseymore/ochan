@@ -82,7 +82,7 @@ http://abdera.apache.org http://abdera.apache.org/schemas/abdera-spring.xsd">
 		</property>
 		<a:targetResolver>
 			<a:regexTargetResolver>
-				<a:collection>(.*)threads</a:collection>
+				<a:collection>(.*)threads(.*)</a:collection>
 				<a:entry>/atom/feed/([^/#?]+)(\?[^#]*)?</a:entry>
 				<a:service>/atom(\?[^#]*)?</a:service>
 			</a:regexTargetResolver>
