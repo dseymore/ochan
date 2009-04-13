@@ -209,12 +209,12 @@ public class ViewThreadController extends SimpleFormController {
 		}
 		
 		//handle anything that isnt a zip upload
-		if(prf.getZipFile() == null || prf.getZipFile().length == 0){
+		if(prf.getZipFile() == null || prf.getZipFile().getBytes().length == 0){
 			//Copying the byte array to be a Byte array. fun..
 			Byte[] bytes = null;
 			if (prf.getFileUrl() == null || "".equals(prf.getFileUrl().trim())){
-		        if (prf.getFile() != null && prf.getFile().length > 0){
-		        	bytes = ArrayUtils.toObject(prf.getFile());
+		        if (prf.getFile() != null && prf.getFile().getBytes().length > 0){
+		        	bytes = ArrayUtils.toObject(prf.getFile().getBytes());
 		        }
 			}else{
 				//URL
@@ -229,7 +229,7 @@ public class ViewThreadController extends SimpleFormController {
 			//normal image upload or url post
 			postService.createPost(Long.valueOf(prf.getParent()), prf.getAuthor(), prf.getSubject(), prf.getEmail(), prf.getUrl(), prf.getComment(), bytes);
 		}else{
-			ByteArrayInputStream bais = new ByteArrayInputStream(prf.getZipFile());
+			ByteArrayInputStream bais = new ByteArrayInputStream(prf.getZipFile().getBytes());
 			ZipInputStream zip = new ZipInputStream(bais);
 			ZipEntry entry = zip.getNextEntry();
 			if (entry == null){

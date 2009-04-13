@@ -1,5 +1,7 @@
 package org.ochan.form;
 
+import org.springframework.web.multipart.MultipartFile;
+
 public class PostReplyForm {
 
 	private String parent;
@@ -8,9 +10,9 @@ public class PostReplyForm {
 	private String email;
 	private String url;
 	private String comment;
-	private byte[] file;
+	private MultipartFile file;
 	private String fileUrl;
-	private byte[] zipFile;
+	private MultipartFile zipFile;
 
 	/**
 	 * @return the parent
@@ -90,7 +92,7 @@ public class PostReplyForm {
 	/**
 	 * @return the file
 	 */
-	public byte[] getFile() {
+	public MultipartFile getFile() {
 		return file;
 	}
 
@@ -98,7 +100,7 @@ public class PostReplyForm {
 	 * @param file
 	 *            the file to set
 	 */
-	public void setFile(byte[] file) {
+	public void setFile(MultipartFile file) {
 		this.file = file;
 	}
 	
@@ -131,14 +133,14 @@ public class PostReplyForm {
 	/**
 	 * @return the zipFile
 	 */
-	public byte[] getZipFile() {
+	public MultipartFile getZipFile() {
 		return zipFile;
 	}
 
 	/**
 	 * @param zipFile the zipFile to set
 	 */
-	public void setZipFile(byte[] zipFile) {
+	public void setZipFile(MultipartFile zipFile) {
 		this.zipFile = zipFile;
 	}
 

@@ -1,5 +1,7 @@
 package org.ochan.form;
 
+import org.springframework.web.multipart.MultipartFile;
+
 
 public class ThreadForm {
 
@@ -9,7 +11,7 @@ public class ThreadForm {
     private String email;
     private String url;
     private String comment;
-    private byte[] file;
+    private MultipartFile file;
     private String fileUrl;
     
     /**
@@ -75,13 +77,13 @@ public class ThreadForm {
     /**
      * @return the file
      */
-    public byte[] getFile() {
+    public MultipartFile getFile() {
         return file;
     }
     /**
      * @param file the file to set
      */
-    public void setFile(byte[] file) {
+    public void setFile(MultipartFile file) {
         this.file = file;
     }
     /**
