@@ -3,6 +3,7 @@
 		<META HTTP-EQUIV="Pragma" CONTENT="no-cache">
 		<link REL="SHORTCUT ICON" HREF="#springUrl('/favicon.png')">
         <title>$deployment.getSystemTitle()</title>
+        <link type="application/atom+xml" rel="alternate" href="#springUrl('/atom/threads/')$category.identifier">
         <!-- ext js -->
 	<script type="text/javascript" src="#springUrl('/extjs/adapter/ext/ext-base.js')"></script>
         <script language="javascript" type="text/javascript" src="#springUrl('/extjs/ext-all.js')"></script>
@@ -108,6 +109,10 @@
     </head>
     #include("/WEB-INF/velocity/style.vm")
     <body>
+    	<!-- Atom feed -->
+		<div style="float: right">
+			<a href="#springUrl('/atom/threads/')$category.identifier"><img border="0" src="#springUrl('/15px-Feed-icon.png')" width="15" height="15"></a>
+		</div>
     	<div class="navigationBox">
 			<a href="http://$deployment.hostname:$deployment.port">Home</a> >> <a href="#springUrl('/chan/')$category.identifier">$category.name</a>
 		</div>
