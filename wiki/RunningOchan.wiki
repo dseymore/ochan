@@ -33,5 +33,8 @@
 }}}
 === Opening up remote management without a password (FIREWALL THIS!) ===
 {{{
--Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.local.only=false  -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=8000 
+-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.local.only=false
+-Dcom.sun.management.jmxremote.authenticate=false 
+-Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote 
+-Dcom.sun.management.jmxremote.port=8000 -Djava.rmi.server.hostname=<your externally reachable IP>
 }}}
