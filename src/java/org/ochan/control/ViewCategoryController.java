@@ -126,8 +126,16 @@ public class ViewCategoryController extends SimpleFormController {
     	}
     	
         Map controlModel = new HashMap();
-        Long identifier = Long.valueOf(httpServletRequest.getParameter("identifier"));
-        Category cat = categoryService.getCategory(identifier);
+        Long identifier = null;
+        Category cat = null;
+        //lets handle those codes :D
+        if (StringUtils.isNumeric(httpServletRequest.getParameter("identifier"))){
+        	identifier = Long.valueOf(httpServletRequest.getParameter("identifier"));
+        	cat = categoryService.getCategory(identifier);
+        }else{
+        	cat = categoryService.getCategory(httpServletRequest.getParameter("identifier"));
+        	identifier = cat.getIdentifier();
+        }
         if (cat != null) {
             Map<ThreadCriteria, Object> searchCriteria = new HashMap<ThreadCriteria, Object>();
             searchCriteria.put(ThreadCriteria.CATEGORY, cat.getIdentifier());
