@@ -351,7 +351,12 @@ public class ThumbnailController implements Controller {
 						ByteArrayInputStream bais = new ByteArrayInputStream(datum);
 						//this might be the wrong direction.. 
 						ImageIO.setUseCache(false);
-						image = ImageIO.read(bais);
+						try{
+							image = ImageIO.read(bais);
+						}catch(Exception e){
+							LOG.error("Bad image!",e);
+							image = null;
+						}
 						if (image == null || p == null){
 							//BAD BAD IMAGE!
 							InputStream stream = request.getSession().getServletContext().getResourceAsStream("/WEB-INF/404-image.png");
@@ -404,7 +409,12 @@ public class ThumbnailController implements Controller {
 					//lets try checking if it is an image.. if not, we need to act on it. 
 					BufferedImage image = null;
 					ByteArrayInputStream bais = new ByteArrayInputStream(datum);
-					image = ImageIO.read(bais);
+					try{
+						image = ImageIO.read(bais);
+					}catch(Exception e){
+						LOG.error("Bad image!",e);
+						image = null;
+					}
 					if (image == null || p == null){
 						//BAD BAD IMAGE!
 						InputStream stream = request.getSession().getServletContext().getResourceAsStream("/WEB-INF/404-image.png");

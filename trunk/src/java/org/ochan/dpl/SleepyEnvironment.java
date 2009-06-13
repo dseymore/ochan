@@ -19,6 +19,7 @@ public class SleepyEnvironment {
 	private EntityStore entityStore;
 
 	public PrimaryIndex<Long, CategoryDPL> categoryByIdentifier;
+	public SecondaryIndex<String, Long, CategoryDPL> categoryByCode;
 
 	public  PrimaryIndex<Long, ThreadDPL> threadByIdentifier;
 	public  SecondaryIndex<Long, Long, ThreadDPL> threadByCategory;
@@ -53,6 +54,7 @@ public class SleepyEnvironment {
 			entityStore = new EntityStore(environment, "EntityStore", storeConfig);
 
 			categoryByIdentifier = entityStore.getPrimaryIndex(Long.class, CategoryDPL.class);
+			categoryByCode = entityStore.getSecondaryIndex(categoryByIdentifier, String.class, "code");
 
 			threadByIdentifier = entityStore.getPrimaryIndex(Long.class, ThreadDPL.class);
 			threadByCategory = entityStore.getSecondaryIndex(threadByIdentifier, Long.class, "category");

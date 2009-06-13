@@ -80,15 +80,17 @@ public class LocalCategoryService implements CategoryService {
 	@ManagedOperation(description="Create a new Category!")
     @ManagedOperationParameters({
             @ManagedOperationParameter(name="name",description="The name of the category"),
-            @ManagedOperationParameter(name="description",description="The description of the category")
+            @ManagedOperationParameter(name="description",description="The description of the category"),
+            @ManagedOperationParameter(name="code", description="The codeword/keyname for the category")
     })	
 	@Override
-	public void createCategory(String name, String description) {
+	public void createCategory(String name, String description, String code) {
 		createCount++;
 		try {
 			CategoryDPL cat = new CategoryDPL();
 			cat.setName(name);
 			cat.setDescription(description);
+			cat.setCode(code);
 			environment.categoryByIdentifier.put(cat);
 		} catch (Exception e) {
 			LOG.error("Unable to persist category", e);
@@ -114,6 +116,17 @@ public class LocalCategoryService implements CategoryService {
 		getCount++;
 		try{
 			CategoryDPL catdpl = environment.categoryByIdentifier.get(identifier);
+			return map(catdpl);
+		}catch(Exception e){
+			LOG.error("get failed",e);
+		}
+		return null;
+	}
+	
+	public Category getCategory(String code){
+		getCount++;
+		try{
+			CategoryDPL catdpl = environment.categoryByCode.get(code);
 			return map(catdpl);
 		}catch(Exception e){
 			LOG.error("get failed",e);

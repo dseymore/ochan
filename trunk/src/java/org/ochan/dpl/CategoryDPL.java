@@ -4,8 +4,10 @@ import java.io.Serializable;
 
 import com.sleepycat.persist.model.Entity;
 import com.sleepycat.persist.model.PrimaryKey;
+import com.sleepycat.persist.model.Relationship;
+import com.sleepycat.persist.model.SecondaryKey;
 
-@Entity
+@Entity(version=1)
 public class CategoryDPL implements Serializable{
 
 	
@@ -19,6 +21,8 @@ public class CategoryDPL implements Serializable{
 
 	private String name;
 	private String description;
+	
+	@SecondaryKey(relate=Relationship.ONE_TO_ONE)
 	private String code; 
 	
 	/**

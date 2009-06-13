@@ -20,7 +20,7 @@ public interface CategoryService {
      * @param name
      * @param description
      */
-    public void createCategory(String name, String description);
+    public void createCategory(String name, String description, String code);
     
     /**
      * 
@@ -30,13 +30,18 @@ public interface CategoryService {
     public List<Category> retrieveCategories(Map<CategoryCriteria, String> criteria);
     
     /**
-     * Retrieves an entirely filled category by it's identifier
      * 
-     * This is used primarily for transferring service from one frontend host to another
      * @param identifier
      * @return
      */
     public Category getCategory(Long identifier);
+    
+    /**
+     *  
+     * @param code
+     * @return
+     */
+    public Category getCategory(String code);
     
     /**
      * 
