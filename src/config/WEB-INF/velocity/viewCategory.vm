@@ -105,10 +105,54 @@
 				
 				Ext.QuickTips.init();
 			});
-        </script>
+        </script> 
+	<!-- Combo-handled YUI CSS files: --> 
+	<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/combo?2.7.0/build/container/assets/skins/sam/container.css&2.7.0/build/paginator/assets/skins/sam/paginator.css"> 
+	<!-- Combo-handled YUI JS files: --> 
+	<script type="text/javascript" src="http://yui.yahooapis.com/combo?2.7.0/build/yahoo-dom-event/yahoo-dom-event.js&2.7.0/build/connection/connection-min.js&2.7.0/build/dragdrop/dragdrop-min.js&2.7.0/build/container/container-min.js&2.7.0/build/imageloader/imageloader-min.js&2.7.0/build/json/json-min.js&2.7.0/build/element/element-min.js&2.7.0/build/paginator/paginator-min.js"></script> 
     </head>
     #include("/WEB-INF/velocity/style.vm")
     <body>
+    	<script type="text/javascript" >
+        	YAHOO.util.Event.onDOMReady(function () {
+
+			// Set up the application under the YAHOO.example namespace
+			var Ex = YAHOO.namespace('example');
+			
+			Ex.content    = YAHOO.util.Dom.get('content');
+			
+			Ex.handlePagination = function (state) {
+			    // Show the appropriate content for the requested page
+			    Ex.content.className = 'page' + state.page;
+			    
+			    // Update the Paginator's state, confirming change
+			    Ex.paginator.setState(state);
+			};
+			
+			// Create the Paginator widget and subscribe to its changeRequest event
+			Ex.paginator = new YAHOO.widget.Paginator({
+			    rowsPerPage : 1,
+			    totalRecords : Ex.content.getElementsByTagName('span').length, 
+			    containers : 'paging'
+			});
+			
+			Ex.paginator.subscribe('changeRequest', Ex.handlePagination);
+			
+			// Render the Paginator into the configured container(s)
+			Ex.paginator.render();
+			
+			//alt + shit + x = next page
+			var kl2 = new YAHOO.util.KeyListener(document, { alt:true, shift:true, keys:88 }, { fn:function(event){ var Ex = YAHOO.namespace('example'); Ex.paginator.setPage(Ex.paginator.getCurrentPage() + 1); } } );
+			kl2.enable();
+	
+			//alt + shit + z = last page
+			var kl1 = new YAHOO.util.KeyListener(document, { alt:true, shift:true, keys:90 }, { fn:function(event){ var Ex = YAHOO.namespace('example'); Ex.paginator.setPage(Ex.paginator.getCurrentPage() - 1); } } );
+			kl1.enable();
+				
+			
+			});
+			        	
+        </script>
     	<!-- Atom feed -->
 		<div style="float: right">
 			<a href="#springUrl('/atom/threads/')$category.identifier"><img border="0" src="#springUrl('/15px-Feed-icon.png')" width="15" height="15"></a>
@@ -116,6 +160,7 @@
     	<div class="navigationBox">
 			<a href="http://$deployment.hostname:$deployment.port">Home</a> >> <a href="#springUrl('/chan/')$category.identifier">$category.name</a>
 		</div>
+## THIS IS WHERE POSTING HAPPENS
 	#if (!$blockPosts)
     	<div id="newthread">
         </div>
@@ -132,48 +177,69 @@
 		</form>
 	</div>
         #end
-        #foreach($thread in ${category.threads})
-			<!-- lets do the math first -->
-			#set($allPostsCount = 0)
-			#set($allImagePostsCount = 0)
-			#foreach($post in $thread.posts)
-				#set($allPostsCount = $allPostsCount + 1)
-				#if ($post.getClass().getName() == 'org.ochan.entity.ImagePost')
-					#set($allImagePostsCount = $allImagePostsCount + 1)
-				#end
-			#end
-
-			<div>
-				Started: $thread.startDate [<a href="#springUrl('/chan/thread/')$thread.identifier">View Entire Thread</a>] [<a href="#springUrl('/chan/zip/')$thread.identifier">Export</a>] <i>$allPostsCount posts and $allImagePostsCount images.</i><br>
-				#if (!$deletejob.isDeleteLocked($thread.deleteCount)) #if ($thread.deleteDate) <span style="color: red">Thread marked for deletion</span>#end #end
+##END POSTING BLOCK
+		<div id="paging"></div>
+		<div id="categoryPage">
+		#set($page = 1)
+		<div id="content" class="page1">
+	        #foreach($thread in ${category.threads})
+	        	#set($pagingVar = $velocityCount % 5)
+	        	#if ($pagingVar == 1)		    	
+					<span class="page$page">
+	        	#end 
+				##LETS DO THE MATH FIRST
+				#set($allPostsCount = 0)
+				#set($allImagePostsCount = 0)
 				#foreach($post in $thread.posts)
-					<!-- Only print the first and last post to the thread -->
-					#if ($velocityCount == 1 || $velocityCount > ($list.size($thread.posts) - $deployment.getUnderBumpCountLong()) )
-					<div class="reply" style="#if ($velocityCount > ($list.size($thread.posts) - $deployment.getUnderBumpCountLong()) && $velocityCount != 1 ) margin-left: 40px; border-left-width: 1px; border-left-style: solid; #end"> 
-						<div #if ($velocityCount == 1)class="firstPost"#end>
-							$post.subject
-						</div>
-						<table>
-							<tr>
-								#if ($post.getClass().getName() == 'org.ochan.entity.ImagePost')
-								<td>
-									<a href="#springUrl('/chan/img/')$post.identifier"><img src="#springUrl('/chan/img/')$post.identifier?thumb=true"></a>
-								</td>
-								#end
-								<td valign="top">
-									<a name="$post.identifier"/>
-									<div>
-										<a href="mailto:$post.email">$post.author</a> $post.time
-									</div>
-									$post.comment
-								</td>
-							</tr>
-						</table>
-					</div>
+					#set($allPostsCount = $allPostsCount + 1)
+					#if ($post.getClass().getName() == 'org.ochan.entity.ImagePost')
+						#set($allImagePostsCount = $allImagePostsCount + 1)
 					#end
 				#end
+	
+				<div>
+					Started: $thread.startDate [<a href="#springUrl('/chan/thread/')$thread.identifier">View Entire Thread</a>] [<a href="#springUrl('/chan/zip/')$thread.identifier">Export</a>] <i>$allPostsCount posts and $allImagePostsCount images.</i><br>
+					#if (!$deletejob.isDeleteLocked($thread.deleteCount)) #if ($thread.deleteDate) <span style="color: red">Thread marked for deletion</span>#end #end
+					#foreach($post in $thread.posts)
+						##ONLY print the first and last post to the thread
+						#if ($velocityCount == 1 || $velocityCount > ($list.size($thread.posts) - $deployment.getUnderBumpCountLong()) )
+						<div class="reply" style="#if ($velocityCount > ($list.size($thread.posts) - $deployment.getUnderBumpCountLong()) && $velocityCount != 1 ) margin-left: 40px; border-left-width: 1px; border-left-style: solid; #end"> 
+							<div #if ($velocityCount == 1)class="firstPost"#end>
+								$post.subject
+							</div>
+							<table>
+								<tr>
+									#if ($post.getClass().getName() == 'org.ochan.entity.ImagePost')
+									<td>
+										<a href="#springUrl('/chan/img/')$post.identifier"><img src="#springUrl('/chan/img/')$post.identifier?thumb=true"></a>
+									</td>
+									#end
+									<td valign="top">
+										<a name="$post.identifier"/>
+										<div>
+											<a href="mailto:$post.email">$post.author</a> $post.time
+										</div>
+										$post.comment
+									</td>
+								</tr>
+							</table>
+						</div>
+						#end
+					#end
+				</div>
+				#set($pagingVar = $velocityCount % 5)
+				#if ($pagingVar == 0)
+					</span>
+					#set($page = $page + 1)
+	        	#end
+			#end
+			##CATCHALL
+			#if ($list.size($category.threads) % 5 != 0)
+				</span>
+			#end
 			</div>
-		#end
+		</div>
+		<div id="paging"></div>
         <p/>
     </body>
 </html>

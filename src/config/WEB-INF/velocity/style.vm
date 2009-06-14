@@ -54,4 +54,25 @@
 	.firstPost {
 		font-size: 1.1em; font-weight: bold;
 	}
+	
+	#content {
+	    
+	}
+	
+	#content span {
+	    display: none;
+	}
+	
+	#categoryPage .page1 span.page1,
+	#categoryPage .page2 span.page2,
+	#categoryPage .page3 span.page3,
+	#categoryPage .page4 span.page4,
+	#categoryPage .page5 span.page5,
+	#categoryPage .page6 span.page6,
+	#categoryPage .page7 span.page7,
+	#categoryPage .page8 span.page8,
+	#categoryPage .page9 span.page9,
+	#categoryPage .page10 span.page10 {
+	    display: block;
+	}
 </style>
