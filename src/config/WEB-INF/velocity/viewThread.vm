@@ -3,132 +3,36 @@
 		<META HTTP-EQUIV="Pragma" CONTENT="no-cache">
 		<link REL="SHORTCUT ICON" HREF="#springUrl('/favicon.png')">
 		<title>$deployment.getSystemTitle()</title>
-		<!-- ext js -->
-		<script type="text/javascript" src="#springUrl('/extjs/adapter/ext/ext-base.js')"></script>
-		<script language="javascript" type="text/javascript" src="#springUrl('/extjs/ext-all.js')"></script>
-    	<!-- Include Ext stylesheets here: -->
-	    <link rel="stylesheet" type="text/css" href="#springUrl('/extjs/resources/css/ext-all.css')">
-	    <script language="javascript" type="text/javascript" src="#springUrl('/quoting.js')"></script>
+		<!-- Ochan Javascript dependencies -->
+		<script language="javascript" type="text/javascript" src="#springUrl('/quoting.js')"></script>
+		#include("/WEB-INF/velocity/style.vm")
+		
+		
+		<!-- YUI CSS files: --> 
+		<link rel="stylesheet" type="text/css" href="#springUrl('/yui/base/base-min.css')"/>
+		<link rel="stylesheet" type="text/css" href="#springUrl('/yui/assets/skins/sam/skin.css')"/> 
+		<!-- YUI JS files: --> 
+		<script type="text/javascript" src="#springUrl('/yui/yahoo-dom-event/yahoo-dom-event.js')"></script>
+		<script type="text/javascript" src="#springUrl('/yui/element/element-min.js')"></script>
+		<script type="text/javascript" src="#springUrl('/yui/json/json-min.js')"></script>
+		<script type="text/javascript" src="#springUrl('/yui/connection/connection-min.js')"></script>
+		<script type="text/javascript" src="#springUrl('/yui/datasource/datasource-min.js')"></script>
+		<script type="text/javascript" src="#springUrl('/yui/charts/charts-min.js')"></script>
+		<script type="text/javascript" src="#springUrl('/yui/container/container-min.js')"></script>
+		<script type="text/javascript" src="#springUrl('/yui/imageloader/imageloader-min.js')"></script>
+		<script type="text/javascript" src="#springUrl('/yui/layout/layout-min.js')"></script>
+		<script type="text/javascript" src="#springUrl('/yui/menu/menu-min.js')"></script>
+		<script type="text/javascript" src="#springUrl('/yui/paginator/paginator-min.js')"></script>
+		<script type="text/javascript" src="#springUrl('/yui/editor/simpleeditor-min.js')"></script>
+		<script type="text/javascript" src="#springUrl('/yui/tabview/tabview-min.js')"></script>
+		<script type="text/javascript" src="#springUrl('/yui/button/button-min.js')"></script>
+		
+		
+		<!-- Ochan thread watcher! -->
 		<script language="javascript" type="text/javascript">
 			//variable to keep track of the pages most recent thread id
-	        var currentPostId = 0;
-	        var form = 0;
-	        
-			Ext.onReady(function() {
-	
-	    		form = new Ext.form.FormPanel({
-	    		id: 'threadForm',
-	    		title: 'Reply',
-	    		header: true,
-			    labelAlign: 'right',
-			    labelWidth: 55,
-			    bodyStyle:'padding:5px 5px 0',
-			    width: 600,
-			    //collapsible: true,
-			    fileUpload: true,
-			    url: '#springUrl('/postReply.Ochan')',
-			    items: [
-			    new Ext.form.FieldSet({
-                	title: 'Details',
-                	autoHeight: true,
-                	defaultType: 'textfield',
-                	items: [{
-	                	fieldLabel: 'Author',
-		                value: '${author}',
-		                name: 'author',
-		                width: '190px',
-		                anchor:'95%'
-		            },{
-		                fieldLabel: 'Subject',
-		                name: 'subject',
-		                anchor:'95%'
-				    },{
-		                fieldLabel: 'Email',
-		                name: 'email',
-		                anchor:'95%'
-				    },{
-		                fieldLabel: 'Url',
-		                name: 'url',
-		                anchor:'95%'
-                	}]
-                }),
-			    {
-	                xtype:'hidden',
-	                value: '${thread.identifier}',
-	                name: 'parent',
-	                anchor:'95%'
-			    },{
-		        	xtype:'htmleditor',
-		        	hideLabel: true,
-		        	id:'comment',
-		        	anchor:'98%'
-		        	//enableColors: false,
-        			//enableAlignments: false,
-        			//enableFont: false,
-        			//enableFontSize: false,
-        			//enableFormat: false,
-        			//enableLists: false,
-					//enableSourceEdit: false,
-					//enableLinks: false,
-		     	},{
-			    	xtype:'tabpanel',
-        			activeTab: 0,
-        			defaults:{autoHeight:true, bodyStyle:'padding:10px'},
-        			items:[{
-        				title: 'Upload Image',
-        				layout: 'form',
-        				items: [{
-	                		xtype:'textfield',
-	                		fieldLabel: 'Image',
-	                		name: 'file',
-	                		inputType: 'file',
-	                		id: 'file',
-	                		anchor:'95%'
-	                	}]
-					},{
-						title: 'Remote Image',
-						layout: 'form',
-						items: [{
-                			xtype: 'textfield',
-                			fieldLabel: 'URL',
-                			name: 'fileUrl',
-                			id:	'fileUrl',
-                			anchor: '95%'
-                		}]
-                	},{
-                    	title: 'Upload Zipfile of Images',
-                    	layout: 'form',
-                    	items: [{
-                        	xtype:'textfield',
-                        	fieldLabel: 'Zip File',
-                        	name: 'zipFile',
-                        	inputType: 'file',
-                        	id: 'zipFile',
-                        	anchor:'95%'
-                    	}]
-                	}]
-		    	}],
-			    buttons: [{
-			        text: 'Reply',
-			        handler: function() {
-			        	var formPanel = Ext.getCmp('threadForm'); 
-			        	formPanel.getForm().getEl().dom.setAttribute('method', 'POST');
-        				formPanel.getForm().getEl().dom.setAttribute('enctype', 'multipart/form-data');
-			        	formPanel.getForm().getEl().dom.setAttribute('Action','#springUrl('/chan/thread/')${thread.identifier}');
-			        	formPanel.getForm().getEl().dom.submit();
-			        }
-			    }],
-			    onSubmit: Ext.emptyFn,
-        		submit: function() {
-            		this.getEl().dom.submit();
-        		},
-        		renderTo: 'reply',
-        		frame: true
-			});
-			 
-			Ext.QuickTips.init();
-			##form.render(document.body);
-	        });
+	        var currentPostId = 0;	        
+			
 	        
 	        ## Sets up the ajax loop
 	        window.setInterval(xyz, 10000)
@@ -136,36 +40,28 @@
 	        
 	        ## Calls rest url for the next post
 	        function xyz(){
-	        	Ext.Ajax.request({
-					url: '/remote/rest/post/next/' + currentPostId + '/',
-					method: 'GET',
-					##success: someFn,
-					##failure: otherFn,
-					##headers: {
-						##'my-header': 'foo'
-					##},
-					##params: Ext.util.JSON.encode(request)
-					scope:this,
-					callback: function(opts, suss, resp){
-						var result = Ext.util.JSON.decode(resp.responseText);
-						//so here, lets make a new table.. yeah? yeah.
-						//alert(result.RemotePost.comment);
-						if (result != undefined && result.RemotePost.identifier != -1){
+	        	var callback =
+	        	{
+	        		success: function(response){
+	        			var result = YAHOO.lang.JSON.parse(response.responseText);
+	        			if (result != undefined && result.RemotePost.identifier != -1){
 							createItem(result.RemotePost.subject, result.RemotePost.email, result.RemotePost.author, result.RemotePost.url, result.RemotePost.time, result.RemotePost.type, result.RemotePost.identifier, result.RemotePost.comment, result.RemotePost.filename);
 							currentPostId = result.RemotePost.identifier;
-						}
-					}
-				});
+						} 
+	        		},
+	        		failure: function(response){
+	        			//alert(response);
+	        		}
+	        	};
+	        	var transaction = YAHOO.util.Connect.asyncRequest('GET', '/remote/rest/post/next/' + currentPostId + '/', callback, null); 
 	        }
 	        
 	        ### calls the rest url to mark it for deletion
 	        function deleteThread(someParam){
-	        	Ext.Ajax.request({
-	        		url: '/remote/rest/thread/delete/${thread.identifier}/',
-	        		method: 'GET',
-	        		scope: this,
-	        		callback: function(opts, suss, resp){
-	        			var result = Ext.util.JSON.decode(resp.responseText);
+	        	var callback =
+	        	{
+	        		success: function(response){
+	        			var result = YAHOO.lang.JSON.parse(response.responseText);
 	        			//now we have the stuff
 	        			if (result.RemoteThread.identifier != -1){
 	        				deleteLink = document.getElementById('deletelink');
@@ -178,18 +74,22 @@
 		        					deleteLink.innerHTML = 'Delete ' + result.RemoteThread.deleteCount;
 		        				}
 	        				}
-	        			}
+	        			}	        			
+
+	        		},
+	        		failure: function(response){
+	        			//alert(response);
 	        		}
-	        	});
+	        	};
+	        	var transaction = YAHOO.util.Connect.asyncRequest('GET', '/remote/rest/thread/delete/${thread.identifier}/', callback, null); 
 	        }
 	        
+	        ###Checks the deleted status of the thread
 	        function threadStat(){
-	        	Ext.Ajax.request({
-	        		url: '/remote/rest/thread/status/${thread.identifier}/',
-	        		method: 'GET',
-	        		scope: this,
-	        		callback: function(opts, suss, resp){
-	        			var result = Ext.util.JSON.decode(resp.responseText);
+	        	var callback =
+	        	{
+	        		success: function(response){
+	        			var result = YAHOO.lang.JSON.parse(response.responseText);
 	        			if (result.RemoteThread.identifier != -1){
 	        				deleteLink = document.getElementById('deletelink');
 	        				if (result.RemoteThread.locked){
@@ -204,10 +104,15 @@
 		        					deleteLink.innerHTML = deleteLink.innerHTML + ' ' + result.RemoteThread.deleteCount;
 		        				}
 		        			}
-	        			}
+	        			} 
+	        		},
+	        		failure: function(response){
+	        			//alert(response);
 	        		}
-	        	});
+	        	};
+	        	var transaction = YAHOO.util.Connect.asyncRequest('GET', '/remote/rest/thread/status/${thread.identifier}/', callback, null); 
 	        }
+	        
 	        
 	        ##NASTY duplication of style in JAVASCRIPT to ... 2 places to edit one style.. sucks. 
 	        function createItem(subject,email,author,url,time,type,id,comment,filename){
@@ -223,10 +128,12 @@
 	        	var table = document.createElement("table");
 	        	var row = document.createElement("tr");
 	        	var cell1 = document.createElement("td");
+	        	cell1.className = 'clearcell';
 	        	if (type == 'IMAGE'){
 	        		cell1.innerHTML = "<a href=\"#springUrl('/chan/img/')" + id + "\"><img src=\"#springUrl('/chan/img/')" + id + "?thumb=true\"></a>";
 	        	}
 	        	var cell2 = document.createElement("td");
+	        	cell2.className = 'clearcell';
 	        	cell2.innerHTML = comment;
 	        	row.appendChild(cell1);
 	        	row.appendChild(cell2);
@@ -244,37 +151,102 @@
 	        		        	
 	        	window.location.hash="end"+id;
 	        }
-	        	
-	        	
-	        function addId(id){
-	        	var htmleditor = form.findById("comment");
-	        	if(htmleditor instanceof Ext.form.HtmlEditor){
-	        		htmleditor.focus();
-	        		htmleditor.insertAtCursor('<p>&gt;&gt;' + id + '</p>');
-	        	}
-	        }
-		</script>
+	    </script>
 	</head>
-	#include("/WEB-INF/velocity/style.vm")
-	<body id="body">
+	<body id="body" class="yui-skin-sam">
 		<div class="navigationBox">
 			<a href="http://$deployment.hostname:$deployment.port">Home</a> >> <a href="#springUrl('/chan/')$category.identifier">$category.name</a> >> <a href="#springUrl('/chan/thread/')$thread.identifier">$thread.identifier</a>
 		</div>
 		#if (!$blockPosts)
-		<div id="reply"></div>
-		<div style="display: none;">
-        	        <form action="/postReply.Ochan" method="POST">
-               		<input type="hidden" name="parent" value="${thread.identifier}"/>
-	                        <input type="hidden" name="email" value=""/>
-                	        <input type="hidden" name="url" value=""/>
-        	                <input type="text" name="author" value="${author}"><br>
-                       		<input type="text" name="subject">
-	                        <textarea name="comment"></textarea>
-        	                <input type="submit"/>
-                	</form>
-	        </div>
-
+			<div id="replyPanel">
+				<form action="#springUrl('/viewThread.Ochan')" method="POST" enctype="multipart/form-data">
+					<input type="hidden" name="parent" value="${thread.identifier}"/>
+					<div id="panel1"><div class="bd">
+						<fieldset>
+							<legend>Details</legend>
+							<table>	
+								<tr><td class="clearcell"><label for="author">Author:</label></td><td class="clearcell"><input id="author" type="text" name="author" value="${author}" size="40"/></td></tr>
+								<tr><td class="clearcell"><label for="subject">Subject:</label></td><td class="clearcell"><input id="subject" type="text" name="subject" value="" size="40"/></td></tr>
+								<tr><td class="clearcell"><label for="email">Email:</label></td><td class="clearcell"><input id="email" type="text" name="email" value="" size="40"/></td></tr>
+								<tr><td class="clearcell"><label for="url">URL:</label></td><td class="clearcell"><input id="url" type="text" name="url" value="" size="40"/></td></tr>
+							</table>
+						</fieldset>
+						<span><textarea name="comment" id="comment" cols="50" rows="10"></textarea></span>
+						<!-- start tabs -->
+						<div id="uploadgroup" class="yui-navset">
+						    <ul class="yui-nav">
+								<li class="selected"><a href="#tab1"><em>Upload Image</em></a></li>
+								<li><a href="#tab2"><em>Remote Image</em></a></li>
+								<li><a href="#tab3"><em>Zip File</em></a></li>
+						    </ul>            
+						    <div class="yui-content">
+								<div><label for="file">Image:</label><input id="file" type="file" name="file"/></div>
+								<div><label for="remote">Image Url:</label><input id="remote" type="text" name="fileUrl"/></div>
+								<div><label for="zip">Zip File:</label><input id="zip" type="file" name="zipFile"/></div>
+						    </div>
+						</div>
+						<br/>
+						<span><input id="submitButton" type="submit"/></span>
+					</div></div> 
+				</form>
+				<!-- YUI magic to turn a basic accessible form into a friendly for people who can see form -->
+				<script type="text/javascript">
+					var myEditor = new YAHOO.widget.SimpleEditor('comment', {
+					    height: '200px',
+					    width: '450px',
+					    dompath: false,
+					    animate: false,
+					    handleSubmit: true,
+					    toolbar: {
+					        titlebar: 'Comment',
+					        buttons: [
+					            { group: 'textstyle', label: 'Font Style',
+					                buttons: [
+					                    { type: 'push', label: 'Bold', value: 'bold' },
+					                    { type: 'push', label: 'Italic', value: 'italic' },
+					                    { type: 'push', label: 'Underline', value: 'underline' },
+					                    { type: 'separator' },
+					                    { type: 'select', label: 'Arial', value: 'fontname', disabled: true,
+					                        menu: [
+					                            { text: 'Arial', checked: true },
+					                            { text: 'Arial Black' },
+					                            { text: 'Comic Sans MS' },
+					                            { text: 'Courier New' },
+					                            { text: 'Lucida Console' },
+					                            { text: 'Tahoma' },
+					                            { text: 'Times New Roman' },
+					                            { text: 'Trebuchet MS' },
+					                            { text: 'Verdana' }
+					                        ]
+					                    },
+					                    { type: 'spin', label: '10', value: 'fontsize', range: [ 9, 35 ], disabled: true },
+					                    { type: 'separator' },
+					                    { type: 'color', label: 'Font Color', value: 'forecolor', disabled: true },
+					                    { type: 'color', label: 'Background Color', value: 'backcolor', disabled: true }
+					                ]
+					            }
+					        ]
+					    }
+					});
+					
+					myEditor.render();
+					
+					// Instantiate a Panel from markup
+					var panel = new YAHOO.widget.Panel("panel1", { width:"475px", visible:false, constraintoviewport:true, modal:true} );
+					panel.setHeader("Reply");
+					panel.setFooter("");
+					panel.render();
+					
+					var myTabs = new YAHOO.widget.TabView("uploadgroup");
+					var submitButton = new YAHOO.widget.Button("submitButton", { label: "Reply" });
+					
+					function addId(id){
+		        		myEditor.execCommand('inserthtml','<p>&gt;&gt;' + id + '</p>');
+			        }
+				</script>
+			</div>
 		#end
+		<br>
 		<ul>
 			<li>[<a href="#springUrl('/chan/zip/')$thread.identifier">Export</a>]</li>
 			<li>[<a id="deletelink" href="#" onclick="javascript:deleteThread('val')">
@@ -285,6 +257,7 @@
 				#end
 				</a>]
 			</li>
+			<li><button onclick="panel.show(); return false;">Reply</button>
 		</ul>			
 		#foreach($post in ${thread.posts})
 			<div id="$post.identifier" class="reply">
@@ -298,11 +271,11 @@
 				<table>
 					<tr>
 					#if ($post.getClass().getName() == 'org.ochan.entity.ImagePost')
-						<td>
+						<td class="clearcell">
 							<a href="#springUrl('/chan/img/')$post.identifier"><img src="#springUrl('/chan/img/')$post.identifier?thumb=true"></a>
 						</td>
 					#end
-						<td>
+						<td class="clearcell">
 							$post.comment
 						</td>
 					</tr>

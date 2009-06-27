@@ -75,4 +75,7 @@
 	#categoryPage .page10 span.page10 {
 	    display: block;
 	}
+	
+	.clearcell{border:none; padding:0em;}
+	
 </style>

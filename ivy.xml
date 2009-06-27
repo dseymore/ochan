@@ -33,6 +33,7 @@
 		<!-- database driver  -->
 		<dependency org="geronimo-spec" name="geronimo-spec-jta" rev="1.0.1B-rc2" conf="default->default"/>
 		<dependency org="com.extjs" name="extjs" rev="2.2" conf="default->default"/>
+		<dependency org="yahoo" name="yui" rev="2.7.0" conf="default->default"/>
 		<dependency org="org.roqe" name="jitac" rev="0.2.0" conf="default->default"/>
         <!-- junit is only need in the test configuration-->        
         <dependency org="junit" name="junit" rev="3.8.1" conf="test->default"/>

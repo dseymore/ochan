@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ivy-module version="1.0">
+	<info organisation="yahoo"
+		module="yui"
+		revision="2.7.0"
+		status="integration"
+		publication="20080302153454"
+	/>
+	<publications>
+		<artifact name="yui" type="zip" ext="zip"/>
+	</publications>
+</ivy-module>
