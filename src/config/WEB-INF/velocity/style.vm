@@ -62,9 +62,6 @@
 	#content span {
 	    display: none;
 	}
-	#content span span{
-		display: inline! important;
-	}
 	
 	#categoryPage .page1 span.page1,
 	#categoryPage .page2 span.page2,
