@@ -66,21 +66,24 @@
 
 
 	<target name="war" depends="compile">
-		<!-- we need to unzip the extjs stuff so that we can consume it -->
-		<mkdir dir="${basedir}/scratch/extjs"/>
-		<mkdir dir="${basedir}/scratch/extjs/extjs"/>
-
+		<!-- YUI is delivered in the deployment -->
 		<mkdir dir="${basedir}/scratch/yui"/>
 		<mkdir dir="${basedir}/scratch/yui/yui"/>
-
-		<unzip src="${extjs.extjs}" dest="${basedir}/scratch/extjs/extjs"/>
 		<unzip src="${yui.yui}" dest="${basedir}/scratch/yui/yui"/>
+		<!-- we're using jquery for growl like notifications with jgrowl -->
+		<mkdir dir="${basedir}/scratch/jquery"/>
+		<mkdir dir="${basedir}/scratch/jquery/jquery"/>
+		<unzip src="${jquery.jquery}" dest="${basedir}/scratch/jquery/jquery"/>
+		<mkdir dir="${basedir}/scratch/jgrowl"/>
+                <unzip src="${jgrowl.jgrowl}" dest="${basedir}/scratch/jgrowl"/>
+
 		<war destfile="${build.dir}/Ochan.war" webxml="src/config/WEB-INF/web.xml">
 			<webinf dir="src/config/WEB-INF/" />
 			<!-- <metainf dir="src/config/META-INF/"/>-->
 			<fileset dir="src/root" />
-			<fileset dir="scratch/extjs"/>
 			<fileset dir="scratch/yui"/>
+			<fileset dir="scratch/jgrowl"/>
+			<fileset dir="scratch/jquery"/>
 			<!-- javascript & toolsets -->
 			<lib dir="${lib.dir}" />
 			<classes dir="${build.dir}/classes" />
