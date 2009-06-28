@@ -196,7 +196,7 @@
 	
 				<div>
 					Started: $thread.startDate [<a href="#springUrl('/chan/thread/')$thread.identifier">View Entire Thread</a>] [<a href="#springUrl('/chan/zip/')$thread.identifier">Export</a>] <i>$allPostsCount posts and $allImagePostsCount images.</i>
-					#if (!$deletejob.isDeleteLocked($thread.deleteCount)) #if ($thread.deleteDate) <span style="color: red">Thread marked for deletion</span>#end #end<br>
+					#if (!$deletejob.isDeleteLocked($thread.deleteCount)) #if ($thread.deleteDate) <em style="color: red">Thread marked for deletion</em>#end #end<br>
 					#foreach($post in $thread.posts)
 						##ONLY print the first and last post to the thread
 						#if ($velocityCount == 1 || $velocityCount > ($list.size($thread.posts) - $deployment.getUnderBumpCountLong()) )
