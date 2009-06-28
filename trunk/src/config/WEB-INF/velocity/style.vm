@@ -62,6 +62,9 @@
 	#content span {
 	    display: none;
 	}
+	#content span span{
+		display: inline! important;
+	}
 	
 	#categoryPage .page1 span.page1,
 	#categoryPage .page2 span.page2,
@@ -72,7 +75,30 @@
 	#categoryPage .page7 span.page7,
 	#categoryPage .page8 span.page8,
 	#categoryPage .page9 span.page9,
-	#categoryPage .page10 span.page10 {
+	#categoryPage .page10 span.page10,
+	#categoryPage .page11 span.page11,
+	#categoryPage .page12 span.page12,
+	#categoryPage .page13 span.page13,
+	#categoryPage .page14 span.page14,
+	#categoryPage .page15 span.page15,
+	#categoryPage .page16 span.page16,
+	#categoryPage .page17 span.page17,
+	#categoryPage .page18 span.page18,
+	#categoryPage .page19 span.page19,
+	#categoryPage .page20 span.page20,
+	#categoryPage .page21 span.page21,
+	#categoryPage .page22 span.page22,
+	#categoryPage .page23 span.page23,
+	#categoryPage .page24 span.page24,
+	#categoryPage .page25 span.page25,
+	#categoryPage .page26 span.page26,
+	#categoryPage .page27 span.page27,
+	#categoryPage .page28 span.page28,
+	#categoryPage .page29 span.page29,
+	#categoryPage .page30 span.page30,
+	#categoryPage .page31 span.page31,
+	#categoryPage .page32 span.page32,
+	#categoryPage .page33 span.page33{
 	    display: block;
 	}
 	
