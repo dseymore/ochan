@@ -25,6 +25,7 @@
 		<script type="text/javascript" src="#springUrl('/yui/paginator/paginator-min.js')"></script>
 		<script type="text/javascript" src="#springUrl('/yui/editor/simpleeditor-min.js')"></script>
 		<script type="text/javascript" src="#springUrl('/yui/tabview/tabview-min.js')"></script>
+		<script type="text/javascript" src="#springUrl('/yui/dragdrop/dragdrop-min.js')"></script>
 		<script type="text/javascript" src="#springUrl('/yui/button/button-min.js')"></script>
 		
 		
@@ -157,6 +158,19 @@
 		<div class="navigationBox">
 			<a href="http://$deployment.hostname:$deployment.port">Home</a> >> <a href="#springUrl('/chan/')$category.identifier">$category.name</a> >> <a href="#springUrl('/chan/thread/')$thread.identifier">$thread.identifier</a>
 		</div>
+		<div id="navbar">
+			<div id="panel2"><div class="bd">
+				<span>[<a href="#springUrl('/chan/zip/')$thread.identifier">Export</a>]</span>
+				<span>[<a id="deletelink" href="#" onclick="javascript:deleteThread('val')">
+						#if ($thread.deleteDate)Undelete#end
+						#if (!$thread.deleteDate)Delete#end
+						#if ($thread.deleteCount)
+							$thread.deleteCount
+						#end
+						</a>]</span>
+				<span>[<a href="#" onclick="panel.show(); return false;">Reply</a>]</span>
+			</div></div>
+		</div>
 		#if (!$blockPosts)
 			<div id="replyPanel">
 				<form action="#springUrl('/viewThread.Ochan')" method="POST" enctype="multipart/form-data">
@@ -165,10 +179,10 @@
 						<fieldset>
 							<legend>Details</legend>
 							<table>	
-								<tr><td class="clearcell"><label for="author">Author:</label></td><td class="clearcell"><input id="author" type="text" name="author" value="${author}" size="40"/></td></tr>
-								<tr><td class="clearcell"><label for="subject">Subject:</label></td><td class="clearcell"><input id="subject" type="text" name="subject" value="" size="40"/></td></tr>
-								<tr><td class="clearcell"><label for="email">Email:</label></td><td class="clearcell"><input id="email" type="text" name="email" value="" size="40"/></td></tr>
-								<tr><td class="clearcell"><label for="url">URL:</label></td><td class="clearcell"><input id="url" type="text" name="url" value="" size="40"/></td></tr>
+								<tr><td><label for="author">Author:</label></td><td><input id="author" type="text" name="author" value="${author}" size="40"/></td></tr>
+								<tr><td><label for="subject">Subject:</label></td><td><input id="subject" type="text" name="subject" value="" size="40"/></td></tr>
+								<tr><td><label for="email">Email:</label></td><td><input id="email" type="text" name="email" value="" size="40"/></td></tr>
+								<tr><td><label for="url">URL:</label></td><td><input id="url" type="text" name="url" value="" size="40"/></td></tr>
 							</table>
 						</fieldset>
 						<span><textarea name="comment" id="comment" cols="50" rows="10"></textarea></span>
@@ -237,6 +251,12 @@
 					panel.setFooter("");
 					panel.render();
 					
+					// Instantiate a panel for navbar
+					var panel2 = new YAHOO.widget.Panel("panel2", { width:"30em", visible:true, constraintoviewport:true, modal:false} );
+					panel2.setHeader("Options");
+					panel2.setFooter("");
+					panel2.render();
+					
 					var myTabs = new YAHOO.widget.TabView("uploadgroup");
 					var submitButton = new YAHOO.widget.Button("submitButton", { label: "Reply" });
 					
@@ -247,18 +267,6 @@
 			</div>
 		#end
 		<br>
-		<ul>
-			<li>[<a href="#springUrl('/chan/zip/')$thread.identifier">Export</a>]</li>
-			<li>[<a id="deletelink" href="#" onclick="javascript:deleteThread('val')">
-				#if ($thread.deleteDate)Undelete#end
-				#if (!$thread.deleteDate)Delete#end
-				#if ($thread.deleteCount)
-					$thread.deleteCount
-				#end
-				</a>]
-			</li>
-			<li><button onclick="panel.show(); return false;">Reply</button></li>
-		</ul>			
 		#foreach($post in ${thread.posts})
 			<div id="$post.identifier" class="reply">
 				<script language="javascript" type="text/javascript">
@@ -271,11 +279,11 @@
 				<table>
 					<tr>
 					#if ($post.getClass().getName() == 'org.ochan.entity.ImagePost')
-						<td class="clearcell">
+						<td>
 							<a href="#springUrl('/chan/img/')$post.identifier"><img src="#springUrl('/chan/img/')$post.identifier?thumb=true"></a>
 						</td>
 					#end
-						<td class="clearcell">
+						<td>
 							$post.comment
 						</td>
 					</tr>

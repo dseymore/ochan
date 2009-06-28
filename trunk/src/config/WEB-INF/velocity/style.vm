@@ -76,6 +76,28 @@
 	    display: block;
 	}
 	
-	.clearcell{border:none; padding:0em;}
+	td{border:none! important; padding:0em! important;}
+	img{border: 0! important};
+	
+	A:link{color: rgb(0,0,238)! important;}
+	A:visited{color: rgb(0,0,238)! important;}
+	A:active{color: rgb(0,0,238)! important;}
+	A:hover{color: rgb(0,0,238)! important;}
+	
+	.yui-pg-first{color: rgb(0,0,238)! important;}
+	.yui-pg-previous{color: rgb(0,0,238)! important;}
+	.yui-pg-next{color: rgb(0,0,238)! important;}
+	.yui-pg-last{color: rgb(0,0,238)! important;}
+	.yui-pg-page{color: rgb(0,0,238)! important;}
+	
+	#navbar {
+		position:absolute;
+		top: 0%;
+		left: 50%;
+		width:30em;
+		margin-top: -1em; 
+		margin-left: -15em; /*set to a negative number 1/2 of your width*/
+	}
+	
 	
 </style>

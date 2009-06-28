@@ -4,7 +4,6 @@
 		<link REL="SHORTCUT ICON" HREF="#springUrl('/favicon.png')">
         <title>$deployment.getSystemTitle()</title>
         <link type="application/atom+xml" rel="alternate" href="#springUrl('/atom/threads/')$category.identifier">
-        #include("/WEB-INF/velocity/style.vm")
 		
 		<!-- YUI CSS files: --> 
 		<link rel="stylesheet" type="text/css" href="#springUrl('/yui/base/base-min.css')"/>
@@ -23,7 +22,9 @@
 		<script type="text/javascript" src="#springUrl('/yui/paginator/paginator-min.js')"></script>
 		<script type="text/javascript" src="#springUrl('/yui/editor/simpleeditor-min.js')"></script>
 		<script type="text/javascript" src="#springUrl('/yui/tabview/tabview-min.js')"></script>
+		<script type="text/javascript" src="#springUrl('/yui/dragdrop/dragdrop-min.js')"></script>
 		<script type="text/javascript" src="#springUrl('/yui/button/button-min.js')"></script>
+		#include("/WEB-INF/velocity/style.vm")
     </head>
     <body class="yui-skin-sam">
     	<script type="text/javascript" >
@@ -71,7 +72,12 @@
 			<a href="#springUrl('/atom/threads/')$category.identifier"><img border="0" src="#springUrl('/15px-Feed-icon.png')" width="15" height="15"></a>
 		</div>
     	<div class="navigationBox">
-			<a href="http://$deployment.hostname:$deployment.port">Home</a> >> <a href="#springUrl('/chan/')$category.identifier">$category.name</a>&nbsp;<button onclick="panel.show(); return false;">New Thread</button>
+			<a href="http://$deployment.hostname:$deployment.port">Home</a> >> <a href="#springUrl('/chan/')$category.identifier">$category.name</a>
+		</div>
+		<div id="navbar">
+			<div id="panel2"><div class="bd">
+				<span>[<a href="#" onclick="panel.show(); return false;">New Thread</a>]</span>
+			</div></div>
 		</div>
 ## THIS IS WHERE POSTING HAPPENS
 	#if (!$blockPosts)
@@ -83,10 +89,10 @@
 					<fieldset>
 						<legend>Details</legend>
 						<table>	
-							<tr><td class="clearcell"><label for="author">Author:</label></td><td class="clearcell"><input id="author" type="text" name="author" value="${author}" size="40"/></td></tr>
-							<tr><td class="clearcell"><label for="subject">Subject:</label></td><td class="clearcell"><input id="subject" type="text" name="subject" value="" size="40"/></td></tr>
-							<tr><td class="clearcell"><label for="email">Email:</label></td><td class="clearcell"><input id="email" type="text" name="email" value="" size="40"/></td></tr>
-							<tr><td class="clearcell"><label for="url">URL:</label></td><td class="clearcell"><input id="url" type="text" name="url" value="" size="40"/></td></tr>
+							<tr><td><label for="author">Author:</label></td><td><input id="author" type="text" name="author" value="${author}" size="40"/></td></tr>
+							<tr><td><label for="subject">Subject:</label></td><td><input id="subject" type="text" name="subject" value="" size="40"/></td></tr>
+							<tr><td><label for="email">Email:</label></td><td><input id="email" type="text" name="email" value="" size="40"/></td></tr>
+							<tr><td><label for="url">URL:</label></td><td><input id="url" type="text" name="url" value="" size="40"/></td></tr>
 						</table>
 					</fieldset>
 					<span><textarea name="comment" id="comment" cols="50" rows="10"></textarea></span>
@@ -149,9 +155,15 @@
 				
 				// Instantiate a Panel from markup
 				var panel = new YAHOO.widget.Panel("panel1", { width:"475px", visible:false, constraintoviewport:true, modal:true} );
-				panel.setHeader("Reply");
+				panel.setHeader("New Thread");
 				panel.setFooter("");
 				panel.render();
+				
+				// Instantiate a panel for navbar
+				var panel2 = new YAHOO.widget.Panel("panel2", { width:"30em", visible:true, constraintoviewport:true, modal:false} );
+				panel2.setHeader("Options");
+				panel2.setFooter("");
+				panel2.render();
 				
 				var myTabs = new YAHOO.widget.TabView("uploadgroup");
 				var submitButton = new YAHOO.widget.Button("submitButton", { label: "Reply" });
@@ -195,11 +207,11 @@
 							<table>
 								<tr>
 									#if ($post.getClass().getName() == 'org.ochan.entity.ImagePost')
-									<td class="clearcell">
+									<td>
 										<a href="#springUrl('/chan/img/')$post.identifier"><img src="#springUrl('/chan/img/')$post.identifier?thumb=true"></a>
 									</td>
 									#end
-									<td class="clearcell" valign="top">
+									<td valign="top">
 										<a name="$post.identifier"/>
 										<div>
 											<a href="mailto:$post.email">$post.author</a> $post.time
