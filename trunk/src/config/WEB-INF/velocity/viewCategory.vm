@@ -4,115 +4,28 @@
 		<link REL="SHORTCUT ICON" HREF="#springUrl('/favicon.png')">
         <title>$deployment.getSystemTitle()</title>
         <link type="application/atom+xml" rel="alternate" href="#springUrl('/atom/threads/')$category.identifier">
-        <!-- ext js -->
-	<script type="text/javascript" src="#springUrl('/extjs/adapter/ext/ext-base.js')"></script>
-        <script language="javascript" type="text/javascript" src="#springUrl('/extjs/ext-all.js')"></script>
-        <!-- Include Ext stylesheets here: -->
-        <link rel="stylesheet" type="text/css" href="#springUrl('/extjs/resources/css/ext-all.css')">
-        <script language="javascript" type="text/javascript">
-            Ext.onReady(function() {
-                var form = new Ext.form.FormPanel({
-                    id: 'threadForm',
-                    title: 'New Thread',
-	    			header: true,
-				    labelAlign: 'right',
-				    labelWidth: 55,
-                    bodyStyle:'padding:5px 5px 0',
-                    width: 600,
-                    fileUpload: true,
-                    items: [
-                        {
-                            xtype:'hidden',
-                            name: 'identifier',
-                            value: ${category.identifier}
-                        },{
-                            xtype:'hidden',
-                            name: 'categoryIdentifier',
-                            value: ${category.identifier}
-                        },new Ext.form.FieldSet({
-		                	title: 'Details',
-		                	autoHeight: true,
-		                	defaultType: 'textfield',
-		                	items: [{
-			                	fieldLabel: 'Author',
-				                value: '${author}',
-				                name: 'author',
-				                width: '190px',
-				                anchor:'95%'
-				            },{
-				                fieldLabel: 'Subject',
-				                name: 'subject',
-				                anchor:'95%'
-						    },{
-				                fieldLabel: 'Email',
-				                name: 'email',
-				                anchor:'95%'
-						    },{
-				                fieldLabel: 'Url',
-				                name: 'url',
-				                anchor:'95%'
-		                	}]
-		                }),{
-                            xtype:'htmleditor',
-                            id:'comment',
-                            hideLabel: true,
-                            anchor:'98%'
-                        },{
-                            xtype:'tabpanel',
-                            activeTab: 0,
-                            defaults:{autoHeight:true, bodyStyle:'padding:10px'},
-                            items:[{
-                                title: 'Upload Image',
-                                layout: 'form',
-                                items: [{
-                                    xtype:'textfield',
-                                    fieldLabel: 'Image',
-                                    name: 'file',
-                                    inputType: 'file',
-                                    id: 'file',
-                                    anchor:'95%'
-                                }]
-                            },{
-                                title: 'Remote Image',
-                                layout: 'form',
-                                items: [{
-                                    xtype: 'textfield',
-                                    fieldLabel: 'URL',
-                                    name: 'fileUrl',
-                                    id:    'fileUrl',
-                                    anchor: '95%'
-                                }]
-                            }]
-                        }],
-                    buttons: [{
-                        text: 'Create',
-                        handler: function() {
-                            var formPanel = Ext.getCmp('threadForm');
-                            formPanel.getForm().getEl().dom.submit();
-                        }
-                    }],
-                    onSubmit: Ext.emptyFn, ## overrides the ext form handler
-                        submit: function() {
-                        var formPanel = Ext.getCmp('threadForm');
-                        formPanel.getForm().getEl().dom.setAttribute('method', 'POST');
-                        formPanel.getForm().getEl().dom.setAttribute('enctype', 'multipart/form-data');
-                        formPanel.getForm().getEl().dom.setAttribute('Action', '#springUrl('/openCategory.Ochan')');
-                        formPanel.getForm().getEl().dom.submit();
-                    },
-					renderTo: 'newthread',
-					frame: true
-				});
-				
-				Ext.QuickTips.init();
-			});
-        </script> 
-	<!-- Combo-handled YUI CSS files: --> 
-	<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/combo?2.7.0/build/container/assets/skins/sam/container.css&2.7.0/build/paginator/assets/skins/sam/paginator.css"> 
-	<!-- Combo-handled YUI JS files: --> 
-	<script type="text/javascript" src="http://yui.yahooapis.com/combo?2.7.0/build/yahoo-dom-event/yahoo-dom-event.js&2.7.0/build/connection/connection-min.js&2.7.0/build/dragdrop/dragdrop-min.js&2.7.0/build/container/container-min.js&2.7.0/build/imageloader/imageloader-min.js&2.7.0/build/json/json-min.js&2.7.0/build/element/element-min.js&2.7.0/build/paginator/paginator-min.js"></script> 
+        #include("/WEB-INF/velocity/style.vm")
+		
+		<!-- YUI CSS files: --> 
+		<link rel="stylesheet" type="text/css" href="#springUrl('/yui/base/base-min.css')"/>
+		<link rel="stylesheet" type="text/css" href="#springUrl('/yui/assets/skins/sam/skin.css')"/> 
+		<!-- YUI JS files: --> 
+		<script type="text/javascript" src="#springUrl('/yui/yahoo-dom-event/yahoo-dom-event.js')"></script>
+		<script type="text/javascript" src="#springUrl('/yui/element/element-min.js')"></script>
+		<script type="text/javascript" src="#springUrl('/yui/json/json-min.js')"></script>
+		<script type="text/javascript" src="#springUrl('/yui/connection/connection-min.js')"></script>
+		<script type="text/javascript" src="#springUrl('/yui/datasource/datasource-min.js')"></script>
+		<script type="text/javascript" src="#springUrl('/yui/charts/charts-min.js')"></script>
+		<script type="text/javascript" src="#springUrl('/yui/container/container-min.js')"></script>
+		<script type="text/javascript" src="#springUrl('/yui/imageloader/imageloader-min.js')"></script>
+		<script type="text/javascript" src="#springUrl('/yui/layout/layout-min.js')"></script>
+		<script type="text/javascript" src="#springUrl('/yui/menu/menu-min.js')"></script>
+		<script type="text/javascript" src="#springUrl('/yui/paginator/paginator-min.js')"></script>
+		<script type="text/javascript" src="#springUrl('/yui/editor/simpleeditor-min.js')"></script>
+		<script type="text/javascript" src="#springUrl('/yui/tabview/tabview-min.js')"></script>
+		<script type="text/javascript" src="#springUrl('/yui/button/button-min.js')"></script>
     </head>
-    #include("/WEB-INF/velocity/style.vm")
-    <body>
+    <body class="yui-skin-sam">
     	<script type="text/javascript" >
         	YAHOO.util.Event.onDOMReady(function () {
 
@@ -158,24 +71,96 @@
 			<a href="#springUrl('/atom/threads/')$category.identifier"><img border="0" src="#springUrl('/15px-Feed-icon.png')" width="15" height="15"></a>
 		</div>
     	<div class="navigationBox">
-			<a href="http://$deployment.hostname:$deployment.port">Home</a> >> <a href="#springUrl('/chan/')$category.identifier">$category.name</a>
+			<a href="http://$deployment.hostname:$deployment.port">Home</a> >> <a href="#springUrl('/chan/')$category.identifier">$category.name</a>&nbsp;<button onclick="panel.show(); return false;">New Thread</button>
 		</div>
 ## THIS IS WHERE POSTING HAPPENS
 	#if (!$blockPosts)
-    	<div id="newthread">
-        </div>
-	<div style="display: none;">
-		<form action="/openCategory.Ochan" method="POST">
-			<input type="hidden" name="identifier" value="${category.identifier}"/>
-			<input type="hidden" name="categoryIdentifier" value="${category.identifier}"/>
-			<input type="hidden" name="email" value=""/>
-			<input type="hidden" name="url" value=""/>
-			<input type="text" name="author" value="${author}"><br>
-			<input type="text" name="subject">
-			<textarea name="comment"></textarea>
-			<input type="submit"/>
-		</form>
-	</div>
+		<div id="newThreadPanel">
+			<div id="panel1"><div class="bd">
+				<form action="#springUrl('/openCategory.Ochan')" method="POST" enctype="multipart/form-data">
+					<input type="hidden" name="identifier" value="${category.identifier}"/>
+					<input type="hidden" name="categoryIdentifier" value="${category.identifier}"/>
+					<fieldset>
+						<legend>Details</legend>
+						<table>	
+							<tr><td class="clearcell"><label for="author">Author:</label></td><td class="clearcell"><input id="author" type="text" name="author" value="${author}" size="40"/></td></tr>
+							<tr><td class="clearcell"><label for="subject">Subject:</label></td><td class="clearcell"><input id="subject" type="text" name="subject" value="" size="40"/></td></tr>
+							<tr><td class="clearcell"><label for="email">Email:</label></td><td class="clearcell"><input id="email" type="text" name="email" value="" size="40"/></td></tr>
+							<tr><td class="clearcell"><label for="url">URL:</label></td><td class="clearcell"><input id="url" type="text" name="url" value="" size="40"/></td></tr>
+						</table>
+					</fieldset>
+					<span><textarea name="comment" id="comment" cols="50" rows="10"></textarea></span>
+					<!-- start tabs -->
+					<div id="uploadgroup" class="yui-navset">
+					    <ul class="yui-nav">
+							<li class="selected"><a href="#tab1"><em>Upload Image</em></a></li>
+							<li><a href="#tab2"><em>Remote Image</em></a></li>
+					    </ul>            
+					    <div class="yui-content">
+							<div><label for="file">Image:</label><input id="file" type="file" name="file"/></div>
+							<div><label for="remote">Image Url:</label><input id="remote" type="text" name="fileUrl"/></div>
+					    </div>
+					</div>
+					<br/>
+					<span><input id="submitButton" type="submit"/></span>
+				</form>
+			</div></div>
+			<!-- YUI magic to turn a basic accessible form into a friendly for people who can see form -->
+			<script type="text/javascript">
+				var myEditor = new YAHOO.widget.SimpleEditor('comment', {
+				    height: '200px',
+				    width: '450px',
+				    dompath: false,
+				    animate: false,
+				    handleSubmit: true,
+				    toolbar: {
+				        titlebar: 'Comment',
+				        buttons: [
+				            { group: 'textstyle', label: 'Font Style',
+				                buttons: [
+				                    { type: 'push', label: 'Bold', value: 'bold' },
+				                    { type: 'push', label: 'Italic', value: 'italic' },
+				                    { type: 'push', label: 'Underline', value: 'underline' },
+				                    { type: 'separator' },
+				                    { type: 'select', label: 'Arial', value: 'fontname', disabled: true,
+				                        menu: [
+				                            { text: 'Arial', checked: true },
+				                            { text: 'Arial Black' },
+				                            { text: 'Comic Sans MS' },
+				                            { text: 'Courier New' },
+				                            { text: 'Lucida Console' },
+				                            { text: 'Tahoma' },
+				                            { text: 'Times New Roman' },
+				                            { text: 'Trebuchet MS' },
+				                            { text: 'Verdana' }
+				                        ]
+				                    },
+				                    { type: 'spin', label: '10', value: 'fontsize', range: [ 9, 35 ], disabled: true },
+				                    { type: 'separator' },
+				                    { type: 'color', label: 'Font Color', value: 'forecolor', disabled: true },
+				                    { type: 'color', label: 'Background Color', value: 'backcolor', disabled: true }
+				                ]
+				            }
+				        ]
+				    }
+				});
+				
+				myEditor.render();
+				
+				// Instantiate a Panel from markup
+				var panel = new YAHOO.widget.Panel("panel1", { width:"475px", visible:false, constraintoviewport:true, modal:true} );
+				panel.setHeader("Reply");
+				panel.setFooter("");
+				panel.render();
+				
+				var myTabs = new YAHOO.widget.TabView("uploadgroup");
+				var submitButton = new YAHOO.widget.Button("submitButton", { label: "Reply" });
+				
+				function addId(id){
+	        		myEditor.execCommand('inserthtml','<p>&gt;&gt;' + id + '</p>');
+		        }
+			</script>
+			</div>
         #end
 ##END POSTING BLOCK
 		<div id="paging"></div>
@@ -210,11 +195,11 @@
 							<table>
 								<tr>
 									#if ($post.getClass().getName() == 'org.ochan.entity.ImagePost')
-									<td>
+									<td class="clearcell">
 										<a href="#springUrl('/chan/img/')$post.identifier"><img src="#springUrl('/chan/img/')$post.identifier?thumb=true"></a>
 									</td>
 									#end
-									<td valign="top">
+									<td class="clearcell" valign="top">
 										<a name="$post.identifier"/>
 										<div>
 											<a href="mailto:$post.email">$post.author</a> $post.time
@@ -239,7 +224,6 @@
 			#end
 			</div>
 		</div>
-		<div id="paging"></div>
         <p/>
     </body>
 </html>

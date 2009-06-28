@@ -257,7 +257,7 @@
 				#end
 				</a>]
 			</li>
-			<li><button onclick="panel.show(); return false;">Reply</button>
+			<li><button onclick="panel.show(); return false;">Reply</button></li>
 		</ul>			
 		#foreach($post in ${thread.posts})
 			<div id="$post.identifier" class="reply">
