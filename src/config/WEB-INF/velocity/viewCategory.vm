@@ -5,6 +5,11 @@
         <title>$deployment.getSystemTitle()</title>
         <link type="application/atom+xml" rel="alternate" href="#springUrl('/atom/threads/')$category.identifier">
 		
+		<!-- Jquery for growl-like toast notifications :D -->
+		<link rel="stylesheet" type="text/css" href="#springUrl('/jgrowl/jquery.jgrowl.css')"/> 
+		<script type="text/javascript" src="#springUrl('/jquery-1.3.2.min.js')"></script>
+		<script type="text/javascript" src="#springUrl('/jgrowl/jquery.jgrowl_minimized.js')"></script>
+		
 		<!-- YUI CSS files: --> 
 		<link rel="stylesheet" type="text/css" href="#springUrl('/yui/base/base-min.css')"/>
 		<link rel="stylesheet" type="text/css" href="#springUrl('/yui/assets/skins/sam/skin.css')"/> 
@@ -28,6 +33,16 @@
     </head>
     <body class="yui-skin-sam">
     	<script type="text/javascript" >
+	    	###Some Help dawg
+	    	function growlHelp(){
+	    		${esc.dollar}.jGrowl('<ul>' +
+	    		'<li>ALT+SHIFT+N New Thread</li>' +
+	    		'<li>ALT+SHIFT+Z Previous Page</li>' +
+	    		'<li>ALT+SHIFT+X Next Page</li>' +
+	    		'<li>ALT+SHIFT+W Help</li>' + 
+	    		'</ul>', { life: 10000, header: "Help"});
+	    	}
+	    	
         	YAHOO.util.Event.onDOMReady(function () {
 
 			// Set up the application under the YAHOO.example namespace
@@ -55,14 +70,23 @@
 			// Render the Paginator into the configured container(s)
 			Ex.paginator.render();
 			
-			//alt + shit + x = next page
+			//alt + shift + x = next page
 			var kl2 = new YAHOO.util.KeyListener(document, { alt:true, shift:true, keys:88 }, { fn:function(event){ var Ex = YAHOO.namespace('example'); Ex.paginator.setPage(Ex.paginator.getCurrentPage() + 1); } } );
 			kl2.enable();
 	
-			//alt + shit + z = last page
+			//alt + shift + z = last page
 			var kl1 = new YAHOO.util.KeyListener(document, { alt:true, shift:true, keys:90 }, { fn:function(event){ var Ex = YAHOO.namespace('example'); Ex.paginator.setPage(Ex.paginator.getCurrentPage() - 1); } } );
 			kl1.enable();
 				
+			//alt + shift + n = new thread
+			var kl3 = new YAHOO.util.KeyListener(document, {alt: true, shift:true, keys:78 }, { fn:function(event){ panel.show(); return false; } } );
+			kl3.enable();
+			
+			##alt + shift + w = help (fucking H is being used by the help in the browser.. damnit)
+			var helpKey = new YAHOO.util.KeyListener(document, {alt: true, shift:true, keys:87 }, { fn:function(event){ 
+				growlHelp();
+			} } );
+			helpKey.enable();
 			
 			});
 			        	
@@ -77,6 +101,7 @@
 		<div id="navbar">
 			<div id="panel2"><div class="bd">
 				<span>[<a href="#" onclick="panel.show(); return false;">New Thread</a>]</span>
+				<span>[<a href="#" onclick="growlHelp(); return false;">Help</a>]</span>
 			</div></div>
 		</div>
 ## THIS IS WHERE POSTING HAPPENS
