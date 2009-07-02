@@ -1,5 +1,11 @@
 #labels Phase-QA,Phase-Support
 ==Release 0.2.3==
+  * No API changes
+  * Refactored frontend to be YUI & JQuery instead of extjs
+  * Keyboard controls
+  * Category level paging
+
+==Release 0.2.3==
   * Job type plugin support
   * Long/large post truncation on category view
   * Users can no longer post 'nothing' (empty Zip, no image, or no content)
