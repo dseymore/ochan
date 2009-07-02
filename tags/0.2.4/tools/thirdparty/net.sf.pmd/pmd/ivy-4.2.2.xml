@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ivy-module version="1.0">
+	<info organisation="net.sf.pmd"
+		module="pmd"
+		revision="4.2.2"
+		status="release"
+		publication="20080506180835"
+	/>
+	<publications>
+		<!-- doing something a bit out of line of ivy.. but.. I dont want evictions or whatever to happen to a test-time project, and i'm super lazy right now -->
+		<artifact name="pmd-bin" type="zip" ext="zip"/>
+	</publications>
+</ivy-module>

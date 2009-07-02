@@ -1,0 +1,20 @@
+<html>
+	<head>
+		<link REL="SHORTCUT ICON" HREF="#springUrl('/favicon.png')">
+	    <script language="javascript" type="text/javascript" src="#springUrl('/quoting.js')"></script>
+	    <title>$deployment.getSystemTitle()</title>
+	</head>
+	#include("/WEB-INF/velocity/style.vm")
+	<body id="body">
+		<div align="center">
+			You have failed at posting 
+			<br><br>
+			#if($threadId)
+				<a href="#springUrl('/chan/thread/')${threadId}">Return to thread</a>
+			#end
+			#if($categoryId)
+				<a href="#springUrl('/chan/')${categoryId}">Return to category</a>
+			#end
+		</div>
+	</body>
+</html>

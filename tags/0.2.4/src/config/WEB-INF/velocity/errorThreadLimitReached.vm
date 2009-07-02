@@ -1,0 +1,15 @@
+<html>
+	<head>
+		<link REL="SHORTCUT ICON" HREF="#springUrl('/favicon.png')">
+	    <script language="javascript" type="text/javascript" src="#springUrl('/quoting.js')"></script>
+	    <title>$deployment.getSystemTitle()</title>
+	</head>
+	#include("/WEB-INF/velocity/style.vm")
+	<body id="body">
+		<div align="center">
+			Your reply cannot be published; you've reached the post limit for this thread. 
+			<br><br>
+			<a href="#springUrl('/chan/thread/')${threadId}">Return to thread</a>
+		</div>
+	</body>
+</html>

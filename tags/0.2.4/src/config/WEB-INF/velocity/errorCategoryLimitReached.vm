@@ -1,0 +1,15 @@
+<html>
+	<head>
+		<link REL="SHORTCUT ICON" HREF="#springUrl('/favicon.png')">
+	    <script language="javascript" type="text/javascript" src="#springUrl('/quoting.js')"></script>
+	    <title>$deployment.getSystemTitle()</title>
+	</head>
+	#include("/WEB-INF/velocity/style.vm")
+	<body id="body">
+		<div align="center">
+			Your thread cannot be published; you've reached the thread limit for this category. 
+			<br><br>
+			<a href="#springUrl('/chan/')${categoryId}">Return to category</a>
+		</div>
+	</body>
+</html>
