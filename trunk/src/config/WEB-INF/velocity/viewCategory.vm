@@ -191,7 +191,7 @@
 				panel2.render();
 				
 				var myTabs = new YAHOO.widget.TabView("uploadgroup");
-				var submitButton = new YAHOO.widget.Button("submitButton", { label: "Reply" });
+				var submitButton = new YAHOO.widget.Button("submitButton", { label: "Create" });
 				
 				function addId(id){
 	        		myEditor.execCommand('inserthtml','<p>&gt;&gt;' + id + '</p>');
