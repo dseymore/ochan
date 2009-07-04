@@ -29,7 +29,7 @@ public class ActiveWatcherCounterJob extends ManagedQuartzJobBean implements Sta
 	/**
 	 * the length of time between each thread watchers request
 	 */
-	public static final long REQUEST_REST_LENGTH = 10000;
+	public static final long REQUEST_REST_LENGTH = 2000;
 	
 	private static Long lastWatcherAmount = Long.valueOf(0);
 	private static Long lastSitterAmount = Long.valueOf(0);
