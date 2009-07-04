@@ -3,20 +3,20 @@
 		<META HTTP-EQUIV="Pragma" CONTENT="no-cache">
 		<link REL="SHORTCUT ICON" HREF="#springUrl('/favicon.png')">
 		<title>$deployment.getSystemTitle()</title>
-		<!-- Ochan Javascript dependencies -->
+		##Ochan dependencies
 		<script language="javascript" type="text/javascript" src="#springUrl('/quoting.js')"></script>
-		#include("/WEB-INF/velocity/style.vm")
+		<link rel="stylesheet" type="text/css" href="#springUrl('/style.css')"/>
 		
-		<!-- Jquery for growl-like toast notifications :D -->
+		##Jquery for growl-like toast notifications :D 
 		<link rel="stylesheet" type="text/css" href="#springUrl('/jgrowl/jquery.jgrowl.css')"/> 
 		<script type="text/javascript" src="#springUrl('/jquery-1.3.2.min.js')"></script>
 		<script type="text/javascript" src="#springUrl('/jgrowl/jquery.jgrowl_minimized.js')"></script>
 		
 		
-		<!-- YUI CSS files: --> 
+		##YUI CSS files:  
 		<link rel="stylesheet" type="text/css" href="#springUrl('/yui/base/base-min.css')"/>
 		<link rel="stylesheet" type="text/css" href="#springUrl('/yui/assets/skins/sam/skin.css')"/> 
-		<!-- YUI JS files: --> 
+		##YUI JS files:  
 		<script type="text/javascript" src="#springUrl('/yui/yahoo-dom-event/yahoo-dom-event.js')"></script>
 		<script type="text/javascript" src="#springUrl('/yui/element/element-min.js')"></script>
 		<script type="text/javascript" src="#springUrl('/yui/json/json-min.js')"></script>

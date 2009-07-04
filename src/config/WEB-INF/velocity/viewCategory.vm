@@ -4,16 +4,16 @@
 		<link REL="SHORTCUT ICON" HREF="#springUrl('/favicon.png')">
         <title>$deployment.getSystemTitle()</title>
         <link type="application/atom+xml" rel="alternate" href="#springUrl('/atom/threads/')$category.identifier">
-		
-		<!-- Jquery for growl-like toast notifications :D -->
+	
+		##Jquery for growl-like toast notifications :D 
 		<link rel="stylesheet" type="text/css" href="#springUrl('/jgrowl/jquery.jgrowl.css')"/> 
 		<script type="text/javascript" src="#springUrl('/jquery-1.3.2.min.js')"></script>
 		<script type="text/javascript" src="#springUrl('/jgrowl/jquery.jgrowl_minimized.js')"></script>
 		
-		<!-- YUI CSS files: --> 
+		##YUI CSS files:  
 		<link rel="stylesheet" type="text/css" href="#springUrl('/yui/base/base-min.css')"/>
 		<link rel="stylesheet" type="text/css" href="#springUrl('/yui/assets/skins/sam/skin.css')"/> 
-		<!-- YUI JS files: --> 
+		##YUI JS files:  
 		<script type="text/javascript" src="#springUrl('/yui/yahoo-dom-event/yahoo-dom-event.js')"></script>
 		<script type="text/javascript" src="#springUrl('/yui/element/element-min.js')"></script>
 		<script type="text/javascript" src="#springUrl('/yui/json/json-min.js')"></script>
@@ -29,7 +29,10 @@
 		<script type="text/javascript" src="#springUrl('/yui/tabview/tabview-min.js')"></script>
 		<script type="text/javascript" src="#springUrl('/yui/dragdrop/dragdrop-min.js')"></script>
 		<script type="text/javascript" src="#springUrl('/yui/button/button-min.js')"></script>
-		#include("/WEB-INF/velocity/style.vm")
+		
+		##Ochan dependencies
+		<link rel="stylesheet" type="text/css" href="#springUrl('/style.css')"/>
+		#parse("/WEB-INF/velocity/pagingstyle.vm")
     </head>
     <body class="yui-skin-sam">
     	<script type="text/javascript" >

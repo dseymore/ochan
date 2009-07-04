@@ -4,7 +4,7 @@
 
 NUM_THREADS=0
 STARTING_ID=1302
-CATEGORY_ID=101
+CATEGORY_ID=1
 
 #echo $(($STARTING_ID + $NUM_THREADS))
 
@@ -19,5 +19,5 @@ find /mnt/raid/4chan/ | sort -r | while read file;
 do
 	java -jar /opt/cmdline-jmxclient-0.10.3.jar - localhost:8000 Ochan:name=LoaderUtility,type=util createThread=$CATEGORY_ID,"$file"; 
 	du -h "$file";
-	sleep 2;
+	#sleep 1;
 done

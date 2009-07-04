@@ -5,12 +5,13 @@
 	    <link type="application/atom+xml" rel="alternate" href="#springUrl('/atom/threads')">
 		<title>$deployment.getSystemTitle()</title>
 	</head>
-	#include("/WEB-INF/velocity/style.vm")
-	<!-- Jquery for growl-like toast notifications :D -->
+	##Ochan dependencies
+	<link rel="stylesheet" type="text/css" href="#springUrl('/style.css')"/>
+	##Jquery for growl-like toast notifications :D
 	<link rel="stylesheet" type="text/css" href="#springUrl('/jgrowl/jquery.jgrowl.css')"/> 
 	<script type="text/javascript" src="#springUrl('/jquery-1.3.2.min.js')"></script>
 	<script type="text/javascript" src="#springUrl('/jgrowl/jquery.jgrowl_minimized.js')"></script>
-	<!-- YUI JS files: --> 
+	##YUI JS files:
 	<script type="text/javascript" src="#springUrl('/yui/yahoo-dom-event/yahoo-dom-event.js')"></script>
 	<script type="text/javascript" src="#springUrl('/yui/element/element-min.js')"></script>
 	<script type="text/javascript" src="#springUrl('/yui/json/json-min.js')"></script>
@@ -22,7 +23,7 @@
         var currentThreadId = $currentThread;
         
 		## Sets up the ajax loop
-        window.setInterval(xyz, 5000)
+        window.setInterval(xyz, 2000)
         
         ## Calls rest url for the next post
         function xyz(){
@@ -34,10 +35,10 @@
 					if (result != undefined && result.RemoteThread.identifier != -1){
 						//if it an image post, just show the image!
 						if (result.RemoteThread.firstPost.type == 'IMAGE'){
-							${esc.dollar}.jGrowl('<a href="#springUrl('/viewThread.Ochan')?identifier=' + result.RemoteThread.identifier + '"><img src="#springUrl('/thumb.Ochan')?identifier=' + result.RemoteThread.firstPost.identifier + '&thumb=true"></a>', { life: 10000, header: result.RemoteThread.firstPost.subject});
+							${esc.dollar}.jGrowl('<a href="#springUrl('/viewThread.Ochan')?identifier=' + result.RemoteThread.identifier + '"><img src="#springUrl('/thumb.Ochan')?identifier=' + result.RemoteThread.firstPost.identifier + '&thumb=true"></a>', { life: 5000, header: result.RemoteThread.firstPost.subject});
 						}else{
 							//else, show the subject
-							${esc.dollar}.jGrowl('<a href="#springUrl('/viewThread.Ochan')?identifier=' + result.RemoteThread.identifier + '"/>' + result.RemoteThread.firstPost.subject + '</a>', { life: 10000 });
+							${esc.dollar}.jGrowl('<a href="#springUrl('/viewThread.Ochan')?identifier=' + result.RemoteThread.identifier + '"/>' + result.RemoteThread.firstPost.subject + '</a>', { life: 5000 });
 						}
 						currentThreadId = result.RemoteThread.identifier;
 					}
@@ -103,13 +104,57 @@
 			<div class="heading">
 				<h2>Statistics</h2>
 			</div>
-			<ul>
-				<li>Number of Files: $number.format($totalNumberOfFiles) </li>
-				<li>Total Content Size: $number.format($totalContentSize) bytes</li>
-				<li>Threads: $number.format($totalNumberOfThreads) </li>
-				<li>Posts: $number.format($totalNumberOfPosts) </li>
-				<li>Posts with Images: $number.format($totalNumberOfImagePosts) </li>
-			</ul>
+			<div id="statisticsDiv">
+				##Statistics will be populated intohere by stats() method.
+			</div>
 		</div>
+		<script language="javascript" type="text/javascript">
+			##STATISTICS!!!
+			function stats(){
+				var callback =
+	        	{
+	        		success: function(response){
+	        			var result = YAHOO.lang.JSON.parse(response.responseText);
+						if (result != undefined){
+							var div = document.getElementById('statisticsDiv');
+							if ( div.hasChildNodes() )
+							{
+							    while ( div.childNodes.length >= 1 )
+							    {
+							        div.removeChild( div.firstChild );       
+							    } 
+							}
+							
+							var ul = document.createElement("ul");
+							var li1 = document.createElement("li");
+							li1.innerHTML = "Number of Files: " + result.RemoteStatistics.numberOfFiles;
+							ul.appendChild(li1);
+							var li2 = document.createElement("li");
+							li2.innerHTML = "Total Content Size: " + result.RemoteStatistics.totalContentSize + ' bytes';
+							ul.appendChild(li2);
+							var li3 = document.createElement("li");
+							li3.innerHTML = "Threads: " + result.RemoteStatistics.numberOfThreads;
+							ul.appendChild(li3);
+							var li4 = document.createElement("li");
+							li4.innerHTML = "Posts: " + result.RemoteStatistics.numberOfPosts;
+							ul.appendChild(li4);
+							var li5 = document.createElement("li");
+							li5.innerHTML = "Posts with Images: " + result.RemoteStatistics.postswithImages;
+							ul.appendChild(li5);
+							div.appendChild(ul);
+							
+						}
+	        		},
+	        		failure: function(response){
+	        			//alert(response);
+	        		}
+	        	};
+	        	var transaction = YAHOO.util.Connect.asyncRequest('GET', '/remote/rest/stats/current/', callback, null);
+			}
+			## Sets up the ajax loop
+        	window.setInterval(stats, 60000);
+        	
+        	stats();
+		</script>
 	</body>
 </html> 

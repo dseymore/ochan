@@ -3,8 +3,9 @@
 		<link REL="SHORTCUT ICON" HREF="#springUrl('/favicon.png')">
 	    <script language="javascript" type="text/javascript" src="#springUrl('/quoting.js')"></script>
 	    <title>$deployment.getSystemTitle()</title>
+	    ##Ochan dependencies
+		<link rel="stylesheet" type="text/css" href="#springUrl('/style.css')"/>
 	</head>
-	#include("/WEB-INF/velocity/style.vm")
 	<body id="body">
 		<div align="center">
 			You have failed at posting 
