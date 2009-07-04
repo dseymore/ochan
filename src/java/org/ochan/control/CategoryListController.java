@@ -21,7 +21,6 @@ import org.ochan.entity.ExternalCategory;
 import org.ochan.entity.ImagePost;
 import org.ochan.entity.Post;
 import org.ochan.entity.Thread;
-import org.ochan.job.StatsGeneratorJob;
 import org.ochan.service.AnnouncementService;
 import org.ochan.service.CategoryService;
 import org.ochan.service.ExternalCategoryService;
@@ -232,13 +231,6 @@ public class CategoryListController implements Controller {
 				controlModel.put("currentThread","0");
 			}
 		}
-		
-		//STATISTICS! YAY!
-		controlModel.put("totalContentSize", StatsGeneratorJob.getSizeOfAllFiles());
-		controlModel.put("totalNumberOfFiles", StatsGeneratorJob.getNumberOfFiles());
-		controlModel.put("totalNumberOfPosts", StatsGeneratorJob.getNumberOfPosts());
-		controlModel.put("totalNumberOfImagePosts", StatsGeneratorJob.getNumberOfImagePosts());
-		controlModel.put("totalNumberOfThreads", StatsGeneratorJob.getNumberOfThreads());
 		
 		controlModel.put("announcement",announcementService.getAnnouncement());
 		
