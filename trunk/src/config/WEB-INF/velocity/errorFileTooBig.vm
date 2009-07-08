@@ -11,7 +11,12 @@
 		<div align="center">
 			You've tried to upload something way too big. The current limit for the system is ${currentLimit} bytes.
 			<br><br>
-			<a href="">Return to thread</a>
+			#if($threadId)
+				<a href="#springUrl('/chan/thread/')${threadId}">Return to thread</a>
+			#end
+			#if($categoryId)
+				<a href="#springUrl('/chan/')${categoryId}">Return to category</a>
+			#end
 		</div>
 	</body>
 </html>

@@ -24,10 +24,11 @@ public class FileSizeHandlerExceptionResolver implements HandlerExceptionResolve
 			Map<String,Object> stuff = new HashMap<String,Object>();
 			ManagedCommonsMultipartResolver commonsMultipartResolver = new ManagedCommonsMultipartResolver();
 			stuff.put("currentLimit", commonsMultipartResolver.getMaxUploadSize());
+			stuff.put("threadId",arg0.getAttribute("parent"));
+			stuff.put("categoryId",arg0.getAttribute("categoryIdentifier"));
 			return new ModelAndView("errorFileTooBig", stuff);
 		}
 		//pass this thing.
 		return null;
 	}
-
 }
