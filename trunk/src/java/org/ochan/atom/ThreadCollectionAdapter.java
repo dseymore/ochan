@@ -1,5 +1,6 @@
 package org.ochan.atom;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -19,6 +20,7 @@ import org.apache.abdera.parser.stax.FOMFactory;
 import org.apache.abdera.protocol.server.RequestContext;
 import org.apache.abdera.protocol.server.context.ResponseContextException;
 import org.apache.abdera.protocol.server.impl.AbstractEntityCollectionAdapter;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.ochan.entity.Category;
@@ -240,7 +242,12 @@ public class ThreadCollectionAdapter extends AbstractEntityCollectionAdapter<Thr
 	 */
 	@Override
 	public String getName(Thread entry) throws ResponseContextException {
-		return String.valueOf(entry.getPosts().get(0).getSubject());
+		if (StringUtils.isNotEmpty(entry.getPosts().get(0).getSubject())){
+			return String.valueOf(entry.getPosts().get(0).getSubject());
+		}else{
+			SimpleDateFormat sdf = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z");
+			return sdf.format(entry.getPosts().get(0).getTime());
+		}
 	}
 
 	/**
@@ -248,7 +255,12 @@ public class ThreadCollectionAdapter extends AbstractEntityCollectionAdapter<Thr
 	 */
 	@Override
 	public String getTitle(Thread entry) throws ResponseContextException {
-		return String.valueOf(entry.getPosts().get(0).getSubject());
+		if (StringUtils.isNotEmpty(entry.getPosts().get(0).getSubject())){
+			return String.valueOf(entry.getPosts().get(0).getSubject());
+		}else{
+			SimpleDateFormat sdf = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z");
+			return sdf.format(entry.getPosts().get(0).getTime());
+		}
 	}
 
 	/**
