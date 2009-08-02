@@ -22,6 +22,7 @@ import org.apache.abdera.protocol.server.impl.AbstractEntityCollectionAdapter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.ochan.entity.Category;
+import org.ochan.entity.Post;
 import org.ochan.entity.TextPost;
 import org.ochan.entity.Thread;
 import org.ochan.service.CategoryService;
@@ -143,35 +144,40 @@ public class ThreadCollectionAdapter extends AbstractEntityCollectionAdapter<Thr
 		
 		//Category filtration
 		Long categoryId = null;
+		//and thread filtration
+		Long threadId = null;
 		//lets see if we're getting a specific category, or thread, or the entire bundle. 
 		if (request.getUri().toString() != null && request.getUri().toString().split("/").length > 3){
 			String[] split = request.getUri().toString().split("/");
 			categoryId = Long.valueOf(split[3]);
+			if (request.getUri().toString().split("/").length > 4){
+				threadId = Long.valueOf(split[4]);
+			}
 		}
 		
-		if (o == null || o.getObjectValue() == null || o.isExpired()){
-			List<Category> categories = categoryService.retrieveCategories(null);
-			for (Category c : categories){
-				Map<ThreadCriteria,Object> criteria = new HashMap<ThreadCriteria,Object>();
-				criteria.put(ThreadCriteria.CATEGORY, c.getIdentifier());
-				List<Thread> threads = threadService.retrieveThreads(criteria);
-				//categories have 0 threads to begin with.. 
-				if (threads != null){
-					for (Thread thread : threads){
-						thread.setPosts(postService.retrieveThreadPosts(thread));
-						toreturn.add(thread);
+		if (categoryId == null && threadId == null){
+			if (o == null || o.getObjectValue() == null || o.isExpired()){
+				List<Category> categories = categoryService.retrieveCategories(null);
+				for (Category c : categories){
+					Map<ThreadCriteria,Object> criteria = new HashMap<ThreadCriteria,Object>();
+					criteria.put(ThreadCriteria.CATEGORY, c.getIdentifier());
+					List<Thread> threads = threadService.retrieveThreads(criteria);
+					//categories have 0 threads to begin with.. 
+					if (threads != null){
+						for (Thread thread : threads){
+							thread.setPosts(postService.retrieveThreadPosts(thread));
+							toreturn.add(thread);
+						}
 					}
 				}
+				Collections.sort(toreturn);
+				cache.put(new Element("1",toreturn));
+			}else{
+				//unsafe!
+				toreturn = (ArrayList<Thread>)o.getObjectValue();
 			}
-			Collections.sort(toreturn);
-			cache.put(new Element("1",toreturn));
-		}else{
-			//unsafe!
-			toreturn = (ArrayList<Thread>)o.getObjectValue();
-		}
-		
-		//filtering by category
-		if (categoryId != null){
+		}else if (categoryId != null && threadId == null){
+			//filtering by category
 			//lets filter it out to be just what we want from this category.
 			List<Thread> threadsForCategory = new ArrayList<Thread>();
 			for (Thread t : toreturn){
@@ -180,6 +186,29 @@ public class ThreadCollectionAdapter extends AbstractEntityCollectionAdapter<Thr
 				}
 			}
 			toreturn = threadsForCategory;
+		}else if (categoryId != null && threadId != null){
+			//we have to do some acrobatics to make this a list of threads... 
+			Thread parent = threadService.getThread(threadId);
+			List<Post> posts = postService.retrieveThreadPosts(parent);
+			Collections.sort(posts);
+			parent.setPosts(posts);
+			List<Thread> mockThreads = new ArrayList<Thread>();
+			//add the honest parent
+			for (Post post : posts){
+				if (mockThreads.isEmpty()){
+					//the first one is the parent
+					mockThreads.add(parent);
+				}else{
+					Thread t = new Thread();
+					//use the parent's identifer because thats how we link to it
+					t.setIdentifier(parent.getIdentifier());
+					List<Post> children = new ArrayList<Post>();
+					children.add(post);
+					t.setPosts(children);
+					mockThreads.add(t);
+				}
+			}
+			toreturn = mockThreads;
 		}
 		
 		// capture end of call
@@ -300,7 +329,7 @@ public class ThreadCollectionAdapter extends AbstractEntityCollectionAdapter<Thr
 	@Override
 	protected String getLink(String name, Thread entryObj, IRI feedIri, RequestContext request) {
 		DeploymentConfiguration config = new DeploymentConfiguration(); 
-		String link = "http://"+config.getHostname() + ":" + config.getPort() + "/chan/thread/" +entryObj.getIdentifier();
+		String link = "http://"+config.getHostname() + ":" + config.getPort() + "/chan/thread/" + entryObj.getIdentifier() + "#" + entryObj.getPosts().get(0).getIdentifier();
 		return link;
 	}
 
