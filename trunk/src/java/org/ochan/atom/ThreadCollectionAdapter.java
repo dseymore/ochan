@@ -157,7 +157,7 @@ public class ThreadCollectionAdapter extends AbstractEntityCollectionAdapter<Thr
 			}
 		}
 		
-		if (categoryId == null && threadId == null){
+		if (threadId == null){
 			if (o == null || o.getObjectValue() == null || o.isExpired()){
 				List<Category> categories = categoryService.retrieveCategories(null);
 				for (Category c : categories){
@@ -178,16 +178,17 @@ public class ThreadCollectionAdapter extends AbstractEntityCollectionAdapter<Thr
 				//unsafe!
 				toreturn = (ArrayList<Thread>)o.getObjectValue();
 			}
-		}else if (categoryId != null && threadId == null){
-			//filtering by category
-			//lets filter it out to be just what we want from this category.
-			List<Thread> threadsForCategory = new ArrayList<Thread>();
-			for (Thread t : toreturn){
-				if (categoryId.equals(t.getCategory().getIdentifier())){
-					threadsForCategory.add(t);
+			if (categoryId != null && threadId == null){
+				//filtering by category
+				//lets filter it out to be just what we want from this category.
+				List<Thread> threadsForCategory = new ArrayList<Thread>();
+				for (Thread t : toreturn){
+					if (categoryId.equals(t.getCategory().getIdentifier())){
+						threadsForCategory.add(t);
+					}
 				}
+				toreturn = threadsForCategory;
 			}
-			toreturn = threadsForCategory;
 		}else if (categoryId != null && threadId != null){
 			//we have to do some acrobatics to make this a list of threads... 
 			Thread parent = threadService.getThread(threadId);
