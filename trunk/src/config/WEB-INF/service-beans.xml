@@ -182,5 +182,14 @@
 	        <property name="timeToLive"><value>120</value></property>
 	        <property name="timeToIdle"><value>120</value></property>
 	</bean>
+	<bean id="postListCache" class="org.springframework.cache.ehcache.EhCacheFactoryBean">
+	        <property name="cacheManager"><ref local="cacheManager"/></property>
+	        <property name="cacheName"><value>postListCache</value></property>
+	        <property name="maxElementsInMemory"><value>20000</value></property>
+	        <property name="overflowToDisk"><value>false</value></property>
+	        <property name="eternal"><value>false</value></property>
+	        <property name="timeToLive"><value>10</value></property>
+	        <property name="timeToIdle"><value>10</value></property>
+	</bean>
 
 </beans>

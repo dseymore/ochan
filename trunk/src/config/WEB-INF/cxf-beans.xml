@@ -47,6 +47,7 @@ http://abdera.apache.org http://abdera.apache.org/schemas/abdera-spring.xsd">
 	<bean id="postListBean" class="org.ochan.service.remote.webservice.PostListImpl">
 		<property name="postService" ref="localPostService" />
 		<property name="threadService" ref="localThreadService" />
+		<property name="cache" ref="postListCache"/>
 	</bean>
 	<!--  Thread Support Service -->
 	<!--  no client ATM -->
