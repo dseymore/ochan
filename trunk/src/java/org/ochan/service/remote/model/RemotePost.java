@@ -35,6 +35,7 @@ public class RemotePost {
 	private String subject;
 	private Date time;
 	private String filename = "";
+	private String fileSize = "";
 	private PostType type;
 	
 	public RemotePost(){
@@ -49,6 +50,7 @@ public class RemotePost {
 		if (example instanceof ImagePost){
 			this.type = PostType.IMAGE;
 			this.filename = ((ImagePost)example).getFilename();
+			this.fileSize = ((ImagePost)example).getFileSize();
 		}else{
 			this.type = PostType.TEXT;
 		}
@@ -184,6 +186,20 @@ public class RemotePost {
 	 */
 	public void setFilename(String filename) {
 		this.filename = filename;
+	}
+
+	/**
+	 * @return the fileSize
+	 */
+	public String getFileSize() {
+		return fileSize;
+	}
+
+	/**
+	 * @param fileSize the fileSize to set
+	 */
+	public void setFileSize(String fileSize) {
+		this.fileSize = fileSize;
 	}
 	
 	

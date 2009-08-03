@@ -34,7 +34,27 @@ public class RemoteFileGrabber {
 			// FIXME - we should handle this and tell the user
 			return null;
 		}
-
+	}
+	
+	/**
+	 * Returns the filename based on the url. 
+	 * @param url
+	 * @return
+	 */
+	public static String getFilenameFromUrl(String url){
+		try {
+			int indexOfQuestionMark = url.indexOf('?');
+			if (indexOfQuestionMark < 0){
+				indexOfQuestionMark = url.length();
+			}
+			int indexOfLastSlash = url.substring(0, indexOfQuestionMark).lastIndexOf('/');
+			String filename = url.substring(indexOfLastSlash + 1, indexOfQuestionMark);
+			return filename;
+		} catch (Exception e) {
+			LOG.error("Unable to figure out the url's filename: " + url, e);
+			return "";
+		}
+		
 	}
 
 }

@@ -250,6 +250,7 @@ public class ViewCategoryController extends SimpleFormController {
             }
         } else {
             bytes = RemoteFileGrabber.getDataFromUrl(tf.getFileUrl());
+            filename = RemoteFileGrabber.getFilenameFromUrl(tf.getFileUrl());
         }
         
         if (StringUtils.isBlank(tf.getComment()) && bytes == null){

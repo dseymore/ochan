@@ -221,6 +221,7 @@ public class ViewThreadController extends SimpleFormController {
 			}else{
 				//URL
 				bytes = RemoteFileGrabber.getDataFromUrl(prf.getFileUrl());
+				filename = RemoteFileGrabber.getFilenameFromUrl(prf.getFileUrl());
 			}
 			if (StringUtils.isBlank(prf.getComment()) && bytes == null){
 	        	NothingToPostException exception = new NothingToPostException();
