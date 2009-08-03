@@ -18,6 +18,7 @@ import org.ochan.entity.TextPost;
 import org.ochan.entity.Thread;
 import org.ochan.service.BlobService;
 import org.ochan.service.PostService;
+import org.ochan.util.FileUtils;
 import org.springframework.jmx.export.annotation.ManagedAttribute;
 import org.springframework.jmx.export.annotation.ManagedOperation;
 import org.springframework.jmx.export.annotation.ManagedOperationParameter;
@@ -139,6 +140,9 @@ public class LocalPostService implements PostService {
 			post.setTime(new Date());
 			post.setFilename(filename);
 			if (file != null && file.length > 0) {
+				//we should save the resolution and human readable file size here
+				String fileSize = FileUtils.byteCountToDisplaySize(file.length);
+				post.setFileSize(fileSize);
 				post.setType(PostType.IMAGE);
 				post.setImageIdentifier(blobService.saveBlob(file));
 			} else {
@@ -242,6 +246,7 @@ public class LocalPostService implements PostService {
 			((ImagePost) p).setImageIdentifier(post.getImageIdentifier());
 			((ImagePost) p).setThumbnailIdentifier(post.getThumbnailIdentifier());
 			((ImagePost) p).setFilename(post.getFilename());
+			((ImagePost) p).setFileSize(post.getFileSize());
 		}
 		p.setAuthor(post.getAuthor());
 		p.setComment(post.getComment());

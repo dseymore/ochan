@@ -7,6 +7,7 @@ public class ImagePost extends TextPost{
 	private Long imageIdentifier;
 	private Long thumbnailIdentifier;
 	private String filename;
+	private String fileSize;
     
     
     public ImagePost(){
@@ -26,11 +27,12 @@ public class ImagePost extends TextPost{
      * @param subject
      * @param time
      */
-    public ImagePost(Long identifier, Thread parent, String author, String email, String url, String comment, Long imageIdentifier, Long thumbnailIdentifier, String subject, Date time, String filename) {
+    public ImagePost(Long identifier, Thread parent, String author, String email, String url, String comment, Long imageIdentifier, Long thumbnailIdentifier, String subject, Date time, String filename, String fileSize) {
         super(identifier, parent, author, email, url, comment, subject, time);
         this.imageIdentifier = imageIdentifier;
         this.thumbnailIdentifier = thumbnailIdentifier;
         this.filename = filename;
+        this.fileSize = fileSize;
     }
 
 	/**
@@ -73,6 +75,20 @@ public class ImagePost extends TextPost{
 	 */
 	public void setFilename(String filename) {
 		this.filename = filename;
+	}
+
+	/**
+	 * @return the fileSize
+	 */
+	public String getFileSize() {
+		return fileSize;
+	}
+
+	/**
+	 * @param fileSize the fileSize to set
+	 */
+	public void setFileSize(String fileSize) {
+		this.fileSize = fileSize;
 	}
    
     
