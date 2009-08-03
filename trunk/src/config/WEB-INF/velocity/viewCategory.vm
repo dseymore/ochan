@@ -132,8 +132,8 @@
 							<li><a href="#tab2"><em>Remote Image</em></a></li>
 					    </ul>            
 					    <div class="yui-content">
-							<div><label for="file">Image:</label><input id="file" type="file" name="file"/></div>
-							<div><label for="remote">Image Url:</label><input id="remote" type="text" name="fileUrl"/></div>
+							<div><label for="file">Image:</label><input id="file" type="file" name="file" size="40"/></div>
+							<div><label for="remote">Image Url:</label><input id="remote" type="text" name="fileUrl" size="40"/></div>
 					    </div>
 					</div>
 					<br/>
