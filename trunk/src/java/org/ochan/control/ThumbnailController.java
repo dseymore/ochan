@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.net.SocketException;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 import java.util.prefs.Preferences;
 
 import javax.imageio.IIOImage;
@@ -24,6 +25,8 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
 import org.javasimon.SimonManager;
 import org.javasimon.Split;
 import org.javasimon.StatProcessorType;
@@ -348,23 +351,29 @@ public class ThumbnailController implements Controller {
 						datum = ArrayUtils.toPrimitive(data);
 						//lets try checking if it is an image.. if not, we need to act on it. 
 						BufferedImage image = null;
-						ByteArrayInputStream bais = new ByteArrayInputStream(datum);
-						//this might be the wrong direction.. 
-						ImageIO.setUseCache(false);
-						try{
-							image = ImageIO.read(bais);
-						}catch(Exception e){
-							LOG.error("Bad image!",e);
-							image = null;
-						}
-						if (image == null || p == null){
-							//BAD BAD IMAGE!
-							InputStream stream = request.getSession().getServletContext().getResourceAsStream("/WEB-INF/404-image.png");
-							datum = IOUtils.toByteArray(stream);
-							stream.close();
-							//and reset the image object. 
-							bais = new ByteArrayInputStream(datum);
-							image = ImageIO.read(bais);
+						
+						BufferedImage pdfPage1 = takeCaptureOfPDFPage1(datum);
+						if (pdfPage1 != null){
+							image = pdfPage1;
+						}else{
+							ByteArrayInputStream bais = new ByteArrayInputStream(datum);
+							//this might be the wrong direction.. 
+							ImageIO.setUseCache(false);
+							try{
+								image = ImageIO.read(bais);
+							}catch(Exception e){
+								LOG.error("Bad image!",e);
+								image = null;
+							}
+							if (image == null || p == null){
+								//BAD BAD IMAGE!
+								InputStream stream = request.getSession().getServletContext().getResourceAsStream("/WEB-INF/404-image.png");
+								datum = IOUtils.toByteArray(stream);
+								stream.close();
+								//and reset the image object. 
+								bais = new ByteArrayInputStream(datum);
+								image = ImageIO.read(bais);
+							}
 						}
 						int width = image.getWidth();
 						int height = image.getHeight();
@@ -415,7 +424,8 @@ public class ThumbnailController implements Controller {
 						LOG.error("Bad image!",e);
 						image = null;
 					}
-					if (image == null || p == null){
+					//bad image, or no image post anymore.. BUT NOT IF IT IS A PDF
+					if ((image == null && !isItAPdf(datum)) || p == null){
 						//BAD BAD IMAGE!
 						InputStream stream = request.getSession().getServletContext().getResourceAsStream("/WEB-INF/404-image.png");
 						datum = IOUtils.toByteArray(stream);
@@ -432,14 +442,20 @@ public class ThumbnailController implements Controller {
 				stream.close();
 			}
 			
-			response.setContentType("image/jpeg");
+			
 			//caching please.. expire after a day
 			response.setHeader("Cache-Control", "max-age=86400, public");
 			response.setDateHeader("Expires", new Date().getTime() + MILLISECONDS_IN_A_DAY);
 
 			LOG.debug("file length is " + datum.length);
 			response.setContentLength(datum.length);
-			response.setHeader("Content-Disposition", " inline; filename=" + id+".jpg");
+			if (isItAPdf(datum)){
+				response.setContentType("application/pdf");
+				response.setHeader("Content-Disposition", " inline; filename=" + id+".pdf");
+			}else{
+				response.setContentType("image/jpeg");
+				response.setHeader("Content-Disposition", " inline; filename=" + id+".jpg");
+			}
 			// convert to non-object
 			FileCopyUtils.copy(datum, response.getOutputStream());
 		} catch (SocketException se){
@@ -466,5 +482,39 @@ public class ThumbnailController implements Controller {
 		bg.drawImage(im, 0, 0, null);
 		bg.dispose();
 		return bi;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public BufferedImage takeCaptureOfPDFPage1(byte[] data){
+		if (isItAPdf(data)){
+			try
+	        {
+				ByteArrayInputStream bais = new ByteArrayInputStream(data);
+				PDDocument document = PDDocument.load(bais);
+				//get the first page. 
+				List<PDPage> pages = (List<PDPage>)document.getDocumentCatalog().getAllPages();
+				PDPage page = pages.get(0);
+	            BufferedImage image = page.convertToImage();
+	            document.close();
+	            return image;
+	        }catch(Exception e){
+	        	LOG.error("Unable to convert pdf page 1 into godlike image",e);
+	        }
+		}
+		return null;
+	}
+	
+	public boolean isItAPdf(byte[] data){
+		if (data == null){
+			return false;
+		}
+		try{
+			ByteArrayInputStream bais = new ByteArrayInputStream(data);
+			PDDocument document = PDDocument.load(bais);
+			document.close();
+			return true;
+		}catch(Exception e){
+			return false;
+		}
 	}
 }
