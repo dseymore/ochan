@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ivy-module version="1.0">
+	<info organisation="org.apache.pdfbox"
+		module="pdfbox"
+		revision="0.8.0-incubating"
+		status="integration"
+		publication="20070319112018"
+	/>
+	<publications>
+		<artifact name="pdfbox" type="jar" ext="jar"/>
+	</publications>
+	<dependencies>
+		<dependency org="org.apache.jempbox" name="jempbox" rev="0.8.0-incubating"/>
+		<dependency org="org.apache.fontbox" name="fontbox" rev="0.8.0-incubating"/>
+	</dependencies>
+</ivy-module>

@@ -68,6 +68,9 @@
 		<dependency org="org.javasimon" name="javasimon-core" rev="2.0-alpha1" conf="default->default"/>
 		<!-- jar classloader for plugins -->
 		<dependency org="xeus" name="jcl" rev="1.2.2-resourcesmod" conf="default->default"/>
+		<!-- PDF file handling -->
+			<!-- pdfbox built from svn rev800635 -->
+		<dependency org="org.apache.pdfbox" name="pdfbox" rev="0.8.0-incubating" conf="default->default"/>
     </dependencies>
 </ivy-module>
 
