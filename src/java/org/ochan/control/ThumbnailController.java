@@ -352,10 +352,14 @@ public class ThumbnailController implements Controller {
 						//lets try checking if it is an image.. if not, we need to act on it. 
 						BufferedImage image = null;
 						
-						BufferedImage pdfPage1 = takeCaptureOfPDFPage1(datum);
-						if (pdfPage1 != null){
-							image = pdfPage1;
-						}else{
+						if(isFileLikeAPdf(imagePost)){
+							BufferedImage pdfPage1 = takeCaptureOfPDFPage1(datum);
+							if (pdfPage1 != null){
+								image = pdfPage1;
+							}
+						}
+						
+						if (image == null){
 							ByteArrayInputStream bais = new ByteArrayInputStream(datum);
 							//this might be the wrong direction.. 
 							ImageIO.setUseCache(false);
@@ -425,7 +429,7 @@ public class ThumbnailController implements Controller {
 						image = null;
 					}
 					//bad image, or no image post anymore.. BUT NOT IF IT IS A PDF
-					if ((image == null && !isItAPdf(datum)) || p == null){
+					if ((image == null && !isFileLikeAPdf(imagePost)) || p == null){
 						//BAD BAD IMAGE!
 						InputStream stream = request.getSession().getServletContext().getResourceAsStream("/WEB-INF/404-image.png");
 						datum = IOUtils.toByteArray(stream);
@@ -449,7 +453,7 @@ public class ThumbnailController implements Controller {
 
 			LOG.debug("file length is " + datum.length);
 			response.setContentLength(datum.length);
-			if (isItAPdf(datum)){
+			if (isFileLikeAPdf(imagePost)){
 				response.setContentType("application/pdf");
 				response.setHeader("Content-Disposition", " inline; filename=" + id+".pdf");
 			}else{
@@ -486,34 +490,26 @@ public class ThumbnailController implements Controller {
 	
 	@SuppressWarnings("unchecked")
 	public BufferedImage takeCaptureOfPDFPage1(byte[] data){
-		if (isItAPdf(data)){
-			try
-	        {
-				ByteArrayInputStream bais = new ByteArrayInputStream(data);
-				PDDocument document = PDDocument.load(bais);
-				//get the first page. 
-				List<PDPage> pages = (List<PDPage>)document.getDocumentCatalog().getAllPages();
-				PDPage page = pages.get(0);
-	            BufferedImage image = page.convertToImage();
-	            document.close();
-	            return image;
-	        }catch(Exception e){
-	        	LOG.error("Unable to convert pdf page 1 into godlike image",e);
-	        }
-		}
-		return null;
-	}
-	
-	public boolean isItAPdf(byte[] data){
-		if (data == null){
-			return false;
-		}
 		try{
 			ByteArrayInputStream bais = new ByteArrayInputStream(data);
 			PDDocument document = PDDocument.load(bais);
-			document.close();
+			//get the first page. 
+			List<PDPage> pages = (List<PDPage>)document.getDocumentCatalog().getAllPages();
+			PDPage page = pages.get(0);
+            BufferedImage image = page.convertToImage();
+            document.close();
+            return image;
+        }catch(Exception e){
+        	LOG.error("Unable to convert pdf page 1 into godlike image",e);
+        }
+		return null;
+	}
+	
+	
+	public boolean isFileLikeAPdf(ImagePost imagePost){
+		if(imagePost.getFilename() != null && imagePost.getFilename().toLowerCase().endsWith(".pdf")){
 			return true;
-		}catch(Exception e){
+		}else{
 			return false;
 		}
 	}
