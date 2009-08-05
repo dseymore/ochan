@@ -331,7 +331,6 @@ public class ThumbnailController implements Controller {
 			if (p instanceof ImagePost) {
 				//if thumb
 				if (thumb) {
-					BufferedImage resizedImage = null;
 					if (imagePost.getThumbnailIdentifier() == null){
 						Split generateSplit = generateWaitTime.start();
 						Throttler generateThrottler = new Throttler(Long.valueOf(getThumbnailGenerationsPerMinute()).intValue(),60000);
@@ -371,45 +370,10 @@ public class ThumbnailController implements Controller {
 							}
 							if (image == null || p == null){
 								//BAD BAD IMAGE!
-								InputStream stream = request.getSession().getServletContext().getResourceAsStream("/WEB-INF/404-image.png");
-								datum = IOUtils.toByteArray(stream);
-								stream.close();
-								//and reset the image object. 
-								bais = new ByteArrayInputStream(datum);
-								image = ImageIO.read(bais);
+								image = getFailImage(request);
 							}
 						}
-						int width = image.getWidth();
-						int height = image.getHeight();
-						long startThumb = new Date().getTime();
-						numberOfThumbs++;
-						//yep, make it
-						if (width > height) {
-							resizedImage = convert(image.getScaledInstance(getThumbWidth().intValue(), -1, Image.SCALE_FAST));
-						} else {
-							resizedImage = convert(image.getScaledInstance(-1, getThumbHeight().intValue(), Image.SCALE_FAST));
-						}
-						Iterator writers = ImageIO.getImageWritersByMIMEType("image/jpeg");
-						ImageWriter imgWriter = (ImageWriter) writers.next();
-						ByteArrayOutputStream baos = new ByteArrayOutputStream();
-						ImageOutputStream imgStream = ImageIO.createImageOutputStream(baos);
-						imgWriter.setOutput(imgStream);
-						//parameters for compression
-						ImageWriteParam param = imgWriter.getDefaultWriteParam();
-						param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
-						param.setCompressionQuality(getThumbnailQuality());
-						//write the image!
-						imgWriter.write(null, new IIOImage(resizedImage,null,null),param);
-						datum = baos.toByteArray();
-						//store the thumbnail data in the post and persist
-						{
-							Byte[] thumbData = ArrayUtils.toObject(datum);
-							imagePost.setThumbnailIdentifier(blobService.saveBlob(thumbData));
-							postService.updatePost(imagePost);
-						}
-						long endThumb = new Date().getTime();
-						lastResizeTimeInMillis = endThumb - startThumb;
-						totalResizeTimeInMillis += endThumb - startThumb;
+						datum = resizeTheImage(image, imagePost, request);
 					}else{
 						//take the imagePost's thumnbail and make it outputable
 						Byte[] thumbnailArray = blobService.getBlob(imagePost.getThumbnailIdentifier());
@@ -431,19 +395,12 @@ public class ThumbnailController implements Controller {
 					//bad image, or no image post anymore.. BUT NOT IF IT IS A PDF
 					if ((image == null && !isFileLikeAPdf(imagePost)) || p == null){
 						//BAD BAD IMAGE!
-						InputStream stream = request.getSession().getServletContext().getResourceAsStream("/WEB-INF/404-image.png");
-						datum = IOUtils.toByteArray(stream);
-						stream.close();
-						//and reset the image object. 
-						bais = new ByteArrayInputStream(datum);
-						image = ImageIO.read(bais);
+						datum = getFailImageData(request);
 					}
 				}
 			}else{
 				//deleted image
-				InputStream stream = request.getSession().getServletContext().getResourceAsStream("/WEB-INF/404-image.png");
-				datum = IOUtils.toByteArray(stream);
-				stream.close();
+				datum = getFailImageData(request);
 			}
 			
 			
@@ -480,7 +437,7 @@ public class ThumbnailController implements Controller {
 		return null;
 	}
 
-	public BufferedImage convert(Image im) {
+	private BufferedImage convert(Image im) {
 		BufferedImage bi = new BufferedImage(im.getWidth(null), im.getHeight(null), BufferedImage.TYPE_INT_RGB);
 		Graphics bg = bi.getGraphics();
 		bg.drawImage(im, 0, 0, null);
@@ -489,7 +446,7 @@ public class ThumbnailController implements Controller {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public BufferedImage takeCaptureOfPDFPage1(byte[] data){
+	private BufferedImage takeCaptureOfPDFPage1(byte[] data){
 		try{
 			ByteArrayInputStream bais = new ByteArrayInputStream(data);
 			PDDocument document = PDDocument.load(bais);
@@ -505,12 +462,101 @@ public class ThumbnailController implements Controller {
 		return null;
 	}
 	
+	/**
+	 * Does the resizing of the image.. 
+	 * @param image
+	 * @param imagePost
+	 * @param request
+	 * @return
+	 */
+	private byte[] resizeTheImage(BufferedImage image, ImagePost imagePost, HttpServletRequest request){
+		try{
+			BufferedImage resizedImage = null;
+			int width = image.getWidth();
+			int height = image.getHeight();
+			long startThumb = new Date().getTime();
+			numberOfThumbs++;
+			//yep, make it
+			if (width > height) {
+				resizedImage = convert(image.getScaledInstance(getThumbWidth().intValue(), -1, Image.SCALE_FAST));
+			} else {
+				resizedImage = convert(image.getScaledInstance(-1, getThumbHeight().intValue(), Image.SCALE_FAST));
+			}
+			Iterator writers = ImageIO.getImageWritersByMIMEType("image/jpeg");
+			ImageWriter imgWriter = (ImageWriter) writers.next();
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			ImageOutputStream imgStream = ImageIO.createImageOutputStream(baos);
+			imgWriter.setOutput(imgStream);
+			//parameters for compression
+			ImageWriteParam param = imgWriter.getDefaultWriteParam();
+			param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+			param.setCompressionQuality(getThumbnailQuality());
+			//write the image!
+			imgWriter.write(null, new IIOImage(resizedImage,null,null),param);
+			byte[] datum = baos.toByteArray();
+			//store the thumbnail data in the post and persist
+			{
+				Byte[] thumbData = ArrayUtils.toObject(datum);
+				imagePost.setThumbnailIdentifier(blobService.saveBlob(thumbData));
+				postService.updatePost(imagePost);
+			}
+			long endThumb = new Date().getTime();
+			lastResizeTimeInMillis = endThumb - startThumb;
+			totalResizeTimeInMillis += endThumb - startThumb;
+			return datum;
+		}catch(Exception e){
+			LOG.error("Unable to resize to a thumbnail",e);
+			return getFailImageData(request);
+		}
+	}
 	
-	public boolean isFileLikeAPdf(ImagePost imagePost){
-		if(imagePost.getFilename() != null && imagePost.getFilename().toLowerCase().endsWith(".pdf")){
+	/**
+	 * Reads the filename to decide if it is a pdf
+	 * @param imagePost
+	 * @return
+	 */
+	private boolean isFileLikeAPdf(ImagePost imagePost){
+		if(imagePost != null && imagePost.getFilename() != null 
+				&& imagePost.getFilename().toLowerCase().endsWith(".pdf")){
 			return true;
 		}else{
 			return false;
 		}
+	}
+	
+	/**
+	 * Read the raw image data for a fail
+	 * @param request
+	 * @return
+	 */
+	private byte[] getFailImageData(final HttpServletRequest request){
+		try{
+			InputStream stream = request.getSession().getServletContext().getResourceAsStream("/WEB-INF/404-image.png");
+			byte[] datum = IOUtils.toByteArray(stream);
+			stream.close();
+			return datum;
+		}catch(Exception e){
+			LOG.error("Unable to read out fail image",e);
+		}
+		return null;
+	}
+	
+	/**
+	 * Reads in the fail image as a buffered image for resizing. 
+	 * @param request
+	 * @return
+	 */
+	private BufferedImage getFailImage(final HttpServletRequest request){
+		try{
+			//BAD BAD IMAGE!
+			byte[] datum = getFailImageData(request);
+			//and reset the image object. 
+			ByteArrayInputStream bais = new ByteArrayInputStream(datum);
+			BufferedImage image = ImageIO.read(bais);
+			return image;
+		}catch(Exception e){
+			LOG.error("Can't even get the freaking fail image!",e);
+		}
+		return null;
 	}
 }
