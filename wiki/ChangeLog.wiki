@@ -1,4 +1,13 @@
 #labels Phase-QA,Phase-Support
+==Release 0.2.5==
+  * Thread level atom feeds
+  * File size captured & displayed to users
+  * PDF file upload/thumbnail support
+  * Live statistics updated on the main page
+  * UTF internationalization support (UTF-8)
+  * Allows user to enable or disable auto-scrolling 
+  * Saving remote file names for url-based submissions
+
 ==Release 0.2.3==
   * No API changes
   * Refactored frontend to be YUI & JQuery instead of extjs
