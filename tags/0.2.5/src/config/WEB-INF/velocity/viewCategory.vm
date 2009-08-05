@@ -1,0 +1,270 @@
+<html>
+    <head>
+    	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<META HTTP-EQUIV="Pragma" CONTENT="no-cache">
+		<link REL="SHORTCUT ICON" HREF="#springUrl('/favicon.png')">
+        <title>$deployment.getSystemTitle()</title>
+        <link type="application/atom+xml" rel="alternate" href="#springUrl('/atom/threads/')$category.identifier">
+	
+		##Jquery for growl-like toast notifications :D 
+		<link rel="stylesheet" type="text/css" href="#springUrl('/jgrowl/jquery.jgrowl.css')"/> 
+		<script type="text/javascript" src="#springUrl('/jquery-1.3.2.min.js')"></script>
+		<script type="text/javascript" src="#springUrl('/jgrowl/jquery.jgrowl_minimized.js')"></script>
+		
+		##YUI CSS files:  
+		<link rel="stylesheet" type="text/css" href="#springUrl('/yui/base/base-min.css')"/>
+		<link rel="stylesheet" type="text/css" href="#springUrl('/yui/assets/skins/sam/skin.css')"/> 
+		##YUI JS files:  
+		<script type="text/javascript" src="#springUrl('/yui/yahoo-dom-event/yahoo-dom-event.js')"></script>
+		<script type="text/javascript" src="#springUrl('/yui/element/element-min.js')"></script>
+		<script type="text/javascript" src="#springUrl('/yui/json/json-min.js')"></script>
+		<script type="text/javascript" src="#springUrl('/yui/connection/connection-min.js')"></script>
+		<script type="text/javascript" src="#springUrl('/yui/datasource/datasource-min.js')"></script>
+		<script type="text/javascript" src="#springUrl('/yui/charts/charts-min.js')"></script>
+		<script type="text/javascript" src="#springUrl('/yui/container/container-min.js')"></script>
+		<script type="text/javascript" src="#springUrl('/yui/imageloader/imageloader-min.js')"></script>
+		<script type="text/javascript" src="#springUrl('/yui/layout/layout-min.js')"></script>
+		<script type="text/javascript" src="#springUrl('/yui/menu/menu-min.js')"></script>
+		<script type="text/javascript" src="#springUrl('/yui/paginator/paginator-min.js')"></script>
+		<script type="text/javascript" src="#springUrl('/yui/editor/simpleeditor-min.js')"></script>
+		<script type="text/javascript" src="#springUrl('/yui/tabview/tabview-min.js')"></script>
+		<script type="text/javascript" src="#springUrl('/yui/dragdrop/dragdrop-min.js')"></script>
+		<script type="text/javascript" src="#springUrl('/yui/button/button-min.js')"></script>
+		
+		##Ochan dependencies
+		<link rel="stylesheet" type="text/css" href="#springUrl('/style.css')"/>
+		#parse("/WEB-INF/velocity/pagingstyle.vm")
+    </head>
+    <body class="yui-skin-sam">
+    	<script type="text/javascript" >
+	    	###Some Help dawg
+	    	function growlHelp(){
+	    		${esc.dollar}.jGrowl('<ul>' +
+	    		'<li>ALT+SHIFT+N New Thread</li>' +
+	    		'<li>ALT+SHIFT+Z Previous Page</li>' +
+	    		'<li>ALT+SHIFT+X Next Page</li>' +
+	    		'<li>ALT+SHIFT+W Help</li>' + 
+	    		'</ul>', { life: 10000, header: "Help"});
+	    	}
+	    	
+        	YAHOO.util.Event.onDOMReady(function () {
+
+			// Set up the application under the YAHOO.example namespace
+			var Ex = YAHOO.namespace('example');
+			
+			Ex.content    = YAHOO.util.Dom.get('content');
+			
+			Ex.handlePagination = function (state) {
+			    // Show the appropriate content for the requested page
+			    Ex.content.className = 'page' + state.page;
+			    
+			    // Update the Paginator's state, confirming change
+			    Ex.paginator.setState(state);
+			};
+			
+			// Create the Paginator widget and subscribe to its changeRequest event
+			Ex.paginator = new YAHOO.widget.Paginator({
+			    rowsPerPage : 1,
+			    totalRecords : Ex.content.getElementsByTagName('span').length, 
+			    containers : 'paging'
+			});
+			
+			Ex.paginator.subscribe('changeRequest', Ex.handlePagination);
+			
+			// Render the Paginator into the configured container(s)
+			Ex.paginator.render();
+			
+			//alt + shift + x = next page
+			var kl2 = new YAHOO.util.KeyListener(document, { alt:true, shift:true, keys:88 }, { fn:function(event){ var Ex = YAHOO.namespace('example'); Ex.paginator.setPage(Ex.paginator.getCurrentPage() + 1); } } );
+			kl2.enable();
+	
+			//alt + shift + z = last page
+			var kl1 = new YAHOO.util.KeyListener(document, { alt:true, shift:true, keys:90 }, { fn:function(event){ var Ex = YAHOO.namespace('example'); Ex.paginator.setPage(Ex.paginator.getCurrentPage() - 1); } } );
+			kl1.enable();
+				
+			//alt + shift + n = new thread
+			var kl3 = new YAHOO.util.KeyListener(document, {alt: true, shift:true, keys:78 }, { fn:function(event){ panel.show(); return false; } } );
+			kl3.enable();
+			
+			##alt + shift + w = help (fucking H is being used by the help in the browser.. damnit)
+			var helpKey = new YAHOO.util.KeyListener(document, {alt: true, shift:true, keys:87 }, { fn:function(event){ 
+				growlHelp();
+			} } );
+			helpKey.enable();
+			
+			});
+			        	
+        </script>
+    	<!-- Atom feed -->
+		<div style="float: right">
+			<a href="#springUrl('/atom/threads/')$category.identifier"><img border="0" src="#springUrl('/15px-Feed-icon.png')" width="15" height="15"></a>
+		</div>
+    	<div class="navigationBox">
+			<a href="http://$deployment.hostname:$deployment.port">Home</a> >> <a href="#springUrl('/chan/')$category.identifier">$category.name</a>
+		</div>
+		<div id="navbar">
+			<div id="panel2"><div class="bd">
+				<span>[<a href="#" onclick="panel.show(); return false;">New Thread</a>]</span>
+				<span>[<a href="#" onclick="growlHelp(); return false;">Help</a>]</span>
+			</div></div>
+		</div>
+## THIS IS WHERE POSTING HAPPENS
+	#if (!$blockPosts)
+		<div id="newThreadPanel">
+			<div id="panel1"><div class="bd">
+				<form action="#springUrl('/openCategory.Ochan')" method="POST" enctype="multipart/form-data">
+					<input type="hidden" name="identifier" value="${category.identifier}"/>
+					<input type="hidden" name="categoryIdentifier" value="${category.identifier}"/>
+					<fieldset>
+						<legend>Details</legend>
+						<table>	
+							<tr><td><label for="author">Author:</label></td><td><input id="author" type="text" name="author" value="${author}" size="40"/></td></tr>
+							<tr><td><label for="subject">Subject:</label></td><td><input id="subject" type="text" name="subject" value="" size="40"/></td></tr>
+							<tr><td><label for="email">Email:</label></td><td><input id="email" type="text" name="email" value="" size="40"/></td></tr>
+							<tr><td><label for="url">URL:</label></td><td><input id="url" type="text" name="url" value="" size="40"/></td></tr>
+						</table>
+					</fieldset>
+					<span><textarea name="comment" id="comment" cols="50" rows="10"></textarea></span>
+					<!-- start tabs -->
+					<div id="uploadgroup" class="yui-navset">
+					    <ul class="yui-nav">
+							<li class="selected"><a href="#tab1"><em>Upload Image</em></a></li>
+							<li><a href="#tab2"><em>Remote Image</em></a></li>
+					    </ul>            
+					    <div class="yui-content">
+							<div><label for="file">Image:</label><input id="file" type="file" name="file" size="40"/></div>
+							<div><label for="remote">Image Url:</label><input id="remote" type="text" name="fileUrl" size="40"/></div>
+					    </div>
+					</div>
+					<br/>
+					<span><input id="submitButton" type="submit"/></span>
+				</form>
+			</div></div>
+			<!-- YUI magic to turn a basic accessible form into a friendly for people who can see form -->
+			<script type="text/javascript">
+				var myEditor = new YAHOO.widget.SimpleEditor('comment', {
+				    height: '200px',
+				    width: '450px',
+				    dompath: false,
+				    animate: false,
+				    handleSubmit: true,
+				    toolbar: {
+				        titlebar: 'Comment',
+				        buttons: [
+				            { group: 'textstyle', label: 'Font Style',
+				                buttons: [
+				                    { type: 'push', label: 'Bold', value: 'bold' },
+				                    { type: 'push', label: 'Italic', value: 'italic' },
+				                    { type: 'push', label: 'Underline', value: 'underline' },
+				                    { type: 'separator' },
+				                    { type: 'select', label: 'Arial', value: 'fontname', disabled: true,
+				                        menu: [
+				                            { text: 'Arial', checked: true },
+				                            { text: 'Arial Black' },
+				                            { text: 'Comic Sans MS' },
+				                            { text: 'Courier New' },
+				                            { text: 'Lucida Console' },
+				                            { text: 'Tahoma' },
+				                            { text: 'Times New Roman' },
+				                            { text: 'Trebuchet MS' },
+				                            { text: 'Verdana' }
+				                        ]
+				                    },
+				                    { type: 'spin', label: '10', value: 'fontsize', range: [ 9, 35 ], disabled: true },
+				                    { type: 'separator' },
+				                    { type: 'color', label: 'Font Color', value: 'forecolor', disabled: true },
+				                    { type: 'color', label: 'Background Color', value: 'backcolor', disabled: true }
+				                ]
+				            }
+				        ]
+				    }
+				});
+				
+				myEditor.render();
+				
+				// Instantiate a Panel from markup
+				var panel = new YAHOO.widget.Panel("panel1", { width:"475px", visible:false, constraintoviewport:true, modal:true} );
+				panel.setHeader("New Thread");
+				panel.setFooter("");
+				panel.render();
+				
+				// Instantiate a panel for navbar
+				var panel2 = new YAHOO.widget.Panel("panel2", { width:"30em", visible:true, constraintoviewport:true, modal:false} );
+				panel2.setHeader("Options");
+				panel2.setFooter("");
+				panel2.render();
+				
+				var myTabs = new YAHOO.widget.TabView("uploadgroup");
+				var submitButton = new YAHOO.widget.Button("submitButton", { label: "Create" });
+				
+				function addId(id){
+	        		myEditor.execCommand('inserthtml','<p>&gt;&gt;' + id + '</p>');
+		        }
+			</script>
+			</div>
+        #end
+##END POSTING BLOCK
+		<div id="paging"></div>
+		<div id="categoryPage">
+		#set($page = 1)
+		<div id="content" class="page1">
+	        #foreach($thread in ${category.threads})
+	        	#set($pagingVar = $velocityCount % 5)
+	        	#if ($pagingVar == 1)		    	
+					<span class="page$page">
+	        	#end 
+				##LETS DO THE MATH FIRST
+				#set($allPostsCount = 0)
+				#set($allImagePostsCount = 0)
+				#foreach($post in $thread.posts)
+					#set($allPostsCount = $allPostsCount + 1)
+					#if ($post.getClass().getName() == 'org.ochan.entity.ImagePost')
+						#set($allImagePostsCount = $allImagePostsCount + 1)
+					#end
+				#end
+	
+				<div>
+					Started: $thread.startDate [<a href="#springUrl('/chan/thread/')$thread.identifier">View Entire Thread</a>] [<a href="#springUrl('/chan/zip/')$thread.identifier">Export</a>] <i>$allPostsCount posts and $allImagePostsCount images.</i>
+					#if (!$deletejob.isDeleteLocked($thread.deleteCount)) #if ($thread.deleteDate) <em style="color: red">Thread marked for deletion</em>#end #end<br>
+					#foreach($post in $thread.posts)
+						##ONLY print the first and last post to the thread
+						#if ($velocityCount == 1 || $velocityCount > ($list.size($thread.posts) - $deployment.getUnderBumpCountLong()) )
+						<div class="reply" style="#if ($velocityCount > ($list.size($thread.posts) - $deployment.getUnderBumpCountLong()) && $velocityCount != 1 ) margin-left: 40px; border-left-width: 1px; border-left-style: solid; #end"> 
+							<div #if ($velocityCount == 1)class="firstPost"#end>
+								$post.subject
+							</div>
+							<table>
+								<tr>
+									#if ($post.getClass().getName() == 'org.ochan.entity.ImagePost')
+									<td>
+										<a href="#springUrl('/chan/img/')$post.identifier"><img src="#springUrl('/chan/img/')$post.identifier?thumb=true"></a>
+									</td>
+									#end
+									<td valign="top">
+										<a name="$post.identifier"/>
+										<div>
+											<a href="mailto:$post.email">$post.author</a> $post.time
+										</div>
+										$post.comment
+									</td>
+								</tr>
+							</table>
+						</div>
+						#end
+					#end
+				</div>
+				#set($pagingVar = $velocityCount % 5)
+				#if ($pagingVar == 0)
+					</span>
+					#set($page = $page + 1)
+	        	#end
+			#end
+			##CATCHALL
+			#if ($list.size($category.threads) % 5 != 0)
+				</span>
+			#end
+			</div>
+		</div>
+        <p/>
+    </body>
+</html>

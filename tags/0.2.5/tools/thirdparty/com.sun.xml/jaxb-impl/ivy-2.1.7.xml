@@ -1,0 +1,15 @@
+<ivy-module version="1.0">
+	<info organisation="com.sun.xml"
+		module="jaxb-impl"
+		revision="2.1.7"
+		status="release"
+		publication="20060403081550"
+	/>
+	<publications>
+		<artifact name="jaxb-impl" type="jar" ext="jar"/>
+		<artifact name="jaxb-impl" type="source" ext="src.jar" />
+	</publications>
+	<dependencies>
+		<dependency org="javax.xml" name="jaxb-api" rev="2.1.7" force="true"/>
+	</dependencies>
+</ivy-module>

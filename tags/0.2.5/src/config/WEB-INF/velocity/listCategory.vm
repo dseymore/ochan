@@ -1,0 +1,161 @@
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<link REL="SHORTCUT ICON" HREF="#springUrl('/favicon.png')">
+		<META HTTP-EQUIV="Pragma" CONTENT="no-cache">
+	    <link type="application/atom+xml" rel="alternate" href="#springUrl('/atom/threads')">
+		<title>$deployment.getSystemTitle()</title>
+	</head>
+	##Ochan dependencies
+	<link rel="stylesheet" type="text/css" href="#springUrl('/style.css')"/>
+	##Jquery for growl-like toast notifications :D
+	<link rel="stylesheet" type="text/css" href="#springUrl('/jgrowl/jquery.jgrowl.css')"/> 
+	<script type="text/javascript" src="#springUrl('/jquery-1.3.2.min.js')"></script>
+	<script type="text/javascript" src="#springUrl('/jgrowl/jquery.jgrowl_minimized.js')"></script>
+	##YUI JS files:
+	<script type="text/javascript" src="#springUrl('/yui/yahoo-dom-event/yahoo-dom-event.js')"></script>
+	<script type="text/javascript" src="#springUrl('/yui/element/element-min.js')"></script>
+	<script type="text/javascript" src="#springUrl('/yui/json/json-min.js')"></script>
+	<script type="text/javascript" src="#springUrl('/yui/connection/connection-min.js')"></script>
+	<script type="text/javascript" src="#springUrl('/yui/datasource/datasource-min.js')"></script>
+	
+	<script language="javascript" type="text/javascript">
+		//variable to keep track of the pages most recent thread id
+        var currentThreadId = $currentThread;
+        
+		## Sets up the ajax loop
+        window.setInterval(xyz, 2000)
+        
+        ## Calls rest url for the next post
+        function xyz(){
+        	var callback =
+        	{
+        		success: function(response){
+        			var result = YAHOO.lang.JSON.parse(response.responseText);
+        			//notification time!
+					if (result != undefined && result.RemoteThread.identifier != -1){
+						//if it an image post, just show the image!
+						if (result.RemoteThread.firstPost.type == 'IMAGE'){
+							${esc.dollar}.jGrowl('<a href="#springUrl('/viewThread.Ochan')?identifier=' + result.RemoteThread.identifier + '"><img src="#springUrl('/thumb.Ochan')?identifier=' + result.RemoteThread.firstPost.identifier + '&thumb=true"></a>', { life: 5000, header: result.RemoteThread.firstPost.subject});
+						}else{
+							//else, show the subject
+							${esc.dollar}.jGrowl('<a href="#springUrl('/viewThread.Ochan')?identifier=' + result.RemoteThread.identifier + '"/>' + result.RemoteThread.firstPost.subject + '</a>', { life: 5000 });
+						}
+						currentThreadId = result.RemoteThread.identifier;
+					}
+        		},
+        		failure: function(response){
+        			//alert(response);
+        		}
+        	};
+        	var transaction = YAHOO.util.Connect.asyncRequest('GET', '/remote/rest/thread/next/' + currentThreadId + '/', callback, null);
+        }
+	</script>
+	<body>
+		<!-- Atom feed -->
+		<div style="float: right">
+			<a href="#springUrl('/atom/threads')"><img border="0" src="#springUrl('/15px-Feed-icon.png')" width="15" height="15"></a>
+		</div>
+		<div id="adminBox" class="box">
+			$announcement
+		</div>
+		<div id="categoryBox" class="box">
+			<div class="heading">
+				<h2>Categories</h2>
+			</div>
+			<ul class="categoryList">
+				#foreach($cat in ${category})
+					<li class="categoryItem"><a href="#springUrl('/chan/')$cat.identifier">$cat.name</a></li>
+				#end
+			</ul>
+		</div>
+		#if ($list.size(${external}) > 0)
+		<div id="externalCategoryList" class="box">
+			<div class="heading">
+				<h2>External Categories</h2>
+			</div>
+			<ul class="categoryList">
+				#foreach($cat in ${external})
+					<li class="categoryItem"><a href="$cat.host">$cat.name</a></li>
+				#end
+			</ul>
+		</div>
+		#end
+		<div id="recentBox" class="box">
+			<div class="heading">
+				<h2>Recent Images</h2>
+			</div>
+			#if ($P1)
+			<div class="box">
+				<a href="#springUrl('/chan/thread/')$P1.parent.identifier#$P1.identifier"><img src="#springUrl('/chan/img/')$P1.identifier?thumb=true"></a>
+			</div>
+			#end
+			#if ($P2)
+			<div class="box">
+				<a href="#springUrl('/chan/thread/')$P2.parent.identifier#$P2.identifier"<img src="#springUrl('/chan/img/')$P2.identifier?thumb=true"></a>
+			</div>
+			#end
+			#if ($P3)
+			<div class="box">
+				<a href="#springUrl('/chan/thread/')$P3.parent.identifier#$P3.identifier"<img src="#springUrl('/chan/img/')$P3.identifier?thumb=true"></a>
+			</div>
+			#end
+		</div>
+		<div class="box" id="statsBox">
+			<div class="heading">
+				<h2>Statistics</h2>
+			</div>
+			<div id="statisticsDiv">
+				##Statistics will be populated intohere by stats() method.
+			</div>
+		</div>
+		<script language="javascript" type="text/javascript">
+			##STATISTICS!!!
+			function stats(){
+				var callback =
+	        	{
+	        		success: function(response){
+	        			var result = YAHOO.lang.JSON.parse(response.responseText);
+						if (result != undefined){
+							var div = document.getElementById('statisticsDiv');
+							if ( div.hasChildNodes() )
+							{
+							    while ( div.childNodes.length >= 1 )
+							    {
+							        div.removeChild( div.firstChild );       
+							    } 
+							}
+							
+							var ul = document.createElement("ul");
+							var li1 = document.createElement("li");
+							li1.innerHTML = "Number of Files: " + result.RemoteStatistics.numberOfFiles;
+							ul.appendChild(li1);
+							var li2 = document.createElement("li");
+							li2.innerHTML = "Total Content Size: " + result.RemoteStatistics.totalContentSize + ' bytes';
+							ul.appendChild(li2);
+							var li3 = document.createElement("li");
+							li3.innerHTML = "Threads: " + result.RemoteStatistics.numberOfThreads;
+							ul.appendChild(li3);
+							var li4 = document.createElement("li");
+							li4.innerHTML = "Posts: " + result.RemoteStatistics.numberOfPosts;
+							ul.appendChild(li4);
+							var li5 = document.createElement("li");
+							li5.innerHTML = "Posts with Images: " + result.RemoteStatistics.postswithImages;
+							ul.appendChild(li5);
+							div.appendChild(ul);
+							
+						}
+	        		},
+	        		failure: function(response){
+	        			//alert(response);
+	        		}
+	        	};
+	        	var transaction = YAHOO.util.Connect.asyncRequest('GET', '/remote/rest/stats/current/', callback, null);
+			}
+			## Sets up the ajax loop
+        	window.setInterval(stats, 60000);
+        	
+        	stats();
+		</script>
+	</body>
+</html> 

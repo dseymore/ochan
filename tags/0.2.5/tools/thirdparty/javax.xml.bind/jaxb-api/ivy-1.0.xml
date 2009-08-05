@@ -1,0 +1,15 @@
+<ivy-module version="1.0">
+	<info organisation="javax.xml.bind"
+		module="jaxb-api"
+		revision="1.0"
+		status="release"
+		publication="20070712172226"
+		default="true"
+	/>
+	<configurations>
+		<conf name="default" visibility="public"/>
+	</configurations>
+	<publications>
+		<artifact name="jaxb-api" type="jar" ext="jar" conf="default"/>
+	</publications>
+</ivy-module>

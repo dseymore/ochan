@@ -1,0 +1,10 @@
+<style type="text/css">
+	##This velocity code generates the correct # of style/css for the pages on the page.. nice huh.
+	#set($styleThreadCount = ${list.size($category.threads)})
+	#set($pagingVar = $styleThreadCount/5)
+	#set($pagingVar = $pagingVar + 1)
+	#foreach($pageNumber in [1..${pagingVar}])#categoryPage .page$pageNumber span.page$pageNumber#if($velocityCount == $pagingVar){#else,#end #end
+		display: block;
+	}
+		
+</style>

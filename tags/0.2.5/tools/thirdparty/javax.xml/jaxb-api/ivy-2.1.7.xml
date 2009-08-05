@@ -1,0 +1,11 @@
+<ivy-module version="1.0">
+	<info organisation="javax.xml"
+		module="jaxb-api"
+		revision="2.1.7"
+		status="release"
+	/>
+	<publications>
+		<artifact name="jaxb-api" type="jar" ext="jar"/>
+		<artifact name="jaxb-api" type="source" ext="src.jar"/>
+	</publications>
+</ivy-module>
