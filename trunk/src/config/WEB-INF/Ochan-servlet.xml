@@ -80,7 +80,6 @@
 		<property name="threadService" ref="proxyThreadService" />
 		<property name="externalCategoryService" ref="localExternalCategoryService"/>
 		<property name="postService" ref="proxyPostService" />
-		<!--        FIXME - make the service not injected, but, inject a factory that decides whether local or external service-->
 		<property name="cache" ref="threadCache"/>
 		<property name="announcementService" ref="localAnnouncementService"/>
 	</bean>
@@ -95,7 +94,6 @@
 		<property name="threadService" ref="proxyThreadService" />
 		<property name="postService" ref="proxyPostService" />
 		<property name="categoryService" ref="proxyCategoryService" />
-		<!--        FIXME - make the service not injected, but, inject a factory that decides whether local or external service-->
 	</bean>
 	
 	<bean name="viewCategoryController" class="org.ochan.control.ViewCategoryController">
@@ -108,19 +106,16 @@
 		<property name="categoryService" ref="proxyCategoryService" />
 		<property name="threadService" ref="proxyThreadService" />
 		<property name="postService" ref="proxyPostService" />
-		<!--        FIXME - make the service not injected, but, inject a factory that decides whether local or external service-->
 	</bean>
 	
 	<bean name="thumbnailController" class="org.ochan.control.ThumbnailController">
 		<property name="postService" ref="proxyPostService" />
 		<property name="blobService" ref="proxyBlobService"/>
-		<!--        FIXME - make the service not injected, but, inject a factory that decides whether local or external service-->
 	</bean>
 	
 	<bean name="zipController" class="org.ochan.control.ThreadZipController">
 		<property name="postService" ref="proxyPostService" />
 		<property name="blobService" ref="proxyBlobService"/>
-		<!--        FIXME - make the service not injected, but, inject a factory that decides whether local or external service-->
 	</bean>
 	
 	<!--	Requires commons-fileupload-->
