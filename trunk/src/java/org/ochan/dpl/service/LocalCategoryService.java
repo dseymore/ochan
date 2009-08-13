@@ -3,9 +3,7 @@ package org.ochan.dpl.service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.ochan.dpl.CategoryDPL;
@@ -82,12 +80,17 @@ public class LocalCategoryService implements CategoryService {
             @ManagedOperationParameter(name="name",description="The name of the category"),
             @ManagedOperationParameter(name="description",description="The description of the category"),
             @ManagedOperationParameter(name="code", description="The codeword/keyname for the category")
-    })	
+    })
+    public void createCategory(String name, String description, String code){
+		createCategory(null, name, description, code);
+	}
+    
 	@Override
-	public void createCategory(String name, String description, String code) {
+	public void createCategory(Long thisIdentifier, String name, String description, String code) {
 		createCount++;
 		try {
 			CategoryDPL cat = new CategoryDPL();
+			cat.setIdentifier(thisIdentifier);
 			cat.setName(name);
 			cat.setDescription(description);
 			cat.setCode(code);
@@ -123,7 +126,7 @@ public class LocalCategoryService implements CategoryService {
 		return null;
 	}
 	
-	public Category getCategory(String code){
+	public Category getCategoryByCode(String code){
 		getCount++;
 		try{
 			CategoryDPL catdpl = environment.categoryByCode.get(code);
@@ -135,7 +138,7 @@ public class LocalCategoryService implements CategoryService {
 	}
 
 	@Override
-	public List<Category> retrieveCategories(Map<CategoryCriteria, String> criteria) {
+	public List<Category> retrieveCategories() {
 		// capture start of call
         long start = new Date().getTime();
 
@@ -143,18 +146,7 @@ public class LocalCategoryService implements CategoryService {
 		try{
 			EntityCursor<CategoryDPL> cursor = environment.categoryByIdentifier.entities();
 			for (CategoryDPL cat: cursor){
-				boolean add = true;
-				//name check
-				if (criteria != null && criteria.containsKey(CategoryCriteria.NAME)){
-					add = !StringUtils.equalsIgnoreCase(cat.getName(), criteria.get(CategoryCriteria.NAME)) ? false : true;
-				}
-				//description check
-				if (criteria != null && criteria.containsKey(CategoryCriteria.DESCRIPTION)){
-					add = !StringUtils.equalsIgnoreCase(cat.getDescription(), criteria.get(CategoryCriteria.DESCRIPTION)) ? false : true;
-				}
-				if (add){
-					categories.add(map(cat));
-				}
+				categories.add(map(cat));
 			}
 			cursor.close();
 		}catch(Exception e){

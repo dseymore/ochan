@@ -2,8 +2,8 @@ package org.ochan.dpl.service;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -89,10 +89,11 @@ public class LocalThreadService implements ThreadService {
 	// END STATS
 
 	@Override
-	public void createThread(Long category, String author, String subject, String url, String email, String content, Byte[] file, String filename) {
+	public void createThread(Long thisIdentifier, Long category, String author, String subject, String url, String email, String content, Byte[] file, String filename) {
 		createCount++;
 		try {
 			ThreadDPL thread = new ThreadDPL();
+			thread.setIdentifier(thisIdentifier);
 			thread.setCategory(category);
 			thread.setStartDate(new Date());
 			thread.setEnabled(false);
@@ -145,22 +146,22 @@ public class LocalThreadService implements ThreadService {
 	}
 
 	@Override
-	public List<Thread> retrieveThreads(Map<ThreadCriteria, Object> criteria) {
+	public List<Thread> retrieveThreads(ThreadCriteria criteria) {
 		// capture start of call
 		long start = new Date().getTime();
 
 		List<Thread> threads = new ArrayList<Thread>();
 		try {
 			// first lets find by category.
-			if (criteria != null && criteria.containsKey(ThreadCriteria.CATEGORY)) {
-				EntityCursor<ThreadDPL> threadsByCatDPL = environment.threadByCategory.subIndex((Long) criteria.get(ThreadCriteria.CATEGORY)).entities();
+			if (criteria != null && criteria.getCategory() != null) {
+				EntityCursor<ThreadDPL> threadsByCatDPL = environment.threadByCategory.subIndex((Long) criteria.getCategory()).entities();
 				for (ThreadDPL dpl : threadsByCatDPL) {
 					threads.add(map(dpl));
 				}
 				threadsByCatDPL.close();
 			}
 			// now, we have a list of category ones..
-			if (criteria != null && criteria.containsKey(ThreadCriteria.DELETEQUEUE)) {
+			if (criteria != null && criteria.getDeleteQueue() != null) {
 				// delete queue, means delete date is not null.
 				if (threads.isEmpty()) {
 					EntityCursor<ThreadDPL> allthreads = environment.threadByIdentifier.entities();
@@ -181,7 +182,7 @@ public class LocalThreadService implements ThreadService {
 					threads = newThreads;
 				}
 			}
-			if (criteria != null && criteria.containsKey(ThreadCriteria.MAX)) {
+			if (criteria != null && criteria.getMax() != null) {
 				if (threads.isEmpty()) {
 					EntityCursor<ThreadDPL> allthreads = environment.threadByIdentifier.entities();
 					ThreadDPL max = null;
@@ -207,12 +208,12 @@ public class LocalThreadService implements ThreadService {
 					threads = newThreads;
 				}
 			}
-			if (criteria != null && criteria.containsKey(ThreadCriteria.NEWERTHAN)) {
+			if (criteria != null && criteria.getNewerThan() != null) {
 				if (threads.isEmpty()) {
 					EntityCursor<ThreadDPL> allthreads = environment.threadByIdentifier.entities();
 					ThreadDPL newer = null;
 					for (ThreadDPL dpl : allthreads) {
-						if (newer == null && dpl.getIdentifier().compareTo((Long) criteria.get(ThreadCriteria.NEWERTHAN)) > 0) {
+						if (newer == null && dpl.getIdentifier().compareTo((Long) criteria.getNewerThan()) > 0) {
 							newer = dpl;
 							// stop the loop!
 							break;
@@ -226,7 +227,7 @@ public class LocalThreadService implements ThreadService {
 					List<Thread> newThreads = new ArrayList<Thread>();
 					Thread newer = null;
 					for (Thread t : threads) {
-						if (newer == null && t.getIdentifier().compareTo((Long) criteria.get(ThreadCriteria.NEWERTHAN)) > 0) {
+						if (newer == null && t.getIdentifier().compareTo((Long) criteria.getNewerThan()) > 0) {
 							newer = t;
 							break;
 						}
@@ -235,7 +236,7 @@ public class LocalThreadService implements ThreadService {
 					threads = newThreads;
 				}
 			}
-			if (criteria != null && criteria.containsKey(ThreadCriteria.NOTDELETED)) {
+			if (criteria != null && criteria.getNotDeleted() != null) {
 				// means delete date is null.
 				if (threads.isEmpty()) {
 					EntityCursor<ThreadDPL> allthreads = environment.threadByIdentifier.entities();

@@ -62,9 +62,9 @@ public class DeleteThreadJob extends ManagedQuartzJobBean implements StatefulJob
 			threadService = (ThreadService)appCtx.getBean("localThreadService");
 			postService = (PostService)appCtx.getBean("localPostService");
 		
-			Map<ThreadCriteria, Object> criteria = new HashMap<ThreadCriteria, Object>();
+			ThreadCriteria criteria = new ThreadService.ThreadCriteria();
 			//just give it a value as a marker for the search
-			criteria.put(ThreadCriteria.DELETEQUEUE, "yes please");
+			criteria.setDeleteQueue("yes please");
 			List<Thread> deleteables = threadService.retrieveThreads(criteria);
 			Long now = new Date().getTime();
 			if (deleteables != null){

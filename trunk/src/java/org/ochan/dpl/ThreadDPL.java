@@ -111,6 +111,13 @@ public class ThreadDPL implements Serializable{
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
 	}
+
+	/**
+	 * @param identifier the identifier to set
+	 */
+	public void setIdentifier(Long identifier) {
+		this.identifier = identifier;
+	}
 	
 	
 	

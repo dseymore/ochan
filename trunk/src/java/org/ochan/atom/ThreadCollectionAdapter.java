@@ -159,10 +159,10 @@ public class ThreadCollectionAdapter extends AbstractEntityCollectionAdapter<Thr
 		
 		if (threadId == null){
 			if (o == null || o.getObjectValue() == null || o.isExpired()){
-				List<Category> categories = categoryService.retrieveCategories(null);
+				List<Category> categories = categoryService.retrieveCategories();
 				for (Category c : categories){
-					Map<ThreadCriteria,Object> criteria = new HashMap<ThreadCriteria,Object>();
-					criteria.put(ThreadCriteria.CATEGORY, c.getIdentifier());
+					ThreadCriteria criteria = new ThreadService.ThreadCriteria();
+					criteria.setCategory(c.getIdentifier());
 					List<Thread> threads = threadService.retrieveThreads(criteria);
 					//categories have 0 threads to begin with.. 
 					if (threads != null){

@@ -4,9 +4,12 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 import org.apache.commons.lang.StringUtils;
 import org.ochan.entity.comparator.AscendingThreadComparator;
 
+@XmlRootElement
 public class Thread implements Comparable<Thread> {
 
 	private Long identifier;

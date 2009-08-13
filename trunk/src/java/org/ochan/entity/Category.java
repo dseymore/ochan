@@ -2,6 +2,9 @@ package org.ochan.entity;
 
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement
 public class Category {
 
     private String name;

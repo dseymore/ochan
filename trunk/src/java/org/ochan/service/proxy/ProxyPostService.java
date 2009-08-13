@@ -59,8 +59,8 @@ public class ProxyPostService implements PostService {
 			//hmm.. you're doing it wrong..
 			LOG.fatal("No one should pass in an ID but ME!");
 		}
-		Long identifier = shardConfiguration.getSynchroService().getSync();
 		if (shardConfiguration.isShardEnabled()){
+			Long identifier = shardConfiguration.getSynchroService().getSync();
 			PostService service = get(shardConfiguration.whichHost(identifier));
 			service.createPost(identifier, parentIdentifier, author, subject, email, url, comment, file, filename);
 		}else{

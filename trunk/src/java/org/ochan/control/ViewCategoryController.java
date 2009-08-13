@@ -133,13 +133,13 @@ public class ViewCategoryController extends SimpleFormController {
         	identifier = Long.valueOf(httpServletRequest.getParameter("identifier"));
         	cat = categoryService.getCategory(identifier);
         }else{
-        	cat = categoryService.getCategory(httpServletRequest.getParameter("identifier"));
+        	cat = categoryService.getCategoryByCode(httpServletRequest.getParameter("identifier"));
         	identifier = cat.getIdentifier();
         }
         if (cat != null) {
-            Map<ThreadCriteria, Object> searchCriteria = new HashMap<ThreadCriteria, Object>();
-            searchCriteria.put(ThreadCriteria.CATEGORY, cat.getIdentifier());
-            List<Thread> threads = getThreadService().retrieveThreads(searchCriteria);
+        	ThreadCriteria criteria = new ThreadService.ThreadCriteria();
+			criteria.setCategory(cat.getIdentifier());
+            List<Thread> threads = getThreadService().retrieveThreads(criteria);
             cat.setThreads(threads);
             if (threads != null) {
                 for (Thread t : threads) {
@@ -204,11 +204,11 @@ public class ViewCategoryController extends SimpleFormController {
         // move this to a service?
         ThreadForm tf = (ThreadForm) o;
         
-        //handling limits        
-        final Map<ThreadCriteria, Object> searchCriteria = new HashMap<ThreadCriteria, Object>();
+        //handling limits
         final Long categoryIdentifier = Long.valueOf(tf.getCategoryIdentifier());
-        searchCriteria.put(ThreadCriteria.CATEGORY, categoryIdentifier);
-        final List<Thread> threads = getThreadService().retrieveThreads(searchCriteria);
+        ThreadCriteria criteria = new ThreadService.ThreadCriteria();
+		criteria.setCategory(categoryIdentifier);
+        final List<Thread> threads = getThreadService().retrieveThreads(criteria);
         if (threads != null && DeploymentConfiguration.enforceThreadLimit(threads.size())){
         	CategoryOverThreadLimitException exception = new CategoryOverThreadLimitException();
         	exception.setCategoryId(categoryIdentifier);
@@ -261,7 +261,7 @@ public class ViewCategoryController extends SimpleFormController {
 
         LOG.debug("calling thread service to add thread (form): " + tf);
         try {
-            threadService.createThread(Long.valueOf(tf.getCategoryIdentifier()), tf.getAuthor(), tf.getSubject(), tf.getUrl(), tf.getEmail(), tf.getComment(), bytes, filename);
+            threadService.createThread(null, Long.valueOf(tf.getCategoryIdentifier()), tf.getAuthor(), tf.getSubject(), tf.getUrl(), tf.getEmail(), tf.getComment(), bytes, filename);
         } catch (Exception ex) {
             //FIXME - handle this so the user gets notified NICELY
             LOG.error("Unable to create thread", ex);

@@ -73,12 +73,12 @@ public class ThreadDeathNominationJob extends ManagedQuartzJobBean implements St
 			categoryService = (CategoryService)appCtx.getBean("localCategoryService");
 			
 			//get the category list
-			List<Category> categories = categoryService.retrieveCategories(null);
+			List<Category> categories = categoryService.retrieveCategories();
 			for (Category cat : categories){
 				//get the thread list for each category
-				Map<ThreadCriteria, Object> criteria = new HashMap<ThreadCriteria, Object>();
-				criteria.put(ThreadCriteria.CATEGORY, cat.getIdentifier());
-				criteria.put(ThreadCriteria.NOTDELETED, "pretty please");
+				ThreadCriteria criteria = new ThreadService.ThreadCriteria();
+				criteria.setCategory(cat.getIdentifier());
+				criteria.setNotDeleted("pretty please");
 				List<Thread> threads = threadService.retrieveThreads(criteria);
 				//we have to get the threads because they contain the touch time.
 				if (threads != null){

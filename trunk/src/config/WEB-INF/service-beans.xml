@@ -33,6 +33,7 @@
 	<bean id="localBlobService" class="org.ochan.dpl.service.LocalBlobService">
 		<property name="environment" ref="sleepy"/>
 	</bean>
+	<!-- The proxies -->
 	<bean id="proxyBlobService" class="org.ochan.service.proxy.ProxyBlobService">
 		<property name="shardConfiguration" ref="shardConfiguration"/>
 		<property name="blobServiceClient" ref="blobServiceClientFactory"/>
@@ -43,6 +44,17 @@
 		<property name="postServiceClient" ref="postServiceClientFactory"/>
 		<property name="localPostService" ref="localPostService"/>
 	</bean>
+	<bean id="proxyThreadService" class="org.ochan.service.proxy.ProxyThreadService">
+		<property name="shardConfiguration" ref="shardConfiguration"/>
+		<property name="threadServiceClient" ref="threadServiceClientFactory"/>
+		<property name="localThreadService" ref="localThreadService"/>
+	</bean>
+	<bean id="proxyCategoryService" class="org.ochan.service.proxy.ProxyCategoryService">
+		<property name="shardConfiguration" ref="shardConfiguration"/>
+		<property name="categoryServiceClient" ref="categoryServiceClientFactory"/>
+		<property name="localCategoryService" ref="localCategoryService"/>
+	</bean>
+	<!-- end proxies -->
 	<bean id="localExternalCategoryService" class="org.ochan.dpl.service.LocalExternalCategoryService">
 		<property name="environment" ref="sleepy"/>
 	</bean>
@@ -82,7 +94,7 @@
 
 	<!-- loader utility to help us generate data from a script -->
 	<bean class="org.ochan.util.LoaderUtility" id="loader">
-		<property name="threadService" ref="localThreadService"/>
+		<property name="threadService" ref="proxyThreadService"/>
 		<property name="postService" ref="proxyPostService"/>
 	</bean>	
 	

@@ -104,8 +104,8 @@ public class ThreadSupportImpl implements ThreadSupport {
 	public RemoteThread next(@PathParam("threadId") String threadId){
 		NEXT_THREAD_GET_COUNT++;
 		try{
-			Map<ThreadCriteria, Object> criteria = new HashMap<ThreadCriteria, Object>();
-			criteria.put(ThreadCriteria.NEWERTHAN, Long.valueOf(threadId));
+			ThreadCriteria criteria = new ThreadService.ThreadCriteria();
+			criteria.setNewerThan(Long.valueOf(threadId));
 			
 			List<Thread> threads = threadService.retrieveThreads(criteria);
 			if (threads != null && threads.size() > 0){

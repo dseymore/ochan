@@ -1,14 +1,12 @@
 package org.ochan.service.remote.webservice;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.jws.WebService;
 
 import org.ochan.entity.Category;
 import org.ochan.service.CategoryService;
-import org.ochan.service.CategoryService.CategoryCriteria;
 import org.ochan.service.remote.model.RemoteCategory;
 
 @WebService(endpointInterface = "org.ochan.service.remote.webservice.CategoryList")
@@ -33,8 +31,7 @@ public class CategoryListImpl implements CategoryList {
 	 */
 	@Override
 	public List<RemoteCategory> getCategories() {
-		List<Category> localCategoies = categoryService
-				.retrieveCategories(new HashMap<CategoryCriteria, String>());
+		List<Category> localCategoies = categoryService.retrieveCategories();
 		List<RemoteCategory> categoriesToSend = new ArrayList<RemoteCategory>();
 		if (localCategoies != null) {
 			for (Category cat : localCategoies) {

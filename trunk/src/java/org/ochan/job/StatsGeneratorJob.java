@@ -108,10 +108,10 @@ public class StatsGeneratorJob extends ManagedQuartzJobBean implements StatefulJ
 			long postCount = 0;
 			long imagePostCount = 0;
 			//lets count all the threads, posts, and image posts
-			List<Category> categories = categoryService.retrieveCategories(null);
+			List<Category> categories = categoryService.retrieveCategories();
 			for (Category c : categories){
-				Map<ThreadCriteria,Object> criteria = new HashMap<ThreadCriteria,Object>();
-				criteria.put(ThreadCriteria.CATEGORY, c.getIdentifier());
+				ThreadCriteria criteria = new ThreadService.ThreadCriteria();
+				criteria.setCategory(c.getIdentifier());
 				List<Thread> threads = threadService.retrieveThreads(criteria);
 				//categories have 0 threads to begin with.. 
 				if (threads != null){
