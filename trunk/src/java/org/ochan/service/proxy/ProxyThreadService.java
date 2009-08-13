@@ -1,9 +1,7 @@
 package org.ochan.service.proxy;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -17,7 +15,6 @@ public class ProxyThreadService implements ThreadService {
 	private ShardConfiguration shardConfiguration;
 	private JaxWsProxyFactoryBean threadServiceClient;
 	private ThreadService localThreadService;
-	private Map<String, ThreadService> modulus = new HashMap<String, ThreadService>();
 	
 	private static final Log LOG = LogFactory.getLog(ProxyThreadService.class);
 	
@@ -116,14 +113,11 @@ public class ProxyThreadService implements ThreadService {
 	}
 	
 	private synchronized ThreadService get(String host) {
-		if (modulus.get(host) == null) {
-			threadServiceClient.setAddress(host + "/remote/thread");
-			//resetting
-			threadServiceClient.getClientFactoryBean().setClient(null);
-			ThreadService client = (ThreadService) threadServiceClient.create();
-			modulus.put(host, client);
-		}
-		return modulus.get(host);
+		threadServiceClient.setAddress(host + "/remote/thread");
+		//resetting
+		threadServiceClient.getClientFactoryBean().setClient(null);
+		ThreadService client = (ThreadService) threadServiceClient.create();
+		return client;
 	}
 
 	/**

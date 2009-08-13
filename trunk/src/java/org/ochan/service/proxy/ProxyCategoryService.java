@@ -1,9 +1,7 @@
 package org.ochan.service.proxy;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -22,7 +20,6 @@ public class ProxyCategoryService implements CategoryService {
 	private ShardConfiguration shardConfiguration;
 	private JaxWsProxyFactoryBean categoryServiceClient;
 	private CategoryService localCategoryService;
-	private Map<String, CategoryService> modulus = new HashMap<String, CategoryService>();
 	
 	private static final Log LOG = LogFactory.getLog(ProxyCategoryService.class);
 	
@@ -115,14 +112,11 @@ public class ProxyCategoryService implements CategoryService {
 
 	
 	private synchronized CategoryService get(String host) {
-		if (modulus.get(host) == null) {
-			categoryServiceClient.setAddress(host + "/remote/allCategory");
-			//resetting
-			categoryServiceClient.getClientFactoryBean().setClient(null);
-			CategoryService client = (CategoryService) categoryServiceClient.create();
-			modulus.put(host, client);
-		}
-		return modulus.get(host);
+		categoryServiceClient.setAddress(host + "/remote/allCategory");
+		//resetting
+		categoryServiceClient.getClientFactoryBean().setClient(null);
+		CategoryService client = (CategoryService) categoryServiceClient.create();
+		return client;
 	}
 
 	/**

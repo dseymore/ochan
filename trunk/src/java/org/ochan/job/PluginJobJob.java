@@ -51,7 +51,7 @@ public class PluginJobJob extends ManagedQuartzJobBean implements StatefulJob {
 		ThreadService threadService = null;
 		try{
 			ApplicationContext appCtx = getApplicationContext(context);
-			threadService = (ThreadService)appCtx.getBean("localThreadService");
+			threadService = (ThreadService)appCtx.getBean("proxyThreadService");
 		}catch(Exception e){
 			LOG.fatal("Unable to grab the thread service.",e);
 		}

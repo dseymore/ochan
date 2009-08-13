@@ -59,8 +59,8 @@ public class DeleteThreadJob extends ManagedQuartzJobBean implements StatefulJob
 	public void executeOnSchedule(JobExecutionContext context) {
 		try{
 			ApplicationContext appCtx = getApplicationContext(context);
-			threadService = (ThreadService)appCtx.getBean("localThreadService");
-			postService = (PostService)appCtx.getBean("localPostService");
+			threadService = (ThreadService)appCtx.getBean("proxyThreadService");
+			postService = (PostService)appCtx.getBean("proxyPostService");
 		
 			ThreadCriteria criteria = new ThreadService.ThreadCriteria();
 			//just give it a value as a marker for the search

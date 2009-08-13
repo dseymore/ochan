@@ -20,7 +20,6 @@ public class ProxyPostService implements PostService {
 	private ShardConfiguration shardConfiguration;
 	private JaxWsProxyFactoryBean postServiceClient;
 	private PostService localPostService;
-	private Map<String, PostService> modulus = new HashMap<String, PostService>();
 
 	private static final Log LOG = LogFactory.getLog(ProxyPostService.class);
 
@@ -121,14 +120,11 @@ public class ProxyPostService implements PostService {
 	}
 
 	private synchronized PostService get(String host) {
-		if (modulus.get(host) == null) {
-			postServiceClient.setAddress(host + "/remote/post");
-			//resetting
-			postServiceClient.getClientFactoryBean().setClient(null);
-			PostService client = (PostService) postServiceClient.create();
-			modulus.put(host, client);
-		}
-		return modulus.get(host);
+		postServiceClient.setAddress(host + "/remote/post");
+		//resetting
+		postServiceClient.getClientFactoryBean().setClient(null);
+		PostService client = (PostService) postServiceClient.create();
+		return client;
 	}
 
 }
