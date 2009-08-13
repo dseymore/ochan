@@ -72,6 +72,33 @@ public class ProxyThreadService implements ThreadService {
 					}
 				}
 			}
+			
+			//now we have to normalize some of the scans..
+			if (criteria.getMax() != null){
+				List<Thread> nowTheThreads = new ArrayList<Thread>();
+				//find the max
+				Thread max = null;
+				for (Thread t : threads) {
+					if (max == null || t.getIdentifier().compareTo(max.getIdentifier()) > 0) {
+						max = t;
+					}
+				}
+				nowTheThreads.add(max);
+				threads = nowTheThreads;
+			}
+			if (criteria.getNewerThan() != null){
+				List<Thread> nowTheThreads = new ArrayList<Thread>();
+				Thread newer = null;
+				for (Thread t : threads) {
+					if (newer == null && t.getIdentifier().compareTo((Long) criteria.getNewerThan()) > 0) {
+						newer = t;
+						break;
+					}
+				}
+				nowTheThreads.add(newer);
+				threads = nowTheThreads;
+			}
+			
 			return threads;
 		} else {
 			return localThreadService.retrieveThreads(criteria);
