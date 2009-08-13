@@ -85,10 +85,10 @@ public class StatsGeneratorJob extends ManagedQuartzJobBean implements StatefulJ
 		// do the work!
 		try{
 			ApplicationContext appCtx = getApplicationContext(context);
-			threadService = (ThreadService)appCtx.getBean("localThreadService");
-			postService = (PostService)appCtx.getBean("localPostService");
-			blobService = (BlobService)appCtx.getBean("localBlobService");
-			categoryService = (CategoryService)appCtx.getBean("localCategoryService");
+			threadService = (ThreadService)appCtx.getBean("proxyThreadService");
+			postService = (PostService)appCtx.getBean("proxyPostService");
+			blobService = (BlobService)appCtx.getBean("proxyBlobService");
+			categoryService = (CategoryService)appCtx.getBean("proxyCategoryService");
 			
 			//total size of image content
 			long size = 0;

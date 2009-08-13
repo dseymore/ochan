@@ -68,9 +68,9 @@ public class ThreadDeathNominationJob extends ManagedQuartzJobBean implements St
 		try{
 			int countBeforeNominating = Integer.valueOf(getThreadCountBeforeNominating()).intValue();
 			ApplicationContext appCtx = getApplicationContext(context);
-			threadService = (ThreadService)appCtx.getBean("localThreadService");
-			postService = (PostService)appCtx.getBean("localPostService");
-			categoryService = (CategoryService)appCtx.getBean("localCategoryService");
+			threadService = (ThreadService)appCtx.getBean("proxyThreadService");
+			postService = (PostService)appCtx.getBean("proxyPostService");
+			categoryService = (CategoryService)appCtx.getBean("proxyCategoryService");
 			
 			//get the category list
 			List<Category> categories = categoryService.retrieveCategories();

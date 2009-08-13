@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.jws.WebService;
 import javax.xml.bind.annotation.XmlElementRef;
+import javax.xml.bind.annotation.XmlMimeType;
 
 import org.ochan.entity.Post;
 import org.ochan.entity.Thread;
@@ -36,6 +37,7 @@ public interface PostService {
      * @param file (null if not an image post)
      * @param filename (null if not an image post)
      */
+    @XmlMimeType("application/octet-stream")
     public void createPost(Long thisIdentifer, Long parentIdentifier, String author, String subject, String email, String url, String comment, Byte[] file, String filename);
     
     

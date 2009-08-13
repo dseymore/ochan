@@ -1,9 +1,7 @@
 package org.ochan.service.proxy;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -16,7 +14,6 @@ public class ProxyBlobService implements BlobService {
 	private ShardConfiguration shardConfiguration; 
 	private JaxWsProxyFactoryBean blobServiceClient;
 	private BlobService localBlobService;
-	private Map<String, BlobService> modulus = new HashMap<String, BlobService>();
 	
 	private static final Log LOG = LogFactory.getLog(ProxyBlobService.class);
 		
@@ -103,13 +100,10 @@ public class ProxyBlobService implements BlobService {
 	}
 
 	private synchronized BlobService get(String host){
-		if (modulus.get(host) == null){
-			blobServiceClient.setAddress(host + "/remote/blob");
-			//resetting
-			blobServiceClient.getClientFactoryBean().setClient(null);
-			BlobService client = (BlobService)blobServiceClient.create();
-			modulus.put(host, client);
-		}
-		return modulus.get(host);
+		blobServiceClient.setAddress(host + "/remote/blob");
+		//resetting
+		blobServiceClient.getClientFactoryBean().setClient(null);
+		BlobService client = (BlobService)blobServiceClient.create();
+		return client;
 	}
 }
