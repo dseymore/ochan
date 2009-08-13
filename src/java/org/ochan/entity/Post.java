@@ -3,8 +3,13 @@ package org.ochan.entity;
 import java.util.Comparator;
 import java.util.Date;
 
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSeeAlso;
+
 import org.ochan.entity.comparator.AscendingPostComparator;
 
+@XmlRootElement
+@XmlSeeAlso(value={TextPost.class,ImagePost.class})
 public abstract class Post implements Comparable<Post> {
 
 	private Long identifier;

@@ -79,7 +79,7 @@
 		<property name="categoryService" ref="localCategoryService" />
 		<property name="threadService" ref="localThreadService" />
 		<property name="externalCategoryService" ref="localExternalCategoryService"/>
-		<property name="postService" ref="localPostService" />
+		<property name="postService" ref="proxyPostService" />
 		<!--        FIXME - make the service not injected, but, inject a factory that decides whether local or external service-->
 		<property name="cache" ref="threadCache"/>
 		<property name="announcementService" ref="localAnnouncementService"/>
@@ -93,7 +93,7 @@
 		<property name="sessionForm" value="true" />
 		<property name="viewName" value="viewThread" />
 		<property name="threadService" ref="localThreadService" />
-		<property name="postService" ref="localPostService" />
+		<property name="postService" ref="proxyPostService" />
 		<property name="categoryService" ref="localCategoryService" />
 		<!--        FIXME - make the service not injected, but, inject a factory that decides whether local or external service-->
 	</bean>
@@ -107,19 +107,19 @@
 		<property name="viewName" value="viewCategory" />
 		<property name="categoryService" ref="localCategoryService" />
 		<property name="threadService" ref="localThreadService" />
-		<property name="postService" ref="localPostService" />
+		<property name="postService" ref="proxyPostService" />
 		<!--        FIXME - make the service not injected, but, inject a factory that decides whether local or external service-->
 	</bean>
 	
 	<bean name="thumbnailController" class="org.ochan.control.ThumbnailController">
-		<property name="postService" ref="localPostService" />
-		<property name="blobService" ref="localBlobService"/>
+		<property name="postService" ref="proxyPostService" />
+		<property name="blobService" ref="proxyBlobService"/>
 		<!--        FIXME - make the service not injected, but, inject a factory that decides whether local or external service-->
 	</bean>
 	
 	<bean name="zipController" class="org.ochan.control.ThreadZipController">
-		<property name="postService" ref="localPostService" />
-		<property name="blobService" ref="localBlobService"/>
+		<property name="postService" ref="proxyPostService" />
+		<property name="blobService" ref="proxyBlobService"/>
 		<!--        FIXME - make the service not injected, but, inject a factory that decides whether local or external service-->
 	</bean>
 	

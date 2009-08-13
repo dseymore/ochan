@@ -139,12 +139,13 @@ public class LocalBlobService implements BlobService {
 	}
 
 	@Override
-	public Long saveBlob(Byte[] byteArray) {
+	public Long saveBlob(Byte[] byteArray, Long id) {
 		Split split = saveStopWatch.start();
 		createCount++;
 		try {
 			BlobDPL dpl = new BlobDPL();
 			dpl.setData(byteArray);
+			dpl.setIdentifier(id);
 			environment.blobByIdentifier.put(dpl);
 			BlobStatDPL stat = new BlobStatDPL();
 			stat.setBlobIdentifier(dpl.getIdentifier());

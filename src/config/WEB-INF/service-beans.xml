@@ -24,14 +24,24 @@
 	</bean>
 	<bean id="localPostService" class="org.ochan.dpl.service.LocalPostService">
 		<property name="environment" ref="sleepy"/>
-		<property name="blobService" ref="localBlobService"/>
+		<property name="blobService" ref="proxyBlobService"/>
 	</bean>
 	<bean id="localThreadService" class="org.ochan.dpl.service.LocalThreadService">
 		<property name="environment" ref="sleepy"/>
-		<property name="postService" ref="localPostService"/>
+		<property name="postService" ref="proxyPostService"/>
 	</bean>
 	<bean id="localBlobService" class="org.ochan.dpl.service.LocalBlobService">
 		<property name="environment" ref="sleepy"/>
+	</bean>
+	<bean id="proxyBlobService" class="org.ochan.service.proxy.ProxyBlobService">
+		<property name="shardConfiguration" ref="shardConfiguration"/>
+		<property name="blobServiceClient" ref="blobServiceClientFactory"/>
+		<property name="localBlobService" ref="localBlobService"/>
+	</bean>
+	<bean id="proxyPostService" class="org.ochan.service.proxy.ProxyPostService">
+		<property name="shardConfiguration" ref="shardConfiguration"/>
+		<property name="postServiceClient" ref="postServiceClientFactory"/>
+		<property name="localPostService" ref="localPostService"/>
 	</bean>
 	<bean id="localExternalCategoryService" class="org.ochan.dpl.service.LocalExternalCategoryService">
 		<property name="environment" ref="sleepy"/>
@@ -73,7 +83,7 @@
 	<!-- loader utility to help us generate data from a script -->
 	<bean class="org.ochan.util.LoaderUtility" id="loader">
 		<property name="threadService" ref="localThreadService"/>
-		<property name="postService" ref="localPostService"/>
+		<property name="postService" ref="proxyPostService"/>
 	</bean>	
 	
 	<!--  Quartz Jobs! -->

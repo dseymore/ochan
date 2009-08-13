@@ -2,6 +2,9 @@ package org.ochan.entity;
 
 import java.util.Date;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement(name="image")
 public class ImagePost extends TextPost{
     
 	private Long imageIdentifier;

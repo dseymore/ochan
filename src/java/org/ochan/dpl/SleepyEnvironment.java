@@ -33,6 +33,8 @@ public class SleepyEnvironment {
 	
 	public PrimaryIndex<Long, BlobStatDPL> blobStatisticsByIdentifier;
 	public SecondaryIndex<Long, Long, BlobStatDPL> blobStatisticsByBlobIdentifier;
+	
+	public PrimaryIndex<Long, SynchroDPL> synchroByIdentifier;
 
 	public SleepyEnvironment() {
 		try {
@@ -68,6 +70,8 @@ public class SleepyEnvironment {
 			
 			blobStatisticsByIdentifier = entityStore.getPrimaryIndex(Long.class, BlobStatDPL.class);
 			blobStatisticsByBlobIdentifier = entityStore.getSecondaryIndex(blobStatisticsByIdentifier, Long.class, "blobIdentifier");
+			
+			synchroByIdentifier = entityStore.getPrimaryIndex(Long.class, SynchroDPL.class);
 			
 		} catch (Exception e) {
 			LOG.error("Unable to start the database.", e);

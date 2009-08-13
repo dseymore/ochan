@@ -39,6 +39,13 @@ public class BlobDPL implements Serializable{
 		return identifier;
 	}
 
+	/**
+	 * @param identifier the identifier to set
+	 */
+	public void setIdentifier(Long identifier) {
+		this.identifier = identifier;
+	}
+
 	
 	
 }
