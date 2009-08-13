@@ -2,6 +2,9 @@ package org.ochan.entity;
 
 import java.util.Date;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement(name="text")
 public class TextPost extends Post{
 
     private String comment;

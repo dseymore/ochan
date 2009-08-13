@@ -116,13 +116,13 @@ public class LoaderUtility {
 				Byte[] bytes = ArrayUtils.toObject(bits);
 				read.stop();
 				Split create = createPostTime.start();
-				postService.createPost(threadId, "Author", "", "", "", "", bytes, f.getName());
+				postService.createPost(null, threadId, "Author", "", "", "", "", bytes, f.getName());
 				create.stop();
 				fis.close();
 			}else{
 				//there is no file
 				Split create = createPostTime.start();
-				postService.createPost(threadId, "Author", "", "", "", "", null, null);
+				postService.createPost(null, threadId, "Author", "", "", "", "", null, null);
 				create.stop();
 			}
 		}catch(Exception e){

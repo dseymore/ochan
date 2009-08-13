@@ -2,9 +2,12 @@ package org.ochan.service;
 
 import java.util.List;
 
+import javax.jws.WebService;
+
+@WebService
 public interface BlobService {
 	
-	public Long saveBlob(Byte[] byteArray);
+	public Long saveBlob(Byte[] byteArray, Long id);
 	
 	public Byte[] getBlob(Long identifier);
 

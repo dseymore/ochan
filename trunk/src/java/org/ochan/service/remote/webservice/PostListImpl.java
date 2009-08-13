@@ -1,5 +1,6 @@
 package org.ochan.service.remote.webservice;
 
+import java.util.Collections;
 import java.util.List;
 
 import javax.ws.rs.GET;
@@ -96,6 +97,7 @@ public class PostListImpl implements PostList {
 				org.ochan.entity.Thread t = threadService.getThread(p.getParent().getIdentifier());
 				//and then see if there is one greater than the current id	
 				t.setPosts(getPostService().retrieveThreadPosts(t));
+				Collections.sort(t.getPosts());
 				List<Post> posts = t.getPosts();
 				RemotePost remote = null;
 				boolean next = false;

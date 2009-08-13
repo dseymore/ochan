@@ -215,6 +215,13 @@ public class PostDPL implements Serializable{
 		this.fileSize = fileSize;
 	}
 
+	/**
+	 * @param identifier the identifier to set
+	 */
+	public void setIdentifier(Long identifier) {
+		this.identifier = identifier;
+	}
+
 	
 	
 	

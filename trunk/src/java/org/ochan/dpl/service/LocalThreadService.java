@@ -100,7 +100,7 @@ public class LocalThreadService implements ThreadService {
 			// save the thread
 			environment.threadByIdentifier.put(thread);
 			// save the post
-			postService.createPost(thread.getIdentifier(), author, subject, email, url, content, file, filename);
+			postService.createPost(null, thread.getIdentifier(), author, subject, email, url, content, file, filename);
 			//and then update. 
 			thread.setEnabled(true);
 			environment.threadByIdentifier.put(thread);

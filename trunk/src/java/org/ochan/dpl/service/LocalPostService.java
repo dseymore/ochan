@@ -127,10 +127,11 @@ public class LocalPostService implements PostService {
 	}
 
 	@Override
-	public void createPost(Long parentIdentifier, String author, String subject, String email, String url, String comment, Byte[] file, String filename) {
+	public void createPost(Long thisIdentifier, Long parentIdentifier, String author, String subject, String email, String url, String comment, Byte[] file, String filename) {
 		createCount++;
 		try {
 			PostDPL post = new PostDPL();
+			post.setIdentifier(thisIdentifier);
 			post.setParent(parentIdentifier);
 			post.setAuthor(computerAuthor(author));
 			post.setSubject(subject);
@@ -144,7 +145,7 @@ public class LocalPostService implements PostService {
 				String fileSize = FileUtils.byteCountToDisplaySize(file.length);
 				post.setFileSize(fileSize);
 				post.setType(PostType.IMAGE);
-				post.setImageIdentifier(blobService.saveBlob(file));
+				post.setImageIdentifier(blobService.saveBlob(file, null));
 			} else {
 				post.setType(PostType.TEXT);
 			}
@@ -183,15 +184,6 @@ public class LocalPostService implements PostService {
 		return null;
 	}
 
-	@Override
-	public List<Post> retrievePosts(Map<PostCriteria, String> criteria) {
-		try {
-			// FIXME - never even used.. why does the API have this?
-		} catch (Exception e) {
-			LOG.error("Unable to retrieve posts.", e);
-		}
-		return null;
-	}
 
 	@Override
 	public List<Post> retrieveThreadPosts(Thread parent) {

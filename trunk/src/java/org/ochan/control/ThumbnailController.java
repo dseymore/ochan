@@ -497,7 +497,7 @@ public class ThumbnailController implements Controller {
 			//store the thumbnail data in the post and persist
 			{
 				Byte[] thumbData = ArrayUtils.toObject(datum);
-				imagePost.setThumbnailIdentifier(blobService.saveBlob(thumbData));
+				imagePost.setThumbnailIdentifier(blobService.saveBlob(thumbData, null));
 				postService.updatePost(imagePost);
 			}
 			long endThumb = new Date().getTime();

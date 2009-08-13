@@ -3,6 +3,7 @@ package org.ochan.control;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -136,6 +137,7 @@ public class ViewThreadController extends SimpleFormController {
 		Thread t = threadService.getThread(identifier);
 		if (t != null){
 			t.setPosts(getPostService().retrieveThreadPosts(t));
+			Collections.sort(t.getPosts());
 			//ok, lets walk through the posts, and handle the special html for linking between posts.. TODO - make this a better implementation..
 			for (Post p : t.getPosts()){
 				TextPost tp = (TextPost)p;
@@ -230,7 +232,7 @@ public class ViewThreadController extends SimpleFormController {
 	        }
 			
 			//normal image upload or url post
-			postService.createPost(Long.valueOf(prf.getParent()), prf.getAuthor(), prf.getSubject(), prf.getEmail(), prf.getUrl(), prf.getComment(), bytes, filename);
+			postService.createPost(null, Long.valueOf(prf.getParent()), prf.getAuthor(), prf.getSubject(), prf.getEmail(), prf.getUrl(), prf.getComment(), bytes, filename);
 		}else{
 			ByteArrayInputStream bais = new ByteArrayInputStream(prf.getZipFile().getBytes());
 			ZipInputStream zip = new ZipInputStream(bais);
@@ -257,7 +259,7 @@ public class ViewThreadController extends SimpleFormController {
 				zip.closeEntry();
 				data = baos.toByteArray();
 				Byte[] bytes = ArrayUtils.toObject(data);
-				postService.createPost(Long.valueOf(prf.getParent()), prf.getAuthor(), prf.getSubject(), prf.getEmail(), prf.getUrl(), prf.getComment(), bytes, null);
+				postService.createPost(null, Long.valueOf(prf.getParent()), prf.getAuthor(), prf.getSubject(), prf.getEmail(), prf.getUrl(), prf.getComment(), bytes, null);
 				entry = zip.getNextEntry();
 			}
 		}
