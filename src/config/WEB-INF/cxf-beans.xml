@@ -68,6 +68,21 @@ http://abdera.apache.org http://abdera.apache.org/schemas/abdera-spring.xsd">
 		</bean>
 	
 	<!--  end post service -->
+	
+	<!--  Thread Service -->
+		<jaxws:endpoint id="threadServiceClient" implementor="#localThreadService" address="/thread" />
+		<bean id="threadServiceClientFactory" class="org.apache.cxf.jaxws.JaxWsProxyFactoryBean">
+			<property name="serviceClass" value="org.ochan.service.ThreadService" />
+			<property name="address" value="http://localhost:8080/remote/thread" />
+		</bean>
+	<!--  end thread service -->
+	<!--  Category Service -->
+		<jaxws:endpoint id="categoryServiceClient" implementor="#localCategoryService" address="/allCategory" />
+		<bean id="categoryServiceClientFactory" class="org.apache.cxf.jaxws.JaxWsProxyFactoryBean">
+			<property name="serviceClass" value="org.ochan.service.CategoryService" />
+			<property name="address" value="http://localhost:8080/remote/allCategory" />
+		</bean>
+	<!--  end category service -->
 		
 	<bean id="shardConfiguration" class="org.ochan.service.proxy.config.ShardConfiguration">
 		<property name="synchro" ref="synchroClientFactory"/>
@@ -77,13 +92,13 @@ http://abdera.apache.org http://abdera.apache.org/schemas/abdera-spring.xsd">
 	<!--  no client ATM -->
 	<bean id="postListBean" class="org.ochan.service.remote.webservice.PostListImpl">
 		<property name="postService" ref="proxyPostService" />
-		<property name="threadService" ref="localThreadService" />
+		<property name="threadService" ref="proxyThreadService" />
 		<property name="cache" ref="postListCache"/>
 	</bean>
 	<!--  Thread Support Service -->
 	<!--  no client ATM -->
 	<bean id="threadSupportBean" class="org.ochan.service.remote.webservice.ThreadSupportImpl">
-		<property name="threadService" ref="localThreadService" />
+		<property name="threadService" ref="proxyThreadService" />
 		<property name="postService" ref="proxyPostService" />
 	</bean>
 	<!-- Statistics Service -->
@@ -105,8 +120,8 @@ http://abdera.apache.org http://abdera.apache.org/schemas/abdera-spring.xsd">
 <!-- setting the href here doesn't work.. it gets encoded.. which is fail. -->
 <!--		<property name="href" value="threads"/>-->
 		<property name="postService" ref="proxyPostService" />
-		<property name="threadService" ref="localThreadService"/>
-		<property name="categoryService" ref="localCategoryService"/>
+		<property name="threadService" ref="proxyThreadService"/>
+		<property name="categoryService" ref="proxyCategoryService"/>
 		<property name="cache" ref="threadCache"/>
 	</bean>
 	<!-- Abdera -->

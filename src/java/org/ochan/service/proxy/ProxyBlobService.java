@@ -92,8 +92,8 @@ public class ProxyBlobService implements BlobService {
 			//hmm.. you're doing it wrong..
 			LOG.fatal("No one should pass in an ID but ME!");
 		}
-		Long identifier = shardConfiguration.getSynchroService().getSync();
 		if (shardConfiguration.isShardEnabled()){
+			Long identifier = shardConfiguration.getSynchroService().getSync();
 			BlobService service = get(shardConfiguration.whichHost(identifier));
 			return service.saveBlob(byteArray, identifier);
 		}else{

@@ -67,6 +67,12 @@ public class CategoryDPL implements Serializable{
 	public void setCode(String code) {
 		this.code = code;
 	}
+	/**
+	 * @param identifier the identifier to set
+	 */
+	public void setIdentifier(Long identifier) {
+		this.identifier = identifier;
+	}
 	
 	
 

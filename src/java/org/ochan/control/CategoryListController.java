@@ -26,7 +26,6 @@ import org.ochan.service.CategoryService;
 import org.ochan.service.ExternalCategoryService;
 import org.ochan.service.PostService;
 import org.ochan.service.ThreadService;
-import org.ochan.service.CategoryService.CategoryCriteria;
 import org.ochan.service.ThreadService.ThreadCriteria;
 import org.springframework.jmx.export.annotation.ManagedAttribute;
 import org.springframework.jmx.export.annotation.ManagedResource;
@@ -147,11 +146,11 @@ public class CategoryListController implements Controller {
 	 */
 	public ModelAndView handleRequest(HttpServletRequest arg0, HttpServletResponse arg1) throws Exception {
 		numberOfRequests++;
-		List<Category> categories = getCategoryService().retrieveCategories(new HashMap<CategoryCriteria, String>());
+		List<Category> categories = getCategoryService().retrieveCategories();
 		for (Category category : categories){
-			Map<ThreadCriteria,Object> searchCriteria = new HashMap<ThreadCriteria,Object>();
-			searchCriteria.put(ThreadCriteria.CATEGORY, category.getIdentifier());
-			category.setThreads(getThreadService().retrieveThreads(searchCriteria));
+			ThreadCriteria criteria = new ThreadService.ThreadCriteria();
+			criteria.setCategory(category.getIdentifier());
+			category.setThreads(getThreadService().retrieveThreads(criteria));
 		}
 		
 		List<ExternalCategory> externalList = getExternalCategoryService().retrieveCategories(null);
@@ -163,10 +162,10 @@ public class CategoryListController implements Controller {
 		List<Thread> toreturn = new ArrayList<Thread>();
 		Element o = cache.get("1");
 		if (o == null || o.getObjectValue() == null || o.isExpired()){
-			List<Category> cats = categoryService.retrieveCategories(null);
+			List<Category> cats = categoryService.retrieveCategories();
 			for (Category c : cats){
-				Map<ThreadCriteria,Object> criteria = new HashMap<ThreadCriteria,Object>();
-				criteria.put(ThreadCriteria.CATEGORY, c.getIdentifier());
+				ThreadCriteria criteria = new ThreadService.ThreadCriteria();
+				criteria.setCategory(c.getIdentifier());
 				List<Thread> threads = threadService.retrieveThreads(criteria);
 				//categories have 0 threads to begin with.. 
 				if (threads != null){
@@ -222,9 +221,9 @@ public class CategoryListController implements Controller {
 		
 		//find the current most-recent thread's id
 		{
-			Map<ThreadCriteria, Object> critiera = new HashMap<ThreadCriteria, Object>();
-			critiera.put(ThreadCriteria.MAX, "1");
-			List<Thread> xyz = threadService.retrieveThreads(critiera);
+			ThreadCriteria criteria = new ThreadService.ThreadCriteria();
+			criteria.setMax("1");
+			List<Thread> xyz = threadService.retrieveThreads(criteria);
 			if (xyz != null && xyz.size() > 0){
 				controlModel.put("currentThread",xyz.get(0).getIdentifier());
 			}else{

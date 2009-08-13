@@ -87,13 +87,13 @@ public class LoaderUtility {
 				Byte[] bytes = ArrayUtils.toObject(bits);
 				read.stop();
 				Split create = createThreadTime.start();
-				threadService.createThread(categoryId, "Author", "Subject", "http://www.google.com", "email", "Content", bytes, f.getName());
+				threadService.createThread(null, categoryId, "Author", "Subject", "http://www.google.com", "email", "Content", bytes, f.getName());
 				create.stop();
 				fis.close();
 			}else{
 				//there is no file
 				Split create = createThreadTime.start();
-				threadService.createThread(categoryId, "Author", "Subject", "http://www.google.com", "email", "Content", null, null);
+				threadService.createThread(null, categoryId, "Author", "Subject", "http://www.google.com", "email", "Content", null, null);
 				create.stop();
 			}
 		}catch(Exception e){

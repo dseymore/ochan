@@ -76,8 +76,8 @@
 	
 	<bean name="categoryListController" class="org.ochan.control.CategoryListController">
 		<property name="viewName" value="listCategory" />
-		<property name="categoryService" ref="localCategoryService" />
-		<property name="threadService" ref="localThreadService" />
+		<property name="categoryService" ref="proxyCategoryService" />
+		<property name="threadService" ref="proxyThreadService" />
 		<property name="externalCategoryService" ref="localExternalCategoryService"/>
 		<property name="postService" ref="proxyPostService" />
 		<!--        FIXME - make the service not injected, but, inject a factory that decides whether local or external service-->
@@ -92,9 +92,9 @@
 		<property name="bindOnNewForm" value="true" />
 		<property name="sessionForm" value="true" />
 		<property name="viewName" value="viewThread" />
-		<property name="threadService" ref="localThreadService" />
+		<property name="threadService" ref="proxyThreadService" />
 		<property name="postService" ref="proxyPostService" />
-		<property name="categoryService" ref="localCategoryService" />
+		<property name="categoryService" ref="proxyCategoryService" />
 		<!--        FIXME - make the service not injected, but, inject a factory that decides whether local or external service-->
 	</bean>
 	
@@ -105,8 +105,8 @@
 		<property name="bindOnNewForm" value="true" />
 		<property name="sessionForm" value="true" />
 		<property name="viewName" value="viewCategory" />
-		<property name="categoryService" ref="localCategoryService" />
-		<property name="threadService" ref="localThreadService" />
+		<property name="categoryService" ref="proxyCategoryService" />
+		<property name="threadService" ref="proxyThreadService" />
 		<property name="postService" ref="proxyPostService" />
 		<!--        FIXME - make the service not injected, but, inject a factory that decides whether local or external service-->
 	</bean>
