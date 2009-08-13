@@ -187,18 +187,19 @@ public class LocalPostService implements PostService {
 
 	@Override
 	public List<Post> retrieveThreadPosts(Thread parent) {
+		List<Post> posts = new ArrayList<Post>();
 		// capture start of call
 		long start = new Date().getTime();
-
-		List<Post> posts = new ArrayList<Post>();
-		try {
-			EntityCursor<PostDPL> postDPL = environment.postByThread.subIndex(parent.getIdentifier()).entities();
-			for (PostDPL dpl : postDPL) {
-				posts.add(map(dpl));
+		if (parent != null && parent.getIdentifier() != null){
+			try {
+				EntityCursor<PostDPL> postDPL = environment.postByThread.subIndex(parent.getIdentifier()).entities();
+				for (PostDPL dpl : postDPL) {
+					posts.add(map(dpl));
+				}
+				postDPL.close();
+			} catch (Exception e) {
+				LOG.error("Unable to retrieve thread post.", e);
 			}
-			postDPL.close();
-		} catch (Exception e) {
-			LOG.error("Unable to retrieve thread post.", e);
 		}
 		// capture end of call
 		long end = new Date().getTime();
