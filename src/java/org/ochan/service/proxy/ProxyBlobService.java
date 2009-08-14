@@ -3,6 +3,9 @@ package org.ochan.service.proxy;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.sf.ehcache.Ehcache;
+import net.sf.ehcache.Element;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
@@ -14,6 +17,7 @@ public class ProxyBlobService implements BlobService {
 	private ShardConfiguration shardConfiguration; 
 	private JaxWsProxyFactoryBean blobServiceClient;
 	private BlobService localBlobService;
+	private Ehcache cache;
 	
 	private static final Log LOG = LogFactory.getLog(ProxyBlobService.class);
 		
@@ -40,9 +44,20 @@ public class ProxyBlobService implements BlobService {
 		this.localBlobService = localBlobService;
 	}
 
+	/**
+	 * @param cache the cache to set
+	 */
+	public void setCache(Ehcache cache) {
+		this.cache = cache;
+	}
+	
 	@Override
 	public void deleteBlob(Long identifier) {
 		if (shardConfiguration.isShardEnabled()){
+			Element o = cache.get(identifier);
+			if (o != null || o.getObjectValue() != null){
+				cache.remove(o);
+			}
 			BlobService service = get(shardConfiguration.whichHost(identifier));
 			service.deleteBlob(identifier);
 		}else{
@@ -66,8 +81,14 @@ public class ProxyBlobService implements BlobService {
 	@Override
 	public Byte[] getBlob(Long identifier) {
 		if (shardConfiguration.isShardEnabled()){
+			Element o = cache.get(identifier);
+			if (o != null && o.getObjectValue() != null && !o.isExpired()){
+				return (Byte[])o.getObjectValue();
+			}
 			BlobService service = get(shardConfiguration.whichHost(identifier));
-			return service.getBlob(identifier);
+			Byte[] array = service.getBlob(identifier);
+			cache.put(new Element(identifier, array));
+			return array;
 		}else{
 			return localBlobService.getBlob(identifier);
 		}

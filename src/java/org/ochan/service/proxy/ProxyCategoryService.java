@@ -3,6 +3,9 @@ package org.ochan.service.proxy;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.sf.ehcache.Ehcache;
+import net.sf.ehcache.Element;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
@@ -20,6 +23,7 @@ public class ProxyCategoryService implements CategoryService {
 	private ShardConfiguration shardConfiguration;
 	private JaxWsProxyFactoryBean categoryServiceClient;
 	private CategoryService localCategoryService;
+	private Ehcache cache;
 	
 	private static final Log LOG = LogFactory.getLog(ProxyCategoryService.class);
 	
@@ -51,6 +55,10 @@ public class ProxyCategoryService implements CategoryService {
 	@Override
 	public void deleteCategory(Long identifier) {
 		if (shardConfiguration.isShardEnabled()) {
+			Element o = cache.get(identifier);
+			if (o != null || o.getObjectValue() != null){
+				cache.remove(o);
+			}
 			CategoryService service = get(shardConfiguration.whichHost(identifier));
 			service.deleteCategory(identifier);
 		} else {
@@ -61,8 +69,14 @@ public class ProxyCategoryService implements CategoryService {
 	@Override
 	public Category getCategory(Long identifier) {
 		if (shardConfiguration.isShardEnabled()) {
+			Element o = cache.get(identifier);
+			if (o != null && o.getObjectValue() != null && !o.isExpired()){
+				return (Category)o.getObjectValue();
+			}
 			CategoryService service = get(shardConfiguration.whichHost(identifier));
-			return service.getCategory(identifier);
+			Category cat = service.getCategory(identifier);
+			cache.put(new Element(identifier, cat));
+			return cat;
 		} else {
 			return localCategoryService.getCategory(identifier);
 		}
@@ -71,6 +85,10 @@ public class ProxyCategoryService implements CategoryService {
 	@Override
 	public Category getCategoryByCode(String code) {
 		if (shardConfiguration.isShardEnabled()) {
+			Element o = cache.get(code);
+			if (o != null && o.getObjectValue() != null && !o.isExpired()){
+				return (Category)o.getObjectValue();
+			}
 			for(String hosts : shardConfiguration.getShardHosts()){
 				CategoryService service = get(hosts);
 				if (service == null){
@@ -78,6 +96,7 @@ public class ProxyCategoryService implements CategoryService {
 				}else{
 					Category cat = service.getCategoryByCode(code);
 					if (cat != null){
+						cache.put(new Element(code, cat));
 						return cat;
 					}
 				}
@@ -92,6 +111,10 @@ public class ProxyCategoryService implements CategoryService {
 	public List<Category> retrieveCategories() {
 		List<Category> cats = new ArrayList<Category>();
 		if (shardConfiguration.isShardEnabled()) {
+			Element o = cache.get("ALL");
+			if (o != null && o.getObjectValue() != null && !o.isExpired()){
+				return (List<Category>)o.getObjectValue();
+			}
 			for(String hosts : shardConfiguration.getShardHosts()){
 				CategoryService service = get(hosts);
 				if (service == null){
@@ -103,6 +126,7 @@ public class ProxyCategoryService implements CategoryService {
 					}
 				}
 			}
+			cache.put(new Element("ALL", cats));
 			return cats;
 		} else {
 			return localCategoryService.retrieveCategories();
@@ -140,5 +164,11 @@ public class ProxyCategoryService implements CategoryService {
 		this.localCategoryService = localCategoryService;
 	}
 
+	/**
+	 * @param cache the cache to set
+	 */
+	public void setCache(Ehcache cache) {
+		this.cache = cache;
+	}
 	
 }

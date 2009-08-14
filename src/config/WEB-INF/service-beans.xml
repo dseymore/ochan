@@ -38,21 +38,25 @@
 		<property name="shardConfiguration" ref="shardConfiguration"/>
 		<property name="blobServiceClient" ref="blobServiceClientFactory"/>
 		<property name="localBlobService" ref="localBlobService"/>
+		<property name="cache" ref="proxyBlobCache"/>
 	</bean>
 	<bean id="proxyPostService" class="org.ochan.service.proxy.ProxyPostService">
 		<property name="shardConfiguration" ref="shardConfiguration"/>
 		<property name="postServiceClient" ref="postServiceClientFactory"/>
 		<property name="localPostService" ref="localPostService"/>
+		<property name="cache" ref="proxyPostCache"/>
 	</bean>
 	<bean id="proxyThreadService" class="org.ochan.service.proxy.ProxyThreadService">
 		<property name="shardConfiguration" ref="shardConfiguration"/>
 		<property name="threadServiceClient" ref="threadServiceClientFactory"/>
 		<property name="localThreadService" ref="localThreadService"/>
+		<property name="cache" ref="proxyThreadCache"/>
 	</bean>
 	<bean id="proxyCategoryService" class="org.ochan.service.proxy.ProxyCategoryService">
 		<property name="shardConfiguration" ref="shardConfiguration"/>
 		<property name="categoryServiceClient" ref="categoryServiceClientFactory"/>
 		<property name="localCategoryService" ref="localCategoryService"/>
+		<property name="cache" ref="proxyCategoryCache"/>
 	</bean>
 	<!-- end proxies -->
 	<bean id="localExternalCategoryService" class="org.ochan.dpl.service.LocalExternalCategoryService">
@@ -205,6 +209,43 @@
 	        <property name="timeToIdle"><value>120</value></property>
 	</bean>
 	<bean id="postListCache" class="org.springframework.cache.ehcache.EhCacheFactoryBean">
+	        <property name="cacheManager"><ref local="cacheManager"/></property>
+	        <property name="cacheName"><value>postListCache</value></property>
+	        <property name="maxElementsInMemory"><value>20000</value></property>
+	        <property name="overflowToDisk"><value>false</value></property>
+	        <property name="eternal"><value>false</value></property>
+	        <property name="timeToLive"><value>10</value></property>
+	        <property name="timeToIdle"><value>10</value></property>
+	</bean>
+	
+	<bean id="proxyBlobCache" class="org.springframework.cache.ehcache.EhCacheFactoryBean">
+	        <property name="cacheManager"><ref local="cacheManager"/></property>
+	        <property name="cacheName"><value>postListCache</value></property>
+	        <property name="maxElementsInMemory"><value>20000</value></property>
+	        <property name="overflowToDisk"><value>false</value></property>
+	        <property name="eternal"><value>false</value></property>
+	        <property name="timeToLive"><value>10</value></property>
+	        <property name="timeToIdle"><value>10</value></property>
+	</bean>
+	<bean id="proxyThreadCache" class="org.springframework.cache.ehcache.EhCacheFactoryBean">
+	        <property name="cacheManager"><ref local="cacheManager"/></property>
+	        <property name="cacheName"><value>postListCache</value></property>
+	        <property name="maxElementsInMemory"><value>20000</value></property>
+	        <property name="overflowToDisk"><value>false</value></property>
+	        <property name="eternal"><value>false</value></property>
+	        <property name="timeToLive"><value>10</value></property>
+	        <property name="timeToIdle"><value>10</value></property>
+	</bean>
+	<bean id="proxyCategoryCache" class="org.springframework.cache.ehcache.EhCacheFactoryBean">
+	        <property name="cacheManager"><ref local="cacheManager"/></property>
+	        <property name="cacheName"><value>postListCache</value></property>
+	        <property name="maxElementsInMemory"><value>20000</value></property>
+	        <property name="overflowToDisk"><value>false</value></property>
+	        <property name="eternal"><value>false</value></property>
+	        <property name="timeToLive"><value>10</value></property>
+	        <property name="timeToIdle"><value>10</value></property>
+	</bean>
+	<bean id="proxyPostCache" class="org.springframework.cache.ehcache.EhCacheFactoryBean">
 	        <property name="cacheManager"><ref local="cacheManager"/></property>
 	        <property name="cacheName"><value>postListCache</value></property>
 	        <property name="maxElementsInMemory"><value>20000</value></property>
