@@ -43,7 +43,7 @@ public class ProxyThreadService implements ThreadService {
 		if (shardConfiguration.isShardEnabled()) {
 			Element o = cache.get(identifier);
 			if (o != null || o.getObjectValue() != null){
-				cache.remove(o);
+				cache.remove(identifier);
 			}
 			ThreadService service = get(shardConfiguration.whichHost(identifier));
 			service.deleteThread(identifier);
@@ -122,7 +122,7 @@ public class ProxyThreadService implements ThreadService {
 		if (shardConfiguration.isShardEnabled()) {
 			Element o = cache.get(thread.getIdentifier());
 			if (o != null || o.getObjectValue() != null){
-				cache.remove(o);
+				cache.remove(thread.getIdentifier());
 			}
 			ThreadService service = get(shardConfiguration.whichHost(thread.getIdentifier()));
 			service.updateThread(thread);

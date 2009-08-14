@@ -108,9 +108,9 @@ public class ThreadSupportImpl implements ThreadSupport {
 			criteria.setNewerThan(Long.valueOf(threadId));
 			
 			List<Thread> threads = threadService.retrieveThreads(criteria);
-			if (threads != null && threads.size() > 0){
+			if (threads != null && threads.size() > 0 && threads.get(0) != null){
 				Thread thread = threads.get(0);
-				List<Post> posts = postService.retrieveThreadPosts(thread);
+				List<Post> posts = postService.retrieveThreadPosts(thread.getIdentifier());
 				//we have posts AND they've had 10 seconds to brew up their thumbnail
 				if (posts.size() > 0 && posts.get(0).getTime().getTime() + 10000 < new Date().getTime()){
 					RemotePost toReturnPost = new RemotePost(posts.get(0));

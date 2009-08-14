@@ -170,7 +170,7 @@ public class CategoryListController implements Controller {
 				//categories have 0 threads to begin with.. 
 				if (threads != null){
 					for (Thread thread : threads){
-						thread.setPosts(postService.retrieveThreadPosts(thread));
+						thread.setPosts(postService.retrieveThreadPosts(thread.getIdentifier()));
 						toreturn.add(thread);
 					}
 				}

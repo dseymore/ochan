@@ -143,7 +143,7 @@ public class ViewCategoryController extends SimpleFormController {
             cat.setThreads(threads);
             if (threads != null) {
                 for (Thread t : threads) {
-                    t.setPosts(getPostService().retrieveThreadPosts(t));
+                    t.setPosts(getPostService().retrieveThreadPosts(t.getIdentifier()));
                     for (Post p : t.getPosts()) {
                         if (p instanceof TextPost) {
                             TextPost tp = (TextPost) p;

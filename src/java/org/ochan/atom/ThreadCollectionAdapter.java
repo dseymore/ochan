@@ -167,7 +167,7 @@ public class ThreadCollectionAdapter extends AbstractEntityCollectionAdapter<Thr
 					//categories have 0 threads to begin with.. 
 					if (threads != null){
 						for (Thread thread : threads){
-							thread.setPosts(postService.retrieveThreadPosts(thread));
+							thread.setPosts(postService.retrieveThreadPosts(thread.getIdentifier()));
 							toreturn.add(thread);
 						}
 					}
@@ -192,7 +192,7 @@ public class ThreadCollectionAdapter extends AbstractEntityCollectionAdapter<Thr
 		}else if (categoryId != null && threadId != null){
 			//we have to do some acrobatics to make this a list of threads... 
 			Thread parent = threadService.getThread(threadId);
-			List<Post> posts = postService.retrieveThreadPosts(parent);
+			List<Post> posts = postService.retrieveThreadPosts(parent.getIdentifier());
 			Collections.sort(posts);
 			parent.setPosts(posts);
 			List<Thread> mockThreads = new ArrayList<Thread>();

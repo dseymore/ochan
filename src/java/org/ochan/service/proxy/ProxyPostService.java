@@ -79,7 +79,7 @@ public class ProxyPostService implements PostService {
 		if (shardConfiguration.isShardEnabled()) {
 			Element o = cache.get(identifier);
 			if (o != null || o.getObjectValue() != null){
-				cache.remove(o);
+				cache.remove(identifier);
 			}
 			PostService service = get(shardConfiguration.whichHost(identifier));
 			service.deletePost(identifier);
@@ -105,7 +105,7 @@ public class ProxyPostService implements PostService {
 	}
 
 	@Override
-	public List<Post> retrieveThreadPosts(Thread parent) {
+	public List<Post> retrieveThreadPosts(Long parent) {
 		if (shardConfiguration.isShardEnabled()) {
 			List<Post> posts = new ArrayList<Post>();
 			//now we need all of the things to be ready to go...
@@ -114,6 +114,8 @@ public class ProxyPostService implements PostService {
 				if (service == null){
 					LOG.error("Null Service for host: " + hosts);
 				}else{
+					Thread t = new Thread();
+					
 					List<Post> postss = service.retrieveThreadPosts(parent);
 					if (postss != null){
 						posts.addAll(postss);
@@ -131,7 +133,7 @@ public class ProxyPostService implements PostService {
 		if (shardConfiguration.isShardEnabled()) {
 			Element o = cache.get(post.getIdentifier());
 			if (o != null || o.getObjectValue() != null){
-				cache.remove(o);
+				cache.remove(post.getIdentifier());
 			}
 			PostService service = get(shardConfiguration.whichHost(post.getIdentifier()));
 			service.updatePost(post);
