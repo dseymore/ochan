@@ -198,7 +198,7 @@ public class ThreadZipController implements Controller{
 			org.ochan.entity.Thread t = new org.ochan.entity.Thread();
 			t.setIdentifier(id);
 			//grab the posts
-			List<Post> posts = postService.retrieveThreadPosts(t);
+			List<Post> posts = postService.retrieveThreadPosts(t.getIdentifier());
 			ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		    ZipOutputStream zipfile = new ZipOutputStream(bos);
 		    //for each post

@@ -117,7 +117,7 @@ public class StatsGeneratorJob extends ManagedQuartzJobBean implements StatefulJ
 				if (threads != null){
 					for (Thread thread : threads){
 						threadCount++;
-						List<Post> posts = postService.retrieveThreadPosts(thread);
+						List<Post> posts = postService.retrieveThreadPosts(thread.getIdentifier());
 						for (Post p : posts){
 							postCount++;
 							if (p instanceof ImagePost){

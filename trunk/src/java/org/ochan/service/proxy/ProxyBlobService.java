@@ -56,7 +56,7 @@ public class ProxyBlobService implements BlobService {
 		if (shardConfiguration.isShardEnabled()){
 			Element o = cache.get(identifier);
 			if (o != null || o.getObjectValue() != null){
-				cache.remove(o);
+				cache.remove(identifier);
 			}
 			BlobService service = get(shardConfiguration.whichHost(identifier));
 			service.deleteBlob(identifier);

@@ -136,7 +136,7 @@ public class ViewThreadController extends SimpleFormController {
 		
 		Thread t = threadService.getThread(identifier);
 		if (t != null){
-			t.setPosts(getPostService().retrieveThreadPosts(t));
+			t.setPosts(getPostService().retrieveThreadPosts(t.getIdentifier()));
 			Collections.sort(t.getPosts());
 			//ok, lets walk through the posts, and handle the special html for linking between posts.. TODO - make this a better implementation..
 			for (Post p : t.getPosts()){
@@ -182,7 +182,7 @@ public class ViewThreadController extends SimpleFormController {
 		PostReplyForm prf = (PostReplyForm)command;
 		//do we block?
 		final org.ochan.entity.Thread parentThread = threadService.getThread(Long.valueOf(prf.getParent()));
-		List<Post> posts = postService.retrieveThreadPosts(parentThread);
+		List<Post> posts = postService.retrieveThreadPosts(parentThread.getIdentifier());
 		if(posts != null && DeploymentConfiguration.enforcePostLimit(posts.size())){
 			ThreadOverPostLimitException xyz = new ThreadOverPostLimitException();
 			xyz.setThreadId(parentThread.getIdentifier());

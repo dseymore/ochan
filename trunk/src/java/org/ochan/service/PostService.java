@@ -47,7 +47,7 @@ public interface PostService {
      * @return
      */
     @XmlElementRef
-    public List<Post> retrieveThreadPosts(Thread parent);
+    public List<Post> retrieveThreadPosts(Long parent);
 
     /**
      * 

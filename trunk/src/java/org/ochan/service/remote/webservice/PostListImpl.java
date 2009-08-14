@@ -96,7 +96,7 @@ public class PostListImpl implements PostList {
 				//then, get that thread
 				org.ochan.entity.Thread t = threadService.getThread(p.getParent().getIdentifier());
 				//and then see if there is one greater than the current id	
-				t.setPosts(getPostService().retrieveThreadPosts(t));
+				t.setPosts(getPostService().retrieveThreadPosts(t.getIdentifier()));
 				Collections.sort(t.getPosts());
 				List<Post> posts = t.getPosts();
 				RemotePost remote = null;

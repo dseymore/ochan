@@ -75,7 +75,7 @@ public class DeleteThreadJob extends ManagedQuartzJobBean implements StatefulJob
 						//if it has a delete date, and IT + the window to undo are less than now, its expired.. time to delete.
 						//AND it isnt locked
 						LOG.info("Deleting thread: " +  t.getIdentifier());
-						List<Post> posts = postService.retrieveThreadPosts(t);
+						List<Post> posts = postService.retrieveThreadPosts(t.getIdentifier());
 						for (Post p: posts){
 							postService.deletePost(p.getIdentifier());
 						}

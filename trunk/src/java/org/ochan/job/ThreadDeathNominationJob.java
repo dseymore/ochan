@@ -83,7 +83,7 @@ public class ThreadDeathNominationJob extends ManagedQuartzJobBean implements St
 				//we have to get the threads because they contain the touch time.
 				if (threads != null){
 					for (Thread t : threads){
-						t.setPosts(postService.retrieveThreadPosts(t));
+						t.setPosts(postService.retrieveThreadPosts(t.getIdentifier()));
 					}
 					//count up the number of 'non-delete-queue' threads
 					if (threads != null && threads.size() > countBeforeNominating){

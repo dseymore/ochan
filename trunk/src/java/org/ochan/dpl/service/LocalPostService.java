@@ -186,13 +186,13 @@ public class LocalPostService implements PostService {
 
 
 	@Override
-	public List<Post> retrieveThreadPosts(Thread parent) {
+	public List<Post> retrieveThreadPosts(Long parent) {
 		List<Post> posts = new ArrayList<Post>();
 		// capture start of call
 		long start = new Date().getTime();
-		if (parent != null && parent.getIdentifier() != null){
+		if (parent != null){
 			try {
-				EntityCursor<PostDPL> postDPL = environment.postByThread.subIndex(parent.getIdentifier()).entities();
+				EntityCursor<PostDPL> postDPL = environment.postByThread.subIndex(parent).entities();
 				for (PostDPL dpl : postDPL) {
 					posts.add(map(dpl));
 				}
