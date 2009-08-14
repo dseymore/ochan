@@ -3,9 +3,13 @@ package org.ochan.service.proxy;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.sf.ehcache.Ehcache;
+import net.sf.ehcache.Element;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
+import org.ochan.entity.Post;
 import org.ochan.entity.Thread;
 import org.ochan.service.ThreadService;
 import org.ochan.service.proxy.config.ShardConfiguration;
@@ -15,6 +19,7 @@ public class ProxyThreadService implements ThreadService {
 	private ShardConfiguration shardConfiguration;
 	private JaxWsProxyFactoryBean threadServiceClient;
 	private ThreadService localThreadService;
+	private Ehcache cache;
 	
 	private static final Log LOG = LogFactory.getLog(ProxyThreadService.class);
 	
@@ -36,6 +41,10 @@ public class ProxyThreadService implements ThreadService {
 	@Override
 	public void deleteThread(Long identifier) {
 		if (shardConfiguration.isShardEnabled()) {
+			Element o = cache.get(identifier);
+			if (o != null || o.getObjectValue() != null){
+				cache.remove(o);
+			}
 			ThreadService service = get(shardConfiguration.whichHost(identifier));
 			service.deleteThread(identifier);
 		} else {
@@ -46,8 +55,14 @@ public class ProxyThreadService implements ThreadService {
 	@Override
 	public Thread getThread(Long identifier) {
 		if (shardConfiguration.isShardEnabled()) {
+			Element o = cache.get(identifier);
+			if (o != null && o.getObjectValue() != null && !o.isExpired()){
+				return (Thread)o.getObjectValue();
+			}
 			ThreadService service = get(shardConfiguration.whichHost(identifier));
-			return service.getThread(identifier);
+			Thread thread = service.getThread(identifier);
+			cache.put(new Element(identifier, thread));
+			return thread;
 		} else {
 			return localThreadService.getThread(identifier);
 		}
@@ -105,6 +120,10 @@ public class ProxyThreadService implements ThreadService {
 	@Override
 	public void updateThread(Thread thread) {
 		if (shardConfiguration.isShardEnabled()) {
+			Element o = cache.get(thread.getIdentifier());
+			if (o != null || o.getObjectValue() != null){
+				cache.remove(o);
+			}
 			ThreadService service = get(shardConfiguration.whichHost(thread.getIdentifier()));
 			service.updateThread(thread);
 		} else {
@@ -141,6 +160,11 @@ public class ProxyThreadService implements ThreadService {
 		this.localThreadService = localThreadService;
 	}
 
-	
+	/**
+	 * @param cache the cache to set
+	 */
+	public void setCache(Ehcache cache) {
+		this.cache = cache;
+	}
 	
 }

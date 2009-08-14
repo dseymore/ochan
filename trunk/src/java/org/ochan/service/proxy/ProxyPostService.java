@@ -1,9 +1,10 @@
 package org.ochan.service.proxy;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
+import net.sf.ehcache.Ehcache;
+import net.sf.ehcache.Element;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -13,13 +14,12 @@ import org.ochan.entity.Thread;
 import org.ochan.service.PostService;
 import org.ochan.service.proxy.config.ShardConfiguration;
 
-import com.sun.jimi.core.encoder.jpg.Shared;
-
 public class ProxyPostService implements PostService {
 
 	private ShardConfiguration shardConfiguration;
 	private JaxWsProxyFactoryBean postServiceClient;
 	private PostService localPostService;
+	private Ehcache cache;
 
 	private static final Log LOG = LogFactory.getLog(ProxyPostService.class);
 
@@ -51,6 +51,13 @@ public class ProxyPostService implements PostService {
 	public String computerAuthor(String author) {
 		return localPostService.computerAuthor(author);
 	}
+	
+	/**
+	 * @param cache the cache to set
+	 */
+	public void setCache(Ehcache cache) {
+		this.cache = cache;
+	}
 
 	@Override
 	public void createPost(Long thisIdentifer, Long parentIdentifier, String author, String subject, String email, String url, String comment, Byte[] file, String filename) {
@@ -70,6 +77,10 @@ public class ProxyPostService implements PostService {
 	@Override
 	public void deletePost(Long identifier) {
 		if (shardConfiguration.isShardEnabled()) {
+			Element o = cache.get(identifier);
+			if (o != null || o.getObjectValue() != null){
+				cache.remove(o);
+			}
 			PostService service = get(shardConfiguration.whichHost(identifier));
 			service.deletePost(identifier);
 		} else {
@@ -80,8 +91,14 @@ public class ProxyPostService implements PostService {
 	@Override
 	public Post getPost(Long identifier) {
 		if (shardConfiguration.isShardEnabled()) {
+			Element o = cache.get(identifier);
+			if (o != null && o.getObjectValue() != null && !o.isExpired()){
+				return (Post)o.getObjectValue();
+			}
 			PostService service = get(shardConfiguration.whichHost(identifier));
-			return service.getPost(identifier);
+			Post post = service.getPost(identifier);
+			cache.put(new Element(identifier, post));
+			return post;
 		} else {
 			return localPostService.getPost(identifier);
 		}
@@ -112,6 +129,10 @@ public class ProxyPostService implements PostService {
 	@Override
 	public void updatePost(Post post) {
 		if (shardConfiguration.isShardEnabled()) {
+			Element o = cache.get(post.getIdentifier());
+			if (o != null || o.getObjectValue() != null){
+				cache.remove(o);
+			}
 			PostService service = get(shardConfiguration.whichHost(post.getIdentifier()));
 			service.updatePost(post);
 		} else {
