@@ -224,7 +224,7 @@ public class CategoryListController implements Controller {
 			ThreadCriteria criteria = new ThreadService.ThreadCriteria();
 			criteria.setMax("1");
 			List<Thread> xyz = threadService.retrieveThreads(criteria);
-			if (xyz != null && xyz.size() > 0){
+			if (xyz != null && xyz.size() > 0 && xyz.get(0) != null){
 				controlModel.put("currentThread",xyz.get(0).getIdentifier());
 			}else{
 				controlModel.put("currentThread","0");
