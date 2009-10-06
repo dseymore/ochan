@@ -1,0 +1,10 @@
+<ivy-module version="1.0">
+	<info organisation="org.apache.fontbox" module="fontbox" revision="0.8.0-incubating" status="release" publication="20071113114926" default="true"/>
+	<configurations>
+		<conf name="default" visibility="public"/>
+	</configurations>
+	<publications>
+		<artifact name="fontbox" type="jar" ext="jar" conf="default"/>
+		<artifact name="fontbox" type="source" ext="src.jar" conf="default"/>
+	</publications>
+</ivy-module>

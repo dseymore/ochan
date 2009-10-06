@@ -1,0 +1,22 @@
+<ivy-module version="1.0">
+    <info organisation="Ogroup" module="ochan-rss" status="integration" >
+        <description>
+		rss feed->thread plugin
+        </description>
+    </info>
+    <configurations>
+        <conf name="default" description="This is the configuration that describes modules need to build our project"/>
+        <conf name="test" extends="default" description="This is this configuration that describes modules need to run test on our project"/>
+    </configurations>
+    <publications>
+        <artifact name="ochan-rss" type="jar" ext="jar" conf="default"/>
+    </publications>
+    <dependencies>
+	<dependency org="Ogroup" name="Ochan" rev="latest.integration" conf="default->default"/>
+	<!--<dependency org="nava.de" name="informa" rev="0.7.0-alpha2" conf="default->default"/>-->
+	<dependency org="catnip.org" name="eddie" rev="0.2" conf="default->default"/>
+	<dependency org="jdom.org" name="jdom" rev="1.0" conf="default->default"/>
+	<dependency org="org.codehaus" name="jettison" rev="1.0.1" conf="default->default"/>
+	<dependency org="commons-logging" name="commons-logging" rev="1.1" conf="default->default"/>
+    </dependencies>
+</ivy-module>

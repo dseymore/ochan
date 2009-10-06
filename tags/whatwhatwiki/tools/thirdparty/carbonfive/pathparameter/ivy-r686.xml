@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ivy-module version="1.0">
+	<info organisation="carbonfive"
+		module="pathparameter"
+		revision="r686"
+		status="integration"
+		publication="20060513083149"
+	/>
+	<publications>
+		<artifact name="pathparameter" type="jar" ext="jar" />
+		<artifact name="pathparameter" type="source" ext="src.jar" />
+	</publications>
+</ivy-module>

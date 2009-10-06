@@ -1,0 +1,10 @@
+<ivy-module version="1.0">
+	<info organisation="opensymphony" module="oscache" revision="2.4" status="release" publication="20071113114926" default="true"/>
+	<configurations>
+		<conf name="default" visibility="public"/>
+	</configurations>
+	<publications>
+		<artifact name="oscache" type="jar" ext="jar" conf="default"/>
+		<artifact name="oscache" type="source" ext="src.jar" conf="default"/>
+	</publications>
+</ivy-module>
