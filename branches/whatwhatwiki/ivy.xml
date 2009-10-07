@@ -1,8 +1,8 @@
 <ivy-module version="1.0">
-    <info organisation="Ogroup" module="Ochan"
+    <info organisation="Ogroup" module="WhatWhatWiki"
         status="integration" >
     	<description>
-		Bulliten board project taking advantage of state of the art java tools.
+		Simple wiki
     	</description>
     </info>
     <configurations>

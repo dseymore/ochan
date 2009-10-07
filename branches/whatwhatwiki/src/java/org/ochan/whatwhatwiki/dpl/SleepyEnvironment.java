@@ -9,6 +9,7 @@ import com.sleepycat.je.Environment;
 import com.sleepycat.je.EnvironmentConfig;
 import com.sleepycat.persist.EntityStore;
 import com.sleepycat.persist.PrimaryIndex;
+import com.sleepycat.persist.SecondaryIndex;
 import com.sleepycat.persist.StoreConfig;
 
 public class SleepyEnvironment {
@@ -18,6 +19,8 @@ public class SleepyEnvironment {
 
 	public PrimaryIndex<String, File> fileByKey;
 	public PrimaryIndex<String, Page> pageByKey;
+	public PrimaryIndex<Long, Version> versionById;
+	public SecondaryIndex<String, Long, Version> versionsByKey;
 
 	public SleepyEnvironment() {
 		try {
@@ -40,6 +43,8 @@ public class SleepyEnvironment {
 
 			fileByKey = entityStore.getPrimaryIndex(String.class, File.class);
 			pageByKey = entityStore.getPrimaryIndex(String.class, Page.class);
+			versionById = entityStore.getPrimaryIndex(Long.class, Version.class);
+			versionsByKey = entityStore.getSecondaryIndex(versionById, String.class, "key");
 			
 		} catch (Exception e) {
 			LOG.error("Unable to start the database.", e);
