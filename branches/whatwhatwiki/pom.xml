@@ -6,7 +6,7 @@
     <artifactId>WhatWhatWiki</artifactId>
     <packaging>war</packaging>
     <version>0.0.1-SNAPSHOT</version>
-    <name>taskmanager</name>
+    <name>whatwhatwiki</name>
     <url>http://maven.apache.org</url>
     <properties>
         <version.org.springframework>2.5.4</version.org.springframework>
@@ -177,6 +177,11 @@
             <artifactId>commons-lang</artifactId>
             <version>2.3</version>
         </dependency>
+	<dependency>
+	    <groupId>commons-fileupload</groupId>
+	    <artifactId>commons-fileupload</artifactId>
+	    <version>1.2.1</version>
+	</dependency>
         <dependency>
             <groupId>asm</groupId>
             <artifactId>asm-all</artifactId>
