@@ -4,7 +4,7 @@ import java.util.prefs.Preferences;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.ochan.dpl.SleepyEnvironment;
+import org.ochan.whatwhatwiki.dpl.SleepyEnvironment;
 import org.ochan.util.ManagedQuartzJobBean;
 import org.quartz.JobExecutionContext;
 import org.springframework.context.ApplicationContext;
