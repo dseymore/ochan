@@ -3,8 +3,9 @@ package org.ochan.whatwhatwiki.service;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import org.apache.commons.collections.comparators.ComparableComparator;
 
-public class RemotePage {
+public class RemotePage implements Comparable<RemotePage> {
 
 	private String key;
 	private List<RemoteVersion> versions;
@@ -47,4 +48,11 @@ public class RemotePage {
              }
              versions.add(remoteVersion);
         }
+
+    @Override
+    public int compareTo(RemotePage o) {
+        return new ComparableComparator().compare(this.getKey(), o.getKey());
+    }
+        
+        
 }
