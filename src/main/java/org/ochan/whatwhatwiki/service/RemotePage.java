@@ -1,5 +1,7 @@
 package org.ochan.whatwhatwiki.service;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class RemotePage {
@@ -30,5 +32,19 @@ public class RemotePage {
 	public void setVersions(List<RemoteVersion> versions) {
 		this.versions = versions;
 	}
+        
+        public String getLatest(){
+            if (versions != null && versions.size() > 0){
+                Collections.sort(versions);
+                return versions.get(0).getContent();
+            }
+            return null;
+        }
 	
+        public void addVersion(RemoteVersion remoteVersion){
+             if (versions == null){
+                 versions = new ArrayList<RemoteVersion>();
+             }
+             versions.add(remoteVersion);
+        }
 }
