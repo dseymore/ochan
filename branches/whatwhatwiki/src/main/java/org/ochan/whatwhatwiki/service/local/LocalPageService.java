@@ -69,7 +69,13 @@ public class LocalPageService implements PageService {
     @Override
     public RemotePage get(String key) {
         try {
-            return map(sleepyEnvironment.pageByKey.get(key));
+            RemotePage p = map(sleepyEnvironment.pageByKey.get(key));
+            //now get all the version
+            EntityCursor<Version> versions = sleepyEnvironment.versionsByKey.subIndex(key).entities();
+            for (Version version: versions){
+                p.addVersion(map(version));
+            }
+            return p;
         } catch (Exception e) {
             LOG.error("Unable to grab key: " + key, e);
         }
