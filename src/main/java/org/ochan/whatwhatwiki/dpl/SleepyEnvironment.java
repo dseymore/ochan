@@ -17,7 +17,7 @@ public class SleepyEnvironment {
 	private Environment environment;
 	private EntityStore entityStore;
 
-	public PrimaryIndex<String, File> fileByKey;
+	public PrimaryIndex<String, org.ochan.whatwhatwiki.dpl.File> fileByKey;
 	public PrimaryIndex<String, Page> pageByKey;
 	public PrimaryIndex<Long, Version> versionById;
 	public SecondaryIndex<String, Long, Version> versionsByKey;
@@ -41,7 +41,7 @@ public class SleepyEnvironment {
 			environment = new Environment(new File(System.getProperty("user.dir")), myEnvConfig);
 			entityStore = new EntityStore(environment, "EntityStore", storeConfig);
 
-			fileByKey = entityStore.getPrimaryIndex(String.class, File.class);
+			fileByKey = entityStore.getPrimaryIndex(String.class, org.ochan.whatwhatwiki.dpl.File.class);
 			pageByKey = entityStore.getPrimaryIndex(String.class, Page.class);
 			versionById = entityStore.getPrimaryIndex(Long.class, Version.class);
 			versionsByKey = entityStore.getSecondaryIndex(versionById, String.class, "key");

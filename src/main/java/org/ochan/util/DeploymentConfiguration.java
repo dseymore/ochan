@@ -12,7 +12,7 @@ public class DeploymentConfiguration {
 	
 	static final String DEFAULT_HOSTNAME = "localhost";
 	static final String DEFAULT_PORT = "8080";
-	static final String DEFAULT_TITLE = "Ochan (http://code.google.com/p/ochan)";
+	static final String DEFAULT_TITLE = "WhatWhatWiki (http://code.google.com/p/ochan)";
 	static final String POST_LIMIT = "-1";
 	static final String THREAD_LIMIT = "-1";
 	static final String UNDER_BUMP = "2";

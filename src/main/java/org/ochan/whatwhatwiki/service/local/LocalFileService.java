@@ -2,10 +2,19 @@ package org.ochan.whatwhatwiki.service.local;
 
 import java.util.List;
 
+import org.ochan.whatwhatwiki.dpl.SleepyEnvironment;
 import org.ochan.whatwhatwiki.service.FileService;
 
 public class LocalFileService implements FileService {
 
+        private SleepyEnvironment sleepyEnvironment;
+
+    public void setSleepyEnvironment(SleepyEnvironment sleepyEnvironment) {
+        this.sleepyEnvironment = sleepyEnvironment;
+    }
+        
+        
+    
 	@Override
 	public void createOrUpdate(String key, Byte[] data) {
 		// TODO Auto-generated method stub

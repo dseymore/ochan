@@ -1,9 +1,11 @@
 package org.ochan.whatwhatwiki.dpl;
 
+import com.sleepycat.persist.model.Entity;
 import com.sleepycat.persist.model.PrimaryKey;
 import com.sleepycat.persist.model.Relationship;
 import com.sleepycat.persist.model.SecondaryKey;
 
+@Entity(version=1)
 public class Version {
 
 	@PrimaryKey(sequence="version")
