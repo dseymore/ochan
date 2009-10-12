@@ -37,28 +37,23 @@
 	    	###Some Help dawg
 	    	function growlHelp(){
 	    		${esc.dollar}.jGrowl('<ul>' +
-	    		'<li>ALT+SHIFT+R Reply</li>' +
-	    		'<li>ALT+SHIFT+A AutoScroll Toggle</li>' +
+	    		'<li>ALT+SHIFT+R New Page</li>' +
 	    		'<li>ALT+SHIFT+W Help</li>' + 
 	    		'</ul>', { life: 10000, header: "Help"});
 	    	}
 	    
         	YAHOO.util.Event.onDOMReady(function () {
-        	##alt + shift + r = reply to the thread
-			var kl3 = new YAHOO.util.KeyListener(document, {alt: true, shift:true, keys:82 }, { fn:function(event){ panel.show(); return false; } } );
-			kl3.enable();
-			
-			##alt + shift + a = autoscroll toggle
-			var kl4 = new YAHOO.util.KeyListener(document, {alt: true, shift:true, keys:65 }, { fn:function(event){ toggleScroll(); return false; } } );
-			kl4.enable();
-			
-			##alt + shift + w = help (fucking H is being used by the help in the browser.. damnit)
-			var helpKey = new YAHOO.util.KeyListener(document, {alt: true, shift:true, keys:87 }, { fn:function(event){ 
-				growlHelp();
-			} } );
-			helpKey.enable();
-			
-			});   	
+        	##alt + shift + r = create new page
+                var kl3 = new YAHOO.util.KeyListener(document, {alt: true, shift:true, keys:82 }, { fn:function(event){ panel.show(); return false; } } );
+                kl3.enable();
+
+                ##alt + shift + w = help (fucking H is being used by the help in the browser.. damnit)
+                var helpKey = new YAHOO.util.KeyListener(document, {alt: true, shift:true, keys:87 }, { fn:function(event){ 
+                        growlHelp();
+                } } );
+                helpKey.enable();
+
+                });   	
                 </script>
 
 	</head>
@@ -76,6 +71,79 @@
                 <span>[<a href="#" onclick="panel.show(); return false;">Add New Page</a>]</span>
                 <span>[<a href="#" onclick="growlHelp(); return false;">Help</a>]</span>
         </div></div>
+</div>
+<!-- Panel for creating a new page -->
+<div id="replyPanel">
+    <form action="#springUrl('/addPage.www')" method="POST" enctype="multipart/form-data">
+            <div id="panel1"><div class="bd">
+                    <fieldset>
+                            <legend>Details</legend>
+                            <table>	
+                                    <tr><td><label for="author">Author:</label></td><td><input id="author" type="text" name="author" value="${author}" size="40"/></td></tr>
+                                    <tr><td><label for="title">Title:</label></td><td><input id="title" type="text" name="title" value="" size="40"/></td></tr>
+                                    <tr><td><label for="comment">Comment:</label></td><td><input id="comment" type="text" name="comment" value="" size="40"/></td></tr>
+                            </table>
+                    </fieldset>
+                    <span><textarea name="content" id="content" cols="50" rows="10"></textarea></span>
+                    <span><input id="submitButton" type="submit"/></span>
+            </div></div> 
+    </form>
+    <!-- YUI magic to turn a basic accessible form into a friendly for people who can see form -->
+    <script type="text/javascript">
+            var myEditor = new YAHOO.widget.SimpleEditor('content', {
+                height: '200px',
+                width: '450px',
+                dompath: false,
+                animate: false,
+                handleSubmit: true,
+                toolbar: {
+                    titlebar: 'Content',
+                    buttons: [
+                        { group: 'textstyle', label: 'Font Style',
+                            buttons: [
+                                { type: 'push', label: 'Bold', value: 'bold' },
+                                { type: 'push', label: 'Italic', value: 'italic' },
+                                { type: 'push', label: 'Underline', value: 'underline' },
+                                { type: 'separator' },
+                                { type: 'select', label: 'Arial', value: 'fontname', disabled: true,
+                                    menu: [
+                                        { text: 'Arial', checked: true },
+                                        { text: 'Arial Black' },
+                                        { text: 'Comic Sans MS' },
+                                        { text: 'Courier New' },
+                                        { text: 'Lucida Console' },
+                                        { text: 'Tahoma' },
+                                        { text: 'Times New Roman' },
+                                        { text: 'Trebuchet MS' },
+                                        { text: 'Verdana' }
+                                    ]
+                                },
+                                { type: 'spin', label: '10', value: 'fontsize', range: [ 9, 35 ], disabled: true },
+                                { type: 'separator' },
+                                { type: 'color', label: 'Font Color', value: 'forecolor', disabled: true },
+                                { type: 'color', label: 'Background Color', value: 'backcolor', disabled: true }
+                            ]
+                        }
+                    ]
+                }
+            });
+
+            myEditor.render();
+
+            // Instantiate a Panel from markup
+            var panel = new YAHOO.widget.Panel("panel1", { width:"475px", visible:false, constraintoviewport:true, modal:true} );
+            panel.setHeader("New Page");
+            panel.setFooter("");
+            panel.render();
+
+            // Instantiate a panel for navbar
+            var panel2 = new YAHOO.widget.Panel("panel2", { width:"30em", visible:true, constraintoviewport:true, modal:false} );
+            panel2.setHeader("Options");
+            panel2.setFooter("");
+            panel2.render();
+
+            var submitButton = new YAHOO.widget.Button("submitButton", { label: "Create" });
+    </script>
 </div>
 
 <h2>Pages</h2>

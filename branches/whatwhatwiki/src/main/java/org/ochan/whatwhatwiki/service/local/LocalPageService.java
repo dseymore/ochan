@@ -2,6 +2,7 @@ package org.ochan.whatwhatwiki.service.local;
 
 import com.sleepycat.persist.EntityCursor;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -91,6 +92,8 @@ public class LocalPageService implements PageService {
                 remotePageList.add(map(p));
             }
             cursor.close();
+            
+            Collections.sort(remotePageList);
         } catch (Exception e) {
             LOG.error("Unable to list!", e);
         }
@@ -114,7 +117,9 @@ public class LocalPageService implements PageService {
         version.setContent(remoteVersion.getContent());
         version.setKey(key);
         version.setIdentifier(remoteVersion.getVersion());
-
+        version.setAuthor(remoteVersion.getAuthor());
+        version.setComment(remoteVersion.getComment());
+        version.setDate(remoteVersion.getDate());
         return version;
     }
 
@@ -122,6 +127,9 @@ public class LocalPageService implements PageService {
         RemoteVersion remoteVersion = new RemoteVersion();
         remoteVersion.setContent(version.getContent());
         remoteVersion.setVersion(version.getIdentifier());
+        remoteVersion.setAuthor(version.getAuthor());
+        remoteVersion.setComment(version.getComment());
+        remoteVersion.setDate(version.getDate());
         return remoteVersion;
     }
 }

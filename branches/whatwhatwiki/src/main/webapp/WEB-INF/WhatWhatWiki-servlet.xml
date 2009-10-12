@@ -47,6 +47,7 @@
         <property name="mappings">
             <props>
                 <prop key="/**/list.www">listController</prop>
+                <prop key="/**/addPage.www">addController</prop>
             </props>
         </property>
     </bean>
@@ -69,7 +70,9 @@
         <property name="fileService" ref="localFileService" />
         <property name="pageService" ref="localPageService" />
     </bean>
-        
+    <bean name="addController" class="org.ochan.whatwhatwiki.control.EditPageController">
+        <property name="pageService" ref="localPageService" />
+    </bean>
         
     <!--	Requires commons-fileupload-->
     <bean id="multipartResolver" class="org.ochan.util.ManagedCommonsMultipartResolver"/>
