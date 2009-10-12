@@ -11,11 +11,6 @@
 		<class>org.ochan.util.DeploymentConfiguration</class>
 	</tool>
 	<tool>
-		<key>deletejob</key>
-		<scope>application</scope>
-		<class>org.ochan.job.DeleteThreadJob</class>
-	</tool>
-	<tool>
 		<key>number</key>
 		<scope>application</scope>
 		<class>org.apache.velocity.tools.generic.NumberTool</class>

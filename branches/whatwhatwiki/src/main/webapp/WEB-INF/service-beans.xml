@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:jaxws="http://cxf.apache.org/jaxws"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+                           http://www.springframework.org/schema/tx
+                           http://www.springframework.org/schema/tx/spring-tx-2.0.xsd
+                           http://www.springframework.org/schema/aop
+                           http://www.springframework.org/schema/aop/spring-aop-2.0.xsd
+                           http://cxf.apache.org/jaxws 
+                           http://cxf.apache.org/schemas/jaxws.xsd">
+
+	
+	<!-- enables interpretation of the @Configurable annotation for domain object dependency injection -->
+    <aop:spring-configured />
+        
+        <!--  xxxxxxxxxxxxxxxxxxxxxxxxx  Service configuration xxxxxxxxxxxxxxxxxxxxxxxxx  -->
+    <bean class="org.ochan.whatwhatwiki.dpl.SleepyEnvironment" id="sleepy" destroy-method="close"/>
+    <bean id="localPageService" class="org.ochan.whatwhatwiki.service.local.LocalPageService">
+        <property name="sleepyEnvironment" ref="sleepy"/>
+    </bean>
+    <bean id="localFileService" class="org.ochan.whatwhatwiki.service.local.LocalFileService">
+        <property name="sleepyEnvironment" ref="sleepy"/>
+    </bean>
+        
+        <!--  JMX! -->
+    <bean id="exporter" class="org.springframework.jmx.export.MBeanExporter">
+        <property name="assembler" ref="assembler"/>
+        <property name="namingStrategy" ref="namingStrategy"/>
+        <property name="autodetect" value="true"/>
+    </bean>
+    <bean id="jmxAttributeSource"
+          class="org.springframework.jmx.export.annotation.AnnotationJmxAttributeSource"/>
+
+    <!-- will create management interface using annotation metadata -->
+    <bean id="assembler"
+          class="org.springframework.jmx.export.assembler.MetadataMBeanInfoAssembler">
+        <property name="attributeSource" ref="jmxAttributeSource"/>
+    </bean>
+
+    <!-- will pick up the ObjectName from the annotation -->
+    <bean id="namingStrategy"
+          class="org.springframework.jmx.export.naming.MetadataNamingStrategy">
+        <property name="attributeSource" ref="jmxAttributeSource"/>
+    </bean>
+    <!-- JMX ables -->
+    <bean class="org.ochan.util.UserCounter"/>
+    <bean class="org.ochan.util.ManagedCommonsMultipartResolver"/>
+        
+        <!--  lets try ehcache -->
+	<!-- Configure CacheManager from specified config location -->
+    <bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+        <property name="configLocation">
+            <value>WEB-INF/ehcache.xml</value>
+        </property>
+    </bean>
+    
+</beans>
