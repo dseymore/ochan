@@ -38,6 +38,7 @@
 	    	function growlHelp(){
 	    		${esc.dollar}.jGrowl('<ul>' +
 	    		'<li>ALT+SHIFT+R New Page</li>' +
+                        '<li>ALT+SHIFT+F New File</li>' +
 	    		'<li>ALT+SHIFT+W Help</li>' + 
 	    		'</ul>', { life: 10000, header: "Help"});
 	    	}
@@ -46,6 +47,10 @@
         	##alt + shift + r = create new page
                 var kl3 = new YAHOO.util.KeyListener(document, {alt: true, shift:true, keys:82 }, { fn:function(event){ panel.show(); return false; } } );
                 kl3.enable();
+
+                ##alt + shift + f = create new page
+                var kl4 = new YAHOO.util.KeyListener(document, {alt: true, shift:true, keys:70 }, { fn:function(event){ uploadPanel.show(); return false; } } );
+                kl4.enable();
 
                 ##alt + shift + w = help (fucking H is being used by the help in the browser.. damnit)
                 var helpKey = new YAHOO.util.KeyListener(document, {alt: true, shift:true, keys:87 }, { fn:function(event){ 
@@ -69,12 +74,13 @@
 <div id="navbar">
         <div id="panel2"><div class="bd">
                 <span>[<a href="#" onclick="panel.show(); return false;">Add New Page</a>]</span>
+                <span>[<a href="#" onclick="uploadPanel.show(); return false;">Add New File</a>]</span>
                 <span>[<a href="#" onclick="growlHelp(); return false;">Help</a>]</span>
         </div></div>
 </div>
 <!-- Panel for creating a new page -->
 <div id="replyPanel">
-    <form action="#springUrl('/addPage.www')" method="POST" enctype="multipart/form-data">
+    <form id="pageForm" action="#springUrl('/addPage.www')" method="POST" enctype="multipart/form-data">
             <div id="panel1"><div class="bd">
                     <fieldset>
                             <legend>Details</legend>
@@ -143,15 +149,79 @@
             panel2.render();
 
             var submitButton = new YAHOO.widget.Button("submitButton", { label: "Create" });
+
+            function onSubmitPage(p_oEvent) {
+                var bSubmit = true;
+                if(YAHOO.lang.trim(document.getElementById('title').value)==""){
+                    alert('Title is required.');
+                    bSubmit = false;
+                }
+                if(!bSubmit) {
+                    YAHOO.util.Event.preventDefault(p_oEvent);
+                }
+            }
+
+            YAHOO.util.Event.on("pageForm", "submit", onSubmitPage);
+    </script>
+    <!-- PANEL 2 -->
+    <form id="uploadform" action="#springUrl('/addFile.www')" method="POST" enctype="multipart/form-data">
+            <div id="panel3"><div class="bd">
+                    <fieldset>
+                            <legend>Details</legend>
+                            <table>	
+                                    <tr><td><label for="uploadauthor">Author:</label></td><td><input id="uploadauthor" type="text" name="author" value="${author}" size="40"/></td></tr>
+                                    <tr><td><label for="uploadtitle">Title:</label></td><td><input id="uploadtitle" type="text" name="title" value="" size="40"/></td></tr>
+                                    <tr><td><label for="file">File:</label></td><td><input id="file" type="file" name="file" size="35"/></td></tr>
+                            </table>
+                    </fieldset>
+                    <span><input id="submitButton2" type="submit"/></span>
+            </div></div> 
+    </form>
+    <!-- YUI magic to turn a basic accessible form into a friendly for people who can see form -->
+    <script type="text/javascript">
+            // Instantiate a Panel from markup
+            var uploadPanel = new YAHOO.widget.Panel("panel3", { width:"475px", visible:false, constraintoviewport:true, modal:true} );
+            uploadPanel.setHeader("New File");
+            uploadPanel.setFooter("");
+            uploadPanel.render();
+
+            var submitButton = new YAHOO.widget.Button("submitButton2", { label: "Create" });
+
+            function onSubmitFile(p_oEvent) {
+                var bSubmit = true;
+                if(YAHOO.lang.trim(document.getElementById('uploadtitle').value)==""){
+                    alert('Title is required.');
+                    bSubmit = false;
+                }
+                if(YAHOO.lang.trim(document.getElementById('file').value)==""){
+                    alert('You have to upload something.');
+                    bSubmit = false;
+                }
+                if(!bSubmit) {
+                    YAHOO.util.Event.preventDefault(p_oEvent);
+                }
+            }
+
+            YAHOO.util.Event.on("uploadform", "submit", onSubmitFile);
+
+
     </script>
 </div>
-
-<h2>Pages</h2>
+<br clear="all"/>
+<h2 class="heading">Pages</h2>
 <ul>
 #foreach($page in ${pages})
-<li>$page.key</li>
+<li><a href="#springUrl('/wiki/preview/')$page.key" title="Preview">$page.key</a></li>
 #end
 </ul>
+
+<h2 class="heading">Files</h2>
+<ul>
+#foreach($file in ${files})
+<li>$file.key</li>
+#end
+</ul>
+
 
 
 </body>

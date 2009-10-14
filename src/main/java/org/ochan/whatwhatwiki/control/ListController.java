@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 import org.ochan.whatwhatwiki.service.FileService;
 import org.ochan.whatwhatwiki.service.PageService;
+import org.ochan.whatwhatwiki.service.RemoteFile;
 import org.ochan.whatwhatwiki.service.RemotePage;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
@@ -45,7 +46,7 @@ public class ListController implements Controller {
         List<RemotePage> pages = pageService.getAllPages();
         controlModel.put("pages",pages);
         
-        List<String> files = fileService.getAllFileKeys();
+        List<RemoteFile> files = fileService.getAllFileKeys();
         controlModel.put("files",files);
         
         //author handling code
