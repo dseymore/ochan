@@ -4,9 +4,11 @@ import java.util.List;
 
 public interface FileService {
 
-	public void createOrUpdate(String key, Byte[] data);
+	public void createOrUpdate(String key, String author, String originalFileName, Byte[] data);
 	
-	public List<String> getAllFileKeys();
+	public List<RemoteFile> getAllFileKeys();
+        
+        public RemoteFile getFile(String key);
 	
 	public void delete(String key);
 	

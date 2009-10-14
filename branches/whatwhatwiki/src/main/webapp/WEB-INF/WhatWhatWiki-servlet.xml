@@ -48,6 +48,8 @@
             <props>
                 <prop key="/**/list.www">listController</prop>
                 <prop key="/**/addPage.www">addController</prop>
+                <prop key="/**/addFile.www">uploadController</prop>
+                <prop key="/**/preview.www">previewController</prop>
             </props>
         </property>
     </bean>
@@ -61,6 +63,7 @@
         <property name="mappings">
             <props>
                 <prop key="/wiki/(*:search)">listController</prop>
+                <prop key="/wiki/preview/(*:key)">previewController</prop>
             </props>
         </property>
     </bean>
@@ -73,6 +76,18 @@
     <bean name="addController" class="org.ochan.whatwhatwiki.control.EditPageController">
         <property name="pageService" ref="localPageService" />
     </bean>
+    <bean name="previewController" class="org.ochan.whatwhatwiki.control.PreviewController">
+        <property name="viewName" value="view" />
+        <property name="pageService" ref="localPageService" />
+    </bean>
+    <bean name="uploadController" class="org.ochan.whatwhatwiki.control.UploadController">
+        <property name="commandName" value="command" />
+        <property name="commandClass" value="org.ochan.whatwhatwiki.control.UploadForm" />
+        <property name="bindOnNewForm" value="true" />
+        <property name="sessionForm" value="false" />
+        <property name="fileService" ref="localFileService" />
+    </bean>
+     
         
     <!--	Requires commons-fileupload-->
     <bean id="multipartResolver" class="org.ochan.util.ManagedCommonsMultipartResolver"/>
