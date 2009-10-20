@@ -14,5 +14,16 @@ http://abdera.apache.org http://abdera.apache.org/schemas/abdera-spring.xsd">
     <import resource="classpath:META-INF/cxf/cxf-extension-xml.xml" />
     <import resource="classpath:META-INF/cxf/cxf-extension-jaxrs-binding.xml" />
     
+    <!--  Thread Support Service -->
+    <!--  no client ATM -->
+    <bean id="pageService" class="org.ochan.whatwhatwiki.service.remote.webservice.RestPageService">
+            <property name="pageService" ref="localPageService" />
+    </bean>
+    <!--  rest service endpoint -->
+    <jaxrs:server id="restEndpoint" address="/rest/">
+            <jaxrs:serviceBeans>
+            <ref bean="pageService" />
+        </jaxrs:serviceBeans>
+    </jaxrs:server>
     
 </beans>

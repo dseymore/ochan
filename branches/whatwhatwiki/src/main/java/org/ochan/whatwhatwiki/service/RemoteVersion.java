@@ -2,7 +2,9 @@ package org.ochan.whatwhatwiki.service;
 
 import java.util.Comparator;
 import java.util.Date;
+import javax.xml.bind.annotation.XmlRootElement;
 
+@XmlRootElement(name = "RemoteVersion")
 public class RemoteVersion implements Comparable<RemoteVersion> {
 
     private Long version;

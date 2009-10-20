@@ -208,21 +208,59 @@
     </script>
 </div>
 <br clear="all"/>
-<h2 class="heading">Pages</h2>
-<ul>
-#foreach($page in ${pages})
-<li><a href="#springUrl('/wiki/preview/')$page.key" title="Preview">$page.key</a></li>
-#end
-</ul>
+<!-- we need a div to put our dynamic panels into -->
+<div id="container">
+    <h2 class="heading">Pages</h2>
+    <ul>
+    #foreach($page in ${pages})
+    <li><a href="#springUrl('/wiki/preview/')$page.key" title="Preview">$page.key</a>&nbsp;[<a href="#" title="History" onclick="showHistory('$page.key')">History</a>]</li>
+    #end
+    </ul>
 
-<h2 class="heading">Files</h2>
-<ul>
-#foreach($file in ${files})
-<li>$file.key</li>
-#end
-</ul>
-
-
-
+    <h2 class="heading">Files</h2>
+    <ul>
+    #foreach($file in ${files})
+    <li>$file.key</li>
+    #end
+    </ul>
+</div>
+<!-- History javascript -->
+<script type="text/javascript">
+function showHistory(key){
+    var callback =
+        {
+                success: function(response){
+                        var result = YAHOO.lang.JSON.parse(response.responseText);
+                        //notification time!
+                        if (result != undefined && result.RemotePage.key != -1){
+                            // Instantiate a Panel from script
+                            var historyPanel = new YAHOO.widget.Panel(key, { width:"520px", visible:false, constraintoviewport:true, modal:true} );
+                            historyPanel.setHeader(result.RemotePage.key);
+                            var body = "<table><tr><th>user</th><th>date</th><th>comment</th></tr>";
+                            if(result.RemotePage.versions.length != undefined){
+                                for (var i = 0; i < result.RemotePage.versions.length; i++) { 
+                                    body += "<tr><td>" + result.RemotePage.versions[i].author + "</td><td>" + result.RemotePage.versions[i].date + "</td><td>" + result.RemotePage.versions[i].comment + "</td></tr>";
+                                }
+                            }else{
+                                body += "<tr><td>" + result.RemotePage.versions.author + "</td><td>" + result.RemotePage.versions.date + "</td><td>" + result.RemotePage.versions.comment + "</td></tr>";
+                            }
+                            body += "</table>";
+                            historyPanel.setBody(body);
+                            historyPanel.setFooter('');
+                            historyPanel.render("container");
+                            //we need to do this to properly destroy the live-generated panel. 
+                            historyPanel.beforeHideEvent.subscribe(function(){
+                               historyPanel.destroy();
+                            }); 
+                            historyPanel.show();
+                        }
+                },
+                failure: function(response){
+                        //alert(response);
+                }
+        };
+        var transaction = YAHOO.util.Connect.asyncRequest('GET', '/remote/rest/page/get/' + key + '/', callback, null);
+}
+</script>
 </body>
 </html>
