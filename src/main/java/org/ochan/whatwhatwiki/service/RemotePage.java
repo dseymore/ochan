@@ -3,8 +3,10 @@ package org.ochan.whatwhatwiki.service;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.commons.collections.comparators.ComparableComparator;
 
+@XmlRootElement(name = "RemotePage")
 public class RemotePage implements Comparable<RemotePage> {
 
     private String key;
