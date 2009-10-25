@@ -11,6 +11,7 @@ public class RemotePage implements Comparable<RemotePage> {
 
     private String key;
     private List<RemoteVersion> versions;
+    private String latest;
 
     /**
      * @return the key
@@ -38,14 +39,19 @@ public class RemotePage implements Comparable<RemotePage> {
      */
     public void setVersions(List<RemoteVersion> versions) {
         this.versions = versions;
+	latest = getLatest();
     }
 
     public String getLatest() {
         if (versions != null && versions.size() > 0) {
             Collections.sort(versions);
-            return versions.get(0).getContent();
+            return versions.get(versions.size() - 1).getContent();
         }
         return null;
+    }
+
+    public void setLatest(String latest){
+	this.latest = latest;
     }
 
     public void addVersion(RemoteVersion remoteVersion) {

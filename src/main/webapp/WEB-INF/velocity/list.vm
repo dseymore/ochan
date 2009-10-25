@@ -213,7 +213,7 @@
     <h2 class="heading">Pages</h2>
     <ul>
     #foreach($page in ${pages})
-    <li><a href="#springUrl('/wiki/preview/')$page.key" title="Preview">$page.key</a>&nbsp;[<a href="#" title="History" onclick="showHistory('$page.key')">History</a>]</li>
+    <li><a href="#springUrl('/wiki/preview/')$page.key" title="Preview">$page.key</a>&nbsp;[<a href="#" title="History" onclick="showHistory('$page.key')">History</a>]&nbsp;[<a href="#" onclick="editPage('$page.key')">Edit</a>]</li>
     #end
     </ul>
 
@@ -226,6 +226,28 @@
 </div>
 <!-- History javascript -->
 <script type="text/javascript">
+function editPage(key){
+	var callback = 
+	{
+		success: function(response){
+			var result = YAHOO.lang.JSON.parse(response.responseText);
+			if (result != undefined && result.RemotePage.key != -1){
+				//lets hijack the new page panel, and prepopulate it with 
+				//the content of the most recent version.
+				var title = key;
+				var content = result.RemotePage.latest;
+				document.getElementById('title').value = key;
+				//clear & reset the editor
+				myEditor.clearEditorDoc();
+				myEditor.execCommand('inserthtml',content);
+				//FIXME - change the button label
+				panel.show();
+			}
+		}
+	};
+	var transaction = YAHOO.util.Connect.asyncRequest('GET', '/remote/rest/page/get/' + key + '/', callback, null);
+}
+
 function showHistory(key){
     var callback =
         {
