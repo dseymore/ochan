@@ -45,7 +45,7 @@
 	    
         	YAHOO.util.Event.onDOMReady(function () {
         	##alt + shift + r = create new page
-                var kl3 = new YAHOO.util.KeyListener(document, {alt: true, shift:true, keys:82 }, { fn:function(event){ panel.show(); return false; } } );
+                var kl3 = new YAHOO.util.KeyListener(document, {alt: true, shift:true, keys:82 }, { fn:function(event){ addPage(); return false; } } );
                 kl3.enable();
 
                 ##alt + shift + f = create new page
@@ -73,7 +73,7 @@
 </div>
 <div id="navbar">
         <div id="panel2"><div class="bd">
-                <span>[<a href="#" onclick="panel.show(); return false;">Add New Page</a>]</span>
+                <span>[<a href="#" onclick="addPage(); return false;">Add New Page</a>]</span>
                 <span>[<a href="#" onclick="uploadPanel.show(); return false;">Add New File</a>]</span>
                 <span>[<a href="#" onclick="growlHelp(); return false;">Help</a>]</span>
         </div></div>
@@ -226,6 +226,14 @@
 </div>
 <!-- History javascript -->
 <script type="text/javascript">
+function addPage(){
+    //un hijack the panel, its shared by the edit feature. 
+    document.getElementById('title').value = '';
+    //clear & reset the editor
+    myEditor.clearEditorDoc();
+    panel.show();
+}
+
 function editPage(key){
 	var callback = 
 	{
