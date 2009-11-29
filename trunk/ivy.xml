@@ -64,7 +64,7 @@
 		<dependency org="net.sf.ehcache" name="ehcache" rev="1.2.3" conf="default->default"/>
 		<dependency org="carbonfive" name="pathparameter" rev="r686" conf="default->default"/>
 		<!-- Sleepy Cat! -->
-		<dependency org="com.sleepycat" name="je" rev="3.3.75" conf="default->default"/>
+		<dependency org="com.sleepycat" name="je" rev="4.0.71" conf="default->default"/>
 		<dependency org="org.javasimon" name="javasimon-core" rev="2.0-alpha1" conf="default->default"/>
 		<!-- jar classloader for plugins -->
 		<dependency org="xeus" name="jcl" rev="1.2.2-resourcesmod" conf="default->default"/>
