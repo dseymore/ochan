@@ -1,12 +1,15 @@
 package org.ochan.dpl;
 
 import java.io.File;
+import java.net.InetAddress;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.sleepycat.je.Environment;
 import com.sleepycat.je.EnvironmentConfig;
+import com.sleepycat.je.rep.ReplicatedEnvironment;
+import com.sleepycat.je.rep.ReplicationConfig;
 import com.sleepycat.persist.EntityStore;
 import com.sleepycat.persist.PrimaryIndex;
 import com.sleepycat.persist.SecondaryIndex;
@@ -49,10 +52,30 @@ public class SleepyEnvironment {
 				storeConfig.setAllowCreate(true);
 				storeConfig.setDeferredWrite(true);
 			}
-
+			
 			// Open the environment and entity store
-			LOG.warn(System.getProperty("user.dir"));
-			environment = new Environment(new File(System.getProperty("user.dir")), myEnvConfig);
+			LOG.warn("Storage Directory: " + System.getProperty("user.dir"));
+			if (System.getProperty("bdb.rep") != null){
+				//we have to turn on transactionality
+				myEnvConfig.setTransactional(true);
+				storeConfig.setTransactional(true);
+				storeConfig.setDeferredWrite(false);
+				//and evil locking. 
+				myEnvConfig.setLocking(true);
+				ReplicationConfig repConfig = new ReplicationConfig();
+				String bdbgroup = System.getProperty("bdb.rep.group") == null ? "local" : System.getProperty("bdb.rep.group");
+				String bdbname = System.getProperty("bdb.rep.name") == null ? InetAddress.getLocalHost().getHostName() : System.getProperty("bdb.rep.name");
+				String bdbHostPort = System.getProperty("bdb.rep.bind") == null ? "0.0.0.0:5001" : System.getProperty("bdb.rep.bind");
+				String bdbHelper = System.getProperty("bdb.rep.helper") == null ? "0.0.0.0:5001" : System.getProperty("bdb.rep.helper");
+				LOG.warn("Starting replication with settings: group("+bdbgroup+") name("+bdbname+") host("+bdbHostPort+") helper("+bdbHelper+")");
+				repConfig.setGroupName(bdbgroup);
+				repConfig.setNodeName(bdbname);
+				repConfig.setNodeHostPort(bdbHostPort);
+				repConfig.setHelperHosts(bdbHelper);
+				environment = new ReplicatedEnvironment(new File(System.getProperty("user.dir")), repConfig, myEnvConfig);
+			}else{
+				environment = new Environment(new File(System.getProperty("user.dir")), myEnvConfig);
+			}
 			entityStore = new EntityStore(environment, "EntityStore", storeConfig);
 
 			categoryByIdentifier = entityStore.getPrimaryIndex(Long.class, CategoryDPL.class);
