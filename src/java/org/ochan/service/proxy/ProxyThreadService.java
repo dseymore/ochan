@@ -9,8 +9,10 @@ import net.sf.ehcache.Element;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
+import org.ochan.dpl.replication.StateChangeListener;
 import org.ochan.entity.Post;
 import org.ochan.entity.Thread;
+import org.ochan.service.PostService;
 import org.ochan.service.ThreadService;
 import org.ochan.service.proxy.config.ShardConfiguration;
 
@@ -20,6 +22,7 @@ public class ProxyThreadService implements ThreadService {
 	private JaxWsProxyFactoryBean threadServiceClient;
 	private ThreadService localThreadService;
 	private Ehcache cache;
+	private StateChangeListener stateChangeListener;
 	
 	private static final Log LOG = LogFactory.getLog(ProxyThreadService.class);
 	
@@ -33,6 +36,11 @@ public class ProxyThreadService implements ThreadService {
 			Long identifier = shardConfiguration.getSynchroService().getSync();
 			ThreadService service = get(shardConfiguration.whichHost(identifier));
 			service.createThread(identifier, category, author, subject, url, email, content, file, filename);
+		}else if(!stateChangeListener.isMaster()){
+			//replication.. we aren't the master
+			LOG.debug("Sending to master node");
+			ThreadService service = get(stateChangeListener.getMasterNodeName());
+			service.createThread(null, category, author, subject, url, email, content, file, filename);
 		}else{
 			localThreadService.createThread(null, category, author, subject, url, email, content, file, filename);
 		}
@@ -46,6 +54,11 @@ public class ProxyThreadService implements ThreadService {
 				cache.remove(identifier);
 			}
 			ThreadService service = get(shardConfiguration.whichHost(identifier));
+			service.deleteThread(identifier);
+		}else if(!stateChangeListener.isMaster()){
+			//replication.. we aren't the master
+			LOG.debug("Sending to master node");
+			ThreadService service = get(stateChangeListener.getMasterNodeName());
 			service.deleteThread(identifier);
 		} else {
 			localThreadService.deleteThread(identifier);
@@ -126,6 +139,11 @@ public class ProxyThreadService implements ThreadService {
 			}
 			ThreadService service = get(shardConfiguration.whichHost(thread.getIdentifier()));
 			service.updateThread(thread);
+		}else if(!stateChangeListener.isMaster()){
+			//replication.. we aren't the master
+			LOG.debug("Sending to master node");
+			ThreadService service = get(stateChangeListener.getMasterNodeName());
+			service.updateThread(thread);
 		} else {
 			localThreadService.updateThread(thread);
 		}
@@ -165,6 +183,13 @@ public class ProxyThreadService implements ThreadService {
 	 */
 	public void setCache(Ehcache cache) {
 		this.cache = cache;
+	}
+
+	/**
+	 * @param stateChangeListener the stateChangeListener to set
+	 */
+	public void setStateChangeListener(StateChangeListener stateChangeListener) {
+		this.stateChangeListener = stateChangeListener;
 	}
 	
 }

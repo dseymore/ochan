@@ -9,7 +9,9 @@ import net.sf.ehcache.Element;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
+import org.ochan.dpl.replication.StateChangeListener;
 import org.ochan.entity.Category;
+import org.ochan.service.BlobService;
 import org.ochan.service.CategoryService;
 import org.ochan.service.proxy.config.ShardConfiguration;
 import org.springframework.jmx.export.annotation.ManagedOperation;
@@ -24,6 +26,7 @@ public class ProxyCategoryService implements CategoryService {
 	private JaxWsProxyFactoryBean categoryServiceClient;
 	private CategoryService localCategoryService;
 	private Ehcache cache;
+	private StateChangeListener stateChangeListener;
 	
 	private static final Log LOG = LogFactory.getLog(ProxyCategoryService.class);
 	
@@ -47,6 +50,11 @@ public class ProxyCategoryService implements CategoryService {
 			Long identifier = shardConfiguration.getSynchroService().getSync();
 			CategoryService service = get(shardConfiguration.whichHost(identifier));
 			service.createCategory(thisIdentifier, name, description, code);
+		}else if(!stateChangeListener.isMaster()){
+			//replication.. we aren't the master
+			LOG.debug("Sending to master node");
+			CategoryService service = get(stateChangeListener.getMasterNodeName());
+			service.createCategory(thisIdentifier, name, description, code);
 		}else{
 			localCategoryService.createCategory(null, name, description, code);
 		}
@@ -60,6 +68,11 @@ public class ProxyCategoryService implements CategoryService {
 				cache.remove(identifier);
 			}
 			CategoryService service = get(shardConfiguration.whichHost(identifier));
+			service.deleteCategory(identifier);
+		}else if(!stateChangeListener.isMaster()){
+			//replication.. we aren't the master
+			LOG.debug("Sending to master node");
+			CategoryService service = get(stateChangeListener.getMasterNodeName());
 			service.deleteCategory(identifier);
 		} else {
 			localCategoryService.deleteCategory(identifier);
@@ -170,5 +183,14 @@ public class ProxyCategoryService implements CategoryService {
 	public void setCache(Ehcache cache) {
 		this.cache = cache;
 	}
+
+	/**
+	 * @param stateChangeListener the stateChangeListener to set
+	 */
+	public void setStateChangeListener(StateChangeListener stateChangeListener) {
+		this.stateChangeListener = stateChangeListener;
+	}
+	
+	
 	
 }

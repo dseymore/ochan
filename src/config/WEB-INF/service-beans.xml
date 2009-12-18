@@ -18,7 +18,10 @@
 	<bean id="localAnnouncementService" class="org.ochan.service.local.LocalAnnouncementService"/>
 	
 	<!--  xxxxxxxxxxxxxxxxxxxxxxxxx  Service configuration xxxxxxxxxxxxxxxxxxxxxxxxx  -->
-	<bean class="org.ochan.dpl.SleepyEnvironment" id="sleepy" destroy-method="close"/>
+	<bean class="org.ochan.dpl.replication.StateChangeListener" id="stateChangeListener"/>
+	<bean class="org.ochan.dpl.SleepyEnvironment" id="sleepy" destroy-method="close">
+		<constructor-arg><ref bean="stateChangeListener"/></constructor-arg>
+	</bean>
 	<bean id="localCategoryService" class="org.ochan.dpl.service.LocalCategoryService">
 		<property name="environment" ref="sleepy"/>
 	</bean>
@@ -39,24 +42,28 @@
 		<property name="blobServiceClient" ref="blobServiceClientFactory"/>
 		<property name="localBlobService" ref="localBlobService"/>
 		<property name="cache" ref="proxyBlobCache"/>
+		<property name="stateChangeListener" ref="stateChangeListener"/>
 	</bean>
 	<bean id="proxyPostService" class="org.ochan.service.proxy.ProxyPostService">
 		<property name="shardConfiguration" ref="shardConfiguration"/>
 		<property name="postServiceClient" ref="postServiceClientFactory"/>
 		<property name="localPostService" ref="localPostService"/>
 		<property name="cache" ref="proxyPostCache"/>
+		<property name="stateChangeListener" ref="stateChangeListener"/>
 	</bean>
 	<bean id="proxyThreadService" class="org.ochan.service.proxy.ProxyThreadService">
 		<property name="shardConfiguration" ref="shardConfiguration"/>
 		<property name="threadServiceClient" ref="threadServiceClientFactory"/>
 		<property name="localThreadService" ref="localThreadService"/>
 		<property name="cache" ref="proxyThreadCache"/>
+		<property name="stateChangeListener" ref="stateChangeListener"/>
 	</bean>
 	<bean id="proxyCategoryService" class="org.ochan.service.proxy.ProxyCategoryService">
 		<property name="shardConfiguration" ref="shardConfiguration"/>
 		<property name="categoryServiceClient" ref="categoryServiceClientFactory"/>
 		<property name="localCategoryService" ref="localCategoryService"/>
 		<property name="cache" ref="proxyCategoryCache"/>
+		<property name="stateChangeListener" ref="stateChangeListener"/>
 	</bean>
 	<!-- end proxies -->
 	<bean id="localExternalCategoryService" class="org.ochan.dpl.service.LocalExternalCategoryService">
