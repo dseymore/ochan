@@ -9,8 +9,11 @@ import net.sf.ehcache.Element;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
+import org.ochan.dpl.replication.StateChangeListener;
 import org.ochan.service.BlobService;
 import org.ochan.service.proxy.config.ShardConfiguration;
+
+
 
 public class ProxyBlobService implements BlobService {
 
@@ -18,6 +21,7 @@ public class ProxyBlobService implements BlobService {
 	private JaxWsProxyFactoryBean blobServiceClient;
 	private BlobService localBlobService;
 	private Ehcache cache;
+	private StateChangeListener stateChangeListener;
 	
 	private static final Log LOG = LogFactory.getLog(ProxyBlobService.class);
 		
@@ -51,6 +55,13 @@ public class ProxyBlobService implements BlobService {
 		this.cache = cache;
 	}
 	
+	/**
+	 * @param stateChangeListener the stateChangeListener to set
+	 */
+	public void setStateChangeListener(StateChangeListener stateChangeListener) {
+		this.stateChangeListener = stateChangeListener;
+	}
+
 	@Override
 	public void deleteBlob(Long identifier) {
 		if (shardConfiguration.isShardEnabled()){
@@ -59,6 +70,11 @@ public class ProxyBlobService implements BlobService {
 				cache.remove(identifier);
 			}
 			BlobService service = get(shardConfiguration.whichHost(identifier));
+			service.deleteBlob(identifier);
+		}else if(!stateChangeListener.isMaster()){
+			//replication.. we aren't the master
+			LOG.debug("Sending to master node");
+			BlobService service = get(stateChangeListener.getMasterNodeName());
 			service.deleteBlob(identifier);
 		}else{
 			localBlobService.deleteBlob(identifier);
@@ -74,6 +90,7 @@ public class ProxyBlobService implements BlobService {
 			}
 			return ids;
 		}else{
+			//read commands don't go to the master node
 			return localBlobService.getAllIds();
 		}
 	}
@@ -114,6 +131,11 @@ public class ProxyBlobService implements BlobService {
 			Long identifier = shardConfiguration.getSynchroService().getSync();
 			BlobService service = get(shardConfiguration.whichHost(identifier));
 			return service.saveBlob(byteArray, identifier);
+		}else if(!stateChangeListener.isMaster()){
+			//replication.. we aren't the master
+			LOG.debug("Sending to master node");
+			BlobService service = get(stateChangeListener.getMasterNodeName());
+			return service.saveBlob(byteArray, null);
 		}else{
 			//normal behaviour
 			return localBlobService.saveBlob(byteArray, null);

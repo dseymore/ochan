@@ -9,8 +9,10 @@ import net.sf.ehcache.Element;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
+import org.ochan.dpl.replication.StateChangeListener;
 import org.ochan.entity.Post;
 import org.ochan.entity.Thread;
+import org.ochan.service.CategoryService;
 import org.ochan.service.PostService;
 import org.ochan.service.proxy.config.ShardConfiguration;
 
@@ -20,6 +22,7 @@ public class ProxyPostService implements PostService {
 	private JaxWsProxyFactoryBean postServiceClient;
 	private PostService localPostService;
 	private Ehcache cache;
+	private StateChangeListener stateChangeListener;
 
 	private static final Log LOG = LogFactory.getLog(ProxyPostService.class);
 
@@ -59,6 +62,14 @@ public class ProxyPostService implements PostService {
 		this.cache = cache;
 	}
 
+	
+	/**
+	 * @param stateChangeListener the stateChangeListener to set
+	 */
+	public void setStateChangeListener(StateChangeListener stateChangeListener) {
+		this.stateChangeListener = stateChangeListener;
+	}
+
 	@Override
 	public void createPost(Long thisIdentifer, Long parentIdentifier, String author, String subject, String email, String url, String comment, Byte[] file, String filename) {
 		if (thisIdentifer != null){
@@ -69,6 +80,11 @@ public class ProxyPostService implements PostService {
 			Long identifier = shardConfiguration.getSynchroService().getSync();
 			PostService service = get(shardConfiguration.whichHost(identifier));
 			service.createPost(identifier, parentIdentifier, author, subject, email, url, comment, file, filename);
+		}else if(!stateChangeListener.isMaster()){
+			//replication.. we aren't the master
+			LOG.debug("Sending to master node");
+			PostService service = get(stateChangeListener.getMasterNodeName());
+			service.createPost(null, parentIdentifier, author, subject, email, url, comment, file, filename);
 		}else{
 			localPostService.createPost(null, parentIdentifier, author, subject, email, url, comment, file, filename);
 		}
@@ -82,6 +98,11 @@ public class ProxyPostService implements PostService {
 				cache.remove(identifier);
 			}
 			PostService service = get(shardConfiguration.whichHost(identifier));
+			service.deletePost(identifier);
+		}else if(!stateChangeListener.isMaster()){
+			//replication.. we aren't the master
+			LOG.debug("Sending to master node");
+			PostService service = get(stateChangeListener.getMasterNodeName());
 			service.deletePost(identifier);
 		} else {
 			localPostService.deletePost(identifier);
@@ -136,6 +157,11 @@ public class ProxyPostService implements PostService {
 				cache.remove(post.getIdentifier());
 			}
 			PostService service = get(shardConfiguration.whichHost(post.getIdentifier()));
+			service.updatePost(post);
+		}else if(!stateChangeListener.isMaster()){
+			//replication.. we aren't the master
+			LOG.debug("Sending to master node");
+			PostService service = get(stateChangeListener.getMasterNodeName());
 			service.updatePost(post);
 		} else {
 			localPostService.updatePost(post);

@@ -10,6 +10,7 @@ import com.sleepycat.je.Environment;
 import com.sleepycat.je.EnvironmentConfig;
 import com.sleepycat.je.rep.ReplicatedEnvironment;
 import com.sleepycat.je.rep.ReplicationConfig;
+import com.sleepycat.je.rep.StateChangeListener;
 import com.sleepycat.persist.EntityStore;
 import com.sleepycat.persist.PrimaryIndex;
 import com.sleepycat.persist.SecondaryIndex;
@@ -19,7 +20,7 @@ public class SleepyEnvironment {
 
 	private static final Log LOG = LogFactory.getLog(SleepyEnvironment.class);
 	private Environment environment;
-	private EntityStore entityStore;
+	private EntityStore entityStore;	
 
 	public PrimaryIndex<Long, CategoryDPL> categoryByIdentifier;
 	public SecondaryIndex<String, Long, CategoryDPL> categoryByCode;
@@ -39,7 +40,7 @@ public class SleepyEnvironment {
 	
 	public PrimaryIndex<Long, SynchroDPL> synchroByIdentifier;
 
-	public SleepyEnvironment() {
+	public SleepyEnvironment(StateChangeListener stateChangeListener) {
 		try {
 			EnvironmentConfig myEnvConfig = new EnvironmentConfig();
 			myEnvConfig.setLocking(false);
@@ -73,6 +74,7 @@ public class SleepyEnvironment {
 				repConfig.setNodeHostPort(bdbHostPort);
 				repConfig.setHelperHosts(bdbHelper);
 				environment = new ReplicatedEnvironment(new File(System.getProperty("user.dir")), repConfig, myEnvConfig);
+				((ReplicatedEnvironment)environment).setStateChangeListener(stateChangeListener);
 			}else{
 				environment = new Environment(new File(System.getProperty("user.dir")), myEnvConfig);
 			}
