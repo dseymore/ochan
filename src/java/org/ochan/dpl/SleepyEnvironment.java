@@ -73,6 +73,11 @@ public class SleepyEnvironment {
 				repConfig.setNodeName(bdbname);
 				repConfig.setNodeHostPort(bdbHostPort);
 				repConfig.setHelperHosts(bdbHelper);
+				if (System.getProperty("bdb.rep.primary") != null){
+					//we're the primary.. which means we conduct the election if the master is lost
+					//this is used for 2 node clusters to force a single-node when the other node fails (or loses communication)
+					repConfig.setDesignatedPrimary(true);
+				}
 				environment = new ReplicatedEnvironment(new File(System.getProperty("user.dir")), repConfig, myEnvConfig);
 				((ReplicatedEnvironment)environment).setStateChangeListener(stateChangeListener);
 			}else{
