@@ -25,11 +25,15 @@ public class StateChangeListener implements com.sleepycat.je.rep.StateChangeList
 		//synchronizing on state changes so that reads of state are blocked ONLY when in contention. 
 		synchronized (WRITE_LOCAL) {
 			if (LOG.isWarnEnabled()) {
-				LOG.warn("A vote just occurred, responding: "
-						+ new ToStringBuilder(stateChangeEvent)
-								.append("Time", stateChangeEvent.getEventTime())
-								.append("State", stateChangeEvent.getState())
-								.append("Master",stateChangeEvent.getMasterNodeName()));
+				try{
+					LOG.warn("A vote just occurred, responding: "
+							+ new ToStringBuilder(stateChangeEvent)
+									.append("Time", stateChangeEvent.getEventTime())
+									.append("State", stateChangeEvent.getState())
+									.append("Master",stateChangeEvent.getMasterNodeName()));
+				}catch(Exception e){
+					LOG.warn("Oops.... logging caused an exception:", e);
+				}
 			}
 			switch (stateChangeEvent.getState()) {
 	
