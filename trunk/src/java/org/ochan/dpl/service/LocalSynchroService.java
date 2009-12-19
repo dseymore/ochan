@@ -8,6 +8,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.ochan.dpl.SleepyEnvironment;
 import org.ochan.dpl.SynchroDPL;
+import org.ochan.dpl.replication.TransactionTemplate;
 import org.ochan.service.SynchroService;
 import org.springframework.jmx.export.annotation.ManagedResource;
 
@@ -40,8 +41,12 @@ public class LocalSynchroService implements SynchroService {
 	@Override
 	public Long getSync() {
 		try {
-			SynchroDPL dpl = new SynchroDPL();
-			environment.synchroByIdentifier.put(dpl);
+			final SynchroDPL dpl = new SynchroDPL();
+			new TransactionTemplate(environment){
+				public void doInTransaction(){
+					environment.synchroByIdentifier.put(dpl);
+				}
+			}.run();
 			return dpl.getIdentifier();
 		} catch (Exception e) {
 			LOG.error("ugh", e);

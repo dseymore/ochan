@@ -16,7 +16,7 @@ import com.sleepycat.je.rep.StateChangeEvent;
 public class StateChangeListener implements com.sleepycat.je.rep.StateChangeListener {
 
 	private static final Log LOG = LogFactory.getLog(StateChangeListener.class);
-	private static final String WRITE_LOCAL = "Magic key to tell us to write locally";
+	private static final String WRITE_LOCAL = "Magic";
 	
 	private String currentMaster = WRITE_LOCAL;
 
@@ -26,7 +26,7 @@ public class StateChangeListener implements com.sleepycat.je.rep.StateChangeList
 		synchronized (WRITE_LOCAL) {
 			if (LOG.isWarnEnabled()) {
 				try{
-					LOG.warn("A vote just occurred, responding: "
+					LOG.fatal("A vote just occurred, responding: "
 							+ new ToStringBuilder(stateChangeEvent)
 									.append("Time", stateChangeEvent.getEventTime())
 									.append("State", stateChangeEvent.getState())
@@ -39,6 +39,7 @@ public class StateChangeListener implements com.sleepycat.je.rep.StateChangeList
 	
 			case MASTER:
 				currentMaster = WRITE_LOCAL;
+				break;
 			case REPLICA:
 				currentMaster = stateChangeEvent.getMasterNodeName();
 				break;
@@ -51,10 +52,14 @@ public class StateChangeListener implements com.sleepycat.je.rep.StateChangeList
 	}
 	
 	public boolean isMaster(){
-		if (WRITE_LOCAL.equals(currentMaster)){
-			return true;
+		boolean value = true;
+		if (!WRITE_LOCAL.equals(currentMaster)){
+			value = false;
 		}
-		return false;
+		if (LOG.isDebugEnabled()){
+			LOG.debug("Informing service that this node is " +  (value ? "a master" : "a slave"));
+		}
+		return value;
 	}
 
 	public String getMasterNodeName(){

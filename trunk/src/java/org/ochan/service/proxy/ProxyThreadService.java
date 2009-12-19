@@ -10,12 +10,14 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
 import org.ochan.dpl.replication.StateChangeListener;
-import org.ochan.entity.Post;
 import org.ochan.entity.Thread;
-import org.ochan.service.PostService;
 import org.ochan.service.ThreadService;
 import org.ochan.service.proxy.config.ShardConfiguration;
+import org.springframework.jmx.export.annotation.ManagedAttribute;
+import org.springframework.jmx.export.annotation.ManagedOperation;
+import org.springframework.jmx.export.annotation.ManagedResource;
 
+@ManagedResource(description = "Proxy Threadd Service", objectName = "Ochan:type=proxy,name=ProxyThreadService", logFile = "jmx.log")
 public class ProxyThreadService implements ThreadService {
 
 	private ShardConfiguration shardConfiguration;
@@ -33,6 +35,7 @@ public class ProxyThreadService implements ThreadService {
 			LOG.fatal("No one should pass in an ID but ME!");
 		}
 		if (shardConfiguration.isShardEnabled()){
+			LOG.debug("Calling shared");
 			Long identifier = shardConfiguration.getSynchroService().getSync();
 			ThreadService service = get(shardConfiguration.whichHost(identifier));
 			service.createThread(identifier, category, author, subject, url, email, content, file, filename);
@@ -49,6 +52,7 @@ public class ProxyThreadService implements ThreadService {
 	@Override
 	public void deleteThread(Long identifier) {
 		if (shardConfiguration.isShardEnabled()) {
+			LOG.debug("Calling shared");
 			Element o = cache.get(identifier);
 			if (o != null || o.getObjectValue() != null){
 				cache.remove(identifier);
@@ -68,6 +72,7 @@ public class ProxyThreadService implements ThreadService {
 	@Override
 	public Thread getThread(Long identifier) {
 		if (shardConfiguration.isShardEnabled()) {
+			LOG.debug("Calling shared");
 			Element o = cache.get(identifier);
 			if (o != null && o.getObjectValue() != null && !o.isExpired()){
 				return (Thread)o.getObjectValue();
@@ -84,6 +89,7 @@ public class ProxyThreadService implements ThreadService {
 	@Override
 	public List<Thread> retrieveThreads(ThreadCriteria criteria) {
 		if (shardConfiguration.isShardEnabled()) {
+			LOG.debug("Calling shared");
 			List<Thread> threads = new ArrayList<Thread>();
 			//now we need all of the things to be ready to go...
 			for(String hosts : shardConfiguration.getShardHosts()){
@@ -133,6 +139,7 @@ public class ProxyThreadService implements ThreadService {
 	@Override
 	public void updateThread(Thread thread) {
 		if (shardConfiguration.isShardEnabled()) {
+			LOG.debug("Calling shared");
 			Element o = cache.get(thread.getIdentifier());
 			if (o != null || o.getObjectValue() != null){
 				cache.remove(thread.getIdentifier());
@@ -190,6 +197,32 @@ public class ProxyThreadService implements ThreadService {
 	 */
 	public void setStateChangeListener(StateChangeListener stateChangeListener) {
 		this.stateChangeListener = stateChangeListener;
+	}
+	
+
+	@ManagedOperation
+	public void bustCache(){
+		this.cache.flush();
+	}
+	
+	@ManagedAttribute
+	public int getCacheHitCount(){
+		return this.cache.getHitCount();
+	}
+	
+	@ManagedAttribute
+	public int getCacheMissCountExpired(){
+		return this.cache.getMissCountExpired();
+	}
+	
+	@ManagedAttribute
+	public int getCacheMissCountNotFound(){
+		return this.cache.getMissCountNotFound();
+	}
+	
+	@ManagedAttribute
+	public int getCacheSize(){
+		return this.cache.getSize();
 	}
 	
 }

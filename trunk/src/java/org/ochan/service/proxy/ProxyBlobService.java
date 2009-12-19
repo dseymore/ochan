@@ -12,9 +12,12 @@ import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
 import org.ochan.dpl.replication.StateChangeListener;
 import org.ochan.service.BlobService;
 import org.ochan.service.proxy.config.ShardConfiguration;
+import org.springframework.jmx.export.annotation.ManagedAttribute;
+import org.springframework.jmx.export.annotation.ManagedOperation;
+import org.springframework.jmx.export.annotation.ManagedResource;
 
 
-
+@ManagedResource(description = "Proxy Blob Service", objectName = "Ochan:type=proxy,name=ProxyBlobService", logFile = "jmx.log")
 public class ProxyBlobService implements BlobService {
 
 	private ShardConfiguration shardConfiguration; 
@@ -55,6 +58,31 @@ public class ProxyBlobService implements BlobService {
 		this.cache = cache;
 	}
 	
+	@ManagedOperation
+	public void bustCache(){
+		this.cache.flush();
+	}
+	
+	@ManagedAttribute
+	public int getCacheHitCount(){
+		return this.cache.getHitCount();
+	}
+	
+	@ManagedAttribute
+	public int getCacheMissCountExpired(){
+		return this.cache.getMissCountExpired();
+	}
+	
+	@ManagedAttribute
+	public int getCacheMissCountNotFound(){
+		return this.cache.getMissCountNotFound();
+	}
+	
+	@ManagedAttribute
+	public int getCacheSize(){
+		return this.cache.getSize();
+	}
+	
 	/**
 	 * @param stateChangeListener the stateChangeListener to set
 	 */
@@ -65,6 +93,7 @@ public class ProxyBlobService implements BlobService {
 	@Override
 	public void deleteBlob(Long identifier) {
 		if (shardConfiguration.isShardEnabled()){
+			LOG.debug("Calling shared");
 			Element o = cache.get(identifier);
 			if (o != null || o.getObjectValue() != null){
 				cache.remove(identifier);
@@ -84,6 +113,7 @@ public class ProxyBlobService implements BlobService {
 	@Override
 	public List<Long> getAllIds() {
 		if (shardConfiguration.isShardEnabled()){
+			LOG.debug("Calling shared");
 			List<Long> ids = new ArrayList<Long>();
 			for(String hosts : shardConfiguration.getShardHosts()){
 				ids.addAll(get(hosts).getAllIds());
@@ -98,6 +128,7 @@ public class ProxyBlobService implements BlobService {
 	@Override
 	public Byte[] getBlob(Long identifier) {
 		if (shardConfiguration.isShardEnabled()){
+			LOG.debug("Calling shared");
 			Element o = cache.get(identifier);
 			if (o != null && o.getObjectValue() != null && !o.isExpired()){
 				return (Byte[])o.getObjectValue();
@@ -114,6 +145,7 @@ public class ProxyBlobService implements BlobService {
 	@Override
 	public int getBlobSize(Long identifier) {
 		if (shardConfiguration.isShardEnabled()){
+			LOG.debug("Calling shared");
 			BlobService service = get(shardConfiguration.whichHost(identifier));
 			return service.getBlobSize(identifier);
 		}else{
@@ -128,6 +160,7 @@ public class ProxyBlobService implements BlobService {
 			LOG.fatal("No one should pass in an ID but ME!");
 		}
 		if (shardConfiguration.isShardEnabled()){
+			LOG.debug("Calling shared");
 			Long identifier = shardConfiguration.getSynchroService().getSync();
 			BlobService service = get(shardConfiguration.whichHost(identifier));
 			return service.saveBlob(byteArray, identifier);

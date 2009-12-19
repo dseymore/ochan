@@ -3,7 +3,6 @@ package org.ochan.dpl.service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.prefs.Preferences;
 
 import org.apache.commons.codec.binary.Base64;
@@ -12,6 +11,7 @@ import org.apache.commons.logging.LogFactory;
 import org.ochan.dpl.PostDPL;
 import org.ochan.dpl.PostType;
 import org.ochan.dpl.SleepyEnvironment;
+import org.ochan.dpl.replication.TransactionTemplate;
 import org.ochan.entity.ImagePost;
 import org.ochan.entity.Post;
 import org.ochan.entity.TextPost;
@@ -130,7 +130,7 @@ public class LocalPostService implements PostService {
 	public void createPost(Long thisIdentifier, Long parentIdentifier, String author, String subject, String email, String url, String comment, Byte[] file, String filename) {
 		createCount++;
 		try {
-			PostDPL post = new PostDPL();
+			final PostDPL post = new PostDPL();
 			post.setIdentifier(thisIdentifier);
 			post.setParent(parentIdentifier);
 			post.setAuthor(computerAuthor(author));
@@ -149,7 +149,11 @@ public class LocalPostService implements PostService {
 			} else {
 				post.setType(PostType.TEXT);
 			}
-			environment.postByIdentifier.put(post);
+			new TransactionTemplate(environment){
+				public void doInTransaction(){
+					environment.postByIdentifier.put(post);
+				}
+			}.run();
 		} catch (Exception e) {
 			LOG.error("Unable to persist post.", e);
 		}
@@ -158,16 +162,20 @@ public class LocalPostService implements PostService {
 	@Override
 	@ManagedOperation(description = "Delete a Post!")
 	@ManagedOperationParameters( { @ManagedOperationParameter(name = "identifier", description = "The id of the post as a Long object (L at the end)") })
-	public void deletePost(Long identifier) {
+	public void deletePost(final Long identifier) {
 		deleteCount++;
 		try {
-			PostDPL post = environment.postByIdentifier.get(identifier);
+			final PostDPL post = environment.postByIdentifier.get(identifier);
 			// deleting the files
 			if (post.getImageIdentifier() != null) {
 				blobService.deleteBlob(post.getImageIdentifier());
 				blobService.deleteBlob(post.getThumbnailIdentifier());
 			}
-			environment.postByIdentifier.delete(identifier);
+			new TransactionTemplate(environment){
+				public void doInTransaction(){
+					environment.postByIdentifier.delete(identifier);
+				}
+			}.run();
 		} catch (Exception e) {
 			LOG.error("Unable to delete post.", e);
 		}
@@ -179,7 +187,7 @@ public class LocalPostService implements PostService {
 		try {
 			return map(environment.postByIdentifier.get(identifier));
 		} catch (Exception e) {
-			LOG.error("Unable to delete post.", e);
+			LOG.error("Unable to get post.", e);
 		}
 		return null;
 	}
@@ -212,7 +220,7 @@ public class LocalPostService implements PostService {
 	@Override
 	public void updatePost(Post post) {
 		try {
-			PostDPL dpl = environment.postByIdentifier.get(post.getIdentifier());
+			final PostDPL dpl = environment.postByIdentifier.get(post.getIdentifier());
 			if (post instanceof ImagePost) {
 				dpl.setImageIdentifier(((ImagePost) post).getImageIdentifier());
 				dpl.setThumbnailIdentifier(((ImagePost) post).getThumbnailIdentifier());
@@ -226,7 +234,11 @@ public class LocalPostService implements PostService {
 			dpl.setTime(tp.getTime());
 			dpl.setUrl(tp.getUrl());
 			// and update
-			environment.postByIdentifier.put(dpl);
+			new TransactionTemplate(environment){
+				public void doInTransaction(){
+					environment.postByIdentifier.put(dpl);
+				}
+			}.run();
 		} catch (Exception e) {
 			LOG.error("Unable to update post.", e);
 		}
