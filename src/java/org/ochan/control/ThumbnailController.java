@@ -400,7 +400,15 @@ public class ThumbnailController implements Controller {
 				}
 			}else{
 				//deleted image
-				datum = getFailImageData(request);
+				if(thumb){
+					Split generateSplit = generateWaitTime.start();
+					Throttler generateThrottler = new Throttler(Long.valueOf(getThumbnailGenerationsPerMinute()).intValue(),60000);
+					generateThrottler.StartRequest();
+					generateSplit.stop();
+					datum = resizeTheImage(getFailImage(request),null,request);
+				}else{
+					datum = getFailImageData(request);
+				}
 			}
 			
 			
@@ -495,7 +503,7 @@ public class ThumbnailController implements Controller {
 			imgWriter.write(null, new IIOImage(resizedImage,null,null),param);
 			byte[] datum = baos.toByteArray();
 			//store the thumbnail data in the post and persist
-			{
+			if (imagePost != null){
 				Byte[] thumbData = ArrayUtils.toObject(datum);
 				imagePost.setThumbnailIdentifier(blobService.saveBlob(thumbData, null));
 				postService.updatePost(imagePost);

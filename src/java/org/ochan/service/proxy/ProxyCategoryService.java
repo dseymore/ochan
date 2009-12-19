@@ -11,15 +11,15 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
 import org.ochan.dpl.replication.StateChangeListener;
 import org.ochan.entity.Category;
-import org.ochan.service.BlobService;
 import org.ochan.service.CategoryService;
 import org.ochan.service.proxy.config.ShardConfiguration;
+import org.springframework.jmx.export.annotation.ManagedAttribute;
 import org.springframework.jmx.export.annotation.ManagedOperation;
 import org.springframework.jmx.export.annotation.ManagedOperationParameter;
 import org.springframework.jmx.export.annotation.ManagedOperationParameters;
 import org.springframework.jmx.export.annotation.ManagedResource;
 
-@ManagedResource(description = "Enables you to kick off a category in a scaled instance.", objectName = "Ochan:type=scale,name=CategoryService", logFile = "jmx.log")
+@ManagedResource(description = "Enables you to kick off a category in a scaled instance.", objectName = "Ochan:type=proxy,name=CategoryService", logFile = "jmx.log")
 public class ProxyCategoryService implements CategoryService {
 
 	private ShardConfiguration shardConfiguration;
@@ -47,6 +47,7 @@ public class ProxyCategoryService implements CategoryService {
 			LOG.fatal("No one should pass in an ID but ME!");
 		}
 		if (shardConfiguration.isShardEnabled()){
+			LOG.debug("Calling shared");
 			Long identifier = shardConfiguration.getSynchroService().getSync();
 			CategoryService service = get(shardConfiguration.whichHost(identifier));
 			service.createCategory(thisIdentifier, name, description, code);
@@ -63,6 +64,7 @@ public class ProxyCategoryService implements CategoryService {
 	@Override
 	public void deleteCategory(Long identifier) {
 		if (shardConfiguration.isShardEnabled()) {
+			LOG.debug("Calling shared");
 			Element o = cache.get(identifier);
 			if (o != null || o.getObjectValue() != null){
 				cache.remove(identifier);
@@ -82,6 +84,7 @@ public class ProxyCategoryService implements CategoryService {
 	@Override
 	public Category getCategory(Long identifier) {
 		if (shardConfiguration.isShardEnabled()) {
+			LOG.debug("Calling shared");
 			Element o = cache.get(identifier);
 			if (o != null && o.getObjectValue() != null && !o.isExpired()){
 				return (Category)o.getObjectValue();
@@ -98,6 +101,7 @@ public class ProxyCategoryService implements CategoryService {
 	@Override
 	public Category getCategoryByCode(String code) {
 		if (shardConfiguration.isShardEnabled()) {
+			LOG.debug("Calling shared");
 			Element o = cache.get(code);
 			if (o != null && o.getObjectValue() != null && !o.isExpired()){
 				return (Category)o.getObjectValue();
@@ -124,6 +128,7 @@ public class ProxyCategoryService implements CategoryService {
 	public List<Category> retrieveCategories() {
 		List<Category> cats = new ArrayList<Category>();
 		if (shardConfiguration.isShardEnabled()) {
+			LOG.debug("Calling shared");
 			Element o = cache.get("ALL");
 			if (o != null && o.getObjectValue() != null && !o.isExpired()){
 				return (List<Category>)o.getObjectValue();
@@ -191,6 +196,31 @@ public class ProxyCategoryService implements CategoryService {
 		this.stateChangeListener = stateChangeListener;
 	}
 	
+
+	@ManagedOperation
+	public void bustCache(){
+		this.cache.flush();
+	}
+	
+	@ManagedAttribute
+	public int getCacheHitCount(){
+		return this.cache.getHitCount();
+	}
+	
+	@ManagedAttribute
+	public int getCacheMissCountExpired(){
+		return this.cache.getMissCountExpired();
+	}
+	
+	@ManagedAttribute
+	public int getCacheMissCountNotFound(){
+		return this.cache.getMissCountNotFound();
+	}
+	
+	@ManagedAttribute
+	public int getCacheSize(){
+		return this.cache.getSize();
+	}
 	
 	
 }

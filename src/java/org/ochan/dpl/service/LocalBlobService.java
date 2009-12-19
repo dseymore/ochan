@@ -11,6 +11,7 @@ import org.javasimon.Stopwatch;
 import org.ochan.dpl.BlobDPL;
 import org.ochan.dpl.BlobStatDPL;
 import org.ochan.dpl.SleepyEnvironment;
+import org.ochan.dpl.replication.TransactionTemplate;
 import org.ochan.service.BlobService;
 import org.springframework.jmx.export.annotation.ManagedAttribute;
 import org.springframework.jmx.export.annotation.ManagedResource;
@@ -92,13 +93,17 @@ public class LocalBlobService implements BlobService {
 	}
 
 	@Override
-	public void deleteBlob(Long identifier) {
+	public void deleteBlob(final Long identifier) {
 		deleteCount++;
 		try {
-			if (identifier != null) {
-				environment.blobByIdentifier.delete(identifier);
-				environment.blobStatisticsByBlobIdentifier.delete(identifier);
-			}
+			new TransactionTemplate(environment){
+				public void doInTransaction(){
+					if (identifier != null) {
+						environment.blobByIdentifier.delete(identifier);
+						environment.blobStatisticsByBlobIdentifier.delete(identifier);
+					}
+				}
+			}.run();
 		} catch (Exception e) {
 			LOG.error("Blob delete fail.", e);
 		}
@@ -139,18 +144,22 @@ public class LocalBlobService implements BlobService {
 	}
 
 	@Override
-	public Long saveBlob(Byte[] byteArray, Long id) {
+	public Long saveBlob(final Byte[] byteArray,final Long id) {
 		Split split = saveStopWatch.start();
 		createCount++;
 		try {
-			BlobDPL dpl = new BlobDPL();
-			dpl.setData(byteArray);
-			dpl.setIdentifier(id);
-			environment.blobByIdentifier.put(dpl);
-			BlobStatDPL stat = new BlobStatDPL();
-			stat.setBlobIdentifier(dpl.getIdentifier());
-			stat.setSize(byteArray.length);
-			environment.blobStatisticsByIdentifier.put(stat);
+			final BlobStatDPL stat = new BlobStatDPL();
+			final BlobDPL dpl = new BlobDPL();
+			new TransactionTemplate(environment){
+				public void doInTransaction(){
+					dpl.setData(byteArray);
+					dpl.setIdentifier(id);
+					environment.blobByIdentifier.put(dpl);
+					stat.setBlobIdentifier(dpl.getIdentifier());
+					stat.setSize(byteArray.length);
+					environment.blobStatisticsByIdentifier.put(stat);
+				}
+			}.run();
 			return dpl.getIdentifier();
 		} catch (Exception e) {
 			LOG.error("Blob save fail.", e);

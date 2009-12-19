@@ -8,6 +8,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.ochan.dpl.CategoryDPL;
 import org.ochan.dpl.SleepyEnvironment;
+import org.ochan.dpl.replication.TransactionTemplate;
 import org.ochan.entity.Category;
 import org.ochan.service.CategoryService;
 import org.springframework.jmx.export.annotation.ManagedAttribute;
@@ -89,12 +90,16 @@ public class LocalCategoryService implements CategoryService {
 	public void createCategory(Long thisIdentifier, String name, String description, String code) {
 		createCount++;
 		try {
-			CategoryDPL cat = new CategoryDPL();
+			final CategoryDPL cat = new CategoryDPL();
 			cat.setIdentifier(thisIdentifier);
 			cat.setName(name);
 			cat.setDescription(description);
 			cat.setCode(code);
-			environment.categoryByIdentifier.put(cat);
+			new TransactionTemplate(environment){
+				public void doInTransaction(){
+					environment.categoryByIdentifier.put(cat);
+				}
+			}.run();
 		} catch (Exception e) {
 			LOG.error("Unable to persist category", e);
 		}
@@ -105,10 +110,14 @@ public class LocalCategoryService implements CategoryService {
             @ManagedOperationParameter(name="identifier",description="The id of the category as a Long object (L at the end)")
     })
 	@Override
-	public void deleteCategory(Long identifier) {
+	public void deleteCategory(final Long identifier) {
 		deleteCount++;
 		try{
-			environment.categoryByIdentifier.delete(identifier);
+			new TransactionTemplate(environment){
+				public void doInTransaction(){
+					environment.categoryByIdentifier.delete(identifier);
+				}
+			}.run();
 		}catch(Exception e){
 			LOG.error("Unable to delete category.",e);
 		}

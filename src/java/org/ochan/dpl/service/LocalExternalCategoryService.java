@@ -8,6 +8,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.ochan.dpl.ExternalCategoryDPL;
 import org.ochan.dpl.SleepyEnvironment;
+import org.ochan.dpl.replication.TransactionTemplate;
 import org.ochan.entity.ExternalCategory;
 import org.ochan.service.ExternalCategoryService;
 
@@ -28,20 +29,28 @@ public class LocalExternalCategoryService implements ExternalCategoryService {
 	@Override
 	public void createCategory(String name, String description, String host) {
 		try{
-			ExternalCategoryDPL dpl = new ExternalCategoryDPL();
+			final ExternalCategoryDPL dpl = new ExternalCategoryDPL();
 			dpl.setHost(host);
 			dpl.setLongDescription(description);
 			dpl.setName(name);
-			environment.externalCategoryByIdentifier.put(dpl);
+			new TransactionTemplate(environment){
+				public void doInTransaction(){
+					environment.externalCategoryByIdentifier.put(dpl);
+				}
+			}.run();
 		}catch(Exception e){
 			LOG.error("Unable to create category",e);
 		}
 	}
 
 	@Override
-	public void deleteCategory(Long identifier) {
+	public void deleteCategory(final Long identifier) {
 		try{
-			environment.externalCategoryByIdentifier.delete(identifier);
+			new TransactionTemplate(environment){
+				public void doInTransaction(){
+					environment.externalCategoryByIdentifier.delete(identifier);
+				}
+			}.run();
 		}catch(Exception e){
 			LOG.error("Unable to delete category",e);
 		}

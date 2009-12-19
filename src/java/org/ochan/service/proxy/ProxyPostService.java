@@ -12,10 +12,13 @@ import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
 import org.ochan.dpl.replication.StateChangeListener;
 import org.ochan.entity.Post;
 import org.ochan.entity.Thread;
-import org.ochan.service.CategoryService;
 import org.ochan.service.PostService;
 import org.ochan.service.proxy.config.ShardConfiguration;
+import org.springframework.jmx.export.annotation.ManagedAttribute;
+import org.springframework.jmx.export.annotation.ManagedOperation;
+import org.springframework.jmx.export.annotation.ManagedResource;
 
+@ManagedResource(description = "Proxy Post Service", objectName = "Ochan:type=proxy,name=ProxyPostService", logFile = "jmx.log")
 public class ProxyPostService implements PostService {
 
 	private ShardConfiguration shardConfiguration;
@@ -62,6 +65,31 @@ public class ProxyPostService implements PostService {
 		this.cache = cache;
 	}
 
+
+	@ManagedOperation
+	public void bustCache(){
+		this.cache.flush();
+	}
+	
+	@ManagedAttribute
+	public int getCacheHitCount(){
+		return this.cache.getHitCount();
+	}
+	
+	@ManagedAttribute
+	public int getCacheMissCountExpired(){
+		return this.cache.getMissCountExpired();
+	}
+	
+	@ManagedAttribute
+	public int getCacheMissCountNotFound(){
+		return this.cache.getMissCountNotFound();
+	}
+	
+	@ManagedAttribute
+	public int getCacheSize(){
+		return this.cache.getSize();
+	}
 	
 	/**
 	 * @param stateChangeListener the stateChangeListener to set
@@ -77,6 +105,7 @@ public class ProxyPostService implements PostService {
 			LOG.fatal("No one should pass in an ID but ME!");
 		}
 		if (shardConfiguration.isShardEnabled()){
+			LOG.debug("Calling shared");
 			Long identifier = shardConfiguration.getSynchroService().getSync();
 			PostService service = get(shardConfiguration.whichHost(identifier));
 			service.createPost(identifier, parentIdentifier, author, subject, email, url, comment, file, filename);
@@ -93,6 +122,7 @@ public class ProxyPostService implements PostService {
 	@Override
 	public void deletePost(Long identifier) {
 		if (shardConfiguration.isShardEnabled()) {
+			LOG.debug("Calling shared");
 			Element o = cache.get(identifier);
 			if (o != null || o.getObjectValue() != null){
 				cache.remove(identifier);
@@ -112,6 +142,7 @@ public class ProxyPostService implements PostService {
 	@Override
 	public Post getPost(Long identifier) {
 		if (shardConfiguration.isShardEnabled()) {
+			LOG.debug("Calling shared");
 			Element o = cache.get(identifier);
 			if (o != null && o.getObjectValue() != null && !o.isExpired()){
 				return (Post)o.getObjectValue();
@@ -128,6 +159,7 @@ public class ProxyPostService implements PostService {
 	@Override
 	public List<Post> retrieveThreadPosts(Long parent) {
 		if (shardConfiguration.isShardEnabled()) {
+			LOG.debug("Calling shared");
 			List<Post> posts = new ArrayList<Post>();
 			//now we need all of the things to be ready to go...
 			for(String hosts : shardConfiguration.getShardHosts()){
@@ -152,6 +184,7 @@ public class ProxyPostService implements PostService {
 	@Override
 	public void updatePost(Post post) {
 		if (shardConfiguration.isShardEnabled()) {
+			LOG.debug("Calling shared");
 			Element o = cache.get(post.getIdentifier());
 			if (o != null || o.getObjectValue() != null){
 				cache.remove(post.getIdentifier());

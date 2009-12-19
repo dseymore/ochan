@@ -2,13 +2,13 @@ package org.ochan.dpl.service;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.ochan.dpl.SleepyEnvironment;
 import org.ochan.dpl.ThreadDPL;
+import org.ochan.dpl.replication.TransactionTemplate;
 import org.ochan.entity.Category;
 import org.ochan.entity.Thread;
 import org.ochan.job.DeleteThreadJob;
@@ -89,22 +89,27 @@ public class LocalThreadService implements ThreadService {
 	// END STATS
 
 	@Override
-	public void createThread(Long thisIdentifier, Long category, String author, String subject, String url, String email, String content, Byte[] file, String filename) {
+	public void createThread(final Long thisIdentifier, final Long category, final String author, final String subject, final String url, final String email, final String content, final Byte[] file, final String filename) {
 		createCount++;
 		try {
-			ThreadDPL thread = new ThreadDPL();
+			final ThreadDPL thread = new ThreadDPL();
 			thread.setIdentifier(thisIdentifier);
 			thread.setCategory(category);
 			thread.setStartDate(new Date());
 			thread.setEnabled(false);
 			
-			// save the thread
-			environment.threadByIdentifier.put(thread);
-			// save the post
-			postService.createPost(null, thread.getIdentifier(), author, subject, email, url, content, file, filename);
-			//and then update. 
-			thread.setEnabled(true);
-			environment.threadByIdentifier.put(thread);
+			new TransactionTemplate(environment){
+				public void doInTransaction(){
+					// save the thread
+					environment.threadByIdentifier.put(thread);
+					// save the post
+					postService.createPost(null, thread.getIdentifier(), author, subject, email, url, content, file, filename);
+					//and then update. 
+					thread.setEnabled(true);
+					environment.threadByIdentifier.put(thread);
+				}
+			}.run();
+
 			
 		} catch (Exception e) {
 			LOG.error("Unable to store a new thread.", e);
@@ -114,10 +119,14 @@ public class LocalThreadService implements ThreadService {
 	@ManagedOperation(description = "Delete a Thread (delete the posts first...)!")
 	@ManagedOperationParameters( { @ManagedOperationParameter(name = "identifier", description = "The id of the thread as a Long object (L at the end)") })
 	@Override
-	public void deleteThread(Long identifier) {
+	public void deleteThread(final Long identifier) {
 		deleteCount++;
 		try {
-			environment.threadByIdentifier.delete(identifier);
+			new TransactionTemplate(environment){
+				public void doInTransaction(){
+					environment.threadByIdentifier.delete(identifier);
+				}
+			}.run();
 		} catch (Exception e) {
 			LOG.error("Unable to delete.", e);
 		}
@@ -272,11 +281,15 @@ public class LocalThreadService implements ThreadService {
 	@Override
 	public void updateThread(Thread thread) {
 		try {
-			ThreadDPL dpl = environment.threadByIdentifier.get(thread.getIdentifier());
+			final ThreadDPL dpl = environment.threadByIdentifier.get(thread.getIdentifier());
 			dpl.setDeleteCount(thread.getDeleteCount());
 			dpl.setDeleteDate(thread.getDeleteDate());
 			// and put to update
-			environment.threadByIdentifier.put(dpl);
+			new TransactionTemplate(environment){
+				public void doInTransaction(){
+					environment.threadByIdentifier.put(dpl);
+				}
+			}.run();
 		} catch (Exception e) {
 			LOG.error("I suck at updating a thread", e);
 		}
