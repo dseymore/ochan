@@ -1,0 +1,23 @@
+#summary Models for deployment and development of the Ochan system.
+#labels Featured,Phase-Design,Phase-Deploy
+
+= Introduction =
+
+Ochan has a very specific code layout to accomplish the goal of sweet sweet scalability and modularity to fit whatever hardware stack you have to throw at it. 
+
+= Deployment Models = 
+<a href="http://ochan.googlecode.com/svn/trunk/src/styling/design/container.png"><img src="http://ochan.googlecode.com/svn/trunk/src/styling/design/container.png"/></a>
+
+<a href="http://ochan.googlecode.com/svn/trunk/src/styling/design/1node.png"><img src="http://ochan.googlecode.com/svn/trunk/src/styling/design/1node.png"/></a>
+
+<a href="http://ochan.googlecode.com/svn/trunk/src/styling/design/3nodes.png"><img src="http://ochan.googlecode.com/svn/trunk/src/styling/design/3nodes.png"/></a>
+
+<a href="http://ochan.googlecode.com/svn/trunk/src/styling/design/6nodes.png"><img src="http://ochan.googlecode.com/svn/trunk/src/styling/design/6nodes.png"/></a>
+
+<a href="http://ochan.googlecode.com/svn/trunk/src/styling/design/31nodes.png"><img src="http://ochan.googlecode.com/svn/trunk/src/styling/design/31nodes.png"/></a>
+
+
+
+
+= Design Model =
+<a href="http://ochan.googlecode.com/svn/trunk/src/styling/design/pattern_proxy.png"><img src="http://ochan.googlecode.com/svn/trunk/src/styling/design/pattern_proxy.png"/></a>
