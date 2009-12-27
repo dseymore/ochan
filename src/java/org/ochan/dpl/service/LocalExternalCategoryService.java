@@ -7,7 +7,7 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.ochan.dpl.ExternalCategoryDPL;
-import org.ochan.dpl.SleepyEnvironment;
+import org.ochan.dpl.OchanEnvironment;
 import org.ochan.dpl.replication.TransactionTemplate;
 import org.ochan.entity.ExternalCategory;
 import org.ochan.service.ExternalCategoryService;
@@ -17,12 +17,12 @@ import com.sleepycat.persist.EntityCursor;
 public class LocalExternalCategoryService implements ExternalCategoryService {
 
 	private static final Log LOG = LogFactory.getLog(LocalExternalCategoryService.class);
-	private SleepyEnvironment environment;
+	private OchanEnvironment environment;
 		
 	/**
 	 * @param environment the environment to set
 	 */
-	public void setEnvironment(SleepyEnvironment environment) {
+	public void setEnvironment(OchanEnvironment environment) {
 		this.environment = environment;
 	}
 
@@ -35,7 +35,7 @@ public class LocalExternalCategoryService implements ExternalCategoryService {
 			dpl.setName(name);
 			new TransactionTemplate(environment){
 				public void doInTransaction(){
-					environment.externalCategoryByIdentifier.put(dpl);
+					environment.externalCategoryByIdentifier().put(dpl);
 				}
 			}.run();
 		}catch(Exception e){
@@ -48,7 +48,7 @@ public class LocalExternalCategoryService implements ExternalCategoryService {
 		try{
 			new TransactionTemplate(environment){
 				public void doInTransaction(){
-					environment.externalCategoryByIdentifier.delete(identifier);
+					environment.externalCategoryByIdentifier().delete(identifier);
 				}
 			}.run();
 		}catch(Exception e){
@@ -59,7 +59,7 @@ public class LocalExternalCategoryService implements ExternalCategoryService {
 	@Override
 	public ExternalCategory getCategory(Long identifier) {
 		try{
-			return map(environment.externalCategoryByIdentifier.get(identifier));
+			return map(environment.externalCategoryByIdentifier().get(identifier));
 		}catch(Exception e){
 			LOG.error("Unable to get category",e);
 		}
@@ -70,7 +70,7 @@ public class LocalExternalCategoryService implements ExternalCategoryService {
 	public List<ExternalCategory> retrieveCategories(Map<ExternalCategoryCriteria, String> criteria) {
 		List<ExternalCategory> cats = new ArrayList<ExternalCategory>();
 		try{
-			EntityCursor<ExternalCategoryDPL> dpls = environment.externalCategoryByIdentifier.entities();
+			EntityCursor<ExternalCategoryDPL> dpls = environment.externalCategoryByIdentifier().entities();
 			for (ExternalCategoryDPL dpl : dpls){
 				cats.add(map(dpl));
 			}

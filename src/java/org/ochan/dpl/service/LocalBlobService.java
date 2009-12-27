@@ -10,6 +10,7 @@ import org.javasimon.Split;
 import org.javasimon.Stopwatch;
 import org.ochan.dpl.BlobDPL;
 import org.ochan.dpl.BlobStatDPL;
+import org.ochan.dpl.OchanEnvironment;
 import org.ochan.dpl.SleepyEnvironment;
 import org.ochan.dpl.replication.TransactionTemplate;
 import org.ochan.service.BlobService;
@@ -22,7 +23,7 @@ import com.sleepycat.persist.EntityCursor;
 public class LocalBlobService implements BlobService {
 
 	private static final Log LOG = LogFactory.getLog(LocalBlobService.class);
-	private SleepyEnvironment environment;
+	private OchanEnvironment environment;
 	// STATS
 	private static long createCount = 0;
 
@@ -88,7 +89,7 @@ public class LocalBlobService implements BlobService {
 	 * @param environment
 	 *            the environment to set
 	 */
-	public void setEnvironment(SleepyEnvironment environment) {
+	public void setEnvironment(OchanEnvironment environment) {
 		this.environment = environment;
 	}
 
@@ -99,8 +100,8 @@ public class LocalBlobService implements BlobService {
 			new TransactionTemplate(environment){
 				public void doInTransaction(){
 					if (identifier != null) {
-						environment.blobByIdentifier.delete(identifier);
-						environment.blobStatisticsByBlobIdentifier.delete(identifier);
+						environment.blobByIdentifier().delete(identifier);
+						environment.blobStatisticsByBlobIdentifier().delete(identifier);
 					}
 				}
 			}.run();
@@ -114,7 +115,7 @@ public class LocalBlobService implements BlobService {
 		Split split = searchStopWatch.start();
 		List<Long> ids = new ArrayList<Long>();
 		try {
-			EntityCursor<Long> blobs = environment.blobByIdentifier.keys();
+			EntityCursor<Long> blobs = environment.blobByIdentifier().keys();
 			for (Long id : blobs) {
 				ids.add(id);
 			}
@@ -133,7 +134,7 @@ public class LocalBlobService implements BlobService {
 		getCount++;
 		Split split = getStopWatch.start();
 		try {
-			BlobDPL blob = environment.blobByIdentifier.get(identifier);
+			BlobDPL blob = environment.blobByIdentifier().get(identifier);
 			return blob.getData();
 		} catch (Exception e) {
 			LOG.error("Blob get fail.", e);
@@ -154,10 +155,10 @@ public class LocalBlobService implements BlobService {
 				public void doInTransaction(){
 					dpl.setData(byteArray);
 					dpl.setIdentifier(id);
-					environment.blobByIdentifier.put(dpl);
+					environment.blobByIdentifier().put(dpl);
 					stat.setBlobIdentifier(dpl.getIdentifier());
 					stat.setSize(byteArray.length);
-					environment.blobStatisticsByIdentifier.put(stat);
+					environment.blobStatisticsByIdentifier().put(stat);
 				}
 			}.run();
 			return dpl.getIdentifier();
@@ -172,7 +173,7 @@ public class LocalBlobService implements BlobService {
 
 	public int getBlobSize(Long identifier) {
 		try {
-			BlobStatDPL stat = environment.blobStatisticsByBlobIdentifier.get(identifier);
+			BlobStatDPL stat = environment.blobStatisticsByBlobIdentifier().get(identifier);
 			if (stat != null){
 				return stat.getSize();
 			}

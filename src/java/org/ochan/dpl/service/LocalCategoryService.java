@@ -7,7 +7,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.ochan.dpl.CategoryDPL;
-import org.ochan.dpl.SleepyEnvironment;
+import org.ochan.dpl.OchanEnvironment;
 import org.ochan.dpl.replication.TransactionTemplate;
 import org.ochan.entity.Category;
 import org.ochan.service.CategoryService;
@@ -22,7 +22,7 @@ import com.sleepycat.persist.EntityCursor;
 @ManagedResource(description = "Local Category Service", objectName = "Ochan:service=local,name=LocalCategoryService", logFile = "jmx.log")
 public class LocalCategoryService implements CategoryService {
 
-	private SleepyEnvironment environment;
+	private OchanEnvironment environment;
 	private static final Log LOG = LogFactory.getLog(LocalCategoryService.class);
 	
 	// STATS
@@ -72,7 +72,7 @@ public class LocalCategoryService implements CategoryService {
 	/**
 	 * @param environment the environment to set
 	 */
-	public void setEnvironment(SleepyEnvironment environment) {
+	public void setEnvironment(OchanEnvironment environment) {
 		this.environment = environment;
 	}
 	
@@ -97,7 +97,7 @@ public class LocalCategoryService implements CategoryService {
 			cat.setCode(code);
 			new TransactionTemplate(environment){
 				public void doInTransaction(){
-					environment.categoryByIdentifier.put(cat);
+					environment.categoryByIdentifier().put(cat);
 				}
 			}.run();
 		} catch (Exception e) {
@@ -115,7 +115,7 @@ public class LocalCategoryService implements CategoryService {
 		try{
 			new TransactionTemplate(environment){
 				public void doInTransaction(){
-					environment.categoryByIdentifier.delete(identifier);
+					environment.categoryByIdentifier().delete(identifier);
 				}
 			}.run();
 		}catch(Exception e){
@@ -127,7 +127,7 @@ public class LocalCategoryService implements CategoryService {
 	public Category getCategory(Long identifier) {
 		getCount++;
 		try{
-			CategoryDPL catdpl = environment.categoryByIdentifier.get(identifier);
+			CategoryDPL catdpl = environment.categoryByIdentifier().get(identifier);
 			return map(catdpl);
 		}catch(Exception e){
 			LOG.error("get failed",e);
@@ -138,7 +138,7 @@ public class LocalCategoryService implements CategoryService {
 	public Category getCategoryByCode(String code){
 		getCount++;
 		try{
-			CategoryDPL catdpl = environment.categoryByCode.get(code);
+			CategoryDPL catdpl = environment.categoryByCode().get(code);
 			return map(catdpl);
 		}catch(Exception e){
 			LOG.error("get failed",e);
@@ -153,7 +153,7 @@ public class LocalCategoryService implements CategoryService {
 
 		List<Category> categories = new ArrayList<Category>();
 		try{
-			EntityCursor<CategoryDPL> cursor = environment.categoryByIdentifier.entities();
+			EntityCursor<CategoryDPL> cursor = environment.categoryByIdentifier().entities();
 			for (CategoryDPL cat: cursor){
 				categories.add(map(cat));
 			}

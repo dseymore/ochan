@@ -16,29 +16,41 @@ import com.sleepycat.persist.PrimaryIndex;
 import com.sleepycat.persist.SecondaryIndex;
 import com.sleepycat.persist.StoreConfig;
 
-public class SleepyEnvironment {
+/**
+ * Right now this is the central point of persistence for the runtime environment
+ * However, I'd like to be able to construct a new environment during runtime to either:
+ * <ul>
+ * <li>Re-partition the shards</li>
+ * <li>Create a backup</li>
+ * <li>Replace the environment with a replicated environment at runtime</li>
+ * </ul>
+ * FIXME - those ideas are crazy.. and very far down the road.  
+ * @author David Seymore 
+ */
+public class SleepyEnvironment implements OchanEnvironment{
 
 	private static final Log LOG = LogFactory.getLog(SleepyEnvironment.class);
 	private Environment environment;
 	private EntityStore entityStore;	
 
-	public PrimaryIndex<Long, CategoryDPL> categoryByIdentifier;
-	public SecondaryIndex<String, Long, CategoryDPL> categoryByCode;
-
-	public  PrimaryIndex<Long, ThreadDPL> threadByIdentifier;
-	public  SecondaryIndex<Long, Long, ThreadDPL> threadByCategory;
-
-	public  PrimaryIndex<Long, PostDPL> postByIdentifier;
-	public  SecondaryIndex<Long, Long, PostDPL> postByThread;
-
-	public  PrimaryIndex<Long, BlobDPL> blobByIdentifier;
 	
-	public PrimaryIndex<Long, ExternalCategoryDPL> externalCategoryByIdentifier;
+	private PrimaryIndex<Long, CategoryDPL> categoryByIdentifier;
+	private SecondaryIndex<String, Long, CategoryDPL> categoryByCode;
+
+	private PrimaryIndex<Long, ThreadDPL> threadByIdentifier;
+	private SecondaryIndex<Long, Long, ThreadDPL> threadByCategory;
+
+	private PrimaryIndex<Long, PostDPL> postByIdentifier;
+	private SecondaryIndex<Long, Long, PostDPL> postByThread;
+
+	private PrimaryIndex<Long, BlobDPL> blobByIdentifier;
 	
-	public PrimaryIndex<Long, BlobStatDPL> blobStatisticsByIdentifier;
-	public SecondaryIndex<Long, Long, BlobStatDPL> blobStatisticsByBlobIdentifier;
+	private PrimaryIndex<Long, ExternalCategoryDPL> externalCategoryByIdentifier;
 	
-	public PrimaryIndex<Long, SynchroDPL> synchroByIdentifier;
+	private PrimaryIndex<Long, BlobStatDPL> blobStatisticsByIdentifier;
+	private SecondaryIndex<Long, Long, BlobStatDPL> blobStatisticsByBlobIdentifier;
+	
+	private PrimaryIndex<Long, SynchroDPL> synchroByIdentifier;
 
 	public SleepyEnvironment(StateChangeListener stateChangeListener) {
 		try {
@@ -128,4 +140,57 @@ public class SleepyEnvironment {
 
 	}
 
+	@Override
+	public PrimaryIndex<Long, BlobDPL> blobByIdentifier() {
+		return blobByIdentifier;
+	}
+	@Override
+	public SecondaryIndex<Long, Long, BlobStatDPL> blobStatisticsByBlobIdentifier() {
+		return blobStatisticsByBlobIdentifier;
+	}
+
+	@Override
+	public PrimaryIndex<Long, BlobStatDPL> blobStatisticsByIdentifier() {
+		return blobStatisticsByIdentifier;
+	}
+
+	@Override
+	public SecondaryIndex<String, Long, CategoryDPL> categoryByCode() {
+		return categoryByCode;
+	}
+	@Override
+	public PrimaryIndex<Long, CategoryDPL> categoryByIdentifier() {
+		return categoryByIdentifier;
+	}
+
+	@Override
+	public PrimaryIndex<Long, ExternalCategoryDPL> externalCategoryByIdentifier() {
+		return externalCategoryByIdentifier;
+	}
+
+	@Override
+	public PrimaryIndex<Long, PostDPL> postByIdentifier() {
+		return postByIdentifier;
+	}
+
+	@Override
+	public SecondaryIndex<Long, Long, PostDPL> postByThread() {
+		return postByThread;
+	}
+
+	@Override
+	public PrimaryIndex<Long, SynchroDPL> synchroByIdentifier() {
+		return synchroByIdentifier;
+	}
+
+	@Override
+	public SecondaryIndex<Long, Long, ThreadDPL> threadByCategory() {
+		return threadByCategory;
+	}
+
+	@Override
+	public PrimaryIndex<Long, ThreadDPL> threadByIdentifier() {
+		return threadByIdentifier;
+	}
+	
 }
