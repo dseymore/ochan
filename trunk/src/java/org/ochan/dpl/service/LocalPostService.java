@@ -158,33 +158,6 @@ public class LocalPostService implements PostService {
 			LOG.error("Unable to persist post.", e);
 		}
 	}
-	
-	public void backupPost(Long thisIdentifier, Long parentIdentifier, String author, String subject, String email, String url, String comment, Long blobId, Long thumbnailId, String fileSize, String filename, Date time, PostType postType){
-		createCount++;
-		try {
-			final PostDPL post = new PostDPL();
-			post.setIdentifier(thisIdentifier);
-			post.setParent(parentIdentifier);
-			post.setAuthor(author);
-			post.setSubject(subject);
-			post.setEmail(email);
-			post.setUrl(url);
-			post.setComment(comment);
-			post.setTime(new Date());
-			post.setFilename(filename);
-			post.setFileSize(fileSize);
-			post.setType(postType);
-			post.setImageIdentifier(blobId);
-			post.setThumbnailIdentifier(thumbnailId);
-			new TransactionTemplate(environment){
-				public void doInTransaction(){
-					environment.postByIdentifier().put(post);
-				}
-			}.run();
-		} catch (Exception e) {
-			LOG.error("Unable to persist post.", e);
-		}
-	}
 
 	@Override
 	@ManagedOperation(description = "Delete a Post!")
