@@ -320,10 +320,10 @@ public class ThumbnailController implements Controller {
 		requestSplit.stop();
 		// capture start of call
 		long start = new Date().getTime();
+		boolean thumb = request.getParameter("thumb") != null;
 		try {
 			numberOfRequests++;
 			Long id = Long.valueOf(request.getParameter("identifier"));
-			boolean thumb = request.getParameter("thumb") != null;
 			Post p = postService.getPost(id);
 			ImagePost imagePost = (ImagePost) p;
 			byte[] datum = null;
@@ -439,7 +439,7 @@ public class ThumbnailController implements Controller {
 		lastTimeInMillis = end - start;
 		totalTimeInMillis += end - start;
 		
-		if (lastTimeInMillis > getTimeLength()){
+		if (lastTimeInMillis > getTimeLength() && !thumb){
 			LOG.warn("Thumbnail times are getting excessive: " + lastTimeInMillis + " ms. for thumb id:" + request.getParameter("identifier"));
 		}
 		return null;
