@@ -231,6 +231,7 @@ public class LocalThreadService implements ThreadService {
 					if (newer != null) {
 						threads.add(map(newer));
 					}
+					allthreads.close();
 				} else {
 					// drilling down existing return
 					List<Thread> newThreads = new ArrayList<Thread>();
