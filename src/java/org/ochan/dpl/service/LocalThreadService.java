@@ -115,6 +115,32 @@ public class LocalThreadService implements ThreadService {
 			LOG.error("Unable to store a new thread.", e);
 		}
 	}
+	
+	/**
+	 * Internal Method for backups that allows internal attributes to be set.
+	 * @param thisIdentifier
+	 * @param category
+	 * @param startDate
+	 */
+	public void backupThread(final Long thisIdentifier, final Long category, final Date startDate){
+		createCount++;
+		try {
+			final ThreadDPL thread = new ThreadDPL();
+			thread.setIdentifier(thisIdentifier);
+			thread.setCategory(category);
+			thread.setStartDate(startDate);
+			thread.setEnabled(true);
+			
+			new TransactionTemplate(environment){
+				public void doInTransaction(){
+					// save the thread
+					environment.threadByIdentifier().put(thread);
+				}
+			}.run();
+		} catch (Exception e) {
+			LOG.error("Unable to store a new thread.", e);
+		}
+	}
 
 	@ManagedOperation(description = "Delete a Thread (delete the posts first...)!")
 	@ManagedOperationParameters( { @ManagedOperationParameter(name = "identifier", description = "The id of the thread as a Long object (L at the end)") })
