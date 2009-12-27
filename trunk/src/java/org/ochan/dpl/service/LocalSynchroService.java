@@ -6,7 +6,7 @@ import javax.jws.WebService;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.ochan.dpl.SleepyEnvironment;
+import org.ochan.dpl.OchanEnvironment;
 import org.ochan.dpl.SynchroDPL;
 import org.ochan.dpl.replication.TransactionTemplate;
 import org.ochan.service.SynchroService;
@@ -21,7 +21,7 @@ import org.springframework.jmx.export.annotation.ManagedResource;
 @ManagedResource(description = "Local Synchro Service", objectName = "Ochan:service=local,name=LocalSynchroService", logFile = "jmx.log")
 public class LocalSynchroService implements SynchroService {
 
-	private SleepyEnvironment environment;
+	private OchanEnvironment environment;
 	private static final Log LOG = LogFactory.getLog(LocalSynchroService.class);
 	private static final Preferences PREFERENCES = Preferences.userNodeForPackage(LocalSynchroService.class);
 	
@@ -34,7 +34,7 @@ public class LocalSynchroService implements SynchroService {
 	 * @param environment
 	 *            the environment to set
 	 */
-	public void setEnvironment(SleepyEnvironment environment) {
+	public void setEnvironment(OchanEnvironment environment) {
 		this.environment = environment;
 	}
 
@@ -44,7 +44,7 @@ public class LocalSynchroService implements SynchroService {
 			final SynchroDPL dpl = new SynchroDPL();
 			new TransactionTemplate(environment){
 				public void doInTransaction(){
-					environment.synchroByIdentifier.put(dpl);
+					environment.synchroByIdentifier().put(dpl);
 				}
 			}.run();
 			return dpl.getIdentifier();

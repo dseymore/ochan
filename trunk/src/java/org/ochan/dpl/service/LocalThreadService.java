@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.ochan.dpl.SleepyEnvironment;
+import org.ochan.dpl.OchanEnvironment;
 import org.ochan.dpl.ThreadDPL;
 import org.ochan.dpl.replication.TransactionTemplate;
 import org.ochan.entity.Category;
@@ -26,7 +26,7 @@ import com.sleepycat.persist.EntityCursor;
 public class LocalThreadService implements ThreadService {
 
 	private PostService postService;
-	private SleepyEnvironment environment;
+	private OchanEnvironment environment;
 	private static final Log LOG = LogFactory.getLog(LocalThreadService.class);
 
 	/**
@@ -41,7 +41,7 @@ public class LocalThreadService implements ThreadService {
 	 * @param environment
 	 *            the environment to set
 	 */
-	public void setEnvironment(SleepyEnvironment environment) {
+	public void setEnvironment(OchanEnvironment environment) {
 		this.environment = environment;
 	}
 
@@ -101,12 +101,12 @@ public class LocalThreadService implements ThreadService {
 			new TransactionTemplate(environment){
 				public void doInTransaction(){
 					// save the thread
-					environment.threadByIdentifier.put(thread);
+					environment.threadByIdentifier().put(thread);
 					// save the post
 					postService.createPost(null, thread.getIdentifier(), author, subject, email, url, content, file, filename);
 					//and then update. 
 					thread.setEnabled(true);
-					environment.threadByIdentifier.put(thread);
+					environment.threadByIdentifier().put(thread);
 				}
 			}.run();
 
@@ -124,7 +124,7 @@ public class LocalThreadService implements ThreadService {
 		try {
 			new TransactionTemplate(environment){
 				public void doInTransaction(){
-					environment.threadByIdentifier.delete(identifier);
+					environment.threadByIdentifier().delete(identifier);
 				}
 			}.run();
 		} catch (Exception e) {
@@ -147,7 +147,7 @@ public class LocalThreadService implements ThreadService {
 	public Thread getThread(Long identifier) {
 		getCount++;
 		try {
-			return map(environment.threadByIdentifier.get(identifier));
+			return map(environment.threadByIdentifier().get(identifier));
 		} catch (Exception e) {
 			LOG.error("Unable to get.", e);
 		}
@@ -163,7 +163,7 @@ public class LocalThreadService implements ThreadService {
 		try {
 			// first lets find by category.
 			if (criteria != null && criteria.getCategory() != null) {
-				EntityCursor<ThreadDPL> threadsByCatDPL = environment.threadByCategory.subIndex((Long) criteria.getCategory()).entities();
+				EntityCursor<ThreadDPL> threadsByCatDPL = environment.threadByCategory().subIndex((Long) criteria.getCategory()).entities();
 				for (ThreadDPL dpl : threadsByCatDPL) {
 					threads.add(map(dpl));
 				}
@@ -173,7 +173,7 @@ public class LocalThreadService implements ThreadService {
 			if (criteria != null && criteria.getDeleteQueue() != null) {
 				// delete queue, means delete date is not null.
 				if (threads.isEmpty()) {
-					EntityCursor<ThreadDPL> allthreads = environment.threadByIdentifier.entities();
+					EntityCursor<ThreadDPL> allthreads = environment.threadByIdentifier().entities();
 					for (ThreadDPL dpl : allthreads) {
 						if (dpl.getDeleteDate() != null) {
 							threads.add(map(dpl));
@@ -193,7 +193,7 @@ public class LocalThreadService implements ThreadService {
 			}
 			if (criteria != null && criteria.getMax() != null) {
 				if (threads.isEmpty()) {
-					EntityCursor<ThreadDPL> allthreads = environment.threadByIdentifier.entities();
+					EntityCursor<ThreadDPL> allthreads = environment.threadByIdentifier().entities();
 					ThreadDPL max = null;
 					for (ThreadDPL dpl : allthreads) {
 						if (max == null || dpl.getIdentifier().compareTo(max.getIdentifier()) > 0) {
@@ -219,7 +219,7 @@ public class LocalThreadService implements ThreadService {
 			}
 			if (criteria != null && criteria.getNewerThan() != null) {
 				if (threads.isEmpty()) {
-					EntityCursor<ThreadDPL> allthreads = environment.threadByIdentifier.entities();
+					EntityCursor<ThreadDPL> allthreads = environment.threadByIdentifier().entities();
 					ThreadDPL newer = null;
 					for (ThreadDPL dpl : allthreads) {
 						if (newer == null && dpl.getIdentifier().compareTo((Long) criteria.getNewerThan()) > 0) {
@@ -248,7 +248,7 @@ public class LocalThreadService implements ThreadService {
 			if (criteria != null && criteria.getNotDeleted() != null) {
 				// means delete date is null.
 				if (threads.isEmpty()) {
-					EntityCursor<ThreadDPL> allthreads = environment.threadByIdentifier.entities();
+					EntityCursor<ThreadDPL> allthreads = environment.threadByIdentifier().entities();
 					for (ThreadDPL dpl : allthreads) {
 						if (dpl.getDeleteDate() == null) {
 							threads.add(map(dpl));
@@ -281,13 +281,13 @@ public class LocalThreadService implements ThreadService {
 	@Override
 	public void updateThread(Thread thread) {
 		try {
-			final ThreadDPL dpl = environment.threadByIdentifier.get(thread.getIdentifier());
+			final ThreadDPL dpl = environment.threadByIdentifier().get(thread.getIdentifier());
 			dpl.setDeleteCount(thread.getDeleteCount());
 			dpl.setDeleteDate(thread.getDeleteDate());
 			// and put to update
 			new TransactionTemplate(environment){
 				public void doInTransaction(){
-					environment.threadByIdentifier.put(dpl);
+					environment.threadByIdentifier().put(dpl);
 				}
 			}.run();
 		} catch (Exception e) {

@@ -8,9 +8,9 @@ import java.util.prefs.Preferences;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.ochan.dpl.OchanEnvironment;
 import org.ochan.dpl.PostDPL;
 import org.ochan.dpl.PostType;
-import org.ochan.dpl.SleepyEnvironment;
 import org.ochan.dpl.replication.TransactionTemplate;
 import org.ochan.entity.ImagePost;
 import org.ochan.entity.Post;
@@ -31,7 +31,7 @@ import com.sleepycat.persist.EntityCursor;
 public class LocalPostService implements PostService {
 
 	private BlobService blobService;
-	private SleepyEnvironment environment;
+	private OchanEnvironment environment;
 	private static final Log LOG = LogFactory.getLog(LocalPostService.class);
 	private static final Preferences PREFERENCES = Preferences.userNodeForPackage(LocalPostService.class);
 
@@ -47,7 +47,7 @@ public class LocalPostService implements PostService {
 	 * @param environment
 	 *            the environment to set
 	 */
-	public void setEnvironment(SleepyEnvironment environment) {
+	public void setEnvironment(OchanEnvironment environment) {
 		this.environment = environment;
 	}
 
@@ -151,7 +151,7 @@ public class LocalPostService implements PostService {
 			}
 			new TransactionTemplate(environment){
 				public void doInTransaction(){
-					environment.postByIdentifier.put(post);
+					environment.postByIdentifier().put(post);
 				}
 			}.run();
 		} catch (Exception e) {
@@ -165,7 +165,7 @@ public class LocalPostService implements PostService {
 	public void deletePost(final Long identifier) {
 		deleteCount++;
 		try {
-			final PostDPL post = environment.postByIdentifier.get(identifier);
+			final PostDPL post = environment.postByIdentifier().get(identifier);
 			// deleting the files
 			if (post.getImageIdentifier() != null) {
 				blobService.deleteBlob(post.getImageIdentifier());
@@ -173,7 +173,7 @@ public class LocalPostService implements PostService {
 			}
 			new TransactionTemplate(environment){
 				public void doInTransaction(){
-					environment.postByIdentifier.delete(identifier);
+					environment.postByIdentifier().delete(identifier);
 				}
 			}.run();
 		} catch (Exception e) {
@@ -185,7 +185,7 @@ public class LocalPostService implements PostService {
 	public Post getPost(Long identifier) {
 		getCount++;
 		try {
-			return map(environment.postByIdentifier.get(identifier));
+			return map(environment.postByIdentifier().get(identifier));
 		} catch (Exception e) {
 			LOG.error("Unable to get post.", e);
 		}
@@ -200,7 +200,7 @@ public class LocalPostService implements PostService {
 		long start = new Date().getTime();
 		if (parent != null){
 			try {
-				EntityCursor<PostDPL> postDPL = environment.postByThread.subIndex(parent).entities();
+				EntityCursor<PostDPL> postDPL = environment.postByThread().subIndex(parent).entities();
 				for (PostDPL dpl : postDPL) {
 					posts.add(map(dpl));
 				}
@@ -220,7 +220,7 @@ public class LocalPostService implements PostService {
 	@Override
 	public void updatePost(Post post) {
 		try {
-			final PostDPL dpl = environment.postByIdentifier.get(post.getIdentifier());
+			final PostDPL dpl = environment.postByIdentifier().get(post.getIdentifier());
 			if (post instanceof ImagePost) {
 				dpl.setImageIdentifier(((ImagePost) post).getImageIdentifier());
 				dpl.setThumbnailIdentifier(((ImagePost) post).getThumbnailIdentifier());
@@ -236,7 +236,7 @@ public class LocalPostService implements PostService {
 			// and update
 			new TransactionTemplate(environment){
 				public void doInTransaction(){
-					environment.postByIdentifier.put(dpl);
+					environment.postByIdentifier().put(dpl);
 				}
 			}.run();
 		} catch (Exception e) {

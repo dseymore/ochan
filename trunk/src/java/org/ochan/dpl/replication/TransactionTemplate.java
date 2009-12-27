@@ -4,7 +4,7 @@ import javax.transaction.TransactionRolledbackException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.ochan.dpl.SleepyEnvironment;
+import org.ochan.dpl.OchanEnvironment;
 
 import com.sleepycat.je.Transaction;
 import com.sleepycat.je.rep.ReplicaWriteException;
@@ -19,13 +19,13 @@ public abstract class TransactionTemplate {
 
 	private static final Log LOG = LogFactory.getLog(TransactionTemplate.class);
 
-	private SleepyEnvironment environment;
+	private OchanEnvironment environment;
 	
 	public void setup(){
 		LOG.trace("Starting transaction.");
 	}
 	
-	public TransactionTemplate(SleepyEnvironment sleepyEnvironment){
+	public TransactionTemplate(OchanEnvironment sleepyEnvironment){
 		this.environment = sleepyEnvironment;
 	}
 	
