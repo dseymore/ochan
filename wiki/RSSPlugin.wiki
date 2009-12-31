@@ -1,5 +1,5 @@
+#summary The RSS Plugin enables an Ochan install to monitor RSS feeds to generate threads
 #labels Featured,Phase-Support
-#The RSS Plugin enables an Ochan install to monitor rss feeds to generate threads
 
 = Introduction =
 
