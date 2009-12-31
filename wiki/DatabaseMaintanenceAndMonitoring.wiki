@@ -1,5 +1,5 @@
+#summary How to manage the Berkeley DB that runs inside Ochan.
 #labels Featured
-#How to manage the Berkeley DB that ochan runs. 
 
 = Introduction =
 There are some tricks to maintaining an install of ochan. While it constantly keeps the database in a consistent, ready to go state; that can be backed up live, you'll probably want to clean some of its files up so that it doesn't take up too much disk space.
