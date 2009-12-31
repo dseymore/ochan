@@ -1,4 +1,6 @@
+#summary What's in the latest releases?
 #labels Phase-QA,Phase-Support
+
 ==Release 0.2.5==
   * Thread level atom feeds
   * File size captured & displayed to users
