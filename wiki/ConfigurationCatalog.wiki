@@ -1,3 +1,4 @@
+#summary A list of configuration/monitorable attributes of Ochan
 =Ochan:name=PluginJob,type=job=
 {{{
 Attributes:
