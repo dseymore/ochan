@@ -1,5 +1,5 @@
+#summary How to run Ochan?
 #labels Featured,Phase-Support,Phase-Deploy
-#How to run Ochan?
 
 = Requirements =
 * Sun JDK 1.6 update 10 or later
