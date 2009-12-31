@@ -1,5 +1,5 @@
+#summary How do I build this thing?
 #labels Build,Deployment
-How do I build this thing?
 
 = Introduction =
 Ochan is a no-install embedded-run-a-ma-jobber that gets generated everytime you build the  application. Checking out the source includes everything you need to build AND run, besides apache ant. 
