@@ -1,5 +1,5 @@
+#summary introduces the reader to the current feature-set of Ochan.
 #labels Featured,Phase-Design
-This page introduces the reader to the current feature-set of Ochan.
 
 ==Atom Feed==
  * Ochan aggregates all of the threads created across all categories into a single atom feed, with the date of the thread creation as the comparison. Each category and Each thread also has an independent feed. 
