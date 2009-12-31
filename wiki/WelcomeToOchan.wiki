@@ -1,5 +1,5 @@
+#summary Introduction to Ochan (Screenshot Walkthrough)
 #labels Featured,Phase-Support
-#Introduction to Ochan 
 
 ===After First Starting===
 <a href="http://ochan.googlecode.com/svn/trunk/shots/0.2.4-screen01.png"><img src="http://ochan.googlecode.com/svn/trunk/shots/0.2.4-screen01.png" width="400px"/></a>
