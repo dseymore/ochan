@@ -1,5 +1,5 @@
+#summary Your guide to versioning with Ochan
 #labels Phase-Support,Featured
-#Your guide to versioning with Ochan
 
 = Introduction =
 Ochan is an open source project. It aims to ALWAYS be a working product when built from source; but, project consumers will want to grab a pre-built runnable binary version and go. However, when maintaining an actual production install.. knowing what the impact of an upgrade is going to be quickly... is pretty important.
