@@ -108,6 +108,15 @@
 		<delete dir="${build.dir}" />
 	</target>
 
+	<target name="fresh">
+		<delete verbose="true">
+			<fileset dir="." includes="je.*"/>
+		</delete>
+		<delete verbose="true">
+			<fileset dir="." includes="*.jdb"/>
+		</delete>
+	</target>
+
 	<target name="clean-cache" depends="clean" description="--> clean the ivy cache">
 		<ivy:cleancache />
 	</target>
