@@ -44,7 +44,7 @@ if ( typeof(globalStorage) != 'undefined' && typeof(localStorage) == 'undefined'
                                                                 //alert(response);
                                                         }
                                                 };
-                                                var transaction = YAHOO.util.Connect.asyncRequest('GET', '/remote/rest/post/next/' + postIdForThisThread + '/', callback, null);
+                                                var transaction = YAHOO.util.Connect.asyncRequest('GET', '/remote/rest/post/next/' + postIdForThisThread + '/?watch=true', callback, null);
                                         }
                                 }
                         }
@@ -53,7 +53,8 @@ if ( typeof(globalStorage) != 'undefined' && typeof(localStorage) == 'undefined'
 		
 		//method to add the current thread
 		//Depends on the currentPostId being set
-		function watchThisThread(modifyState){
+		//this just updates the current threads status to be what we just saw 
+		function watchThisThread(){
 			if ((typeof(currentPostId) != 'undefined') && (typeof(thisThreadId) != 'undefined')){
 	                        var watching;
 				//grabbing the current settings
@@ -62,22 +63,37 @@ if ( typeof(globalStorage) != 'undefined' && typeof(localStorage) == 'undefined'
 	                        }else{
 	                                watching = YAHOO.lang.JSON.parse(localStorage.getItem("watching"));
 	                        }
-				if (!isThreadWatched()){
-		                        //We are going to set the most recent post id to this watching threads last-viewed-post-id.
-		                        watching[thisThreadId] = currentPostId;
-				}else{
-					delete watching[thisThreadId];
-				}
-				if(modifyState){
-		                        localStorage.setItem("watching",YAHOO.lang.JSON.stringify(watching));
-				}
-	                        //Should we FORCE a refresh of the panel that will list the watched threads and their status?
-				toggleLink();
+	                        //We are going to set the most recent post id to this watching threads last-viewed-post-id.
+	                        watching[thisThreadId] = currentPostId;
+	                        localStorage.setItem("watching",YAHOO.lang.JSON.stringify(watching));
 			}else{
 				alert("You shouldn't be calling this method... only for the thread view. Developer issue.");
 			}
                 }
 		//end watchThisThread
+		
+		function toggleWatch(){
+			if ((typeof(currentPostId) != 'undefined') && (typeof(thisThreadId) != 'undefined')){
+                                var watching;
+                                //grabbing the current settings
+                                if (localStorage.getItem("watching") == null){
+                                        watching = new Object();
+                                }else{
+                                        watching = YAHOO.lang.JSON.parse(localStorage.getItem("watching"));
+                                }
+                                if (!isThreadWatched()){
+                                        //We are going to set the most recent post id to this watching threads last-viewed-post-id.
+                                        watching[thisThreadId] = currentPostId;
+                                }else{
+                                        delete watching[thisThreadId];
+                                }
+                                localStorage.setItem("watching",YAHOO.lang.JSON.stringify(watching));
+                                //Should we FORCE a refresh of the panel that will list the watched threads and their status?
+                                toggleLink();
+                        }else{
+                                alert("You shouldn't be calling this method... only for the thread view. Developer issue.");
+                        }
+		}
 
 		function isThreadWatched(){
 			if ((typeof(currentPostId) != 'undefined') && (typeof(thisThreadId) != 'undefined')){
