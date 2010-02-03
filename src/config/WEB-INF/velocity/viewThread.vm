@@ -34,9 +34,6 @@
 		<script type="text/javascript" src="#springUrl('/yui/tabview/tabview-min.js')"></script>
 		<script type="text/javascript" src="#springUrl('/yui/dragdrop/dragdrop-min.js')"></script>
 		<script type="text/javascript" src="#springUrl('/yui/button/button-min.js')"></script>
-		##adding cookies for thread watching
-		##Which i am now removing to use the new HTML 5 GlobalStorage object 
-		##<script type="text/javascript" src="#springUrl('/yui/cookie/cookie-min.js')"></script>
 		
 		<!-- Ochan thread watcher! -->
 		<script language="javascript" type="text/javascript">
@@ -45,61 +42,10 @@
 			var autoscroll = true;
 			var thisThreadId = ${thread.identifier};
 
-		## Starting up the storage area
-		var host = location.hostname || (window.opener ? window.opener.location.hostname : false) ||  null;
-		if ( typeof(globalStorage) != 'undefined' && typeof(localStorage) == 'undefined' && host !== null ){
-			var localStorage = globalStorage[host];
-		}
-	        
 	        ## Sets up the ajax loop
 	        window.setInterval(xyz, 10000)
 	        window.setInterval(threadStat, 1000)
-		window.setInterval(threadWatch, 10000);
-
-		function threadWatch(){
-			if (null == localStorage.getItem("watching")){
-				return;
-			}else{
-				var watching = YAHOO.lang.JSON.parse(localStorage.getItem("watching"));
-				##each THREAD id is a property of the object. 
-				for(property in watching){
-					##If you disable this gig, you'll see that the property is the thread id
-					##AND the value is the id of the most recently seen post..
-					##alert(property + ":" + watching[property]);	
-					if (property == thisThreadId){
-						##update THIS thread.. we're watching it, we know it will get updated
-						watchThisThread();
-					}else{
-						##lets go see if there is an update to this thread
-						## What is the current post id of the thread we're trying to check the status of?
-						var postIdForThisThread = watching[property];
-						var callback = {
-                        			        success: function(response){
-		                                        var result = YAHOO.lang.JSON.parse(response.responseText);
-		                                        if (result != undefined && result.RemotePost.identifier != -1){
-	                                                        var postIdWeGot = result.RemotePost.identifier;
-								if (postIdWeGot != -1 && postIdWeGot != postIdForThisThread){
-									//FIRE the update!!! something we are watching got updated!!!
-								##	alert(property + " was updated");
-									//and then update the cookie 
-									watching[property] = postIdWeGot;
-									localStorage.setItem("watching",YAHOO.lang.JSON.stringify(watching));
-									##YAHOO.util.Cookie.setSubs("watching",watching);
-								}
-        	                                        }
-                		                },
-                	                		failure: function(response){
-			                                        //alert(response);
-                        			        }
-                       				};
-			                        var transaction = YAHOO.util.Connect.asyncRequest('GET', '/remote/rest/post/next/' + postIdForThisThread + '/', callback, null);
-					}
-				}
-			}
-		}
 		function watchThisThread(){
-			##localStorage.removeItem("watching");
-			##var watching = YAHOO.util.Cookie.getSubs("watching");
 			var watching;
 			if (localStorage.getItem("watching") == null){
 				watching = new Object();
@@ -108,7 +54,6 @@
 			}
 			##We are going to set the most recent post id to this watching threads last-viewed-post-id.
 			watching[thisThreadId] = currentPostId;
-			##YAHOO.util.Cookie.setSubs("watching",watching);
 			localStorage.setItem("watching",YAHOO.lang.JSON.stringify(watching));
 			##Should we FORCE a refresh of the panel that will list the watched threads and their status? 
 		}
@@ -275,7 +220,7 @@
 						#end
 						</a>]</span>
 				<span>[<a href="#" onclick="panel.show(); return false;">Reply</a>]</span>
-				<span>[<a href="#" onclick="watchThisThread(); return false;">Watch</a>]</span>
+				<span style="display: none;" id="watchSpan">[<a id="watchLink" href="#" onclick="watchThisThread(true); return false;">Watch</a>]</span>
 				<span>[<a id="autoscroll" href="#" onclick="toggleScroll(); return false;">Autoscroll On</a>]</span>
 				<span>[<a href="#" onclick="growlHelp(); return false;">Help</a>]</span>
 			</div></div>
@@ -417,4 +362,5 @@
 			</div>
 		#end
 	</body>
+        <script language="javascript" type="text/javascript" src="#springUrl('/watching.js')"></script>
 </html> 
