@@ -18,7 +18,7 @@
 	<script type="text/javascript" src="#springUrl('/yui/json/json-min.js')"></script>
 	<script type="text/javascript" src="#springUrl('/yui/connection/connection-min.js')"></script>
 	<script type="text/javascript" src="#springUrl('/yui/datasource/datasource-min.js')"></script>
-	
+	<script language="javascript" type="text/javascript" src="#springUrl('/watching.js')"></script>	
 	<script language="javascript" type="text/javascript">
 		//variable to keep track of the pages most recent thread id
         var currentThreadId = $currentThread;
