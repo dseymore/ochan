@@ -45,18 +45,6 @@
 	        ## Sets up the ajax loop
 	        window.setInterval(xyz, 10000)
 	        window.setInterval(threadStat, 1000)
-		function watchThisThread(){
-			var watching;
-			if (localStorage.getItem("watching") == null){
-				watching = new Object();
-			}else{
-				watching = YAHOO.lang.JSON.parse(localStorage.getItem("watching"));
-			}
-			##We are going to set the most recent post id to this watching threads last-viewed-post-id.
-			watching[thisThreadId] = currentPostId;
-			localStorage.setItem("watching",YAHOO.lang.JSON.stringify(watching));
-			##Should we FORCE a refresh of the panel that will list the watched threads and their status? 
-		}
 	        
 	        ## Calls rest url for the next post
 	        function xyz(){
@@ -220,7 +208,7 @@
 						#end
 						</a>]</span>
 				<span>[<a href="#" onclick="panel.show(); return false;">Reply</a>]</span>
-				<span style="display: none;" id="watchSpan">[<a id="watchLink" href="#" onclick="watchThisThread(true); return false;">Watch</a>]</span>
+				<span style="display: none;" id="watchSpan">[<a id="watchLink" href="#" onclick="toggleWatch(); return false;">Watch</a>]</span>
 				<span>[<a id="autoscroll" href="#" onclick="toggleScroll(); return false;">Autoscroll On</a>]</span>
 				<span>[<a href="#" onclick="growlHelp(); return false;">Help</a>]</span>
 			</div></div>
