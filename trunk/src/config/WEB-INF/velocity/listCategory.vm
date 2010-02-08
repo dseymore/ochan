@@ -12,18 +12,32 @@
 	<link rel="stylesheet" type="text/css" href="#springUrl('/jgrowl/jquery.jgrowl.css')"/> 
 	<script type="text/javascript" src="#springUrl('/jquery-1.3.2.min.js')"></script>
 	<script type="text/javascript" src="#springUrl('/jgrowl/jquery.jgrowl_minimized.js')"></script>
+	##YUI CSS files:
+        <link rel="stylesheet" type="text/css" href="#springUrl('/yui/base/base-min.css')"/>
+        <link rel="stylesheet" type="text/css" href="#springUrl('/yui/assets/skins/sam/skin.css')"/>
 	##YUI JS files:
-	<script type="text/javascript" src="#springUrl('/yui/yahoo-dom-event/yahoo-dom-event.js')"></script>
-	<script type="text/javascript" src="#springUrl('/yui/element/element-min.js')"></script>
-	<script type="text/javascript" src="#springUrl('/yui/json/json-min.js')"></script>
-	<script type="text/javascript" src="#springUrl('/yui/connection/connection-min.js')"></script>
-	<script type="text/javascript" src="#springUrl('/yui/datasource/datasource-min.js')"></script>
+        <script type="text/javascript" src="#springUrl('/yui/yahoo-dom-event/yahoo-dom-event.js')"></script>
+        <script type="text/javascript" src="#springUrl('/yui/element/element-min.js')"></script>
+        <script type="text/javascript" src="#springUrl('/yui/json/json-min.js')"></script>
+        <script type="text/javascript" src="#springUrl('/yui/connection/connection-min.js')"></script>
+        <script type="text/javascript" src="#springUrl('/yui/datasource/datasource-min.js')"></script>
+        ##YUI JS files (for the look & feel)
+        <script type="text/javascript" src="#springUrl('/yui/charts/charts-min.js')"></script>
+        <script type="text/javascript" src="#springUrl('/yui/container/container-min.js')"></script>
+        <script type="text/javascript" src="#springUrl('/yui/imageloader/imageloader-min.js')"></script>
+        <script type="text/javascript" src="#springUrl('/yui/layout/layout-min.js')"></script>
+        <script type="text/javascript" src="#springUrl('/yui/menu/menu-min.js')"></script>
+        <script type="text/javascript" src="#springUrl('/yui/paginator/paginator-min.js')"></script>
+        <script type="text/javascript" src="#springUrl('/yui/editor/simpleeditor-min.js')"></script>
+        <script type="text/javascript" src="#springUrl('/yui/tabview/tabview-min.js')"></script>
+        <script type="text/javascript" src="#springUrl('/yui/dragdrop/dragdrop-min.js')"></script>
+        <script type="text/javascript" src="#springUrl('/yui/button/button-min.js')"></script>	
 	<script language="javascript" type="text/javascript" src="#springUrl('/watching.js')"></script>	
 	<script language="javascript" type="text/javascript">
 		//variable to keep track of the pages most recent thread id
         var currentThreadId = $currentThread;
         
-		## Sets up the ajax loop
+		## Sets up the ajax loop 
         window.setInterval(xyz, 2000)
         
         ## Calls rest url for the next post
@@ -51,7 +65,7 @@
         	var transaction = YAHOO.util.Connect.asyncRequest('GET', '/remote/rest/thread/next/' + currentThreadId + '/', callback, null);
         }
 	</script>
-	<body>
+	<body class="yui-skin-sam">
 		<!-- Atom feed -->
 		<div style="float: right">
 			<a href="#springUrl('/atom/threads')"><img border="0" src="#springUrl('/15px-Feed-icon.png')" width="15" height="15"></a>
@@ -156,6 +170,13 @@
         	window.setInterval(stats, 60000);
         	
         	stats();
+		</script>
+		##lets get this freaking watching thing going on 
+		<div id="watchbar" class="watchbar">
+                        <div id="watchPanel"><div class="bd"><div id="watchPanelBody"></div></div></div>
+                </div>
+		<script language="javascript" type="text/javascript">
+			setupWatchPanel();
 		</script>
 	</body>
 </html> 

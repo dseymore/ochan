@@ -22,6 +22,10 @@ if ( typeof(globalStorage) != 'undefined' && typeof(localStorage) == 'undefined'
                                         if (typeof(thisThreadId) != 'undefined' && property == thisThreadId){
                                                 //update THIS thread.. we're watching it, we know it will get updated
                                                 watchThisThread();
+						//refresh watching but dont modify it
+						var newWatching = YAHOO.lang.JSON.parse(localStorage.getItem("watching"));
+						updatePage(newWatching[property], property);
+						//this will update the link to the page we're currently on to the most recent thread
                                         }else{
                                                 //lets go see if there is an update to this thread
                                                 //What is the current post id of the thread we're trying to check the status of?
@@ -32,11 +36,7 @@ if ( typeof(globalStorage) != 'undefined' && typeof(localStorage) == 'undefined'
                                                         if (result != undefined && result.RemotePost.identifier != -1){
                                                                 var postIdWeGot = result.RemotePost.identifier;
                                                                 if (postIdWeGot != -1 && postIdWeGot != postIdForThisThread){
-                                                                        //FIRE the update!!! something we are watching got updated!!!
-                                                                //     alert(property + " was updated");
-                                                                        //and then update the cookie
-                                                                        watching[property] = postIdWeGot;
-                                                                        localStorage.setItem("watching",YAHOO.lang.JSON.stringify(watching));
+									updatePage(watching[property],property);
                                                                 }
                                                         }
                                                 },
@@ -50,6 +50,22 @@ if ( typeof(globalStorage) != 'undefined' && typeof(localStorage) == 'undefined'
                         }
                 }
 		//end threadwatch
+
+		function updatePage(postId, threadId){
+                        var innerPanel = document.getElementById("watchPanelBody");
+			if (innerPanel != undefined){
+				var theDiv = document.getElementById("watch"+threadId);
+	                        if (theDiv == undefined || theDiv == null){
+		                        theDiv = document.createElement("div");
+	                                theDiv.id = "watch"+threadId;
+	                                innerPanel.appendChild(theDiv);
+	                        }
+	                        //set the content
+	                        theDiv.innerHTML = threadId + "<a href=\"/chan/thread/" + threadId + "#" + postId + "\">[Open]</a>";
+	                        //NOT updating the watching thing.. since the user hasn't gone to it yet.. that screen being open will do it
+			}
+		}
+		//end updatePageFunction 
 		
 		//method to add the current thread
 		//Depends on the currentPostId being set
@@ -123,6 +139,15 @@ if ( typeof(globalStorage) != 'undefined' && typeof(localStorage) == 'undefined'
 			}
 		}
 
+		function setupWatchPanel(){
+			// Instantiate a panel for navbar
+                        var watchPanel = new YAHOO.widget.Panel("watchPanel", { 
+				width:"30em", visible:true, constraintoviewport:true, modal:false} );
+                        watchPanel.setHeader("Thread Watching");
+                        watchPanel.setFooter("");
+                        watchPanel.render();
+		}
+
 ////////starting execution!!!!
 	if (typeof(localStorage) != 'undefined'){
 		//Enable the watch link
@@ -130,7 +155,8 @@ if ( typeof(globalStorage) != 'undefined' && typeof(localStorage) == 'undefined'
 		var watchSpan = document.getElementById("watchSpan");
 
 		//decide if the thing is being watched or not
-		toggleLink();
-
-		watchSpan.style.display = "";		
+		if ((watchSpan != null) && (watchLink != null)){
+			toggleLink();
+			watchSpan.style.display = "";		
+		}
 	}
