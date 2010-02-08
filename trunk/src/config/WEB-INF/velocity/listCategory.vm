@@ -32,6 +32,7 @@
         <script type="text/javascript" src="#springUrl('/yui/tabview/tabview-min.js')"></script>
         <script type="text/javascript" src="#springUrl('/yui/dragdrop/dragdrop-min.js')"></script>
         <script type="text/javascript" src="#springUrl('/yui/button/button-min.js')"></script>	
+	<script type="text/javascript" src="#springUrl('/yui/animation/animation-min.js')"></script>
 	<script language="javascript" type="text/javascript" src="#springUrl('/watching.js')"></script>	
 	<script language="javascript" type="text/javascript">
 		//variable to keep track of the pages most recent thread id

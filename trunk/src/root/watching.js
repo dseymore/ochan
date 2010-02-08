@@ -32,17 +32,18 @@ if ( typeof(globalStorage) != 'undefined' && typeof(localStorage) == 'undefined'
                                                 var postIdForThisThread = watching[property];
                                                 var callback = {
                                                         success: function(response){
-                                                        var result = YAHOO.lang.JSON.parse(response.responseText);
-                                                        if (result != undefined && result.RemotePost.identifier != -1){
-                                                                var postIdWeGot = result.RemotePost.identifier;
-                                                                if (postIdWeGot != -1 && postIdWeGot != postIdForThisThread){
-									updatePage(watching[property],property);
-                                                                }
-                                                        }
-                                                },
-                                                        failure: function(response){
-                                                                //alert(response);
-                                                        }
+                	                                        var result = YAHOO.lang.JSON.parse(response.responseText);
+                        	                                if (result != undefined && result.RemotePost.identifier != -1){
+									var threadIdWeGot = result.RemotePost.parentIdentifier;
+                                	                                var postIdWeGot = result.RemotePost.identifier;
+                                        	                        if (postIdWeGot != -1 && postIdWeGot != watching[threadIdWeGot]){
+										updatePage(watching[threadIdWeGot],threadIdWeGot,true);
+                                                        	        }
+                                                      		}
+	                                                },
+	                                                failure: function(response){
+	                                                         //alert(response);
+	                                                }
                                                 };
                                                 var transaction = YAHOO.util.Connect.asyncRequest('GET', '/remote/rest/post/next/' + postIdForThisThread + '/?watch=true', callback, null);
                                         }
@@ -51,7 +52,7 @@ if ( typeof(globalStorage) != 'undefined' && typeof(localStorage) == 'undefined'
                 }
 		//end threadwatch
 
-		function updatePage(postId, threadId){
+		function updatePage(postId, threadId, alarm){
                         var innerPanel = document.getElementById("watchPanelBody");
 			if (innerPanel != undefined){
 				var theDiv = document.getElementById("watch"+threadId);
@@ -63,6 +64,20 @@ if ( typeof(globalStorage) != 'undefined' && typeof(localStorage) == 'undefined'
 	                        //set the content
 	                        theDiv.innerHTML = threadId + "<a href=\"/chan/thread/" + threadId + "#" + postId + "\">[Open]</a>";
 	                        //NOT updating the watching thing.. since the user hasn't gone to it yet.. that screen being open will do it
+				if (alarm == true){
+					var attributes = {
+						backgroundColor: { to: '#38546A' }
+					};
+					var anim = new YAHOO.util.ColorAnim(theDiv, attributes);
+					anim.onComplete.subscribe(function(){
+						var attributes1 = {
+                	                                backgroundColor: { to: '#F2F2F2' }
+        	                                };
+                        	                var anim2 = new YAHOO.util.ColorAnim(theDiv, attributes1);
+						anim2.animate();
+					});
+ 					anim.animate();
+				}
 			}
 		}
 		//end updatePageFunction 
