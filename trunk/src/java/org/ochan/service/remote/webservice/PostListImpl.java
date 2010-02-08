@@ -87,6 +87,7 @@ public class PostListImpl implements PostList {
 	public RemotePost next(@PathParam("postId") String id) {
 		NEXT_POST_GET_COUNT++;
 		Element cachedRemotePost = cache.get(id);
+		Long threadId = Long.valueOf(-1);
 		if (cachedRemotePost != null && !cachedRemotePost.isExpired()){
 			return (RemotePost)cachedRemotePost.getObjectValue();
 		}else{
@@ -95,6 +96,7 @@ public class PostListImpl implements PostList {
 			if (p != null){
 				//then, get that thread
 				org.ochan.entity.Thread t = threadService.getThread(p.getParent().getIdentifier());
+				threadId = t.getIdentifier();
 				//and then see if there is one greater than the current id	
 				t.setPosts(getPostService().retrieveThreadPosts(t.getIdentifier()));
 				Collections.sort(t.getPosts());
@@ -127,6 +129,7 @@ public class PostListImpl implements PostList {
 			}
 			RemotePost rp = new RemotePost();
 			rp.setIdentifier(Long.valueOf(-1));
+			rp.setParentIdentifier(threadId);
 			return rp;
 		}
 	}
