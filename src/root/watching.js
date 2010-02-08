@@ -39,7 +39,11 @@ if ( typeof(globalStorage) != 'undefined' && typeof(localStorage) == 'undefined'
                                         	                        if (postIdWeGot != -1 && postIdWeGot != watching[threadIdWeGot]){
 										updatePage(watching[threadIdWeGot],threadIdWeGot,true);
                                                         	        }
-                                                      		}
+                                                      		}else if (result != undefined && result.RemotePost.identifier == -1 && result.RemotePost.parentIdentifer != -1){
+									//we should delete it.. right? 
+									var threadIdWeGot = result.RemotePost.parentIdentifier;
+									updatePage(-1,threadIdWeGot);
+								}
 	                                                },
 	                                                failure: function(response){
 	                                                         //alert(response);
@@ -56,14 +60,18 @@ if ( typeof(globalStorage) != 'undefined' && typeof(localStorage) == 'undefined'
                         var innerPanel = document.getElementById("watchPanelBody");
 			if (innerPanel != undefined){
 				var theDiv = document.getElementById("watch"+threadId);
-	                        if (theDiv == undefined || theDiv == null){
-		                        theDiv = document.createElement("div");
-	                                theDiv.id = "watch"+threadId;
-	                                innerPanel.appendChild(theDiv);
-	                        }
-	                        //set the content
-	                        theDiv.innerHTML = threadId + "<a href=\"/chan/thread/" + threadId + "#" + postId + "\">[Open]</a>";
-	                        //NOT updating the watching thing.. since the user hasn't gone to it yet.. that screen being open will do it
+				if (postId == -1){
+					innerPanel.removeChild(theDiv);
+				}else{
+		                        if (theDiv == undefined || theDiv == null){
+			                        theDiv = document.createElement("div");
+		                                theDiv.id = "watch"+threadId;
+		                                innerPanel.appendChild(theDiv);
+		                        }
+		                        //set the content
+		                        theDiv.innerHTML = threadId + "<a href=\"/chan/thread/" + threadId + "#" + postId + "\">[Open]</a>";
+		                        //NOT updating the watching thing.. since the user hasn't gone to it yet.. that screen being open will do it
+				}
 				if (alarm == true){
 					var attributes = {
 						backgroundColor: { to: '#38546A' }
