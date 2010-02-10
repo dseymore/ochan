@@ -72,8 +72,9 @@ if ( typeof(globalStorage) != 'undefined' && typeof(localStorage) == 'undefined'
 						//only alarm when the div first appears
 						alarmNow = true;
 		                        }
+					var names = YAHOO.lang.JSON.parse(localStorage.getItem("watchingNames"));
 		                        //set the content
-		                        theDiv.innerHTML = threadId + "<span class=\"watchLink\">[<a href=\"/chan/thread/" + threadId + "#" + postId + "\">Open</a>]&nbsp;[<a href=\"javascript:unwatchThread('"+threadId+"');\">Unwatch</a>]</span>";
+		                        theDiv.innerHTML = names[threadId] + "<span class=\"watchLink\">[<a href=\"/chan/thread/" + threadId + "#" + postId + "\">Open</a>]&nbsp;[<a href=\"javascript:unwatchThread('"+threadId+"');\">Unwatch</a>]</span>";
 		                        //NOT updating the watching thing.. since the user hasn't gone to it yet.. that screen being open will do it
 				}
 				if (alarm == true && alarmNow){
@@ -117,27 +118,49 @@ if ( typeof(globalStorage) != 'undefined' && typeof(localStorage) == 'undefined'
                 }
 		//end watchThisThread
 		
-		function toggleWatch(){
+		function toggleWatch(name){
 			if ((typeof(currentPostId) != 'undefined') && (typeof(thisThreadId) != 'undefined')){
                                 var watching;
+				var names;
                                 //grabbing the current settings
                                 if (localStorage.getItem("watching") == null){
                                         watching = new Object();
                                 }else{
                                         watching = YAHOO.lang.JSON.parse(localStorage.getItem("watching"));
                                 }
+				if (localStorage.getItem("watchingNames") == null){
+					names = new Object();
+				}else{
+					names = YAHOO.lang.JSON.parse(localStorage.getItem("watchingNames"));
+				}
                                 if (!isThreadWatched()){
                                         //We are going to set the most recent post id to this watching threads last-viewed-post-id.
                                         watching[thisThreadId] = currentPostId;
+					if (name != null && name != undefined){
+						names[thisThreadId] = name;
+					}else{
+						names[thisThreadId] = thisThreadId;
+					}
                                 }else{
                                         delete watching[thisThreadId];
+					delete names[thisThreadId];
                                 }
                                 localStorage.setItem("watching",YAHOO.lang.JSON.stringify(watching));
+				localStorage.setItem("watchingNames",YAHOO.lang.JSON.stringify(names));
                                 //Should we FORCE a refresh of the panel that will list the watched threads and their status?
                                 toggleLink();
                         }else{
                                 alert("You shouldn't be calling this method... only for the thread view. Developer issue.");
                         }
+		}
+
+		function watchFunction(){
+			if (!isThreadWatched()){
+				//boot up the dialog! :D
+				dialog1.show();
+			}else{
+				toggleWatch();
+			}
 		}
 
 		function isThreadWatched(){
@@ -186,8 +209,57 @@ if ( typeof(globalStorage) != 'undefined' && typeof(localStorage) == 'undefined'
 			document.getElementById("watchPanelBody").removeChild(document.getElementById("watch"+threadId));
 		}
 
+
 ////////starting execution!!!!
 	if (typeof(localStorage) != 'undefined'){
+		////////////////////////////////START DIALOG
+		// Define various event handlers for Dialog
+		var handleSubmit = function() {
+			this.submit();
+		};
+		var handleCancel = function() {
+			//and nothing to do here as well
+			this.cancel();
+		};
+		var handleSuccess = function(o) {
+			//nothing to do here eithe
+		};
+		var handleFailure = function(o) {
+			alert("Submission failed: " + o.status);
+		};
+		// Remove progressively enhanced content class, just before creating the module
+		YAHOO.util.Dom.removeClass("dialog1", "yui-pe-content");
+
+		// Instantiate the Dialog
+		var dialog1 = new YAHOO.widget.Dialog("dialog1", 
+						{ width : "30em",
+						  fixedcenter : true,
+						  visible : false, 
+						  constraintoviewport : true,
+						  modal: true,
+						  buttons : [ { text:"Submit", handler:handleSubmit, isDefault:true },
+							      { text:"Cancel", handler:handleCancel } ]
+						});
+
+		// Validate the entries in the form to require that both first and last name are entered
+		dialog1.validate = function() {
+			var name = document.getElementById("threadname").value;
+			if (name == "" || name.length > 80){
+				alert("Please enter a name; you'll want to track the thread. (80 characeter limit)");
+				return false;
+			} else {
+				toggleWatch(name);
+				this.hide();
+				return false;
+			}
+		};
+
+		// Wire up the success and failure handlers
+		dialog1.callback = { success: handleSuccess, failure: handleFailure };
+		// Render the Dialog
+		dialog1.render();
+		/////////////////////////END DIALOG
+
 		//Enable the watch link
 		var watchLink = document.getElementById("watchLink");
 		var watchSpan = document.getElementById("watchSpan");

@@ -226,6 +226,7 @@
                         }
 			statsPanel.cfg.setProperty("context",["recentPanel","tl","bl"]);
                         statsPanel.align("tl","bl",[-1,0]);
+			##Weird issue with the images loading up after the panels align.. which makes them unaligned again. 
 			setTimeout("statsPanel.align();",500);
                 </script>
 	</body>
