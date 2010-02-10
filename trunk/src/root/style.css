@@ -97,3 +97,8 @@
 	.watchLink {
 		float: right;
 	}
+
+	.yui-pe-content {
+    		display:none;
+	}
+

@@ -208,7 +208,7 @@
 						#end
 						</a>]</span>
 				<span>[<a href="#" onclick="panel.show(); return false;">Reply</a>]</span>
-				<span style="display: none;" id="watchSpan">[<a id="watchLink" href="#" onclick="toggleWatch(); return false;">Watch</a>]</span>
+				<span style="display: none;" id="watchSpan">[<a id="watchLink" href="javascript:watchFunction();">Watch</a>]</span>
 				<span>[<a id="autoscroll" href="#" onclick="toggleScroll(); return false;">Autoscroll On</a>]</span>
 				<span>[<a href="#" onclick="growlHelp(); return false;">Help</a>]</span>
 			</div></div>
@@ -349,6 +349,12 @@
 				</table>
 			</div>
 		#end
+		<div id="dialog1" class="yui-pe-content">
+			<div class="hd">Watch</div>
+			<div class="bd">
+				<label for="threadname">Name:</label><input type="textbox" id="threadname" name="threadname" />
+			</div>
+		</div>
 	</body>
         <script language="javascript" type="text/javascript" src="#springUrl('/watching.js')"></script>
 </html> 
