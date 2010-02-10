@@ -13,6 +13,7 @@ if ( typeof(globalStorage) != 'undefined' && typeof(localStorage) == 'undefined'
                         if (null == localStorage.getItem("watching")){
                                 return;
                         }else{
+				toggleLink();
                                 var watching = YAHOO.lang.JSON.parse(localStorage.getItem("watching"));
                                 //each THREAD id is a property of the object.
                                 for(property in watching){
@@ -59,6 +60,7 @@ if ( typeof(globalStorage) != 'undefined' && typeof(localStorage) == 'undefined'
 		function updatePage(postId, threadId, alarm){
                         var innerPanel = document.getElementById("watchPanelBody");
 			if (innerPanel != undefined){
+				var alarmNow = false;				
 				var theDiv = document.getElementById("watch"+threadId);
 				if (postId == -1){
 					innerPanel.removeChild(theDiv);
@@ -67,12 +69,14 @@ if ( typeof(globalStorage) != 'undefined' && typeof(localStorage) == 'undefined'
 			                        theDiv = document.createElement("div");
 		                                theDiv.id = "watch"+threadId;
 		                                innerPanel.appendChild(theDiv);
+						//only alarm when the div first appears
+						alarmNow = true;
 		                        }
 		                        //set the content
-		                        theDiv.innerHTML = threadId + "<a href=\"/chan/thread/" + threadId + "#" + postId + "\">[Open]</a>";
+		                        theDiv.innerHTML = threadId + "<span class=\"watchLink\">[<a href=\"/chan/thread/" + threadId + "#" + postId + "\">Open</a>]&nbsp;[<a href=\"javascript:unwatchThread('"+threadId+"');\">Unwatch</a>]</span>";
 		                        //NOT updating the watching thing.. since the user hasn't gone to it yet.. that screen being open will do it
 				}
-				if (alarm == true){
+				if (alarm == true && alarmNow){
 					var attributes = {
 						backgroundColor: { to: '#38546A' }
 					};
@@ -155,10 +159,12 @@ if ( typeof(globalStorage) != 'undefined' && typeof(localStorage) == 'undefined'
 		//toggle link
 		function toggleLink(){
 	                var watchLink = document.getElementById("watchLink");
-	                if (isThreadWatched()){
-        	                watchLink.innerHTML = "Unwatch";
-               		}else{
-				watchLink.innerHTML = "Watch";
+			if (watchLink != undefined && watchLink != null){
+		                if (isThreadWatched()){
+	       	 	                watchLink.innerHTML = "Unwatch";
+       	        		}else{
+					watchLink.innerHTML = "Watch";
+				}
 			}
 		}
 
@@ -169,6 +175,13 @@ if ( typeof(globalStorage) != 'undefined' && typeof(localStorage) == 'undefined'
                         watchPanel.setHeader("Thread Watching");
                         watchPanel.setFooter("");
                         watchPanel.render();
+		}
+
+		function unwatchThread(threadId){
+			var watching = YAHOO.lang.JSON.parse(localStorage.getItem("watching"));
+                        delete watching[threadId];
+                        localStorage.setItem("watching",YAHOO.lang.JSON.stringify(watching));
+			document.getElementById("watchPanelBody").removeChild(document.getElementById("watch"+threadId));
 		}
 
 ////////starting execution!!!!
