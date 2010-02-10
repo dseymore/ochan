@@ -110,7 +110,9 @@ if ( typeof(globalStorage) != 'undefined' && typeof(localStorage) == 'undefined'
 	                        watching[thisThreadId] = currentPostId;
 	                        localStorage.setItem("watching",YAHOO.lang.JSON.stringify(watching));
 			}else{
-				alert("You shouldn't be calling this method... only for the thread view. Developer issue.");
+				//we still want to call this as soon as the page renders.. 
+				//alert("You shouldn't be calling this method... only for the thread view. Developer issue.");
+				return 0;
 			}
                 }
 		//end watchThisThread
@@ -195,4 +197,6 @@ if ( typeof(globalStorage) != 'undefined' && typeof(localStorage) == 'undefined'
 			toggleLink();
 			watchSpan.style.display = "";		
 		}
+		//as SOON as the page is viewed.. update our watchitudanality
+		watchThisThread();
 	}

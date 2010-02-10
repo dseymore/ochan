@@ -71,60 +71,92 @@
 		<div style="float: right">
 			<a href="#springUrl('/atom/threads')"><img border="0" src="#springUrl('/15px-Feed-icon.png')" width="15" height="15"></a>
 		</div>
-		<div id="adminBox" class="box">
+		<div id="adminBox">
+			<div class="hd"></div>
+			<div class="bd">
 			$announcement
-		</div>
-		<div id="categoryBox" class="box">
-			<div class="heading">
-				<h2>Categories</h2>
-			</div>
-			<ul class="categoryList">
-				#foreach($cat in ${category})
-					<li class="categoryItem"><a href="#springUrl('/chan/')$cat.identifier">$cat.name</a></li>
-				#end
-			</ul>
-		</div>
-		#if ($list.size(${external}) > 0)
-		<div id="externalCategoryList" class="box">
-			<div class="heading">
-				<h2>External Categories</h2>
-			</div>
-			<ul class="categoryList">
-				#foreach($cat in ${external})
-					<li class="categoryItem"><a href="$cat.host">$cat.name</a></li>
-				#end
-			</ul>
-		</div>
-		#end
-		<div id="recentBox" class="box">
-			<div class="heading">
-				<h2>Recent Images</h2>
-			</div>
-			#if ($P1)
-			<div class="box">
-				<a href="#springUrl('/chan/thread/')$P1.parent.identifier#$P1.identifier"><img src="#springUrl('/chan/img/')$P1.identifier?thumb=true"></a>
-			</div>
-			#end
-			#if ($P2)
-			<div class="box">
-				<a href="#springUrl('/chan/thread/')$P2.parent.identifier#$P2.identifier"<img src="#springUrl('/chan/img/')$P2.identifier?thumb=true"></a>
-			</div>
-			#end
-			#if ($P3)
-			<div class="box">
-				<a href="#springUrl('/chan/thread/')$P3.parent.identifier#$P3.identifier"<img src="#springUrl('/chan/img/')$P3.identifier?thumb=true"></a>
-			</div>
-			#end
-		</div>
-		<div class="box" id="statsBox">
-			<div class="heading">
-				<h2>Statistics</h2>
-			</div>
-			<div id="statisticsDiv">
-				##Statistics will be populated intohere by stats() method.
 			</div>
 		</div>
 		<script language="javascript" type="text/javascript">
+                        var adminPanel = new YAHOO.widget.Panel("adminBox", {
+                                width:"30em", visible:true, constraintoviewport:false, modal:false, close: false} );
+                        adminPanel.setFooter("");
+                        adminPanel.render();
+                </script>
+		<div id="categoryBox">
+			<div class="hd">Categories</div>
+			<div class="bd">
+				<ul class="categoryList">
+					#foreach($cat in ${category})
+						<li class="categoryItem"><a href="#springUrl('/chan/')$cat.identifier">$cat.name</a></li>
+					#end
+				</ul>
+			</div>
+		</div>
+		<script language="javascript" type="text/javascript">
+                        var catPanel = new YAHOO.widget.Panel("categoryBox", {
+                                width:"30em", visible:true, constraintoviewport:false, modal:false, close: false} );
+                        catPanel.setFooter("");
+                        catPanel.render();
+                </script>
+		#if ($list.size(${external}) > 0)
+		<div id="externalCategoryList">
+			<div class="hd">External Categories</div>
+			<div class="bd">
+				<ul class="categoryList">
+					#foreach($cat in ${external})
+						<li class="categoryItem"><a href="$cat.host">$cat.name</a></li>
+					#end
+				</ul>
+			</div>
+		</div>
+		<script language="javascript" type="text/javascript">
+                        var externalPanel = new YAHOO.widget.Panel("externalCategoryList", {
+                                width:"30em", visible:true, constraintoviewport:false, modal:false, close: false} );
+                        externalPanel.setFooter("");
+                        externalPanel.render();
+                </script>
+		#end
+		<div id="recentPanel">
+			<div class="hd">Recent Images</div>
+			<div class="bd">
+                        #if ($P1)
+                        <div>
+                                <a href="#springUrl('/chan/thread/')$P1.parent.identifier#$P1.identifier"><img src="#springUrl('/chan/img/')$P1.identifier?thumb=true"></a>
+                        </div>
+                        #end
+                        #if ($P2)
+                        <div>
+                                <a href="#springUrl('/chan/thread/')$P2.parent.identifier#$P2.identifier"<img src="#springUrl('/chan/img/')$P2.identifier?thumb=true"></a>
+                        </div>
+                        #end
+                        #if ($P3)
+                        <div>
+                                <a href="#springUrl('/chan/thread/')$P3.parent.identifier#$P3.identifier"<img src="#springUrl('/chan/img/')$P3.identifier?thumb=true"></a>
+                        </div>
+                        #end
+			</div>
+		</div>
+		<script language="javascript" type="text/javascript">
+			//panel for recent stuff
+                        var recentPanel = new YAHOO.widget.Panel("recentPanel", { width:"30em", visible:true, constraintoviewport:false, modal:false, close: false} );
+                        recentPanel.setFooter("");
+                        recentPanel.render();
+		</script>
+		<div id="statsPanel">
+			<div class="hd">Statistics</div>
+			<div class="bd">
+				<div id="statisticsDiv">
+	                                ##Statistics will be populated intohere by stats() method.
+	                        </div>
+			</div>
+		</div>
+		<script language="javascript" type="text/javascript">
+			// Instantiate a panel for stats
+                        var statsPanel = new YAHOO.widget.Panel("statsPanel", {
+                                width:"30em", visible:true, constraintoviewport:false, modal:false, close: false} );
+                        statsPanel.setFooter("");
+                        statsPanel.render();
 			##STATISTICS!!!
 			function stats(){
 				var callback =
@@ -168,9 +200,9 @@
 	        	var transaction = YAHOO.util.Connect.asyncRequest('GET', '/remote/rest/stats/current/', callback, null);
 			}
 			## Sets up the ajax loop
-        	window.setInterval(stats, 60000);
+	        	window.setInterval(stats, 60000);
         	
-        	stats();
+	        	stats();
 		</script>
 		##lets get this freaking watching thing going on 
 		<div id="watchbar" class="watchbar">
@@ -179,5 +211,22 @@
 		<script language="javascript" type="text/javascript">
 			setupWatchPanel();
 		</script>
+		<script language="javascript" type="text/javascript">
+			//Do the alignment
+			catPanel.cfg.setProperty("context",["adminBox","tl","bl"]);
+                        catPanel.align("tl","bl",[-1,0]);
+			if (document.getElementById("externalCategoryList") != undefined){
+				externalPanel.cfg.setProperty("context",["categoryBox","tl","bl"]);
+	                        externalPanel.align("tl","bl",[-1,0]);
+                                recentPanel.cfg.setProperty("context",["externalCategoryList","tl","bl"]);
+                                recentPanel.align("tl","bl",[-1,0]);
+                        }else{
+                                recentPanel.cfg.setProperty("context",["categoryBox","tl","bl"]);
+                                recentPanel.align("tl","bl",[-1,0]);
+                        }
+			statsPanel.cfg.setProperty("context",["recentPanel","tl","bl"]);
+                        statsPanel.align("tl","bl",[-1,0]);
+			setTimeout("statsPanel.align();",500);
+                </script>
 	</body>
 </html> 
