@@ -40,22 +40,41 @@ if ( typeof(globalStorage) != 'undefined' && typeof(localStorage) == 'undefined'
                                         	                        if (postIdWeGot != -1 && postIdWeGot != watching[threadIdWeGot]){
 										updatePage(watching[threadIdWeGot],threadIdWeGot,true);
                                                         	        }
-                                                      		}else if (result != undefined && result.RemotePost.identifier == -1 && result.RemotePost.parentIdentifer != -1){
+                                                      		}else if (result != undefined && result.RemotePost.identifier == -1 && result.RemotePost.parentIdentifier != -1){
 									//we should delete it.. right? 
 									var threadIdWeGot = result.RemotePost.parentIdentifier;
 									updatePage(-1,threadIdWeGot);
+								}else if (result != undefined && result.RemotePost.identifier == -1 && result.RemotePost.parentIdentifier == -1 ){
+									deleteWatch(this.threadId);
+									//we need to unwatch it.
+								}else{	
+									//worse case situation
 								}
 	                                                },
 	                                                failure: function(response){
-	                                                         //alert(response);
+	                                                         //alert("failure: " + response);
 	                                                }
                                                 };
+						callback.threadId = property;
                                                 var transaction = YAHOO.util.Connect.asyncRequest('GET', '/remote/rest/post/next/' + postIdForThisThread + '/?watch=true', callback, null);
                                         }
                                 }
                         }
                 }
 		//end threadwatch
+
+		//we call this when want to remove a thread that was deleted..
+		function deleteWatch(thisThreadId){
+                        var watching = YAHOO.lang.JSON.parse(localStorage.getItem("watching"));
+                        var names = YAHOO.lang.JSON.parse(localStorage.getItem("watchingNames"));
+			//we should GROWL that the thread was deleted.
+			$.jGrowl('Thread \"' + names[thisThreadId] + '\" was deleted.', { life: 5000 });
+
+                        delete watching[thisThreadId];
+                        delete names[thisThreadId];
+                        localStorage.setItem("watching",YAHOO.lang.JSON.stringify(watching));
+                        localStorage.setItem("watchingNames",YAHOO.lang.JSON.stringify(names));			
+		}
 
 		function updatePage(postId, threadId, alarm){
                         var innerPanel = document.getElementById("watchPanelBody");

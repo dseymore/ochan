@@ -245,25 +245,30 @@ public class LocalPostService implements PostService {
 	}
 
 	private Post map(PostDPL post) {
-		TextPost p = new TextPost();
-		if (PostType.IMAGE.equals(post.getType())) {
-			p = new ImagePost();
-			((ImagePost) p).setImageIdentifier(post.getImageIdentifier());
-			((ImagePost) p).setThumbnailIdentifier(post.getThumbnailIdentifier());
-			((ImagePost) p).setFilename(post.getFilename());
-			((ImagePost) p).setFileSize(post.getFileSize());
+		if (post != null){
+			TextPost p = new TextPost();
+			if (PostType.IMAGE.equals(post.getType())) {
+				p = new ImagePost();
+				((ImagePost) p).setImageIdentifier(post.getImageIdentifier());
+				((ImagePost) p).setThumbnailIdentifier(post.getThumbnailIdentifier());
+				((ImagePost) p).setFilename(post.getFilename());
+				((ImagePost) p).setFileSize(post.getFileSize());
+			}
+			p.setAuthor(post.getAuthor());
+			p.setComment(post.getComment());
+			p.setEmail(post.getEmail());
+			p.setIdentifier(post.getIdentifier());
+			Thread t = new Thread();
+			t.setIdentifier(post.getParent());
+			p.setParent(t);
+			p.setSubject(post.getSubject());
+			p.setTime(post.getTime());
+			p.setUrl(post.getUrl());
+			return p;
+		}else{
+			LOG.info("Null post.. probably deleted.");
 		}
-		p.setAuthor(post.getAuthor());
-		p.setComment(post.getComment());
-		p.setEmail(post.getEmail());
-		p.setIdentifier(post.getIdentifier());
-		Thread t = new Thread();
-		t.setIdentifier(post.getParent());
-		p.setParent(t);
-		p.setSubject(post.getSubject());
-		p.setTime(post.getTime());
-		p.setUrl(post.getUrl());
-		return p;
+		return null;
 	}
 
 }
