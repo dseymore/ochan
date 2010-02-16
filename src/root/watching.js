@@ -214,7 +214,7 @@ if ( typeof(globalStorage) != 'undefined' && typeof(localStorage) == 'undefined'
 
 		function setupWatchPanel(){
 			// Instantiate a panel for navbar
-                        var watchPanel = new YAHOO.widget.Panel("watchPanel", { 
+                        watchPanel = new YAHOO.widget.Panel("watchPanel", { 
 				width:"30em", visible:true, constraintoviewport:true, modal:false} );
                         watchPanel.setHeader("Thread Watching");
                         watchPanel.setFooter("");
@@ -290,4 +290,6 @@ if ( typeof(globalStorage) != 'undefined' && typeof(localStorage) == 'undefined'
 		}
 		//as SOON as the page is viewed.. update our watchitudanality
 		watchThisThread();
+
+		var watchPanel = "";
 	}

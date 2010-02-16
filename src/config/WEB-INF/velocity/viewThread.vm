@@ -166,7 +166,9 @@
 	    	function growlHelp(){
 	    		${esc.dollar}.jGrowl('<ul>' +
 	    		'<li>ALT+SHIFT+R Reply</li>' +
-	    		'<li>ALT+SHIFT+A AutoScroll Toggle</li>' +
+	    		'<li>ALT+SHIFT+A Toggle AutoScroll</li>' +
+			'<li>ALT+SHIFT+O Open Options</li>' +
+			'<li>ALT+SHIFT+C Open Thread Watching Panel</li>' +
 	    		'<li>ALT+SHIFT+W Help</li>' + 
 	    		'</ul>', { life: 10000, header: "Help"});
 	    	}
@@ -175,6 +177,16 @@
         	##alt + shift + r = reply to the thread
 			var kl3 = new YAHOO.util.KeyListener(document, {alt: true, shift:true, keys:82 }, { fn:function(event){ panel.show(); return false; } } );
 			kl3.enable();
+
+			##alt + shift + c = toggle the watch panel
+                        var watchKey = new YAHOO.util.KeyListener(document, {alt: true, shift:true, keys:67 }, { fn:function(event){
+                                watchPanel.show();
+                        } } );
+                        watchKey.enable();
+			
+			###alt + shift + o = 79 = options dialog
+			var kl5 = new YAHOO.util.KeyListener(document, {alt: true, shift: true, keys:79 }, {fn:function(event){ panel2.show(); return false; } } );
+			kl5.enable();
 			
 			##alt + shift + a = autoscroll toggle
 			var kl4 = new YAHOO.util.KeyListener(document, {alt: true, shift:true, keys:65 }, { fn:function(event){ toggleScroll(); return false; } } );
@@ -236,13 +248,14 @@
 								<li><a href="#tab3"><em>Zip File</em></a></li>
 						    </ul>            
 						    <div class="yui-content">
-								<div><label for="file">Image:</label><input id="file" type="file" name="file" size="40"/></div>
+								<div><label for="file">Image:</label><input id="file" type="file" name="file" size="30"/></div>
 								<div><label for="remote">Image Url:</label><input id="remote" type="text" name="fileUrl" size="40"/></div>
-								<div><label for="zip">Zip File:</label><input id="zip" type="file" name="zipFile" size="40"/></div>
+								<div><label for="zip">Zip File:</label><input id="zip" type="file" name="zipFile" size="30"/></div>
 						    </div>
 						</div>
 						<br/>
 						<span><input id="submitButton" type="submit"/></span>
+						<span><input id="cancelButton" type="button"/></span>
 					</div></div> 
 				</form>
 				<!-- the autoscroll toggling feature -->
@@ -318,6 +331,10 @@
 					
 					var myTabs = new YAHOO.widget.TabView("uploadgroup");
 					var submitButton = new YAHOO.widget.Button("submitButton", { label: "Reply" });
+					var cancelFunc = function(e){
+						panel.hide();
+					};
+					var cancelButton = new YAHOO.widget.Button("cancelButton", { label: "Cancel", onclick: { fn: cancelFunc} });
 					
 					function addId(id){
 		        		myEditor.execCommand('inserthtml','<p>&gt;&gt;' + id + '</p>');
@@ -357,4 +374,11 @@
 		</div>
 	</body>
         <script language="javascript" type="text/javascript" src="#springUrl('/watching.js')"></script>
+	##lets get this freaking watching thing going on
+        <div id="watchbar" class="watchbar">
+                <div id="watchPanel"><div class="bd"><div id="watchPanelBody"></div></div></div>
+        </div>
+        <script language="javascript" type="text/javascript">
+                setupWatchPanel();
+        </script>
 </html> 
