@@ -24,12 +24,12 @@ if ( typeof(globalStorage) != 'undefined' && typeof(localStorage) == 'undefined'
                                                 //update THIS thread.. we're watching it, we know it will get updated
                                                 watchThisThread();
 						//refresh watching but dont modify it
-						var newWatching = YAHOO.lang.JSON.parse(localStorage.getItem("watching"));
+						//var newWatching = YAHOO.lang.JSON.parse(localStorage.getItem("watching"));
 						//only call update page if we HAVE to.. we might be on the page right now
-						if (watching[property] != newWatching[property]){
-							updatePage(newWatching[property], property);
-							//but then, if we are ON the page.. do we ever need to update it? 
-						}
+						//if (watching[property] != newWatching[property]){
+						//	updatePage(newWatching[property], property);
+						//	//but then, if we are ON the page.. do we ever need to update it? 
+						//}
 						//this will update the link to the page we're currently on to the most recent thread
                                         }else{
                                                 //lets go see if there is an update to this thread
