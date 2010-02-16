@@ -212,6 +212,29 @@
 			setupWatchPanel();
 		</script>
 		<script language="javascript" type="text/javascript">
+			//Setup the control keys and help
+	                function growlHelp(){
+	                        ${esc.dollar}.jGrowl('<ul>' +
+	                        '<li>ALT+SHIFT+W Help</li>' +
+				'<li>ALT+SHIFT+C Open Thread Watching Panel</li>' +
+	                        '</ul>', { life: 10000, header: "Help"});
+        	        }
+
+                	YAHOO.util.Event.onDOMReady(function () {
+				##alt + shift + c = toggle the watch panel
+				var watchKey = new YAHOO.util.KeyListener(document, {alt: true, shift:true, keys:67 }, { fn:function(event){
+					watchPanel.show();
+				} } );
+				watchKey.enable();
+
+				##alt + shift + w = help (fucking H is being used by the help in the browser.. damnit)
+        	                var helpKey = new YAHOO.util.KeyListener(document, {alt: true, shift:true, keys:87 }, { fn:function(event){
+	                                growlHelp();
+                	        } } );
+                        	helpKey.enable();
+
+			});
+
 			//Do the alignment
 			catPanel.cfg.setProperty("context",["adminBox","tl","bl"]);
                         catPanel.align("tl","bl",[-1,0]);
