@@ -49,6 +49,7 @@ public class SleepyEnvironment implements OchanEnvironment{
 	
 	private PrimaryIndex<Long, BlobStatDPL> blobStatisticsByIdentifier;
 	private SecondaryIndex<Long, Long, BlobStatDPL> blobStatisticsByBlobIdentifier;
+	private SecondaryIndex<BlobType, Long, BlobStatDPL> blobStatisticsByBlobType;
 	
 	private PrimaryIndex<Long, SynchroDPL> synchroByIdentifier;
 
@@ -112,6 +113,7 @@ public class SleepyEnvironment implements OchanEnvironment{
 			
 			blobStatisticsByIdentifier = entityStore.getPrimaryIndex(Long.class, BlobStatDPL.class);
 			blobStatisticsByBlobIdentifier = entityStore.getSecondaryIndex(blobStatisticsByIdentifier, Long.class, "blobIdentifier");
+			blobStatisticsByBlobType = entityStore.getSecondaryIndex(blobStatisticsByIdentifier, BlobType.class, "blobType");
 			
 			synchroByIdentifier = entityStore.getPrimaryIndex(Long.class, SynchroDPL.class);
 			
@@ -191,6 +193,11 @@ public class SleepyEnvironment implements OchanEnvironment{
 	@Override
 	public PrimaryIndex<Long, ThreadDPL> threadByIdentifier() {
 		return threadByIdentifier;
+	}
+	
+	@Override
+	public SecondaryIndex<BlobType, Long, BlobStatDPL> blobStatisticsByBlobType(){
+		return blobStatisticsByBlobType;
 	}
 	
 }

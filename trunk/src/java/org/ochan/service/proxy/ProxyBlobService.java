@@ -1,6 +1,7 @@
 package org.ochan.service.proxy;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import net.sf.ehcache.Ehcache;
@@ -9,6 +10,7 @@ import net.sf.ehcache.Element;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
+import org.ochan.dpl.BlobType;
 import org.ochan.dpl.replication.StateChangeListener;
 import org.ochan.service.BlobService;
 import org.ochan.service.proxy.config.ShardConfiguration;
@@ -154,7 +156,7 @@ public class ProxyBlobService implements BlobService {
 	}
 
 	@Override
-	public Long saveBlob(Byte[] byteArray, Long id) {
+	public Long saveBlob(Byte[] byteArray, Long id, BlobType blobType) {
 		if (id != null){
 			//hmm.. you're doing it wrong..
 			LOG.fatal("No one should pass in an ID but ME!");
@@ -163,22 +165,42 @@ public class ProxyBlobService implements BlobService {
 			LOG.debug("Calling shared");
 			Long identifier = shardConfiguration.getSynchroService().getSync();
 			BlobService service = get(shardConfiguration.whichHost(identifier));
-			return service.saveBlob(byteArray, identifier);
+			return service.saveBlob(byteArray, identifier, blobType);
 		}else if(!stateChangeListener.isMaster()){
 			//replication.. we aren't the master
 			LOG.debug("Sending to master node");
 			BlobService service = get(stateChangeListener.getMasterNodeName());
-			return service.saveBlob(byteArray, null);
+			return service.saveBlob(byteArray, null, blobType);
 		}else{
 			//normal behaviour
-			return localBlobService.saveBlob(byteArray, null);
+			return localBlobService.saveBlob(byteArray, null,blobType);
+		}
+	}
+	
+
+	@Override
+	public List<Long> getLast50Blobs(BlobType blobType) {
+		if (shardConfiguration.isShardEnabled()){
+			LOG.debug("Calling shard");
+			List<Long> ids = new ArrayList<Long>();
+			for(String hosts : shardConfiguration.getShardHosts()){
+				ids.addAll(get(hosts).getLast50Blobs(blobType));
+			}
+			//sort and chop them so we get the honest most recent list
+			Collections.sort(ids);
+			int size = ids.size();
+			int start = size >= 50 ? size - 50 : 0;
+			return ids.subList(size - 50, size);
+		}else{
+			//read commands don't go to the master node
+			return localBlobService.getAllIds();
 		}
 	}
 
 	private synchronized BlobService get(String host){
 		blobServiceClient.setAddress(host + "/remote/blob");
 		//resetting
-		blobServiceClient.getClientFactoryBean().setClient(null);
+//		blobServiceClient.getClientFactoryBean().setClient(null);
 		BlobService client = (BlobService)blobServiceClient.create();
 		return client;
 	}

@@ -156,7 +156,7 @@ public class ProxyCategoryService implements CategoryService {
 	private synchronized CategoryService get(String host) {
 		categoryServiceClient.setAddress(host + "/remote/allCategory");
 		//resetting
-		categoryServiceClient.getClientFactoryBean().setClient(null);
+//		categoryServiceClient.getClientFactoryBean().setClient(null);
 		CategoryService client = (CategoryService) categoryServiceClient.create();
 		return client;
 	}
