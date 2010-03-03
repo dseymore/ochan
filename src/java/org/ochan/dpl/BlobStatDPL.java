@@ -6,7 +6,7 @@ import com.sleepycat.persist.model.Relationship;
 import com.sleepycat.persist.model.SecondaryKey;
 
 
-@Entity
+@Entity(version=1)
 public class BlobStatDPL {
 
 	@PrimaryKey(sequence="BLOB_STAT")
@@ -15,6 +15,9 @@ public class BlobStatDPL {
 	@SecondaryKey(relate=Relationship.ONE_TO_ONE)
 	private Long blobIdentifier;
 	private int size;
+	
+	@SecondaryKey(relate=Relationship.MANY_TO_ONE)
+	private BlobType blobType;
 	
 	/**
 	 * @return the identifier
@@ -45,6 +48,14 @@ public class BlobStatDPL {
 	 */
 	public void setSize(int size) {
 		this.size = size;
+	}
+	
+	public BlobType getBlobType() {
+		return blobType;
+	}
+	
+	public void setBlobType(BlobType blobType) {
+		this.blobType = blobType;
 	}
 
 	

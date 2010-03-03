@@ -31,6 +31,7 @@ import org.javasimon.SimonManager;
 import org.javasimon.Split;
 import org.javasimon.StatProcessorType;
 import org.javasimon.Stopwatch;
+import org.ochan.dpl.BlobType;
 import org.ochan.entity.ImagePost;
 import org.ochan.entity.Post;
 import org.ochan.service.BlobService;
@@ -505,7 +506,7 @@ public class ThumbnailController implements Controller {
 			//store the thumbnail data in the post and persist
 			if (imagePost != null){
 				Byte[] thumbData = ArrayUtils.toObject(datum);
-				imagePost.setThumbnailIdentifier(blobService.saveBlob(thumbData, null));
+				imagePost.setThumbnailIdentifier(blobService.saveBlob(thumbData, null,BlobType.THUMB));
 				postService.updatePost(imagePost);
 			}
 			long endThumb = new Date().getTime();

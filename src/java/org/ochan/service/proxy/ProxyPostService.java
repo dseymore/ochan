@@ -204,7 +204,7 @@ public class ProxyPostService implements PostService {
 	private synchronized PostService get(String host) {
 		postServiceClient.setAddress(host + "/remote/post");
 		//resetting
-		postServiceClient.getClientFactoryBean().setClient(null);
+//		postServiceClient.getClientFactoryBean().setClient(null);
 		PostService client = (PostService) postServiceClient.create();
 		return client;
 	}

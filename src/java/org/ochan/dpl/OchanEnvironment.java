@@ -23,6 +23,8 @@ public interface OchanEnvironment {
 	public PrimaryIndex<Long, ExternalCategoryDPL> externalCategoryByIdentifier();
 
 	public PrimaryIndex<Long, BlobStatDPL> blobStatisticsByIdentifier();
+	
+	public SecondaryIndex<BlobType, Long, BlobStatDPL> blobStatisticsByBlobType();
 
 	public SecondaryIndex<Long, Long, BlobStatDPL> blobStatisticsByBlobIdentifier();
 

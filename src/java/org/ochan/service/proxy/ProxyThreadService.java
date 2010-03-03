@@ -159,7 +159,7 @@ public class ProxyThreadService implements ThreadService {
 	private synchronized ThreadService get(String host) {
 		threadServiceClient.setAddress(host + "/remote/thread");
 		//resetting
-		threadServiceClient.getClientFactoryBean().setClient(null);
+//		threadServiceClient.getClientFactoryBean().setClient(null);
 		ThreadService client = (ThreadService) threadServiceClient.create();
 		return client;
 	}

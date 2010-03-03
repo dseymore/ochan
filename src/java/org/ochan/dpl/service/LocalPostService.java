@@ -8,6 +8,7 @@ import java.util.prefs.Preferences;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.ochan.dpl.BlobType;
 import org.ochan.dpl.OchanEnvironment;
 import org.ochan.dpl.PostDPL;
 import org.ochan.dpl.PostType;
@@ -145,7 +146,7 @@ public class LocalPostService implements PostService {
 				String fileSize = FileUtils.byteCountToDisplaySize(file.length);
 				post.setFileSize(fileSize);
 				post.setType(PostType.IMAGE);
-				post.setImageIdentifier(blobService.saveBlob(file, null));
+				post.setImageIdentifier(blobService.saveBlob(file, null, BlobType.FULL));
 			} else {
 				post.setType(PostType.TEXT);
 			}
