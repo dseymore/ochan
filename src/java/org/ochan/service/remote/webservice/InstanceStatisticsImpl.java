@@ -6,7 +6,7 @@ import java.util.List;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.ProduceMime;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -14,7 +14,7 @@ import org.apache.velocity.tools.generic.NumberTool;
 import org.ochan.dpl.BlobType;
 import org.ochan.job.StatsGeneratorJob;
 import org.ochan.service.BlobService;
-import org.ochan.service.remote.model.RemoteLong;
+import org.ochan.service.remote.model.RemoteGroup;
 import org.ochan.service.remote.model.RemoteStatistics;
 import org.springframework.jmx.export.annotation.ManagedAttribute;
 import org.springframework.jmx.export.annotation.ManagedResource;
@@ -44,7 +44,7 @@ public class InstanceStatisticsImpl implements InstanceStatistics {
 	}
 
 	
-	@Produces("application/json")
+	@ProduceMime("application/json")
     @GET
 	@Override
 	@Path("/current/")
@@ -64,13 +64,13 @@ public class InstanceStatisticsImpl implements InstanceStatistics {
 
 
 	@GET
-	@Produces("application/json")
+	@ProduceMime("application/json")
 	@Path("/images/")
 	@Override
-	public Collection<RemoteLong> getImages() {
-		List<RemoteLong> list = new ArrayList<RemoteLong>();
+	public RemoteGroup getImages() {
+		RemoteGroup list = new RemoteGroup();
 		for(Long id : blobService.getLast50Blobs(BlobType.THUMB)){
-			list.add(new RemoteLong(id));
+			list.add(id);
 		}
 		return list;
 	}

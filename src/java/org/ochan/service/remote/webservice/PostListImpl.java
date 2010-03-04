@@ -6,7 +6,7 @@ import java.util.List;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.ProduceMime;
 
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
@@ -81,7 +81,7 @@ public class PostListImpl implements PostList {
 	 * @see org.ochan.service.remote.webservice.PostList#next(java.lang.String)
 	 * returns a remote post with -1 identifier if no results are found
 	 */
-	@Produces("application/json")
+	@ProduceMime("application/json")
     @GET
     @Path("/next/{postId}/")
 	public RemotePost next(@PathParam("postId") String id) {
