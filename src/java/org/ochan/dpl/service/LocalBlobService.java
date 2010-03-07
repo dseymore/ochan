@@ -225,7 +225,7 @@ public class LocalBlobService implements BlobService {
 			Collections.sort(keyDump);
 			int size = keyDump.size();
 			int start = size >= 50 ? size - 50 : 0;
-			List<Long> statKeyList = keyDump.subList(size - 50, size);
+			List<Long> statKeyList = keyDump.subList(start, size);
 
 			List<Long> finalList = new ArrayList<Long>();
 			for(Long id : statKeyList){

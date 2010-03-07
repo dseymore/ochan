@@ -50,6 +50,7 @@
 				<prop key="/**/viewThread.Ochan">viewThreadController</prop>
 				<prop key="/**/openCategory.Ochan">viewCategoryController</prop>
 				<prop key="/**/thumb.Ochan">thumbnailController</prop>
+				<prop key="/**/blobl.Ochan">rawBlobController</prop>
 				<prop key="/**/zip.Ochan">zipController</prop>
 			</props>
 		</property>
@@ -60,6 +61,7 @@
 	/chan/X/ = category X (viewCategoryController) 
 	/chan/thread/42/ = Category X thread 42 (viewThreadController)
 	/chan/img/42 = Image 42 (thumbnailController) (still have to pass thumb as parameter)
+	/chan/raw/42 = A blob #42
 	/chan/zip/42 = zip of thread 42
 	/chan/error/404 = error code 404 page
 	 -->
@@ -69,6 +71,7 @@
 			<props>
 				<prop key="/chan/(*:identifier)">viewCategoryController</prop>
 				<prop key="/chan/thread/(*:identifier)">viewThreadController</prop>
+				<prop key="/chan/raw/(*:identifier)">rawBlobController</prop>
 				<prop key="/chan/img/(*:identifier)">thumbnailController</prop>
 				<prop key="/chan/zip/(*:identifier)">zipController</prop>
 				<prop key="/chan/error/(*:identifier)">errorController</prop>
@@ -112,6 +115,10 @@
 	
 	<bean name="thumbnailController" class="org.ochan.control.ThumbnailController">
 		<property name="postService" ref="proxyPostService" />
+		<property name="blobService" ref="proxyBlobService"/>
+	</bean>
+	
+	<bean name="rawBlobController" class="org.ochan.control.RawBlobController">
 		<property name="blobService" ref="proxyBlobService"/>
 	</bean>
 	

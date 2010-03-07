@@ -193,7 +193,7 @@ public class ProxyBlobService implements BlobService {
 			return ids.subList(size - 50, size);
 		}else{
 			//read commands don't go to the master node
-			return localBlobService.getAllIds();
+			return localBlobService.getLast50Blobs(blobType);
 		}
 	}
 

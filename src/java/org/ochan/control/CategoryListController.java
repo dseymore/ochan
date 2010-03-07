@@ -156,68 +156,9 @@ public class CategoryListController implements Controller {
 		List<ExternalCategory> externalList = getExternalCategoryService().retrieveCategories(null);
 		
 		
-		//Get a cached list of all threads and posts.. yay!
-		//semi-hack-i-tude.. need to push this down to a service level 
-		//(its copypasta from the threadcollectionadapter)
-		List<Thread> toreturn = new ArrayList<Thread>();
-		Element o = cache.get("1");
-		if (o == null || o.getObjectValue() == null || o.isExpired()){
-			List<Category> cats = categoryService.retrieveCategories();
-			for (Category c : cats){
-				ThreadCriteria criteria = new ThreadService.ThreadCriteria();
-				criteria.setCategory(c.getIdentifier());
-				List<Thread> threads = threadService.retrieveThreads(criteria);
-				//categories have 0 threads to begin with.. 
-				if (threads != null){
-					for (Thread thread : threads){
-						thread.setPosts(postService.retrieveThreadPosts(thread.getIdentifier()));
-						toreturn.add(thread);
-					}
-				}
-			}
-			Collections.sort(toreturn);
-			cache.put(new Element("1",toreturn));
-		}else{
-			//unsafe!
-			toreturn = (ArrayList<Thread>)o.getObjectValue();
-		}
-		
 		Map controlModel = new HashMap();
 		controlModel.put(CATEGORY_LIST, categories);
 		controlModel.put(EXTERNAL_CATEGORY_LIST, externalList);
-
-		//get the most recent three image posts (this logic is shit!)
-		Post p1 = null;
-		Post p2 = null;
-		Post p3 = null;
-		for (Thread t : toreturn){
-			boolean foundOne = false;
-			//walk backwards until we find one
-			//this handles when there is only one post or less than a lot.
-			for (int i = 1; i <= t.getPosts().size() && !foundOne && (
-					!(p1 !=null && !p1.getParent().getIdentifier().equals(t.getIdentifier())) 
-					|| !(p2 != null && !p2.getParent().getIdentifier().equals(t.getIdentifier())) 
-					|| !(p3 != null && !p3.getParent().getIdentifier().equals(t.getIdentifier()))); i++){
-				Post p = t.getPosts().get(t.getPosts().size() -i); 
-				if ( p instanceof ImagePost){ 
-					if (p1 == null){
-						p1 = p;
-					}else if (p2 == null){
-						p2 = p;
-					}else if (p3 == null){
-						p3 = p;
-					}
-					if (p3 != null){
-						//jump out!
-						break;
-					}
-					foundOne = true;
-				}
-			}
-		}
-		controlModel.put("P1",p1);
-		controlModel.put("P2",p2);
-		controlModel.put("P3",p3);
 		
 		//find the current most-recent thread's id
 		{
