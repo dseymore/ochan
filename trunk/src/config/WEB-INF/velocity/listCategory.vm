@@ -34,6 +34,7 @@
         <script type="text/javascript" src="#springUrl('/yui/button/button-min.js')"></script>	
 	<script type="text/javascript" src="#springUrl('/yui/animation/animation-min.js')"></script>
 	<script language="javascript" type="text/javascript" src="#springUrl('/watching.js')"></script>	
+	<script language="javascript" type="text/javascript" src="#springUrl('/recentImages.js')"></script>
 	<script language="javascript" type="text/javascript">
 		//variable to keep track of the pages most recent thread id
         var currentThreadId = $currentThread;
@@ -120,21 +121,12 @@
 		<div id="recentPanel">
 			<div class="hd">Recent Images</div>
 			<div class="bd">
-                        #if ($P1)
-                        <div>
-                                <a href="#springUrl('/chan/thread/')$P1.parent.identifier#$P1.identifier"><img src="#springUrl('/chan/img/')$P1.identifier?thumb=true"></a>
-                        </div>
-                        #end
-                        #if ($P2)
-                        <div>
-                                <a href="#springUrl('/chan/thread/')$P2.parent.identifier#$P2.identifier"<img src="#springUrl('/chan/img/')$P2.identifier?thumb=true"></a>
-                        </div>
-                        #end
-                        #if ($P3)
-                        <div>
-                                <a href="#springUrl('/chan/thread/')$P3.parent.identifier#$P3.identifier"<img src="#springUrl('/chan/img/')$P3.identifier?thumb=true"></a>
-                        </div>
-                        #end
+				<div id="recentImagesDiv">
+					<span id="recent0" width="160" height="160"><img src="/blankThumb.jpg"/></span>
+					<span id="recent1" width="160" height="160"><img src="/blankThumb.jpg"/></span>
+					<span id="recent2" width="160" height="160"><img src="/blankThumb.jpg"/></span>
+					<span id="recent3" width="160" height="160"><img src="/blankThumb.jpg"/></span>
+				</div>
 			</div>
 		</div>
 		<script language="javascript" type="text/javascript">

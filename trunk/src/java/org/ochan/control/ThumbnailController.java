@@ -538,7 +538,7 @@ public class ThumbnailController implements Controller {
 	 * @param request
 	 * @return
 	 */
-	private byte[] getFailImageData(final HttpServletRequest request){
+	public static byte[] getFailImageData(final HttpServletRequest request){
 		try{
 			InputStream stream = request.getSession().getServletContext().getResourceAsStream("/WEB-INF/404-image.png");
 			byte[] datum = IOUtils.toByteArray(stream);

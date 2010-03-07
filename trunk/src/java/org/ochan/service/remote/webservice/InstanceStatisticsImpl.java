@@ -69,6 +69,10 @@ public class InstanceStatisticsImpl implements InstanceStatistics {
 	@Override
 	public RemoteGroup getImages() {
 		RemoteGroup list = new RemoteGroup();
+		//we actually want to return the ids of the full images
+		//because the thumbnail controller already does the work to find the thread
+		//for this full id and grab the already generated thumb for it.
+		//a future enhacnement would be to just use the id as it is.. instead of all that work looking things up. 
 		for(Long id : blobService.getLast50Blobs(BlobType.THUMB)){
 			list.add(id);
 		}
