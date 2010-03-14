@@ -123,10 +123,10 @@
 			<div class="bd">
 				<div id="recentImagesDiv">
 					##<!-- some temporary images to keep the shape/dimensions correct before the images run in -->
-					<span id="recent0" width="160" height="160"><img src="/blankThumb.jpg"/></span>
-					<span id="recent1" width="160" height="160"><img src="/blankThumb.jpg"/></span>
-					<span id="recent2" width="160" height="160"><img src="/blankThumb.jpg"/></span>
-					<span id="recent3" width="160" height="160"><img src="/blankThumb.jpg"/></span>
+					<span id="recent0" width="160" height="160" style="border-style: dashed; border-width: 1px; padding-top: 140px; padding-left: 160px; background-image: url(/blankThumb.jpg); background-repeat: no-repeat; background-position: center top;"><img width="1" height="160" src="/blankThumb.jpg"/></span>
+					<span id="recent1" width="160" height="160" style="border-style: dashed; border-width: 1px; padding-top: 140px; padding-left: 160px; background-image: url(/blankThumb.jpg); background-repeat: no-repeat; background-position: center top;"><img width="1" height="160" src="/blankThumb.jpg"/></span>
+					<span id="recent2" width="160" height="160" style="border-style: dashed; border-width: 1px; padding-top: 140px; padding-left: 160px; background-image: url(/blankThumb.jpg); background-repeat: no-repeat; background-position: center top;"><img width="1" height="160" src="/blankThumb.jpg"/></span>
+					<span id="recent3" width="160" height="160" style="border-style: dashed; border-width: 1px; padding-top: 140px; padding-left: 160px; background-image: url(/blankThumb.jpg); background-repeat: no-repeat; background-position: center top;"><img width="1" height="160" src="/blankThumb.jpg"/></span>
 				</div>
 			</div>
 		</div>
