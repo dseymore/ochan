@@ -14,7 +14,6 @@ function stepImages(){
 		newData();
 		currentposition = 0;
 	}
-//todo - when do we get a new dataset?
 	if (temp != undefined && !stop){
 		var position = 0;
 		for (property in recentImages){
@@ -23,14 +22,17 @@ function stepImages(){
 				var div = document.getElementById("recentImagesDiv");
 				var img = document.createElement("img");
 				var span = document.createElement("span");
-				img.src = "/chan/raw/"+recentImages[property]+"?recent=true";
+				//img.src = "/chan/raw/"+recentImages[property]+"?recent=true";
+				img.src = "/blankThumb.jpg";
+				img.width = "1";
+				img.height = "160";
 				span.id = "recent"+counter;
 				//padding-top: 140px; padding-left: 160px; background-image: url(/chan/raw/725?recent=true); background-repeat: no-repeat; background-position: center top;
-				//span.style.paddingTop = "160px";
-				//span.style.paddingLeft = "160px"
-				//span.style.backgroundImage = "url(/chan/raw/"+recentImages[property]+"?recent=true)";
-				//span.style.backgroundRepeat = "no-repeat";
-				//span.style.backgroundPosition = "center top";
+				span.style.paddingTop = "140px";
+				span.style.paddingLeft = "160px"
+				span.style.backgroundImage = "url(/chan/raw/"+recentImages[property]+"?recent=true)";
+				span.style.backgroundRepeat = "no-repeat";
+				span.style.backgroundPosition = "center top";
 				span.appendChild(img);
 				var oldImg = document.getElementById("recent"+(counter-4));
 				if (oldImg != undefined){
