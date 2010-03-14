@@ -28,6 +28,9 @@ function stepImages(){
 				img.height = "160";
 				span.id = "recent"+counter;
 				//padding-top: 140px; padding-left: 160px; background-image: url(/chan/raw/725?recent=true); background-repeat: no-repeat; background-position: center top;
+				span.style.margin = "1px";
+				span.style.borderStyle = "dashed";
+				span.style.borderWidth = "1px";
 				span.style.paddingTop = "140px";
 				span.style.paddingLeft = "160px"
 				span.style.backgroundImage = "url(/chan/raw/"+recentImages[property]+"?recent=true)";
