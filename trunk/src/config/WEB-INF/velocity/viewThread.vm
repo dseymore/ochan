@@ -6,7 +6,7 @@
 		<title>$deployment.getSystemTitle()</title>
 		<link type="application/atom+xml" rel="alternate" href="#springUrl('/atom/threads/')$category.identifier/$thread.identifier">
 		##Ochan dependencies
-		<script language="javascript" type="text/javascript" src="#springUrl('/quoting.js')"></script>
+		<script language="javascript" type="text/javascript" src="#springUrl('/quoting.min.js')"></script>
 		<link rel="stylesheet" type="text/css" href="#springUrl('/style.css')"/>
 		
 		##Jquery for growl-like toast notifications :D 
@@ -373,7 +373,7 @@
 			</div>
 		</div>
 	</body>
-        <script language="javascript" type="text/javascript" src="#springUrl('/watching.js')"></script>
+        <script language="javascript" type="text/javascript" src="#springUrl('/watching.min.js')"></script>
 	##lets get this freaking watching thing going on
         <div id="watchbar" class="watchbar">
                 <div id="watchPanel"><div class="bd"><div id="watchPanelBody"></div></div></div>
