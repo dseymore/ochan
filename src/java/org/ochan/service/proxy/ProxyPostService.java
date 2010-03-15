@@ -157,6 +157,31 @@ public class ProxyPostService implements PostService {
 	}
 
 	@Override
+	public Post getPostByBlob(Long identifier){
+		if (shardConfiguration.isShardEnabled()) {
+			LOG.debug("Calling shared");
+			Post posts = null;
+			//now we need all of the things to be ready to go...
+			for(String hosts : shardConfiguration.getShardHosts()){
+				PostService service = get(hosts);
+				if (service == null){
+					LOG.error("Null Service for host: " + hosts);
+				}else{
+					Thread t = new Thread();
+					
+					Post p = service.getPostByBlob(identifier);
+					if (p != null){
+						posts = p;
+					}
+				}
+			}
+			return posts;
+		} else {
+			return localPostService.getPostByBlob(identifier);
+		}
+	}
+	
+	@Override
 	public List<Post> retrieveThreadPosts(Long parent) {
 		if (shardConfiguration.isShardEnabled()) {
 			LOG.debug("Calling shared");

@@ -6,6 +6,10 @@ var currentposition = 0;
 var counter = 4;
 var stop = false;
 
+function openWindow(id){
+	window.open("/chan/redirect/"+id,"recent"+id);
+}
+
 function stepImages(){
 	var temp = recentImages;
 	var tempSize = recentImagesSize;
@@ -28,7 +32,9 @@ function stepImages(){
 				img.height = "160";
 				span.id = "recent"+counter;
 				//padding-top: 140px; padding-left: 160px; background-image: url(/chan/raw/725?recent=true); background-repeat: no-repeat; background-position: center top;
+				span.onclick = Function('openWindow("'+recentImages[property]+'")');
 				span.style.margin = "1px";
+				span.style.cursor = "pointer";
 				span.style.borderStyle = "dashed";
 				span.style.borderWidth = "1px";
 				span.style.paddingTop = "140px";

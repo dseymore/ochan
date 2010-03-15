@@ -60,13 +60,23 @@ public class LocalPostService implements PostService {
 	private static long deleteCount = 0;
 
 	private static long lastSearchTime = 0;
+	
+	private static long blobGetCount = 0;
 
 	/**
 	 * @return the createCount
 	 */
-	@ManagedAttribute(description = "The number of calls to create a category")
+	@ManagedAttribute(description = "The number of calls to create a post")
 	public long getCreateCount() {
 		return createCount;
+	}
+	
+	/**
+	 * @return the blobGetCount
+	 */
+	@ManagedAttribute(description = "The number of calls to get the post for a blob")
+	public long getblobGetCount() {
+		return blobGetCount;
 	}
 
 	/**
@@ -191,6 +201,36 @@ public class LocalPostService implements PostService {
 			LOG.error("Unable to get post.", e);
 		}
 		return null;
+	}
+	
+	public Post getPostByBlob(Long identifier){
+		blobGetCount++;
+		int  count = 0;
+		PostDPL post = null;
+		if (identifier != null){
+			try{
+				EntityCursor<PostDPL> posts1 = environment.postByImage().subIndex(identifier).entities();
+				if (posts1 != null){
+					for (PostDPL dpl : posts1){
+						post = dpl;
+						count++;
+					}
+				}
+				EntityCursor<PostDPL> posts2 = environment.postByThumbnail().subIndex(identifier).entities();
+				if (posts2 != null){
+					for (PostDPL dpl : posts2){
+						post = dpl;
+						count++;
+					}
+				}
+			} catch (Exception e) {
+				LOG.error("Unable to retrieve thread post.", e);
+			}
+		}
+		if (count > 1){
+			LOG.error("more than one post found for the blob id: " + identifier);
+		}
+		return map(post);
 	}
 
 
