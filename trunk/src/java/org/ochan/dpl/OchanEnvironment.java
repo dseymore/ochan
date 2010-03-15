@@ -17,6 +17,10 @@ public interface OchanEnvironment {
 	public PrimaryIndex<Long, PostDPL> postByIdentifier();
 
 	public SecondaryIndex<Long, Long, PostDPL> postByThread();
+	
+	public SecondaryIndex<Long, Long, PostDPL> postByImage();
+	
+	public SecondaryIndex<Long, Long, PostDPL> postByThumbnail();
 
 	public PrimaryIndex<Long, BlobDPL> blobByIdentifier();
 

@@ -96,6 +96,7 @@
 	<bean class="org.ochan.util.LoggingConfiguration"/>
 	<bean class="org.ochan.control.ThumbnailController"/>
 	<bean class="org.ochan.control.RawBlobController"/>
+	<bean class="org.ochan.control.PostRedirectController"/>
 	<bean class="org.ochan.control.ThreadZipController"/>
 	<bean class="org.ochan.control.CategoryListController"/>
 	<bean class="org.ochan.control.ViewCategoryController"/>

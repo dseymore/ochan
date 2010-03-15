@@ -71,6 +71,14 @@ public interface PostService {
      */
     public void deletePost(Long identifier);
     
+    /**
+     * Finds the post that owns the blob id parameter
+     * @param identifier
+     * @return
+     */
+    @XmlElementRef
+    public Post getPostByBlob(Long identifier);
+    
     
     /**
      * 

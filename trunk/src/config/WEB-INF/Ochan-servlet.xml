@@ -51,6 +51,7 @@
 				<prop key="/**/openCategory.Ochan">viewCategoryController</prop>
 				<prop key="/**/thumb.Ochan">thumbnailController</prop>
 				<prop key="/**/blobl.Ochan">rawBlobController</prop>
+				<prop key="/**/redirect.Ochan">postRedirectController</prop>
 				<prop key="/**/zip.Ochan">zipController</prop>
 			</props>
 		</property>
@@ -72,6 +73,7 @@
 				<prop key="/chan/(*:identifier)">viewCategoryController</prop>
 				<prop key="/chan/thread/(*:identifier)">viewThreadController</prop>
 				<prop key="/chan/raw/(*:identifier)">rawBlobController</prop>
+				<prop key="/chan/redirect/(*:identifier)">postRedirectController</prop>
 				<prop key="/chan/img/(*:identifier)">thumbnailController</prop>
 				<prop key="/chan/zip/(*:identifier)">zipController</prop>
 				<prop key="/chan/error/(*:identifier)">errorController</prop>
@@ -120,6 +122,10 @@
 	
 	<bean name="rawBlobController" class="org.ochan.control.RawBlobController">
 		<property name="blobService" ref="proxyBlobService"/>
+	</bean>
+	
+	<bean name="postRedirectController" class="org.ochan.control.PostRedirectController">
+		<property name="postService" ref="proxyPostService"/>
 	</bean>
 	
 	<bean name="zipController" class="org.ochan.control.ThreadZipController">

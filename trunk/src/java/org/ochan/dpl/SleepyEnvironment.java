@@ -42,6 +42,8 @@ public class SleepyEnvironment implements OchanEnvironment{
 
 	private PrimaryIndex<Long, PostDPL> postByIdentifier;
 	private SecondaryIndex<Long, Long, PostDPL> postByThread;
+	private SecondaryIndex<Long, Long, PostDPL> postByImage;
+	private SecondaryIndex<Long, Long, PostDPL> postByThumbnail;
 
 	private PrimaryIndex<Long, BlobDPL> blobByIdentifier;
 	
@@ -106,6 +108,8 @@ public class SleepyEnvironment implements OchanEnvironment{
 
 			postByIdentifier = entityStore.getPrimaryIndex(Long.class, PostDPL.class);
 			postByThread = entityStore.getSecondaryIndex(postByIdentifier, Long.class, "parent");
+			postByImage = entityStore.getSecondaryIndex(postByIdentifier, Long.class, "imageIdentifier");
+			postByThumbnail = entityStore.getSecondaryIndex(postByIdentifier, Long.class, "thumbnailIdentifier");
 
 			blobByIdentifier = entityStore.getPrimaryIndex(Long.class, BlobDPL.class);
 			
@@ -180,6 +184,16 @@ public class SleepyEnvironment implements OchanEnvironment{
 		return postByThread;
 	}
 
+	@Override
+	public SecondaryIndex<Long, Long, PostDPL> postByImage() {
+		return postByImage;
+	}
+	
+	@Override
+	public SecondaryIndex<Long, Long, PostDPL> postByThumbnail() {
+		return postByThumbnail;
+	}
+	
 	@Override
 	public PrimaryIndex<Long, SynchroDPL> synchroByIdentifier() {
 		return synchroByIdentifier;

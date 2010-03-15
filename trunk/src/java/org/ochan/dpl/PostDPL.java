@@ -8,7 +8,7 @@ import com.sleepycat.persist.model.PrimaryKey;
 import com.sleepycat.persist.model.Relationship;
 import com.sleepycat.persist.model.SecondaryKey;
 
-@Entity(version=2)
+@Entity(version=3)
 public class PostDPL implements Serializable{
 
 	
@@ -33,8 +33,10 @@ public class PostDPL implements Serializable{
 
 	private String comment;
 
+	@SecondaryKey(relate = Relationship.ONE_TO_ONE)
 	private Long imageIdentifier;
 	
+	@SecondaryKey(relate = Relationship.ONE_TO_ONE)
 	private Long thumbnailIdentifier;
 	
 	private String filename;
