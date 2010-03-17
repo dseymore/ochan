@@ -15,16 +15,21 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-*/
+ */
 package org.ochan.exception;
 
+/**
+ * 
+ * @author dseymore
+ * 
+ */
 public class CategoryOverThreadLimitException extends Exception {
 
 	/**
 	 * Blahgsakh!
 	 */
 	private static final long serialVersionUID = -2336906358623593180L;
-	
+
 	private Long categoryId;
 
 	/**
@@ -35,13 +40,11 @@ public class CategoryOverThreadLimitException extends Exception {
 	}
 
 	/**
-	 * @param categoryId the categoryId to set
+	 * @param categoryId
+	 *            the categoryId to set
 	 */
 	public void setCategoryId(Long categoryId) {
 		this.categoryId = categoryId;
 	}
-	
-	
-	
-	
+
 }

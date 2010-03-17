@@ -15,9 +15,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-*/
+ */
 package org.ochan.entity;
-
 
 public class Blob {
 
@@ -25,11 +24,10 @@ public class Blob {
 
 	private Byte[] data;
 
-	
-	public Blob(){
-		
+	public Blob() {
+
 	}
-	
+
 	public Blob(Byte[] data, Long identifier) {
 		super();
 		this.data = data;
@@ -44,7 +42,8 @@ public class Blob {
 	}
 
 	/**
-	 * @param identifier the identifier to set
+	 * @param identifier
+	 *            the identifier to set
 	 */
 	public void setIdentifier(Long identifier) {
 		this.identifier = identifier;
@@ -58,11 +57,11 @@ public class Blob {
 	}
 
 	/**
-	 * @param data the data to set
+	 * @param data
+	 *            the data to set
 	 */
 	public void setData(Byte[] data) {
 		this.data = data;
 	}
-	
-	
+
 }

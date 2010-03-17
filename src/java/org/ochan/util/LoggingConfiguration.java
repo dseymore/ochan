@@ -15,7 +15,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-*/
+ */
 package org.ochan.util;
 
 import java.util.ArrayList;
@@ -73,9 +73,7 @@ public class LoggingConfiguration implements ServletContextListener {
 	 * @param absoluteFilePath
 	 */
 	@ManagedOperation(description = "Changes the file of the rolling logger, pass in the absolute WRITEABLE path")
-	@ManagedOperationParameters({
-		@ManagedOperationParameter(name="absolutePath", description="Log4j will start using the logfile passed in. The user running the code must have write access to the path.")
-	})
+	@ManagedOperationParameters( { @ManagedOperationParameter(name = "absolutePath", description = "Log4j will start using the logfile passed in. The user running the code must have write access to the path.") })
 	public void changeLogFile(final String absoluteFilePath) {
 		if (LOG.isInfoEnabled()) {
 			LOG.info("about to move the log file to:" + absoluteFilePath);
@@ -92,16 +90,10 @@ public class LoggingConfiguration implements ServletContextListener {
 	}
 
 	@ManagedOperation(description = "Changes the length of log files, and the maximum number to store. numberOfFiles is an INTEGER, sizeOfFiles is a STRING (You can specify the value "
-			+ "with the suffixes \"KB\", \"MB\" or \"GB\" so that the integer is "
-			+ "interpreted being expressed respectively in kilobytes, megabytes"
-			+ "or gigabytes. For example, the value \"10KB\" will be interpreted" + "as 10240.)")
-	@ManagedOperationParameters({
-		@ManagedOperationParameter(name = "Number of log files", description = "Log4j will store this many log files before it starts deleting."),
-		@ManagedOperationParameter(name = "Size of log file", description = "Log4j will keep using one file until it reaches the size passed in, before moving to a new file.")
-		})
-	public void changeLogDepth(
-			final String numberOfFiles,
-			final String sizeOfFiles) {
+			+ "with the suffixes \"KB\", \"MB\" or \"GB\" so that the integer is " + "interpreted being expressed respectively in kilobytes, megabytes" + "or gigabytes. For example, the value \"10KB\" will be interpreted" + "as 10240.)")
+	@ManagedOperationParameters( { @ManagedOperationParameter(name = "Number of log files", description = "Log4j will store this many log files before it starts deleting."),
+			@ManagedOperationParameter(name = "Size of log file", description = "Log4j will keep using one file until it reaches the size passed in, before moving to a new file.") })
+	public void changeLogDepth(final String numberOfFiles, final String sizeOfFiles) {
 		try {
 			LOG.info("Attempting to set the maximum number of files to backup to: " + numberOfFiles.trim());
 			final int num = Integer.valueOf(numberOfFiles.trim());
@@ -127,9 +119,7 @@ public class LoggingConfiguration implements ServletContextListener {
 	 *            greatest to least amount of logs)
 	 */
 	@ManagedOperation(description = "Changes the threshold of the log file, pass in one of these options (DEBUG, INFO, WARN, ERROR, FATAL) (From greatest to least amount of logs)")
-	@ManagedOperationParameters({
-		@ManagedOperationParameter(name="Level", description="Log4j level, from most to lease verbose: (DEBUG, INFO, WARN, ERROR, FATAL)")
-	})
+	@ManagedOperationParameters( { @ManagedOperationParameter(name = "Level", description = "Log4j level, from most to lease verbose: (DEBUG, INFO, WARN, ERROR, FATAL)") })
 	public void changeLogLevel(final String level) {
 		Level setTo = null;
 		if ("debug".equalsIgnoreCase(level)) {
@@ -156,10 +146,10 @@ public class LoggingConfiguration implements ServletContextListener {
 			LOG.fatal("You passed in an argument to change log threshold that didn't match an expected value.");
 		} else {
 			Enumeration enumer = Logger.getRootLogger().getAllAppenders();
-			while(enumer.hasMoreElements()){
+			while (enumer.hasMoreElements()) {
 				Object next = enumer.nextElement();
-				if (next instanceof AppenderSkeleton){
-					AppenderSkeleton appen = (AppenderSkeleton)next;
+				if (next instanceof AppenderSkeleton) {
+					AppenderSkeleton appen = (AppenderSkeleton) next;
 					appen.setThreshold(setTo);
 					appen.activateOptions();
 					// saving into preferences
@@ -176,10 +166,7 @@ public class LoggingConfiguration implements ServletContextListener {
 	 * @param port
 	 */
 	@ManagedOperation(description = "Adds a remote socket appender.")
-	@ManagedOperationParameters({
-		@ManagedOperationParameter(name="ipAddress", description="The IP Address of the socket client."),
-		@ManagedOperationParameter(name="port", description="The Port number for the client.")
-	})
+	@ManagedOperationParameters( { @ManagedOperationParameter(name = "ipAddress", description = "The IP Address of the socket client."), @ManagedOperationParameter(name = "port", description = "The Port number for the client.") })
 	public void addRemoteLogger(final String ipAddress, final String port) {
 		Logger log = Logger.getRootLogger();
 		SocketAppender sa = new SocketAppender();
@@ -197,45 +184,45 @@ public class LoggingConfiguration implements ServletContextListener {
 		log.addAppender(sa);
 		sa.activateOptions();
 	}
-	
+
 	/**
-	 * Returns a list of remote loggers 
+	 * Returns a list of remote loggers
+	 * 
 	 * @return
 	 */
 	@ManagedOperation(description = "Gets a list of the remote logger names")
 	public List<String> fetchRemoteLoggerNames() {
 		final List<String> resultList = new ArrayList<String>();
-		
+
 		final Logger log = Logger.getRootLogger();
 		for (final Appender appender : (List<Appender>) EnumerationUtils.toList(log.getAllAppenders())) {
 			if (appender instanceof SocketAppender) {
-		        resultList.add(appender.getName());
+				resultList.add(appender.getName());
 			}
-		} //end for
-		
+		} // end for
+
 		return resultList;
-	} //end getRemoteLoggerNames()
-	
+	} // end getRemoteLoggerNames()
+
 	/**
-	 * Removes the remote logger by name. 
+	 * Removes the remote logger by name.
+	 * 
 	 * @param name
 	 */
 	@ManagedOperation(description = "Removes a remote socket appender.")
-	@ManagedOperationParameters({
-		@ManagedOperationParameter(name="name", description="Name of the appender to remove")
-	})
+	@ManagedOperationParameters( { @ManagedOperationParameter(name = "name", description = "Name of the appender to remove") })
 	public void removeRemoteLogger(final String name) {
 		final Logger log = Logger.getRootLogger();
 		final Appender appender = log.getAppender(name);
 		if (appender == null) {
 			throw new IllegalArgumentException(name + " does not exist");
 		}
-	    if (!(appender instanceof SocketAppender)) {
-	    	throw new IllegalArgumentException(name + " does not correspond to a SocketAppender");
-	    }
-	    log.warn("Removing appender: " + appender.getName());
-	    log.removeAppender(appender);
-	} //end removeRemoteLogger(String)
+		if (!(appender instanceof SocketAppender)) {
+			throw new IllegalArgumentException(name + " does not correspond to a SocketAppender");
+		}
+		log.warn("Removing appender: " + appender.getName());
+		log.removeAppender(appender);
+	} // end removeRemoteLogger(String)
 
 	/**
 	 * Nothing here

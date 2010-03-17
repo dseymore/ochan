@@ -15,7 +15,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-*/
+ */
 package org.ochan.dpl.service;
 
 import java.util.ArrayList;
@@ -37,73 +37,75 @@ import org.springframework.jmx.export.annotation.ManagedResource;
 
 import com.sleepycat.persist.EntityCursor;
 
+/**
+ * 
+ * @author dseymore
+ * 
+ */
 @ManagedResource(description = "Local Category Service", objectName = "Ochan:service=local,name=LocalCategoryService", logFile = "jmx.log")
 public class LocalCategoryService implements CategoryService {
 
 	private OchanEnvironment environment;
 	private static final Log LOG = LogFactory.getLog(LocalCategoryService.class);
-	
+
 	// STATS
-    private static long createCount = 0;
+	private static long createCount = 0;
 
-    private static long getCount = 0;
+	private static long getCount = 0;
 
-    private static long deleteCount = 0;
+	private static long deleteCount = 0;
 
-    private static long lastSearchTime = 0;
+	private static long lastSearchTime = 0;
 
-    /**
-     * @return the createCount
-     */
-    @ManagedAttribute(description = "The number of calls to create a category")
-    public long getCreateCount() {
-            return createCount;
-    }
-
-    /**
-     * @return the getCount
-     */
-    @ManagedAttribute(description = "The number of calls to get a category.")
-    public long getGetCount() {
-            return getCount;
-    }
-
-    /**
-     * @return the deleteCount
-     */
-    @ManagedAttribute(description = "The number of calls to delete a category.")
-    public long getDeleteCount() {
-            return deleteCount;
-    }
-
-    /**
-     * @return the lastSearchTime
-     */
-    @ManagedAttribute(description = "The time in milliseconds of the last call to search for categories.")
-    public long getLastSearchTime() {
-            return lastSearchTime;
-    }
-
-    // END STATS
-
-    
 	/**
-	 * @param environment the environment to set
+	 * @return the createCount
+	 */
+	@ManagedAttribute(description = "The number of calls to create a category")
+	public long getCreateCount() {
+		return createCount;
+	}
+
+	/**
+	 * @return the getCount
+	 */
+	@ManagedAttribute(description = "The number of calls to get a category.")
+	public long getGetCount() {
+		return getCount;
+	}
+
+	/**
+	 * @return the deleteCount
+	 */
+	@ManagedAttribute(description = "The number of calls to delete a category.")
+	public long getDeleteCount() {
+		return deleteCount;
+	}
+
+	/**
+	 * @return the lastSearchTime
+	 */
+	@ManagedAttribute(description = "The time in milliseconds of the last call to search for categories.")
+	public long getLastSearchTime() {
+		return lastSearchTime;
+	}
+
+	// END STATS
+
+	/**
+	 * @param environment
+	 *            the environment to set
 	 */
 	public void setEnvironment(OchanEnvironment environment) {
 		this.environment = environment;
 	}
-	
-	@ManagedOperation(description="Create a new Category!")
-    @ManagedOperationParameters({
-            @ManagedOperationParameter(name="name",description="The name of the category"),
-            @ManagedOperationParameter(name="description",description="The description of the category"),
-            @ManagedOperationParameter(name="code", description="The codeword/keyname for the category")
-    })
-    public void createCategory(String name, String description, String code){
+
+	@ManagedOperation(description = "Create a new Category!")
+	@ManagedOperationParameters( { @ManagedOperationParameter(name = "name", description = "The name of the category"), @ManagedOperationParameter(name = "description", description = "The description of the category"),
+			@ManagedOperationParameter(name = "code", description = "The codeword/keyname for the category") })
+	public void createCategory(String name, String description, String code) {
 		createCategory(null, name, description, code);
 	}
-    
+
 	@Override
 	public void createCategory(Long thisIdentifier, String name, String description, String code) {
 		createCount++;
@@ -113,8 +115,8 @@ public class LocalCategoryService implements CategoryService {
 			cat.setName(name);
 			cat.setDescription(description);
 			cat.setCode(code);
-			new TransactionTemplate(environment){
-				public void doInTransaction(){
+			new TransactionTemplate(environment) {
+				public void doInTransaction() {
 					environment.categoryByIdentifier().put(cat);
 				}
 			}.run();
@@ -123,43 +125,41 @@ public class LocalCategoryService implements CategoryService {
 		}
 	}
 
-	@ManagedOperation(description="Delete a Category!")
-    @ManagedOperationParameters({
-            @ManagedOperationParameter(name="identifier",description="The id of the category as a Long object (L at the end)")
-    })
+	@ManagedOperation(description = "Delete a Category!")
+	@ManagedOperationParameters( { @ManagedOperationParameter(name = "identifier", description = "The id of the category as a Long object (L at the end)") })
 	@Override
 	public void deleteCategory(final Long identifier) {
 		deleteCount++;
-		try{
-			new TransactionTemplate(environment){
-				public void doInTransaction(){
+		try {
+			new TransactionTemplate(environment) {
+				public void doInTransaction() {
 					environment.categoryByIdentifier().delete(identifier);
 				}
 			}.run();
-		}catch(Exception e){
-			LOG.error("Unable to delete category.",e);
+		} catch (Exception e) {
+			LOG.error("Unable to delete category.", e);
 		}
 	}
 
 	@Override
 	public Category getCategory(Long identifier) {
 		getCount++;
-		try{
+		try {
 			CategoryDPL catdpl = environment.categoryByIdentifier().get(identifier);
 			return map(catdpl);
-		}catch(Exception e){
-			LOG.error("get failed",e);
+		} catch (Exception e) {
+			LOG.error("get failed", e);
 		}
 		return null;
 	}
-	
-	public Category getCategoryByCode(String code){
+
+	public Category getCategoryByCode(String code) {
 		getCount++;
-		try{
+		try {
 			CategoryDPL catdpl = environment.categoryByCode().get(code);
 			return map(catdpl);
-		}catch(Exception e){
-			LOG.error("get failed",e);
+		} catch (Exception e) {
+			LOG.error("get failed", e);
 		}
 		return null;
 	}
@@ -167,26 +167,26 @@ public class LocalCategoryService implements CategoryService {
 	@Override
 	public List<Category> retrieveCategories() {
 		// capture start of call
-        long start = new Date().getTime();
+		long start = new Date().getTime();
 
 		List<Category> categories = new ArrayList<Category>();
-		try{
+		try {
 			EntityCursor<CategoryDPL> cursor = environment.categoryByIdentifier().entities();
-			for (CategoryDPL cat: cursor){
+			for (CategoryDPL cat : cursor) {
 				categories.add(map(cat));
 			}
 			cursor.close();
-		}catch(Exception e){
-			LOG.error("Unable to get categories",e);
+		} catch (Exception e) {
+			LOG.error("Unable to get categories", e);
 		}
-        // capture end of call
-        long end = new Date().getTime();
-        // compute total time
-        lastSearchTime = end - start;
+		// capture end of call
+		long end = new Date().getTime();
+		// compute total time
+		lastSearchTime = end - start;
 		return categories;
 	}
-	
-	public Category map(CategoryDPL catdpl){
+
+	public Category map(CategoryDPL catdpl) {
 		Category cat = new Category();
 		cat.setIdentifier(catdpl.getIdentifier());
 		cat.setLongDescription(catdpl.getDescription());

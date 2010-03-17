@@ -15,7 +15,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-*/
+ */
 package org.ochan.job;
 
 import java.util.Date;
@@ -32,9 +32,9 @@ import org.springframework.jmx.export.annotation.ManagedAttribute;
 import org.springframework.jmx.export.annotation.ManagedResource;
 
 /**
- * This class queries the PostList & ThreadSupport restful services to see how many requests its
- * served... and then does the math to estimate the number of thread watchers
- * currently operating.
+ * This class queries the PostList & ThreadSupport restful services to see how
+ * many requests its served... and then does the math to estimate the number of
+ * thread watchers currently operating.
  * 
  * @author David Seymore Jul 27, 2008
  */
@@ -48,16 +48,14 @@ public class ActiveWatcherCounterJob extends ManagedQuartzJobBean implements Sta
 	 * the length of time between each thread watchers request
 	 */
 	public static final long REQUEST_REST_LENGTH = 2000;
-	
+
 	private static Long lastWatcherAmount = Long.valueOf(0);
 	private static Long lastSitterAmount = Long.valueOf(0);
-	
-	//place to store the last starting point
+
+	// place to store the last starting point
 	private static Long lastThreadGetCount = Long.valueOf(0);
 	private static Long lastMainGetCount = Long.valueOf(0);
 	private static Long lastGetTime = new Date().getTime();
-	
-	
 
 	// staticly held because we only care about reaching a static property
 	private static PostListImpl postList = new PostListImpl();
@@ -69,23 +67,25 @@ public class ActiveWatcherCounterJob extends ManagedQuartzJobBean implements Sta
 		Long currentThreadCount = postList.getNextGetCount();
 		Long currentMainCount = threadList.getNextGetCount();
 		long now = new Date().getTime();
-		if (lastThreadGetCount.longValue() != 0){
-			//how many have there been?
+		if (lastThreadGetCount.longValue() != 0) {
+			// how many have there been?
 			long differenceThread = currentThreadCount.longValue() - lastThreadGetCount.longValue();
 			long differenceMain = currentMainCount.longValue() - lastMainGetCount.longValue();
 			long timeframe = now - lastGetTime;
 			long divisor = timeframe / REQUEST_REST_LENGTH;
-			if (divisor == 1){
-				//if its only been the time it takes for a recycle, then its just the number of gets
-				//this is HIGHLY unlikely though.. and is a shitty job schedule to be running (not to mention expensive)
+			if (divisor == 1) {
+				// if its only been the time it takes for a recycle, then its
+				// just the number of gets
+				// this is HIGHLY unlikely though.. and is a shitty job schedule
+				// to be running (not to mention expensive)
 				lastWatcherAmount = differenceThread;
 				lastSitterAmount = differenceMain;
-			}else{
+			} else {
 				lastWatcherAmount = differenceThread / divisor;
 				lastSitterAmount = differenceMain / divisor;
 			}
 		}
-		//set for next time
+		// set for next time
 		lastThreadGetCount = currentThreadCount;
 		lastMainGetCount = currentMainCount;
 		lastGetTime = now;
@@ -104,16 +104,14 @@ public class ActiveWatcherCounterJob extends ManagedQuartzJobBean implements Sta
 	/**
 	 * @return the lastWatcherAmount
 	 */
-	@ManagedAttribute(description="Based on the time of the job, this rounds out a value of the number of thread watchers currently open.")
+	@ManagedAttribute(description = "Based on the time of the job, this rounds out a value of the number of thread watchers currently open.")
 	public Long getLastThreadWatcherAmount() {
 		return lastWatcherAmount;
 	}
-	
-	@ManagedAttribute(description="Based on the time of the job, this rounds out a value of the number of Main Page watchers currently open.")
-	public Long getLastMainPageWatcherAmount(){
+
+	@ManagedAttribute(description = "Based on the time of the job, this rounds out a value of the number of Main Page watchers currently open.")
+	public Long getLastMainPageWatcherAmount() {
 		return lastSitterAmount;
 	}
 
-	
-	
 }

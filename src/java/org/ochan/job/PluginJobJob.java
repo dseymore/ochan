@@ -15,7 +15,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-*/
+ */
 package org.ochan.job;
 
 import java.io.File;
@@ -46,87 +46,89 @@ import xeus.jcl.JarClassLoader;
 
 /**
  * 
- * This job handles bootstrapping plugins (jar files) that reside in the current working directory. 
- * Configuration is via json...
+ * This job handles bootstrapping plugins (jar files) that reside in the current
+ * working directory. Configuration is via json...
  * 
  * @author David Seymore Apr 5, 2009
  */
-@ManagedResource(description="The job that runs the Job based Plugins.", objectName = "Ochan:type=job,name=PluginJob", logFile = "jmx.log")
+@ManagedResource(description = "The job that runs the Job based Plugins.", objectName = "Ochan:type=job,name=PluginJob", logFile = "jmx.log")
 public class PluginJobJob extends ManagedQuartzJobBean implements StatefulJob {
 
 	private static final Log LOG = LogFactory.getLog(PluginJobJob.class);
 	private static Preferences PREFERENCES = Preferences.userNodeForPackage(PluginJobJob.class);
-	
-	
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public void executeOnSchedule(JobExecutionContext context) {
-		//there is a weird issue where the logging in the jar classloader stuff
-		//runs under log4j level not defined by the logging configuration dude. 
-		//BUT, if we run it again.. it'll fix it.. 
+		// there is a weird issue where the logging in the jar classloader stuff
+		// runs under log4j level not defined by the logging configuration dude.
+		// BUT, if we run it again.. it'll fix it..
 		new LoggingConfiguration().contextInitialized(null);
-		
+
 		ThreadService threadService = null;
-		try{
+		try {
 			ApplicationContext appCtx = getApplicationContext(context);
-			threadService = (ThreadService)appCtx.getBean("proxyThreadService");
-		}catch(Exception e){
-			LOG.fatal("Unable to grab the thread service.",e);
+			threadService = (ThreadService) appCtx.getBean("proxyThreadService");
+		} catch (Exception e) {
+			LOG.fatal("Unable to grab the thread service.", e);
 		}
-		
-		if (threadService != null){
+
+		if (threadService != null) {
 			Set<String> currentlyAvailable = new HashSet<String>();
-			//taking current working directory to scan
+			// taking current working directory to scan
 			File currentDirectory = new File(System.getProperty("user.dir"));
-			//files are there
-			if (currentDirectory.isDirectory() && currentDirectory.listFiles().length > 0){
-				for (File f : currentDirectory.listFiles()){
-					//the file is not a directory, and can be read, and ends with .jar. 
-					if (!f.isDirectory() && f.isFile() && f.canRead() && StringUtils.endsWithIgnoreCase(f.getName(), "jar")){
+			// files are there
+			if (currentDirectory.isDirectory() && currentDirectory.listFiles().length > 0) {
+				for (File f : currentDirectory.listFiles()) {
+					// the file is not a directory, and can be read, and ends
+					// with .jar.
+					if (!f.isDirectory() && f.isFile() && f.canRead() && StringUtils.endsWithIgnoreCase(f.getName(), "jar")) {
 						LOG.info("Scanning file : " + f.getName());
 						try {
-							//Load jar file
-							JarClassLoader jcl = new JarClassLoader(); 
-							jcl.add(f.getName());   
-							ServiceLoader<PluginJob> pluginJobServiceLoader = ServiceLoader.load(PluginJob.class,jcl);
-							//go through the plugins it has in it... yes, it can have more than 1.
-							for(PluginJob job : pluginJobServiceLoader){
-								//jot down that we found this plugin still
+							// Load jar file
+							JarClassLoader jcl = new JarClassLoader();
+							jcl.add(f.getName());
+							ServiceLoader<PluginJob> pluginJobServiceLoader = ServiceLoader.load(PluginJob.class, jcl);
+							// go through the plugins it has in it... yes, it
+							// can have more than 1.
+							for (PluginJob job : pluginJobServiceLoader) {
+								// jot down that we found this plugin still
 								currentlyAvailable.add(job.getClass().getCanonicalName());
 								LOG.info("Found job: " + job.getClass().getCanonicalName());
-								if (PluginJobBundle.INSTANCE.containsKey(job.getClass().getCanonicalName())){
-									//we already have one, lets run that.
+								if (PluginJobBundle.INSTANCE.containsKey(job.getClass().getCanonicalName())) {
+									// we already have one, lets run that.
 									PluginJob storedJob = PluginJobBundle.INSTANCE.get(job.getClass().getName());
-									//reset the config
+									// reset the config
 									storedJob.configure(getPluginConfiguration());
 									storedJob.execute();
-								}else{
+								} else {
 									LOG.warn("Registring new Job: " + job.getClass().getCanonicalName());
 									PluginJobBundle.INSTANCE.put(job.getClass().getCanonicalName(), job);
-									//configre
+									// configre
 									job.configure(getPluginConfiguration());
 									job.setThreadService(threadService);
-									//store
+									// store
 									job.execute();
 								}
 							}
-						} catch (NullPointerException npe){
-							LOG.info("No service loader information in here.",npe);
+						} catch (NullPointerException npe) {
+							LOG.info("No service loader information in here.", npe);
 						} catch (Exception e) {
 							LOG.error("Unable to detect any plugins!", e);
 						}
 					}
 				}
 			}
-			//now lets walk through the bundle's registered list, and remove the jobs that aren't currently availble.  (jar removed)
+			// now lets walk through the bundle's registered list, and remove
+			// the jobs that aren't currently availble. (jar removed)
 			Set<String> keys = PluginJobBundle.INSTANCE.keySet();
 			Collection<String> toRemove = CollectionUtils.subtract(keys, currentlyAvailable);
-			for(String remove: toRemove){
+			for (String remove : toRemove) {
 				LOG.warn("Removing plugin: " + remove);
 				PluginJobBundle.INSTANCE.remove(remove);
 			}
 		}
-		
+
 	}
 
 	@Override
@@ -139,20 +141,20 @@ public class PluginJobJob extends ManagedQuartzJobBean implements StatefulJob {
 		return "PluginJobJobTrigger";
 	}
 
-	@ManagedAttribute(description="Plugin Configuration is a json string")
-	public String getPluginConfiguration(){
-		return PREFERENCES.get("pluginconfig","");
+	@ManagedAttribute(description = "Plugin Configuration is a json string")
+	public String getPluginConfiguration() {
+		return PREFERENCES.get("pluginconfig", "");
 	}
-	
-	@ManagedAttribute(description="Plugin Configuration is a json string")
-	public void setPluginConfiguration(String value){
-		try{
+
+	@ManagedAttribute(description = "Plugin Configuration is a json string")
+	public void setPluginConfiguration(String value) {
+		try {
 			JSONObject obj = new JSONObject(value);
 			AbstractXMLStreamReader reader = new MappedXMLStreamReader(obj);
-			PREFERENCES.put("pluginconfig",value);
-		}catch(Exception e){
-			LOG.error("Configuration settings are messed up.",e);
+			PREFERENCES.put("pluginconfig", value);
+		} catch (Exception e) {
+			LOG.error("Configuration settings are messed up.", e);
 		}
 	}
-	
+
 }

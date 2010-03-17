@@ -15,7 +15,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-*/
+ */
 package org.ochan.util;
 
 import java.util.HashMap;
@@ -83,43 +83,54 @@ public class StatisticalErrorAppender implements Appender {
 		handleException(arg1);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.apache.log4j.Appender#addFilter(org.apache.log4j.spi.Filter)
 	 */
 	@Override
 	public void addFilter(Filter arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.apache.log4j.Appender#clearFilters()
 	 */
 	@Override
 	public void clearFilters() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.apache.log4j.Appender#close()
 	 */
 	@Override
 	public void close() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
-	/* (non-Javadoc)
-	 * @see org.apache.log4j.Appender#doAppend(org.apache.log4j.spi.LoggingEvent)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.apache.log4j.Appender#doAppend(org.apache.log4j.spi.LoggingEvent)
 	 */
 	@Override
 	public void doAppend(LoggingEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.apache.log4j.Appender#getErrorHandler()
 	 */
 	@Override
@@ -128,7 +139,9 @@ public class StatisticalErrorAppender implements Appender {
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.apache.log4j.Appender#getFilter()
 	 */
 	@Override
@@ -137,7 +150,9 @@ public class StatisticalErrorAppender implements Appender {
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.apache.log4j.Appender#getLayout()
 	 */
 	@Override
@@ -146,7 +161,9 @@ public class StatisticalErrorAppender implements Appender {
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.apache.log4j.Appender#getName()
 	 */
 	@Override
@@ -155,7 +172,9 @@ public class StatisticalErrorAppender implements Appender {
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.apache.log4j.Appender#requiresLayout()
 	 */
 	@Override
@@ -164,34 +183,39 @@ public class StatisticalErrorAppender implements Appender {
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.apache.log4j.Appender#setErrorHandler(org.apache.log4j.spi.ErrorHandler)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.apache.log4j.Appender#setErrorHandler(org.apache.log4j.spi.ErrorHandler
+	 * )
 	 */
 	@Override
 	public void setErrorHandler(ErrorHandler arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.apache.log4j.Appender#setLayout(org.apache.log4j.Layout)
 	 */
 	@Override
 	public void setLayout(Layout arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.apache.log4j.Appender#setName(java.lang.String)
 	 */
 	@Override
 	public void setName(String arg0) {
 		// TODO Auto-generated method stub
-		
-	}
-	
-	
 
+	}
 
 }

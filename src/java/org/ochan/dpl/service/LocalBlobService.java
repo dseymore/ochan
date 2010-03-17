@@ -15,17 +15,15 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-*/
+ */
 package org.ochan.dpl.service;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.cxf.common.util.SortedArraySet;
 import org.javasimon.SimonManager;
 import org.javasimon.Split;
 import org.javasimon.Stopwatch;
@@ -40,6 +38,11 @@ import org.springframework.jmx.export.annotation.ManagedResource;
 
 import com.sleepycat.persist.EntityCursor;
 
+/**
+ * 
+ * @author dseymore
+ *
+ */
 @ManagedResource(description = "Local Blob Service", objectName = "Ochan:service=local,name=LocalBlobService", logFile = "jmx.log")
 public class LocalBlobService implements BlobService {
 
@@ -51,14 +54,13 @@ public class LocalBlobService implements BlobService {
 	private static long getCount = 0;
 
 	private static long deleteCount = 0;
-	
+
 	private static long get50Count = 0;
 
 	private static Stopwatch saveStopWatch = SimonManager.getStopwatch(LocalBlobService.class.getName() + "Save");
 	private static Stopwatch searchStopWatch = SimonManager.getStopwatch(LocalBlobService.class.getName() + "Search");
 	private static Stopwatch getStopWatch = SimonManager.getStopwatch(LocalBlobService.class.getName() + "Get");
 	private static Stopwatch get50StopWatch = SimonManager.getStopwatch(LocalBlobService.class.getName() + "Get50");
-	
 
 	/**
 	 * @return the createCount
@@ -91,7 +93,7 @@ public class LocalBlobService implements BlobService {
 	public long get50Count() {
 		return get50Count;
 	}
-	
+
 	/**
 	 * @return the lastSearchTime
 	 */
@@ -138,8 +140,8 @@ public class LocalBlobService implements BlobService {
 	public void deleteBlob(final Long identifier) {
 		deleteCount++;
 		try {
-			new TransactionTemplate(environment){
-				public void doInTransaction(){
+			new TransactionTemplate(environment) {
+				public void doInTransaction() {
 					if (identifier != null) {
 						environment.blobByIdentifier().delete(identifier);
 						environment.blobStatisticsByBlobIdentifier().delete(identifier);
@@ -186,14 +188,14 @@ public class LocalBlobService implements BlobService {
 	}
 
 	@Override
-	public Long saveBlob(final Byte[] byteArray,final Long id, final BlobType blobType) {
+	public Long saveBlob(final Byte[] byteArray, final Long id, final BlobType blobType) {
 		Split split = saveStopWatch.start();
 		createCount++;
 		try {
 			final BlobStatDPL stat = new BlobStatDPL();
 			final BlobDPL dpl = new BlobDPL();
-			new TransactionTemplate(environment){
-				public void doInTransaction(){
+			new TransactionTemplate(environment) {
+				public void doInTransaction() {
 					dpl.setData(byteArray);
 					dpl.setIdentifier(id);
 					environment.blobByIdentifier().put(dpl);
@@ -216,7 +218,7 @@ public class LocalBlobService implements BlobService {
 	public int getBlobSize(Long identifier) {
 		try {
 			BlobStatDPL stat = environment.blobStatisticsByBlobIdentifier().get(identifier);
-			if (stat != null){
+			if (stat != null) {
 				return stat.getSize();
 			}
 		} catch (Exception e) {
@@ -224,41 +226,39 @@ public class LocalBlobService implements BlobService {
 		}
 		return 0;
 	}
-	
+
 	@Override
 	public List<Long> getLast50Blobs(BlobType blobType) {
 		Split split = get50StopWatch.start();
 		get50Count++;
-		try{
-			//get all the types ids.. this
+		try {
+			// get all the types ids.. this
 			EntityCursor<Long> stat = environment.blobStatisticsByBlobType().subIndex(blobType).keys();
-			//now, go get the blobstat so that we can get the REAL blog id..
+			// now, go get the blobstat so that we can get the REAL blog id..
 			List<Long> keyDump = new ArrayList<Long>();
-			for(Long id : stat){
+			for (Long id : stat) {
 				keyDump.add(id);
 			}
-			//CLOSE THAT CURSOR!
+			// CLOSE THAT CURSOR!
 			stat.close();
-			//trim to 50 first
+			// trim to 50 first
 			Collections.sort(keyDump);
 			int size = keyDump.size();
 			int start = size >= 50 ? size - 50 : 0;
 			List<Long> statKeyList = keyDump.subList(start, size);
 
 			List<Long> finalList = new ArrayList<Long>();
-			for(Long id : statKeyList){
+			for (Long id : statKeyList) {
 				BlobStatDPL statDpl = environment.blobStatisticsByIdentifier().get(id);
 				finalList.add(statDpl.getBlobIdentifier());
 			}
 			return finalList;
-		} catch(Exception e){
-			LOG.error("Unable to get the last 50 images",e);
+		} catch (Exception e) {
+			LOG.error("Unable to get the last 50 images", e);
 		} finally {
 			split.stop();
 		}
 		return null;
 	}
-
-
 
 }

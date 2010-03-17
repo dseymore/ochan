@@ -15,7 +15,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-*/
+ */
 package org.ochan.util;
 
 import java.io.IOException;
@@ -53,16 +53,17 @@ public class RemoteFileGrabber {
 			return null;
 		}
 	}
-	
+
 	/**
-	 * Returns the filename based on the url. 
+	 * Returns the filename based on the url.
+	 * 
 	 * @param url
 	 * @return
 	 */
-	public static String getFilenameFromUrl(String url){
+	public static String getFilenameFromUrl(String url) {
 		try {
 			int indexOfQuestionMark = url.indexOf('?');
-			if (indexOfQuestionMark < 0){
+			if (indexOfQuestionMark < 0) {
 				indexOfQuestionMark = url.length();
 			}
 			int indexOfLastSlash = url.substring(0, indexOfQuestionMark).lastIndexOf('/');
@@ -72,7 +73,7 @@ public class RemoteFileGrabber {
 			LOG.error("Unable to figure out the url's filename: " + url, e);
 			return "";
 		}
-		
+
 	}
 
 }

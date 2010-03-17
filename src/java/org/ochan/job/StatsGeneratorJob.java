@@ -15,13 +15,11 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-*/
+ */
 package org.ochan.job;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.prefs.Preferences;
 
 import org.apache.commons.logging.Log;
@@ -42,6 +40,11 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.jmx.export.annotation.ManagedAttribute;
 import org.springframework.jmx.export.annotation.ManagedResource;
 
+/**
+ * 
+ * @author dseymore
+ * 
+ */
 @ManagedResource(description = "Statistics Generation", objectName = "Ochan:type=job,name=StatisticsGeneration", logFile = "jmx.log")
 public class StatsGeneratorJob extends ManagedQuartzJobBean implements StatefulJob {
 
@@ -52,14 +55,13 @@ public class StatsGeneratorJob extends ManagedQuartzJobBean implements StatefulJ
 	private PostService postService;
 	private BlobService blobService;
 	private CategoryService categoryService;
-	
+
 	private static Long numberOfFiles;
 	private static Long sizeOfAllFiles;
 	private static Long numberOfThreads;
 	private static Long numberOfPosts;
 	private static Long numberOfImagePosts;
 	private static long lastSearchTime = 0;
-
 
 	/**
 	 * @param threadService
@@ -86,7 +88,8 @@ public class StatsGeneratorJob extends ManagedQuartzJobBean implements StatefulJ
 	}
 
 	/**
-	 * @param categoryService the categoryService to set
+	 * @param categoryService
+	 *            the categoryService to set
 	 */
 	public void setCategoryService(CategoryService categoryService) {
 		this.categoryService = categoryService;
@@ -101,44 +104,44 @@ public class StatsGeneratorJob extends ManagedQuartzJobBean implements StatefulJ
 		long start = new Date().getTime();
 
 		// do the work!
-		try{
+		try {
 			ApplicationContext appCtx = getApplicationContext(context);
-			threadService = (ThreadService)appCtx.getBean("proxyThreadService");
-			postService = (PostService)appCtx.getBean("proxyPostService");
-			blobService = (BlobService)appCtx.getBean("proxyBlobService");
-			categoryService = (CategoryService)appCtx.getBean("proxyCategoryService");
-			
-			//total size of image content
+			threadService = (ThreadService) appCtx.getBean("proxyThreadService");
+			postService = (PostService) appCtx.getBean("proxyPostService");
+			blobService = (BlobService) appCtx.getBean("proxyBlobService");
+			categoryService = (CategoryService) appCtx.getBean("proxyCategoryService");
+
+			// total size of image content
 			long size = 0;
 			List<Long> blobIds = blobService.getAllIds();
-			for (Long id : blobIds){
-				//Byte[] data = blobService.getBlob(id);
-				//its possible that the thing got deleted between the list time and the 
-				//get time.. 
+			for (Long id : blobIds) {
+				// Byte[] data = blobService.getBlob(id);
+				// its possible that the thing got deleted between the list time
+				// and the
+				// get time..
 				size = size + blobService.getBlobSize(id);
 			}
 			sizeOfAllFiles = Long.valueOf(size);
 			numberOfFiles = Long.valueOf(blobIds.size());
 			LOG.debug("Total size in Bytes:" + size);
-			
-			
+
 			long threadCount = 0;
 			long postCount = 0;
 			long imagePostCount = 0;
-			//lets count all the threads, posts, and image posts
+			// lets count all the threads, posts, and image posts
 			List<Category> categories = categoryService.retrieveCategories();
-			for (Category c : categories){
+			for (Category c : categories) {
 				ThreadCriteria criteria = new ThreadService.ThreadCriteria();
 				criteria.setCategory(c.getIdentifier());
 				List<Thread> threads = threadService.retrieveThreads(criteria);
-				//categories have 0 threads to begin with.. 
-				if (threads != null){
-					for (Thread thread : threads){
+				// categories have 0 threads to begin with..
+				if (threads != null) {
+					for (Thread thread : threads) {
 						threadCount++;
 						List<Post> posts = postService.retrieveThreadPosts(thread.getIdentifier());
-						for (Post p : posts){
+						for (Post p : posts) {
 							postCount++;
-							if (p instanceof ImagePost){
+							if (p instanceof ImagePost) {
 								imagePostCount++;
 							}
 						}
@@ -148,11 +151,10 @@ public class StatsGeneratorJob extends ManagedQuartzJobBean implements StatefulJ
 			numberOfThreads = threadCount;
 			numberOfPosts = postCount;
 			numberOfImagePosts = imagePostCount;
-			
-		}catch(Exception e){
-			LOG.error("Unable to get services",e);
+
+		} catch (Exception e) {
+			LOG.error("Unable to get services", e);
 		}
-		
 
 		// capture end of call
 		long end = new Date().getTime();
@@ -189,44 +191,44 @@ public class StatsGeneratorJob extends ManagedQuartzJobBean implements StatefulJ
 	public static Long getSizeOfAllFiles() {
 		return sizeOfAllFiles;
 	}
-	
-	public static Long getNumberOfThreads(){
+
+	public static Long getNumberOfThreads() {
 		return numberOfThreads;
 	}
-	
-	public static Long getNumberOfPosts(){
+
+	public static Long getNumberOfPosts() {
 		return numberOfPosts;
 	}
-	
-	public static Long getNumberOfImagePosts(){
+
+	public static Long getNumberOfImagePosts() {
 		return numberOfImagePosts;
 	}
-	
-	@ManagedAttribute(description="The number of files stored.")
-	public Long getFileCount(){
+
+	@ManagedAttribute(description = "The number of files stored.")
+	public Long getFileCount() {
 		return numberOfFiles;
 	}
-	
-	@ManagedAttribute(description="The size in bytes of all files stored.")
-	public Long getDataSize(){
+
+	@ManagedAttribute(description = "The size in bytes of all files stored.")
+	public Long getDataSize() {
 		return sizeOfAllFiles;
 	}
-	
-	@ManagedAttribute(description="The number of threads in the system.")
-	public Long getThreadCount(){
+
+	@ManagedAttribute(description = "The number of threads in the system.")
+	public Long getThreadCount() {
 		return numberOfThreads;
 	}
-	
-	@ManagedAttribute(description="The number of posts in the system.")
-	public Long getPostCount(){
+
+	@ManagedAttribute(description = "The number of posts in the system.")
+	public Long getPostCount() {
 		return numberOfPosts;
 	}
-	
-	@ManagedAttribute(description="The number of image posts in the system.")
-	public Long getImagePostCount(){
+
+	@ManagedAttribute(description = "The number of image posts in the system.")
+	public Long getImagePostCount() {
 		return numberOfImagePosts;
 	}
-	
+
 	/**
 	 * @return the lastSearchTime
 	 */
@@ -234,7 +236,5 @@ public class StatsGeneratorJob extends ManagedQuartzJobBean implements StatefulJ
 	public long getLastSearchTime() {
 		return lastSearchTime;
 	}
-	
-	
-	
+
 }

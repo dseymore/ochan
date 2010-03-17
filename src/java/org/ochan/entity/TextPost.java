@@ -15,49 +15,47 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-*/
+ */
 package org.ochan.entity;
 
 import java.util.Date;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement(name="text")
-public class TextPost extends Post{
+@XmlRootElement(name = "text")
+public class TextPost extends Post {
 
-    private String comment;
-    
-    public TextPost(){
-        super();
-    }
-    
-    /**
-     * 
-     * @param parent
-     * @param author
-     * @param email
-     * @param url
-     */
-    public TextPost(Long identifier, Thread parent, String author, String email, String url, String comment, String subject, Date time) {
-        super(identifier, parent, author, email, url, subject, time);
-        this.comment = comment;
-    }
+	private String comment;
 
-    /**
-     * @return the comment
-     */
-    public String getComment() {
-        return comment;
-    }
+	public TextPost() {
+		super();
+	}
 
-    /**
-     * @param comment the comment to set
-     */
-    public void setComment(String comment) {
-        this.comment = comment;
-    }
+	/**
+	 * 
+	 * @param parent
+	 * @param author
+	 * @param email
+	 * @param url
+	 */
+	public TextPost(Long identifier, Thread parent, String author, String email, String url, String comment, String subject, Date time) {
+		super(identifier, parent, author, email, url, subject, time);
+		this.comment = comment;
+	}
 
+	/**
+	 * @return the comment
+	 */
+	public String getComment() {
+		return comment;
+	}
 
-    
-    
+	/**
+	 * @param comment
+	 *            the comment to set
+	 */
+	public void setComment(String comment) {
+		this.comment = comment;
+	}
+
 }

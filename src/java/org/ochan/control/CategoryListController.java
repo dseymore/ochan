@@ -21,8 +21,6 @@ package org.ochan.control;
 import static org.ochan.control.StaticNames.CATEGORY_LIST;
 import static org.ochan.control.StaticNames.EXTERNAL_CATEGORY_LIST;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,12 +30,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.sf.ehcache.Ehcache;
-import net.sf.ehcache.Element;
 
 import org.ochan.entity.Category;
 import org.ochan.entity.ExternalCategory;
-import org.ochan.entity.ImagePost;
-import org.ochan.entity.Post;
 import org.ochan.entity.Thread;
 import org.ochan.service.AnnouncementService;
 import org.ochan.service.CategoryService;
@@ -50,6 +45,10 @@ import org.springframework.jmx.export.annotation.ManagedResource;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 
+/**
+ * This prepares the content for the main page generation.
+ * @author dseymore
+ */
 @ManagedResource(description = "ViewMainPage", objectName = "Ochan:util=controller,name=ViewMainPage", logFile = "jmx.log")
 public class CategoryListController implements Controller {
 

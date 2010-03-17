@@ -15,46 +15,45 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-*/
+ */
 package org.ochan.entity;
 
 import java.util.Date;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement(name="image")
-public class ImagePost extends TextPost{
-    
+@XmlRootElement(name = "image")
+public class ImagePost extends TextPost {
+
 	private Long imageIdentifier;
 	private Long thumbnailIdentifier;
 	private String filename;
 	private String fileSize;
-    
-    
-    public ImagePost(){
-        super();
-    }
-    
-    /**
-     * 
-     * @param identifier
-     * @param parent
-     * @param author
-     * @param email
-     * @param url
-     * @param comment
-     * @param data
-     * @param thumnbail
-     * @param subject
-     * @param time
-     */
-    public ImagePost(Long identifier, Thread parent, String author, String email, String url, String comment, Long imageIdentifier, Long thumbnailIdentifier, String subject, Date time, String filename, String fileSize) {
-        super(identifier, parent, author, email, url, comment, subject, time);
-        this.imageIdentifier = imageIdentifier;
-        this.thumbnailIdentifier = thumbnailIdentifier;
-        this.filename = filename;
-        this.fileSize = fileSize;
-    }
+
+	public ImagePost() {
+		super();
+	}
+
+	/**
+	 * 
+	 * @param identifier
+	 * @param parent
+	 * @param author
+	 * @param email
+	 * @param url
+	 * @param comment
+	 * @param data
+	 * @param thumnbail
+	 * @param subject
+	 * @param time
+	 */
+	public ImagePost(Long identifier, Thread parent, String author, String email, String url, String comment, Long imageIdentifier, Long thumbnailIdentifier, String subject, Date time, String filename, String fileSize) {
+		super(identifier, parent, author, email, url, comment, subject, time);
+		this.imageIdentifier = imageIdentifier;
+		this.thumbnailIdentifier = thumbnailIdentifier;
+		this.filename = filename;
+		this.fileSize = fileSize;
+	}
 
 	/**
 	 * @return the imageIdentifier
@@ -64,7 +63,8 @@ public class ImagePost extends TextPost{
 	}
 
 	/**
-	 * @param imageIdentifier the imageIdentifier to set
+	 * @param imageIdentifier
+	 *            the imageIdentifier to set
 	 */
 	public void setImageIdentifier(Long imageIdentifier) {
 		this.imageIdentifier = imageIdentifier;
@@ -78,7 +78,8 @@ public class ImagePost extends TextPost{
 	}
 
 	/**
-	 * @param thumbnailIdentifier the thumbnailIdentifier to set
+	 * @param thumbnailIdentifier
+	 *            the thumbnailIdentifier to set
 	 */
 	public void setThumbnailIdentifier(Long thumbnailIdentifier) {
 		this.thumbnailIdentifier = thumbnailIdentifier;
@@ -92,7 +93,8 @@ public class ImagePost extends TextPost{
 	}
 
 	/**
-	 * @param filename the filename to set
+	 * @param filename
+	 *            the filename to set
 	 */
 	public void setFilename(String filename) {
 		this.filename = filename;
@@ -106,13 +108,11 @@ public class ImagePost extends TextPost{
 	}
 
 	/**
-	 * @param fileSize the fileSize to set
+	 * @param fileSize
+	 *            the fileSize to set
 	 */
 	public void setFileSize(String fileSize) {
 		this.fileSize = fileSize;
 	}
-   
-    
-    
-    
+
 }

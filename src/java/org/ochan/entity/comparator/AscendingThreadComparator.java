@@ -15,7 +15,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-*/
+ */
 package org.ochan.entity.comparator;
 
 import java.io.Serializable;
@@ -26,9 +26,13 @@ import java.util.List;
 import org.ochan.entity.Post;
 import org.ochan.entity.Thread;
 
+/**
+ * 
+ * @author dseymore
+ * 
+ */
 public class AscendingThreadComparator implements Comparator<Thread>, Serializable {
 
-	
 	/**
 	 * Genereated Serial Ver ID
 	 */
@@ -49,14 +53,14 @@ public class AscendingThreadComparator implements Comparator<Thread>, Serializab
 	 * @return
 	 */
 	public static long lastPostDate(Thread t) {
-		if (t.isEnabled()){
+		if (t.isEnabled()) {
 			List<Post> p = t.getPosts();
 			Collections.sort(p);
 			// take the last one, and return its time
-			Post post = p.get(p.size() -1);
+			Post post = p.get(p.size() - 1);
 			return post.getTime().getTime();
-		}else{
-			//bye bye
+		} else {
+			// bye bye
 			return -1;
 		}
 	}

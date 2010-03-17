@@ -15,7 +15,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-*/
+ */
 package org.ochan.entity.comparator;
 
 import java.io.Serializable;
@@ -23,6 +23,11 @@ import java.util.Comparator;
 
 import org.ochan.entity.Post;
 
+/**
+ * 
+ * @author dseymore
+ * 
+ */
 public class AscendingPostComparator implements Comparator<Post>, Serializable {
 
 	/**
@@ -34,15 +39,14 @@ public class AscendingPostComparator implements Comparator<Post>, Serializable {
 	 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
 	 */
 	public int compare(Post o1, Post o2) {
-		if (o1 == null && o2 == null){
+		if (o1 == null && o2 == null) {
 			return 0;
-		}else if (o1 == null && o2 != null){
+		} else if (o1 == null && o2 != null) {
 			return -1;
-		}else if (o2 == null && o1 != null){
+		} else if (o2 == null && o1 != null) {
 			return 1;
 		}
 		return o1.getTime().compareTo(o2.getTime());
 	}
 
-	
 }

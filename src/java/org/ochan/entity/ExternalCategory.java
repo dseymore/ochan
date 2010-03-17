@@ -15,9 +15,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-*/
+ */
 package org.ochan.entity;
-
 
 public class ExternalCategory {
 
@@ -28,13 +27,12 @@ public class ExternalCategory {
 	private Long identifier;
 
 	private Integer version;
-	
-	public ExternalCategory(){
-		
+
+	public ExternalCategory() {
+
 	}
 
-	public ExternalCategory(String name, String host, String longDescription,
-			Long identifier, Integer version) {
+	public ExternalCategory(String name, String host, String longDescription, Long identifier, Integer version) {
 		super();
 		this.name = name;
 		this.host = host;

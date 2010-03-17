@@ -15,7 +15,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-*/
+ */
 package org.ochan.exception.handler;
 
 import java.util.HashMap;
@@ -28,17 +28,22 @@ import org.ochan.exception.NothingToPostException;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.ModelAndView;
 
+/**
+ * 
+ * @author dseymore
+ * 
+ */
 public class NothingToPostExceptionResolver implements HandlerExceptionResolver {
 	@Override
 	public ModelAndView resolveException(HttpServletRequest arg0, HttpServletResponse arg1, Object arg2, Exception arg3) {
-		if (arg3 instanceof NothingToPostException){
-			NothingToPostException excep = (NothingToPostException)arg3;
-			Map<String,Object> stuff = new HashMap<String,Object>();
-			stuff.put("threadId",excep.getThreadId());
-			stuff.put("categoryId",excep.getCategoryId());
+		if (arg3 instanceof NothingToPostException) {
+			NothingToPostException excep = (NothingToPostException) arg3;
+			Map<String, Object> stuff = new HashMap<String, Object>();
+			stuff.put("threadId", excep.getThreadId());
+			stuff.put("categoryId", excep.getCategoryId());
 			return new ModelAndView("errorNothingToPost", stuff);
 		}
-		//pass it on!
+		// pass it on!
 		return null;
 	}
 

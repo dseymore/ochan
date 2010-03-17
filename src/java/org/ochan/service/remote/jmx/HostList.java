@@ -15,7 +15,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-*/
+ */
 package org.ochan.service.remote.jmx;
 
 import java.util.List;
@@ -42,8 +42,6 @@ import org.springframework.jmx.export.annotation.ManagedResource;
  * 
  * 
  * 
- * 
- * 
  * @author seymore
  * 
  */
@@ -51,10 +49,9 @@ import org.springframework.jmx.export.annotation.ManagedResource;
 public class HostList {
 
 	private static final Log LOG = LogFactory.getLog(HostList.class);
-	
+
 	private JaxWsProxyFactoryBean categoryListClient;
 	private ExternalCategoryService externalCategoryService;
-
 
 	public JaxWsProxyFactoryBean getCategoryListClient() {
 		return categoryListClient;
@@ -68,8 +65,7 @@ public class HostList {
 		return externalCategoryService;
 	}
 
-	public void setExternalCategoryService(
-			ExternalCategoryService externalCategoryService) {
+	public void setExternalCategoryService(ExternalCategoryService externalCategoryService) {
 		this.externalCategoryService = externalCategoryService;
 	}
 
@@ -79,44 +75,43 @@ public class HostList {
 		// here we would take the host, and connect to its webservice endpoint
 		// that gets the categories
 		LOG.info("About to connect to host: " + host);
-		
+
 		categoryListClient.setAddress(host + "/remote/category");
-		CategoryList client = (CategoryList)categoryListClient.create();
-		try{
+		CategoryList client = (CategoryList) categoryListClient.create();
+		try {
 			List<RemoteCategory> remoteCategories = client.getCategories();
-	    	for (RemoteCategory rc : remoteCategories){
-	    		externalCategoryService.createCategory(rc.getName(), "", host);
-	    	}	    	
-		}catch(Exception e){
-			LOG.error("Unable to call service:",e);
+			for (RemoteCategory rc : remoteCategories) {
+				externalCategoryService.createCategory(rc.getName(), "", host);
+			}
+		} catch (Exception e) {
+			LOG.error("Unable to call service:", e);
 		}
-		
 
 	}
 
 	@ManagedOperation(description = "Removes all external hosts listings")
 	public void flushHosts() {
 		List<ExternalCategory> externals = externalCategoryService.retrieveCategories(null);
-		for (ExternalCategory xcat : externals){
+		for (ExternalCategory xcat : externals) {
 			LOG.debug("Deleting: " + xcat);
 			externalCategoryService.deleteCategory(xcat.getIdentifier());
 		}
 	}
-	
-	@ManagedAttribute(description="Returns a list of all hosts")
-	@ManagedOperation(description="Returns a list of all hosts")
-	public String getExternalHosts(){
+
+	@ManagedAttribute(description = "Returns a list of all hosts")
+	@ManagedOperation(description = "Returns a list of all hosts")
+	public String getExternalHosts() {
 		List<ExternalCategory> externals = externalCategoryService.retrieveCategories(null);
-		if (externals == null){
+		if (externals == null) {
 			return "";
-		}else{
+		} else {
 			StringBuilder buf = new StringBuilder();
-			for (ExternalCategory xcat : externals){
+			for (ExternalCategory xcat : externals) {
 				buf.append(xcat.getHost() + ": " + xcat.getName() + "\n");
 			}
 			return buf.toString();
 		}
-		
+
 	}
 
 }
