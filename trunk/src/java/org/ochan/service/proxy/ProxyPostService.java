@@ -15,7 +15,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-*/
+ */
 package org.ochan.service.proxy;
 
 import java.util.ArrayList;
@@ -36,6 +36,11 @@ import org.springframework.jmx.export.annotation.ManagedAttribute;
 import org.springframework.jmx.export.annotation.ManagedOperation;
 import org.springframework.jmx.export.annotation.ManagedResource;
 
+/**
+ * 
+ * @author dseymore
+ * 
+ */
 @ManagedResource(description = "Proxy Post Service", objectName = "Ochan:type=proxy,name=ProxyPostService", logFile = "jmx.log")
 public class ProxyPostService implements PostService {
 
@@ -75,42 +80,43 @@ public class ProxyPostService implements PostService {
 	public String computerAuthor(String author) {
 		return localPostService.computerAuthor(author);
 	}
-	
+
 	/**
-	 * @param cache the cache to set
+	 * @param cache
+	 *            the cache to set
 	 */
 	public void setCache(Ehcache cache) {
 		this.cache = cache;
 	}
 
-
 	@ManagedOperation
-	public void bustCache(){
+	public void bustCache() {
 		this.cache.flush();
 	}
-	
+
 	@ManagedAttribute
-	public int getCacheHitCount(){
+	public int getCacheHitCount() {
 		return this.cache.getHitCount();
 	}
-	
+
 	@ManagedAttribute
-	public int getCacheMissCountExpired(){
+	public int getCacheMissCountExpired() {
 		return this.cache.getMissCountExpired();
 	}
-	
+
 	@ManagedAttribute
-	public int getCacheMissCountNotFound(){
+	public int getCacheMissCountNotFound() {
 		return this.cache.getMissCountNotFound();
 	}
-	
+
 	@ManagedAttribute
-	public int getCacheSize(){
+	public int getCacheSize() {
 		return this.cache.getSize();
 	}
-	
+
 	/**
-	 * @param stateChangeListener the stateChangeListener to set
+	 * @param stateChangeListener
+	 *            the stateChangeListener to set
 	 */
 	public void setStateChangeListener(StateChangeListener stateChangeListener) {
 		this.stateChangeListener = stateChangeListener;
@@ -118,21 +124,21 @@ public class ProxyPostService implements PostService {
 
 	@Override
 	public void createPost(Long thisIdentifer, Long parentIdentifier, String author, String subject, String email, String url, String comment, Byte[] file, String filename) {
-		if (thisIdentifer != null){
-			//hmm.. you're doing it wrong..
+		if (thisIdentifer != null) {
+			// hmm.. you're doing it wrong..
 			LOG.fatal("No one should pass in an ID but ME!");
 		}
-		if (shardConfiguration.isShardEnabled()){
+		if (shardConfiguration.isShardEnabled()) {
 			LOG.debug("Calling shared");
 			Long identifier = shardConfiguration.getSynchroService().getSync();
 			PostService service = get(shardConfiguration.whichHost(identifier));
 			service.createPost(identifier, parentIdentifier, author, subject, email, url, comment, file, filename);
-		}else if(!stateChangeListener.isMaster()){
-			//replication.. we aren't the master
+		} else if (!stateChangeListener.isMaster()) {
+			// replication.. we aren't the master
 			LOG.debug("Sending to master node");
 			PostService service = get(stateChangeListener.getMasterNodeName());
 			service.createPost(null, parentIdentifier, author, subject, email, url, comment, file, filename);
-		}else{
+		} else {
 			localPostService.createPost(null, parentIdentifier, author, subject, email, url, comment, file, filename);
 		}
 	}
@@ -142,13 +148,13 @@ public class ProxyPostService implements PostService {
 		if (shardConfiguration.isShardEnabled()) {
 			LOG.debug("Calling shared");
 			Element o = cache.get(identifier);
-			if (o != null || o.getObjectValue() != null){
+			if (o != null || o.getObjectValue() != null) {
 				cache.remove(identifier);
 			}
 			PostService service = get(shardConfiguration.whichHost(identifier));
 			service.deletePost(identifier);
-		}else if(!stateChangeListener.isMaster()){
-			//replication.. we aren't the master
+		} else if (!stateChangeListener.isMaster()) {
+			// replication.. we aren't the master
 			LOG.debug("Sending to master node");
 			PostService service = get(stateChangeListener.getMasterNodeName());
 			service.deletePost(identifier);
@@ -162,8 +168,8 @@ public class ProxyPostService implements PostService {
 		if (shardConfiguration.isShardEnabled()) {
 			LOG.debug("Calling shared");
 			Element o = cache.get(identifier);
-			if (o != null && o.getObjectValue() != null && !o.isExpired()){
-				return (Post)o.getObjectValue();
+			if (o != null && o.getObjectValue() != null && !o.isExpired()) {
+				return (Post) o.getObjectValue();
 			}
 			PostService service = get(shardConfiguration.whichHost(identifier));
 			Post post = service.getPost(identifier);
@@ -175,20 +181,20 @@ public class ProxyPostService implements PostService {
 	}
 
 	@Override
-	public Post getPostByBlob(Long identifier){
+	public Post getPostByBlob(Long identifier) {
 		if (shardConfiguration.isShardEnabled()) {
 			LOG.debug("Calling shared");
 			Post posts = null;
-			//now we need all of the things to be ready to go...
-			for(String hosts : shardConfiguration.getShardHosts()){
+			// now we need all of the things to be ready to go...
+			for (String hosts : shardConfiguration.getShardHosts()) {
 				PostService service = get(hosts);
-				if (service == null){
+				if (service == null) {
 					LOG.error("Null Service for host: " + hosts);
-				}else{
+				} else {
 					Thread t = new Thread();
-					
+
 					Post p = service.getPostByBlob(identifier);
-					if (p != null){
+					if (p != null) {
 						posts = p;
 					}
 				}
@@ -198,22 +204,22 @@ public class ProxyPostService implements PostService {
 			return localPostService.getPostByBlob(identifier);
 		}
 	}
-	
+
 	@Override
 	public List<Post> retrieveThreadPosts(Long parent) {
 		if (shardConfiguration.isShardEnabled()) {
 			LOG.debug("Calling shared");
 			List<Post> posts = new ArrayList<Post>();
-			//now we need all of the things to be ready to go...
-			for(String hosts : shardConfiguration.getShardHosts()){
+			// now we need all of the things to be ready to go...
+			for (String hosts : shardConfiguration.getShardHosts()) {
 				PostService service = get(hosts);
-				if (service == null){
+				if (service == null) {
 					LOG.error("Null Service for host: " + hosts);
-				}else{
+				} else {
 					Thread t = new Thread();
-					
+
 					List<Post> postss = service.retrieveThreadPosts(parent);
-					if (postss != null){
+					if (postss != null) {
 						posts.addAll(postss);
 					}
 				}
@@ -229,13 +235,13 @@ public class ProxyPostService implements PostService {
 		if (shardConfiguration.isShardEnabled()) {
 			LOG.debug("Calling shared");
 			Element o = cache.get(post.getIdentifier());
-			if (o != null || o.getObjectValue() != null){
+			if (o != null || o.getObjectValue() != null) {
 				cache.remove(post.getIdentifier());
 			}
 			PostService service = get(shardConfiguration.whichHost(post.getIdentifier()));
 			service.updatePost(post);
-		}else if(!stateChangeListener.isMaster()){
-			//replication.. we aren't the master
+		} else if (!stateChangeListener.isMaster()) {
+			// replication.. we aren't the master
 			LOG.debug("Sending to master node");
 			PostService service = get(stateChangeListener.getMasterNodeName());
 			service.updatePost(post);
@@ -246,8 +252,8 @@ public class ProxyPostService implements PostService {
 
 	private synchronized PostService get(String host) {
 		postServiceClient.setAddress(host + "/remote/post");
-		//resetting
-//		postServiceClient.getClientFactoryBean().setClient(null);
+		// resetting
+		// postServiceClient.getClientFactoryBean().setClient(null);
 		PostService client = (PostService) postServiceClient.create();
 		return client;
 	}

@@ -15,7 +15,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-*/
+ */
 package org.ochan.service.remote.model;
 
 import java.lang.reflect.Field;
@@ -25,12 +25,13 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-
 @XmlRootElement(name = "RemoteGroup")
-public class RemoteGroup{
+public class RemoteGroup {
 
-	//made this list with
-	//for i in `seq 1 5`; do a=`perl -e 'private join("", map { chr($_ + 96) } @ARGV), "\n"' $i`; for j in `seq 0 9`; do  echo "private Long "$a$j";"; done; done
+	// made this list with
+	// for i in `seq 1 5`; do a=`perl -e 'private join("", map { chr($_ + 96) }
+	// @ARGV), "\n"' $i`; for j in `seq 0 9`; do echo "private Long "$a$j";";
+	// done; done
 	private static final Log LOG = LogFactory.getLog(RemoteGroup.class);
 	private Long a0 = null;
 	private Long a1 = null;
@@ -82,52 +83,53 @@ public class RemoteGroup{
 	private Long e7 = null;
 	private Long e8 = null;
 	private Long e9 = null;
-	
-	public RemoteGroup(){
-		
+
+	public RemoteGroup() {
+
 	}
-	
+
 	/**
 	 * Determines if the group is empty.. maximum 50 elements.
+	 * 
 	 * @return
 	 */
-	public boolean isFull(){
+	public boolean isFull() {
 		boolean empty = false;
-		try{
-			for (Field f : this.getClass().getDeclaredFields()){
-				if (f.getType().equals(Long.class) && f.get(this) == null){
+		try {
+			for (Field f : this.getClass().getDeclaredFields()) {
+				if (f.getType().equals(Long.class) && f.get(this) == null) {
 					empty = true;
 				}
-				//breaking the loop.
-				if (empty){
+				// breaking the loop.
+				if (empty) {
 					return false;
 				}
 			}
-		}catch(Exception e){
-			LOG.error("Unable to get value.",e);
+		} catch (Exception e) {
+			LOG.error("Unable to get value.", e);
 		}
 		return empty;
 	}
-	
-	public void add(Long value){
-		if (isFull()){
+
+	public void add(Long value) {
+		if (isFull()) {
 			return;
 		}
 		boolean set = false;
-		try{
-			for (Field f : this.getClass().getDeclaredFields()){
-				if (f.getType().equals(Long.class) && f.get(this) == null && !set){
+		try {
+			for (Field f : this.getClass().getDeclaredFields()) {
+				if (f.getType().equals(Long.class) && f.get(this) == null && !set) {
 					f.set(this, value);
 					set = true;
 				}
-				if (set){
+				if (set) {
 					return;
 				}
 			}
-		}catch(Exception e){
-			LOG.error("Unable to set value.",e);
-		}finally{
-			if(!set){
+		} catch (Exception e) {
+			LOG.error("Unable to set value.", e);
+		} finally {
+			if (!set) {
 				LOG.error("Unable to set value!!!");
 			}
 		}
@@ -532,7 +534,5 @@ public class RemoteGroup{
 	public void setE9(Long e9) {
 		this.e9 = e9;
 	}
-	
-	
 
 }

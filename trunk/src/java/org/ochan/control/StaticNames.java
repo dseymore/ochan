@@ -15,11 +15,16 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-*/
+ */
 package org.ochan.control;
 
+/**
+ * I'm not sure why I wrote this..
+ * 
+ * @author dseymore
+ */
 public class StaticNames {
 
-    public static final String CATEGORY_LIST = "category";
-    public static final String EXTERNAL_CATEGORY_LIST = "external";
+	public static final String CATEGORY_LIST = "category";
+	public static final String EXTERNAL_CATEGORY_LIST = "external";
 }

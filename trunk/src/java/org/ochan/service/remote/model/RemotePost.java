@@ -15,7 +15,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-*/
+ */
 package org.ochan.service.remote.model;
 
 import java.util.Date;
@@ -55,24 +55,25 @@ public class RemotePost {
 	private String filename = "";
 	private String fileSize = "";
 	private PostType type;
-	
-	public RemotePost(){
-		//nothing to do here.. need a default no-arg
+
+	public RemotePost() {
+		// nothing to do here.. need a default no-arg
 	}
-	
+
 	/**
 	 * Construct by example
+	 * 
 	 * @param example
 	 */
-	public RemotePost(Post example){
-		if (example instanceof ImagePost){
+	public RemotePost(Post example) {
+		if (example instanceof ImagePost) {
 			this.type = PostType.IMAGE;
-			this.filename = ((ImagePost)example).getFilename();
-			this.fileSize = ((ImagePost)example).getFileSize();
-		}else{
+			this.filename = ((ImagePost) example).getFilename();
+			this.fileSize = ((ImagePost) example).getFileSize();
+		} else {
 			this.type = PostType.TEXT;
 		}
-		TextPost cast = (TextPost)example;
+		TextPost cast = (TextPost) example;
 		this.comment = cast.getComment();
 		this.identifier = cast.getIdentifier();
 		this.parentIdentifier = cast.getParent().getIdentifier();
@@ -82,111 +83,137 @@ public class RemotePost {
 		this.subject = cast.getSubject();
 		this.time = cast.getTime();
 	}
-	
+
 	/**
 	 * @return the comment
 	 */
 	public String getComment() {
 		return comment;
 	}
+
 	/**
-	 * @param comment the comment to set
+	 * @param comment
+	 *            the comment to set
 	 */
 	public void setComment(String comment) {
 		this.comment = comment;
 	}
+
 	/**
 	 * @return the identifier
 	 */
 	public Long getIdentifier() {
 		return identifier;
 	}
+
 	/**
-	 * @param identifier the identifier to set
+	 * @param identifier
+	 *            the identifier to set
 	 */
 	public void setIdentifier(Long identifier) {
 		this.identifier = identifier;
 	}
+
 	/**
 	 * @return the parentIdentifier
 	 */
 	public Long getParentIdentifier() {
 		return parentIdentifier;
 	}
+
 	/**
-	 * @param parentIdentifier the parentIdentifier to set
+	 * @param parentIdentifier
+	 *            the parentIdentifier to set
 	 */
 	public void setParentIdentifier(Long parentIdentifier) {
 		this.parentIdentifier = parentIdentifier;
 	}
+
 	/**
 	 * @return the author
 	 */
 	public String getAuthor() {
 		return author;
 	}
+
 	/**
-	 * @param author the author to set
+	 * @param author
+	 *            the author to set
 	 */
 	public void setAuthor(String author) {
 		this.author = author;
 	}
+
 	/**
 	 * @return the email
 	 */
 	public String getEmail() {
 		return email;
 	}
+
 	/**
-	 * @param email the email to set
+	 * @param email
+	 *            the email to set
 	 */
 	public void setEmail(String email) {
 		this.email = email;
 	}
+
 	/**
 	 * @return the url
 	 */
 	public String getUrl() {
 		return url;
 	}
+
 	/**
-	 * @param url the url to set
+	 * @param url
+	 *            the url to set
 	 */
 	public void setUrl(String url) {
 		this.url = url;
 	}
+
 	/**
 	 * @return the subject
 	 */
 	public String getSubject() {
 		return subject;
 	}
+
 	/**
-	 * @param subject the subject to set
+	 * @param subject
+	 *            the subject to set
 	 */
 	public void setSubject(String subject) {
 		this.subject = subject;
 	}
+
 	/**
 	 * @return the time
 	 */
 	public Date getTime() {
 		return time;
 	}
+
 	/**
-	 * @param time the time to set
+	 * @param time
+	 *            the time to set
 	 */
 	public void setTime(Date time) {
 		this.time = time;
 	}
+
 	/**
 	 * @return the type
 	 */
 	public PostType getType() {
 		return type;
 	}
+
 	/**
-	 * @param type the type to set
+	 * @param type
+	 *            the type to set
 	 */
 	public void setType(PostType type) {
 		this.type = type;
@@ -200,7 +227,8 @@ public class RemotePost {
 	}
 
 	/**
-	 * @param filename the filename to set
+	 * @param filename
+	 *            the filename to set
 	 */
 	public void setFilename(String filename) {
 		this.filename = filename;
@@ -214,12 +242,11 @@ public class RemotePost {
 	}
 
 	/**
-	 * @param fileSize the fileSize to set
+	 * @param fileSize
+	 *            the fileSize to set
 	 */
 	public void setFileSize(String fileSize) {
 		this.fileSize = fileSize;
 	}
-	
-	
 
 }

@@ -15,7 +15,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-*/
+ */
 package org.ochan.service.proxy;
 
 import java.util.ArrayList;
@@ -35,6 +35,11 @@ import org.springframework.jmx.export.annotation.ManagedAttribute;
 import org.springframework.jmx.export.annotation.ManagedOperation;
 import org.springframework.jmx.export.annotation.ManagedResource;
 
+/**
+ * 
+ * @author dseymore
+ * 
+ */
 @ManagedResource(description = "Proxy Threadd Service", objectName = "Ochan:type=proxy,name=ProxyThreadService", logFile = "jmx.log")
 public class ProxyThreadService implements ThreadService {
 
@@ -43,26 +48,26 @@ public class ProxyThreadService implements ThreadService {
 	private ThreadService localThreadService;
 	private Ehcache cache;
 	private StateChangeListener stateChangeListener;
-	
+
 	private static final Log LOG = LogFactory.getLog(ProxyThreadService.class);
-	
+
 	@Override
 	public void createThread(Long thisIdentifier, Long category, String author, String subject, String url, String email, String content, Byte[] file, String filename) {
-		if (thisIdentifier != null){
-			//hmm.. you're doing it wrong..
+		if (thisIdentifier != null) {
+			// hmm.. you're doing it wrong..
 			LOG.fatal("No one should pass in an ID but ME!");
 		}
-		if (shardConfiguration.isShardEnabled()){
+		if (shardConfiguration.isShardEnabled()) {
 			LOG.debug("Calling shared");
 			Long identifier = shardConfiguration.getSynchroService().getSync();
 			ThreadService service = get(shardConfiguration.whichHost(identifier));
 			service.createThread(identifier, category, author, subject, url, email, content, file, filename);
-		}else if(!stateChangeListener.isMaster()){
-			//replication.. we aren't the master
+		} else if (!stateChangeListener.isMaster()) {
+			// replication.. we aren't the master
 			LOG.debug("Sending to master node");
 			ThreadService service = get(stateChangeListener.getMasterNodeName());
 			service.createThread(null, category, author, subject, url, email, content, file, filename);
-		}else{
+		} else {
 			localThreadService.createThread(null, category, author, subject, url, email, content, file, filename);
 		}
 	}
@@ -72,13 +77,13 @@ public class ProxyThreadService implements ThreadService {
 		if (shardConfiguration.isShardEnabled()) {
 			LOG.debug("Calling shared");
 			Element o = cache.get(identifier);
-			if (o != null || o.getObjectValue() != null){
+			if (o != null || o.getObjectValue() != null) {
 				cache.remove(identifier);
 			}
 			ThreadService service = get(shardConfiguration.whichHost(identifier));
 			service.deleteThread(identifier);
-		}else if(!stateChangeListener.isMaster()){
-			//replication.. we aren't the master
+		} else if (!stateChangeListener.isMaster()) {
+			// replication.. we aren't the master
 			LOG.debug("Sending to master node");
 			ThreadService service = get(stateChangeListener.getMasterNodeName());
 			service.deleteThread(identifier);
@@ -92,8 +97,8 @@ public class ProxyThreadService implements ThreadService {
 		if (shardConfiguration.isShardEnabled()) {
 			LOG.debug("Calling shared");
 			Element o = cache.get(identifier);
-			if (o != null && o.getObjectValue() != null && !o.isExpired()){
-				return (Thread)o.getObjectValue();
+			if (o != null && o.getObjectValue() != null && !o.isExpired()) {
+				return (Thread) o.getObjectValue();
 			}
 			ThreadService service = get(shardConfiguration.whichHost(identifier));
 			Thread thread = service.getThread(identifier);
@@ -109,23 +114,23 @@ public class ProxyThreadService implements ThreadService {
 		if (shardConfiguration.isShardEnabled()) {
 			LOG.debug("Calling shared");
 			List<Thread> threads = new ArrayList<Thread>();
-			//now we need all of the things to be ready to go...
-			for(String hosts : shardConfiguration.getShardHosts()){
+			// now we need all of the things to be ready to go...
+			for (String hosts : shardConfiguration.getShardHosts()) {
 				ThreadService service = get(hosts);
-				if (service == null){
+				if (service == null) {
 					LOG.error("Null Service for host: " + hosts);
-				}else{
+				} else {
 					List<Thread> theseThreads = service.retrieveThreads(criteria);
-					if (theseThreads != null){
+					if (theseThreads != null) {
 						threads.addAll(theseThreads);
 					}
 				}
 			}
-			
-			//now we have to normalize some of the scans..
-			if (criteria.getMax() != null){
+
+			// now we have to normalize some of the scans..
+			if (criteria.getMax() != null) {
 				List<Thread> nowTheThreads = new ArrayList<Thread>();
-				//find the max
+				// find the max
 				Thread max = null;
 				for (Thread t : threads) {
 					if (max == null || t.getIdentifier().compareTo(max.getIdentifier()) > 0) {
@@ -135,7 +140,7 @@ public class ProxyThreadService implements ThreadService {
 				nowTheThreads.add(max);
 				threads = nowTheThreads;
 			}
-			if (criteria.getNewerThan() != null){
+			if (criteria.getNewerThan() != null) {
 				List<Thread> nowTheThreads = new ArrayList<Thread>();
 				Thread newer = null;
 				for (Thread t : threads) {
@@ -147,7 +152,7 @@ public class ProxyThreadService implements ThreadService {
 				nowTheThreads.add(newer);
 				threads = nowTheThreads;
 			}
-			
+
 			return threads;
 		} else {
 			return localThreadService.retrieveThreads(criteria);
@@ -159,13 +164,13 @@ public class ProxyThreadService implements ThreadService {
 		if (shardConfiguration.isShardEnabled()) {
 			LOG.debug("Calling shared");
 			Element o = cache.get(thread.getIdentifier());
-			if (o != null || o.getObjectValue() != null){
+			if (o != null || o.getObjectValue() != null) {
 				cache.remove(thread.getIdentifier());
 			}
 			ThreadService service = get(shardConfiguration.whichHost(thread.getIdentifier()));
 			service.updateThread(thread);
-		}else if(!stateChangeListener.isMaster()){
-			//replication.. we aren't the master
+		} else if (!stateChangeListener.isMaster()) {
+			// replication.. we aren't the master
 			LOG.debug("Sending to master node");
 			ThreadService service = get(stateChangeListener.getMasterNodeName());
 			service.updateThread(thread);
@@ -173,74 +178,78 @@ public class ProxyThreadService implements ThreadService {
 			localThreadService.updateThread(thread);
 		}
 	}
-	
+
 	private synchronized ThreadService get(String host) {
 		threadServiceClient.setAddress(host + "/remote/thread");
-		//resetting
-//		threadServiceClient.getClientFactoryBean().setClient(null);
+		// resetting
+		// threadServiceClient.getClientFactoryBean().setClient(null);
 		ThreadService client = (ThreadService) threadServiceClient.create();
 		return client;
 	}
 
 	/**
-	 * @param shardConfiguration the shardConfiguration to set
+	 * @param shardConfiguration
+	 *            the shardConfiguration to set
 	 */
 	public void setShardConfiguration(ShardConfiguration shardConfiguration) {
 		this.shardConfiguration = shardConfiguration;
 	}
 
 	/**
-	 * @param threadServiceClient the threadServiceClient to set
+	 * @param threadServiceClient
+	 *            the threadServiceClient to set
 	 */
 	public void setThreadServiceClient(JaxWsProxyFactoryBean threadServiceClient) {
 		this.threadServiceClient = threadServiceClient;
 	}
 
 	/**
-	 * @param localThreadService the localThreadService to set
+	 * @param localThreadService
+	 *            the localThreadService to set
 	 */
 	public void setLocalThreadService(ThreadService localThreadService) {
 		this.localThreadService = localThreadService;
 	}
 
 	/**
-	 * @param cache the cache to set
+	 * @param cache
+	 *            the cache to set
 	 */
 	public void setCache(Ehcache cache) {
 		this.cache = cache;
 	}
 
 	/**
-	 * @param stateChangeListener the stateChangeListener to set
+	 * @param stateChangeListener
+	 *            the stateChangeListener to set
 	 */
 	public void setStateChangeListener(StateChangeListener stateChangeListener) {
 		this.stateChangeListener = stateChangeListener;
 	}
-	
 
 	@ManagedOperation
-	public void bustCache(){
+	public void bustCache() {
 		this.cache.flush();
 	}
-	
+
 	@ManagedAttribute
-	public int getCacheHitCount(){
+	public int getCacheHitCount() {
 		return this.cache.getHitCount();
 	}
-	
+
 	@ManagedAttribute
-	public int getCacheMissCountExpired(){
+	public int getCacheMissCountExpired() {
 		return this.cache.getMissCountExpired();
 	}
-	
+
 	@ManagedAttribute
-	public int getCacheMissCountNotFound(){
+	public int getCacheMissCountNotFound() {
 		return this.cache.getMissCountNotFound();
 	}
-	
+
 	@ManagedAttribute
-	public int getCacheSize(){
+	public int getCacheSize() {
 		return this.cache.getSize();
 	}
-	
+
 }

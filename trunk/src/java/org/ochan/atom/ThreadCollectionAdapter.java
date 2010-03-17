@@ -22,9 +22,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
@@ -53,6 +51,11 @@ import org.ochan.util.DeploymentConfiguration;
 import org.springframework.jmx.export.annotation.ManagedAttribute;
 import org.springframework.jmx.export.annotation.ManagedResource;
 
+/**
+ * This class is used to expose Ochan to an Atom feed. This extends an abdera api. 
+ * @author dseymore
+ *
+ */
 @ManagedResource(description = "Syndication wrapper", objectName = "Ochan:type=feed,name=ThreadCollector", logFile = "jmx.log")
 public class ThreadCollectionAdapter extends AbstractEntityCollectionAdapter<Thread> {
 

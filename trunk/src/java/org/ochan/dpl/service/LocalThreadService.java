@@ -15,7 +15,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-*/
+ */
 package org.ochan.dpl.service;
 
 import java.util.ArrayList;
@@ -40,6 +40,11 @@ import org.springframework.jmx.export.annotation.ManagedResource;
 
 import com.sleepycat.persist.EntityCursor;
 
+/**
+ * 
+ * @author dseymore
+ * 
+ */
 @ManagedResource(description = "Local Thread Service", objectName = "Ochan:service=local,name=LocalThreadService", logFile = "jmx.log")
 public class LocalThreadService implements ThreadService {
 
@@ -115,20 +120,19 @@ public class LocalThreadService implements ThreadService {
 			thread.setCategory(category);
 			thread.setStartDate(new Date());
 			thread.setEnabled(false);
-			
-			new TransactionTemplate(environment){
-				public void doInTransaction(){
+
+			new TransactionTemplate(environment) {
+				public void doInTransaction() {
 					// save the thread
 					environment.threadByIdentifier().put(thread);
 					// save the post
 					postService.createPost(null, thread.getIdentifier(), author, subject, email, url, content, file, filename);
-					//and then update. 
+					// and then update.
 					thread.setEnabled(true);
 					environment.threadByIdentifier().put(thread);
 				}
 			}.run();
 
-			
 		} catch (Exception e) {
 			LOG.error("Unable to store a new thread.", e);
 		}
@@ -140,8 +144,8 @@ public class LocalThreadService implements ThreadService {
 	public void deleteThread(final Long identifier) {
 		deleteCount++;
 		try {
-			new TransactionTemplate(environment){
-				public void doInTransaction(){
+			new TransactionTemplate(environment) {
+				public void doInTransaction() {
 					environment.threadByIdentifier().delete(identifier);
 				}
 			}.run();
@@ -304,8 +308,8 @@ public class LocalThreadService implements ThreadService {
 			dpl.setDeleteCount(thread.getDeleteCount());
 			dpl.setDeleteDate(thread.getDeleteDate());
 			// and put to update
-			new TransactionTemplate(environment){
-				public void doInTransaction(){
+			new TransactionTemplate(environment) {
+				public void doInTransaction() {
 					environment.threadByIdentifier().put(dpl);
 				}
 			}.run();

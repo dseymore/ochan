@@ -15,7 +15,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-*/
+ */
 package org.ochan.job;
 
 import java.util.prefs.Preferences;
@@ -32,6 +32,11 @@ import org.springframework.jmx.export.annotation.ManagedResource;
 import com.sleepycat.je.EnvironmentStats;
 import com.sleepycat.je.StatsConfig;
 
+/**
+ * 
+ * @author dseymore
+ * 
+ */
 @ManagedResource(description = "Sleepycat Statistics Generation", objectName = "Ochan:type=job,name=SleepycatStatistics", logFile = "jmx.log")
 public class SleepyStatisticsJob extends ManagedQuartzJobBean {
 
@@ -359,11 +364,14 @@ public class SleepyStatisticsJob extends ManagedQuartzJobBean {
 	 * Cache
 	 */
 	private int nSharedCacheEnvironments; // num of envs sharing the cache
-	private static long sharedCacheTotalBytes; // shared cache consumed, in bytes
+	private static long sharedCacheTotalBytes; // shared cache consumed, in
+	// bytes
 	private static long cacheTotalBytes; // local cache consumed, in bytes
-	private static long bufferBytes; // cache consumed by the log buffers, in bytes
+	private static long bufferBytes; // cache consumed by the log buffers, in
+	// bytes
 	private static long dataBytes; // cache consumed by the Btree, in bytes
-	private static long adminBytes; // part of cache used by log cleaner metadata,
+	private static long adminBytes; // part of cache used by log cleaner
+	// metadata,
 	// and other administrative structures
 	private static long lockBytes; // part of cache used by locks and txns
 	private static long nNotResident; // had to be instantiated from an LSN

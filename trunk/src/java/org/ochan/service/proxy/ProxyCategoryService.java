@@ -15,7 +15,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-*/
+ */
 package org.ochan.service.proxy;
 
 import java.util.ArrayList;
@@ -37,6 +37,11 @@ import org.springframework.jmx.export.annotation.ManagedOperationParameter;
 import org.springframework.jmx.export.annotation.ManagedOperationParameters;
 import org.springframework.jmx.export.annotation.ManagedResource;
 
+/**
+ * 
+ * @author dseymore
+ * 
+ */
 @ManagedResource(description = "Enables you to kick off a category in a scaled instance.", objectName = "Ochan:type=proxy,name=CategoryService", logFile = "jmx.log")
 public class ProxyCategoryService implements CategoryService {
 
@@ -45,36 +50,33 @@ public class ProxyCategoryService implements CategoryService {
 	private CategoryService localCategoryService;
 	private Ehcache cache;
 	private StateChangeListener stateChangeListener;
-	
+
 	private static final Log LOG = LogFactory.getLog(ProxyCategoryService.class);
-	
-	@ManagedOperation(description="Create a new Category!")
-    @ManagedOperationParameters({
-            @ManagedOperationParameter(name="name",description="The name of the category"),
-            @ManagedOperationParameter(name="description",description="The description of the category"),
-            @ManagedOperationParameter(name="code", description="The codeword/keyname for the category")
-    })
-    public void createCategory(String name, String description, String code){
+
+	@ManagedOperation(description = "Create a new Category!")
+	@ManagedOperationParameters( { @ManagedOperationParameter(name = "name", description = "The name of the category"), @ManagedOperationParameter(name = "description", description = "The description of the category"),
+			@ManagedOperationParameter(name = "code", description = "The codeword/keyname for the category") })
+	public void createCategory(String name, String description, String code) {
 		createCategory(null, name, description, code);
 	}
-	
+
 	@Override
 	public void createCategory(Long thisIdentifier, String name, String description, String code) {
-		if (thisIdentifier != null){
-			//hmm.. you're doing it wrong..
+		if (thisIdentifier != null) {
+			// hmm.. you're doing it wrong..
 			LOG.fatal("No one should pass in an ID but ME!");
 		}
-		if (shardConfiguration.isShardEnabled()){
+		if (shardConfiguration.isShardEnabled()) {
 			LOG.debug("Calling shared");
 			Long identifier = shardConfiguration.getSynchroService().getSync();
 			CategoryService service = get(shardConfiguration.whichHost(identifier));
 			service.createCategory(thisIdentifier, name, description, code);
-		}else if(!stateChangeListener.isMaster()){
-			//replication.. we aren't the master
+		} else if (!stateChangeListener.isMaster()) {
+			// replication.. we aren't the master
 			LOG.debug("Sending to master node");
 			CategoryService service = get(stateChangeListener.getMasterNodeName());
 			service.createCategory(thisIdentifier, name, description, code);
-		}else{
+		} else {
 			localCategoryService.createCategory(null, name, description, code);
 		}
 	}
@@ -84,13 +86,13 @@ public class ProxyCategoryService implements CategoryService {
 		if (shardConfiguration.isShardEnabled()) {
 			LOG.debug("Calling shared");
 			Element o = cache.get(identifier);
-			if (o != null || o.getObjectValue() != null){
+			if (o != null || o.getObjectValue() != null) {
 				cache.remove(identifier);
 			}
 			CategoryService service = get(shardConfiguration.whichHost(identifier));
 			service.deleteCategory(identifier);
-		}else if(!stateChangeListener.isMaster()){
-			//replication.. we aren't the master
+		} else if (!stateChangeListener.isMaster()) {
+			// replication.. we aren't the master
 			LOG.debug("Sending to master node");
 			CategoryService service = get(stateChangeListener.getMasterNodeName());
 			service.deleteCategory(identifier);
@@ -104,8 +106,8 @@ public class ProxyCategoryService implements CategoryService {
 		if (shardConfiguration.isShardEnabled()) {
 			LOG.debug("Calling shared");
 			Element o = cache.get(identifier);
-			if (o != null && o.getObjectValue() != null && !o.isExpired()){
-				return (Category)o.getObjectValue();
+			if (o != null && o.getObjectValue() != null && !o.isExpired()) {
+				return (Category) o.getObjectValue();
 			}
 			CategoryService service = get(shardConfiguration.whichHost(identifier));
 			Category cat = service.getCategory(identifier);
@@ -121,16 +123,16 @@ public class ProxyCategoryService implements CategoryService {
 		if (shardConfiguration.isShardEnabled()) {
 			LOG.debug("Calling shared");
 			Element o = cache.get(code);
-			if (o != null && o.getObjectValue() != null && !o.isExpired()){
-				return (Category)o.getObjectValue();
+			if (o != null && o.getObjectValue() != null && !o.isExpired()) {
+				return (Category) o.getObjectValue();
 			}
-			for(String hosts : shardConfiguration.getShardHosts()){
+			for (String hosts : shardConfiguration.getShardHosts()) {
 				CategoryService service = get(hosts);
-				if (service == null){
+				if (service == null) {
 					LOG.error("Null Service for host: " + hosts);
-				}else{
+				} else {
 					Category cat = service.getCategoryByCode(code);
-					if (cat != null){
+					if (cat != null) {
 						cache.put(new Element(code, cat));
 						return cat;
 					}
@@ -148,16 +150,16 @@ public class ProxyCategoryService implements CategoryService {
 		if (shardConfiguration.isShardEnabled()) {
 			LOG.debug("Calling shared");
 			Element o = cache.get("ALL");
-			if (o != null && o.getObjectValue() != null && !o.isExpired()){
-				return (List<Category>)o.getObjectValue();
+			if (o != null && o.getObjectValue() != null && !o.isExpired()) {
+				return (List<Category>) o.getObjectValue();
 			}
-			for(String hosts : shardConfiguration.getShardHosts()){
+			for (String hosts : shardConfiguration.getShardHosts()) {
 				CategoryService service = get(hosts);
-				if (service == null){
+				if (service == null) {
 					LOG.error("Null Service for host: " + hosts);
-				}else{
-					List<Category> catList = service.retrieveCategories(); 
-					if (catList != null){
+				} else {
+					List<Category> catList = service.retrieveCategories();
+					if (catList != null) {
 						cats.addAll(catList);
 					}
 				}
@@ -169,76 +171,77 @@ public class ProxyCategoryService implements CategoryService {
 		}
 	}
 
-
-	
 	private synchronized CategoryService get(String host) {
 		categoryServiceClient.setAddress(host + "/remote/allCategory");
-		//resetting
-//		categoryServiceClient.getClientFactoryBean().setClient(null);
+		// resetting
+		// categoryServiceClient.getClientFactoryBean().setClient(null);
 		CategoryService client = (CategoryService) categoryServiceClient.create();
 		return client;
 	}
 
 	/**
-	 * @param shardConfiguration the shardConfiguration to set
+	 * @param shardConfiguration
+	 *            the shardConfiguration to set
 	 */
 	public void setShardConfiguration(ShardConfiguration shardConfiguration) {
 		this.shardConfiguration = shardConfiguration;
 	}
 
 	/**
-	 * @param categoryServiceClient the categoryServiceClient to set
+	 * @param categoryServiceClient
+	 *            the categoryServiceClient to set
 	 */
 	public void setCategoryServiceClient(JaxWsProxyFactoryBean categoryServiceClient) {
 		this.categoryServiceClient = categoryServiceClient;
 	}
 
 	/**
-	 * @param localCategoryService the localCategoryService to set
+	 * @param localCategoryService
+	 *            the localCategoryService to set
 	 */
 	public void setLocalCategoryService(CategoryService localCategoryService) {
 		this.localCategoryService = localCategoryService;
 	}
 
 	/**
-	 * @param cache the cache to set
+	 * @param cache
+	 *            the cache to set
 	 */
 	public void setCache(Ehcache cache) {
 		this.cache = cache;
 	}
 
 	/**
-	 * @param stateChangeListener the stateChangeListener to set
+	 * @param stateChangeListener
+	 *            the stateChangeListener to set
 	 */
 	public void setStateChangeListener(StateChangeListener stateChangeListener) {
 		this.stateChangeListener = stateChangeListener;
 	}
-	
 
 	@ManagedOperation
-	public void bustCache(){
+	public void bustCache() {
 		this.cache.flush();
 	}
-	
+
 	@ManagedAttribute
-	public int getCacheHitCount(){
+	public int getCacheHitCount() {
 		return this.cache.getHitCount();
 	}
-	
+
 	@ManagedAttribute
-	public int getCacheMissCountExpired(){
+	public int getCacheMissCountExpired() {
 		return this.cache.getMissCountExpired();
 	}
-	
+
 	@ManagedAttribute
-	public int getCacheMissCountNotFound(){
+	public int getCacheMissCountNotFound() {
 		return this.cache.getMissCountNotFound();
 	}
-	
+
 	@ManagedAttribute
-	public int getCacheSize(){
+	public int getCacheSize() {
 		return this.cache.getSize();
 	}
-	
-	
+
 }

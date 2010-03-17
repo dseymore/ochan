@@ -15,7 +15,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-*/
+ */
 package org.ochan.dpl.service;
 
 import java.util.ArrayList;
@@ -46,6 +46,11 @@ import org.springframework.jmx.export.annotation.ManagedResource;
 
 import com.sleepycat.persist.EntityCursor;
 
+/**
+ * 
+ * @author dseymore
+ * 
+ */
 @ManagedResource(description = "Local Post Service", objectName = "Ochan:service=local,name=LocalPostService", logFile = "jmx.log")
 public class LocalPostService implements PostService {
 
@@ -78,7 +83,7 @@ public class LocalPostService implements PostService {
 	private static long deleteCount = 0;
 
 	private static long lastSearchTime = 0;
-	
+
 	private static long blobGetCount = 0;
 
 	/**
@@ -88,7 +93,7 @@ public class LocalPostService implements PostService {
 	public long getCreateCount() {
 		return createCount;
 	}
-	
+
 	/**
 	 * @return the blobGetCount
 	 */
@@ -170,7 +175,8 @@ public class LocalPostService implements PostService {
 			post.setTime(new Date());
 			post.setFilename(filename);
 			if (file != null && file.length > 0) {
-				//we should save the resolution and human readable file size here
+				// we should save the resolution and human readable file size
+				// here
 				String fileSize = FileUtils.byteCountToDisplaySize(file.length);
 				post.setFileSize(fileSize);
 				post.setType(PostType.IMAGE);
@@ -178,8 +184,8 @@ public class LocalPostService implements PostService {
 			} else {
 				post.setType(PostType.TEXT);
 			}
-			new TransactionTemplate(environment){
-				public void doInTransaction(){
+			new TransactionTemplate(environment) {
+				public void doInTransaction() {
 					environment.postByIdentifier().put(post);
 				}
 			}.run();
@@ -200,8 +206,8 @@ public class LocalPostService implements PostService {
 				blobService.deleteBlob(post.getImageIdentifier());
 				blobService.deleteBlob(post.getThumbnailIdentifier());
 			}
-			new TransactionTemplate(environment){
-				public void doInTransaction(){
+			new TransactionTemplate(environment) {
+				public void doInTransaction() {
 					environment.postByIdentifier().delete(identifier);
 				}
 			}.run();
@@ -220,23 +226,23 @@ public class LocalPostService implements PostService {
 		}
 		return null;
 	}
-	
-	public Post getPostByBlob(Long identifier){
+
+	public Post getPostByBlob(Long identifier) {
 		blobGetCount++;
-		int  count = 0;
+		int count = 0;
 		PostDPL post = null;
-		if (identifier != null){
-			try{
+		if (identifier != null) {
+			try {
 				EntityCursor<PostDPL> posts1 = environment.postByImage().subIndex(identifier).entities();
-				if (posts1 != null){
-					for (PostDPL dpl : posts1){
+				if (posts1 != null) {
+					for (PostDPL dpl : posts1) {
 						post = dpl;
 						count++;
 					}
 				}
 				EntityCursor<PostDPL> posts2 = environment.postByThumbnail().subIndex(identifier).entities();
-				if (posts2 != null){
-					for (PostDPL dpl : posts2){
+				if (posts2 != null) {
+					for (PostDPL dpl : posts2) {
 						post = dpl;
 						count++;
 					}
@@ -245,19 +251,18 @@ public class LocalPostService implements PostService {
 				LOG.error("Unable to retrieve thread post.", e);
 			}
 		}
-		if (count > 1){
+		if (count > 1) {
 			LOG.error("more than one post found for the blob id: " + identifier);
 		}
 		return map(post);
 	}
-
 
 	@Override
 	public List<Post> retrieveThreadPosts(Long parent) {
 		List<Post> posts = new ArrayList<Post>();
 		// capture start of call
 		long start = new Date().getTime();
-		if (parent != null){
+		if (parent != null) {
 			try {
 				EntityCursor<PostDPL> postDPL = environment.postByThread().subIndex(parent).entities();
 				for (PostDPL dpl : postDPL) {
@@ -293,8 +298,8 @@ public class LocalPostService implements PostService {
 			dpl.setTime(tp.getTime());
 			dpl.setUrl(tp.getUrl());
 			// and update
-			new TransactionTemplate(environment){
-				public void doInTransaction(){
+			new TransactionTemplate(environment) {
+				public void doInTransaction() {
 					environment.postByIdentifier().put(dpl);
 				}
 			}.run();
@@ -304,7 +309,7 @@ public class LocalPostService implements PostService {
 	}
 
 	private Post map(PostDPL post) {
-		if (post != null){
+		if (post != null) {
 			TextPost p = new TextPost();
 			if (PostType.IMAGE.equals(post.getType())) {
 				p = new ImagePost();
@@ -324,7 +329,7 @@ public class LocalPostService implements PostService {
 			p.setTime(post.getTime());
 			p.setUrl(post.getUrl());
 			return p;
-		}else{
+		} else {
 			LOG.info("Null post.. probably deleted.");
 		}
 		return null;

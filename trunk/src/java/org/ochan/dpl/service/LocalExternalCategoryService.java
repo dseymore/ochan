@@ -15,7 +15,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-*/
+ */
 package org.ochan.dpl.service;
 
 import java.util.ArrayList;
@@ -32,13 +32,19 @@ import org.ochan.service.ExternalCategoryService;
 
 import com.sleepycat.persist.EntityCursor;
 
+/**
+ * 
+ * @author dseymore
+ * 
+ */
 public class LocalExternalCategoryService implements ExternalCategoryService {
 
 	private static final Log LOG = LogFactory.getLog(LocalExternalCategoryService.class);
 	private OchanEnvironment environment;
-		
+
 	/**
-	 * @param environment the environment to set
+	 * @param environment
+	 *            the environment to set
 	 */
 	public void setEnvironment(OchanEnvironment environment) {
 		this.environment = environment;
@@ -46,40 +52,40 @@ public class LocalExternalCategoryService implements ExternalCategoryService {
 
 	@Override
 	public void createCategory(String name, String description, String host) {
-		try{
+		try {
 			final ExternalCategoryDPL dpl = new ExternalCategoryDPL();
 			dpl.setHost(host);
 			dpl.setLongDescription(description);
 			dpl.setName(name);
-			new TransactionTemplate(environment){
-				public void doInTransaction(){
+			new TransactionTemplate(environment) {
+				public void doInTransaction() {
 					environment.externalCategoryByIdentifier().put(dpl);
 				}
 			}.run();
-		}catch(Exception e){
-			LOG.error("Unable to create category",e);
+		} catch (Exception e) {
+			LOG.error("Unable to create category", e);
 		}
 	}
 
 	@Override
 	public void deleteCategory(final Long identifier) {
-		try{
-			new TransactionTemplate(environment){
-				public void doInTransaction(){
+		try {
+			new TransactionTemplate(environment) {
+				public void doInTransaction() {
 					environment.externalCategoryByIdentifier().delete(identifier);
 				}
 			}.run();
-		}catch(Exception e){
-			LOG.error("Unable to delete category",e);
+		} catch (Exception e) {
+			LOG.error("Unable to delete category", e);
 		}
 	}
 
 	@Override
 	public ExternalCategory getCategory(Long identifier) {
-		try{
+		try {
 			return map(environment.externalCategoryByIdentifier().get(identifier));
-		}catch(Exception e){
-			LOG.error("Unable to get category",e);
+		} catch (Exception e) {
+			LOG.error("Unable to get category", e);
 		}
 		return null;
 	}
@@ -87,19 +93,19 @@ public class LocalExternalCategoryService implements ExternalCategoryService {
 	@Override
 	public List<ExternalCategory> retrieveCategories(Map<ExternalCategoryCriteria, String> criteria) {
 		List<ExternalCategory> cats = new ArrayList<ExternalCategory>();
-		try{
+		try {
 			EntityCursor<ExternalCategoryDPL> dpls = environment.externalCategoryByIdentifier().entities();
-			for (ExternalCategoryDPL dpl : dpls){
+			for (ExternalCategoryDPL dpl : dpls) {
 				cats.add(map(dpl));
 			}
 			dpls.close();
-		}catch(Exception e){
-			LOG.error("Unable to get categories",e);
+		} catch (Exception e) {
+			LOG.error("Unable to get categories", e);
 		}
 		return cats;
 	}
 
-	private ExternalCategory map(ExternalCategoryDPL dpl){
+	private ExternalCategory map(ExternalCategoryDPL dpl) {
 		ExternalCategory cat = new ExternalCategory();
 		cat.setHost(dpl.getHost());
 		cat.setIdentifier(dpl.getIdentifier());

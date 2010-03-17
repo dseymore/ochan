@@ -15,7 +15,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-*/
+ */
 package org.ochan.service.proxy.config;
 
 import java.util.ArrayList;
@@ -30,6 +30,11 @@ import org.ochan.service.SynchroService;
 import org.springframework.jmx.export.annotation.ManagedAttribute;
 import org.springframework.jmx.export.annotation.ManagedResource;
 
+/**
+ * 
+ * @author dseymore
+ * 
+ */
 @ManagedResource(description = "Configuration for the hosts to be used by this deployment for scaling the dataservices.. YOU CANNOT CHANGE THIS without losing all the data.", objectName = "Ochan:type=scale,name=ShardConfiguration", logFile = "jmx.log")
 public class ShardConfiguration {
 

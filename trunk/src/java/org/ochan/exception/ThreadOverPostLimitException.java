@@ -15,19 +15,22 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-*/
+ */
 package org.ochan.exception;
 
+/**
+ * 
+ * @author dseymore
+ * 
+ */
 public class ThreadOverPostLimitException extends Exception {
 
 	/**
 	 * Blarh!
 	 */
 	private static final long serialVersionUID = -7474172798214412637L;
-	
-	
-	private Long threadId;
 
+	private Long threadId;
 
 	/**
 	 * @return the threadId
@@ -36,14 +39,12 @@ public class ThreadOverPostLimitException extends Exception {
 		return threadId;
 	}
 
-
 	/**
-	 * @param threadId the threadId to set
+	 * @param threadId
+	 *            the threadId to set
 	 */
 	public void setThreadId(Long threadId) {
 		this.threadId = threadId;
 	}
-	
-	
 
 }
