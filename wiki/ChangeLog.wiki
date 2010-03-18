@@ -1,6 +1,19 @@
 #summary What's in the latest releases?
 #labels Phase-QA,Phase-Support
 
+==Release 1.0.0==
+  * 70! commits since last release
+  * Clustering: replicated datastore for large scale deployments (2 or more nodes)
+  * Sharding: proxy service model to break off to any size shard; and a syncrho service for even larger scale deployments. 
+  * Middle tier proxy level caching.. used in both small and large scale deployments
+  * robots.txt to avoid crawlers deleting the world
+  * 404 error page
+  * Application based thread watching; allowing users to know when a thread is commented on without Atom Feeds or keeping that tab open. 
+  * Javascript minification and proper cache headers for assets. 
+  * Updated main page for consistent look & feel 
+  * Recent Images automatically scrolls through images as they are posted :D
+  * License to GPL V2 applied to all source code. 
+
 ==Release 0.2.5==
   * Thread level atom feeds
   * File size captured & displayed to users
