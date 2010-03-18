@@ -10,6 +10,9 @@
 ==Ajax-enabled Thread Awareness==
  * When sitting on the main page, 'Growl' (toast) notifications appears to inform the user of new threads that have just been created. There is also a JMX accessible metric to see how many users are watching the main page. 
 
+==Ajax-enabled Thread Watching==
+ * Click 'watch' and continue to browse through the channel, and you'll be notified when someone has posted a response or your thread has been deleted. Live.. rather than with the delay Atom/RSS Feeds can usually have. 
+
 ==Thread Deletion==
  * All users can 'nominate' a thread for deletion. All users watching a thread can see the status of the deletion (as it goes back and forth from alive (delete link) to about-to-die (undelete link), and the number of actions) in real time. The idea being 'whomever cares the most about the health or death of a thread will maintain it.
  * Both the number of actions till locking and the queue time before deletion are configurable.
@@ -28,6 +31,12 @@
 ==In JVM image thumbnailing==
  * Everything that Ochan needs out of the box is in the jar; Including resizing the uploaded images into thumbnails. Even creating thumbnails from PDFs! This cuts down on any installation time or any setup or dependency gathering. 
 
+==Recent Images==
+ * A scrolling block of images that shows the users the most recent images posted to the channel. They can be clicked on to take you right to the post. 
+
+==Scalability==
+ * Built in sharding, middle tier caching, and replication components allow you to scale your deployment out. Advanced BerkeleyDB/SleepyCat storage engine under a highly scalable architecture guaruntee performance and capacity wont be a problem. 
+
 ==Basic Features==
  * Author capturing, with optional email. 
  * Keyboard Controls
@@ -41,5 +50,4 @@
 
 ==What is missing?==
  * Unique sequences per category
- * Middle tier deployment capability
  * Administration (banning)
