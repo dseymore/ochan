@@ -124,15 +124,17 @@ if ( typeof(globalStorage) != 'undefined' && typeof(localStorage) == 'undefined'
 		function watchThisThread(){
 			if ((typeof(currentPostId) != 'undefined') && (typeof(thisThreadId) != 'undefined')){
 	                        var watching;
-				//grabbing the current settings
+							//grabbing the current settings
 	                        if (localStorage.getItem("watching") == null){
 	                                watching = new Object();
 	                        }else{
 	                                watching = YAHOO.lang.JSON.parse(localStorage.getItem("watching"));
 	                        }
-	                        //We are going to set the most recent post id to this watching threads last-viewed-post-id.
-	                        watching[thisThreadId] = currentPostId;
-	                        localStorage.setItem("watching",YAHOO.lang.JSON.stringify(watching));
+	                        if (isThreadWatched()){
+		                        //We are going to set the most recent post id to this watching threads last-viewed-post-id.
+		                        watching[thisThreadId] = currentPostId;
+		                        localStorage.setItem("watching",YAHOO.lang.JSON.stringify(watching));
+		                    }
 			}else{
 				//we still want to call this as soon as the page renders.. 
 				//alert("You shouldn't be calling this method... only for the thread view. Developer issue.");
