@@ -1,0 +1,15 @@
+<ivy-module version="1.0">
+	<info organisation="com.sun.xml.bind"
+		module="jaxb-xjc"
+		revision="2.0"
+		status="release"
+		publication="20070712172232"
+		default="true"
+	/>
+	<configurations>
+		<conf name="default" visibility="public"/>
+	</configurations>
+	<publications>
+		<artifact name="jaxb-xjc" type="jar" ext="jar" conf="default"/>
+	</publications>
+</ivy-module>

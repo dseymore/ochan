@@ -1,0 +1,267 @@
+#*
+Ochan - image board/anonymous forum
+Copyright (C) 2010  David Seymore
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+*#
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<link REL="SHORTCUT ICON" HREF="#springUrl('/favicon.png')">
+		<META HTTP-EQUIV="Pragma" CONTENT="no-cache">
+	    <link type="application/atom+xml" rel="alternate" href="#springUrl('/atom/threads')">
+		<title>$deployment.getSystemTitle()</title>
+	</head>
+	##Ochan dependencies
+	<link rel="stylesheet" type="text/css" href="#springUrl('/style.css')"/>
+	##Jquery for growl-like toast notifications :D
+	<link rel="stylesheet" type="text/css" href="#springUrl('/jgrowl/jquery.jgrowl.css')"/> 
+	<script type="text/javascript" src="#springUrl('/jquery-1.3.2.min.js')"></script>
+	<script type="text/javascript" src="#springUrl('/jgrowl/jquery.jgrowl_minimized.js')"></script>
+	##YUI CSS files:
+        <link rel="stylesheet" type="text/css" href="#springUrl('/yui/base/base-min.css')"/>
+        <link rel="stylesheet" type="text/css" href="#springUrl('/yui/assets/skins/sam/skin.css')"/>
+	##YUI JS files:
+        <script type="text/javascript" src="#springUrl('/yui/yahoo-dom-event/yahoo-dom-event.js')"></script>
+        <script type="text/javascript" src="#springUrl('/yui/element/element-min.js')"></script>
+        <script type="text/javascript" src="#springUrl('/yui/json/json-min.js')"></script>
+        <script type="text/javascript" src="#springUrl('/yui/connection/connection-min.js')"></script>
+        <script type="text/javascript" src="#springUrl('/yui/datasource/datasource-min.js')"></script>
+        ##YUI JS files (for the look & feel)
+        <script type="text/javascript" src="#springUrl('/yui/charts/charts-min.js')"></script>
+        <script type="text/javascript" src="#springUrl('/yui/container/container-min.js')"></script>
+        <script type="text/javascript" src="#springUrl('/yui/imageloader/imageloader-min.js')"></script>
+        <script type="text/javascript" src="#springUrl('/yui/layout/layout-min.js')"></script>
+        <script type="text/javascript" src="#springUrl('/yui/menu/menu-min.js')"></script>
+        <script type="text/javascript" src="#springUrl('/yui/paginator/paginator-min.js')"></script>
+        <script type="text/javascript" src="#springUrl('/yui/editor/simpleeditor-min.js')"></script>
+        <script type="text/javascript" src="#springUrl('/yui/tabview/tabview-min.js')"></script>
+        <script type="text/javascript" src="#springUrl('/yui/dragdrop/dragdrop-min.js')"></script>
+        <script type="text/javascript" src="#springUrl('/yui/button/button-min.js')"></script>	
+	<script type="text/javascript" src="#springUrl('/yui/animation/animation-min.js')"></script>
+	<script language="javascript" type="text/javascript" src="#springUrl('/watching.min.js')"></script>	
+	<script language="javascript" type="text/javascript" src="#springUrl('/recentImages.min.js')"></script>
+	<script language="javascript" type="text/javascript">
+		//variable to keep track of the pages most recent thread id
+        var currentThreadId = $currentThread;
+        
+		## Sets up the ajax loop 
+        window.setInterval(xyz, 2000)
+        
+        ## Calls rest url for the next post
+        function xyz(){
+        	var callback =
+        	{
+        		success: function(response){
+        			var result = YAHOO.lang.JSON.parse(response.responseText);
+        			//notification time!
+					if (result != undefined && result.RemoteThread.identifier != -1){
+						//if it an image post, just show the image!
+						if (result.RemoteThread.firstPost.type == 'IMAGE'){
+							${esc.dollar}.jGrowl('<a href="#springUrl('/viewThread.Ochan')?identifier=' + result.RemoteThread.identifier + '"><img src="#springUrl('/thumb.Ochan')?identifier=' + result.RemoteThread.firstPost.identifier + '&thumb=true"></a>', { life: 5000, header: result.RemoteThread.firstPost.subject});
+						}else{
+							//else, show the subject
+							${esc.dollar}.jGrowl('<a href="#springUrl('/viewThread.Ochan')?identifier=' + result.RemoteThread.identifier + '"/>' + result.RemoteThread.firstPost.subject + '</a>', { life: 5000 });
+						}
+						currentThreadId = result.RemoteThread.identifier;
+					}
+        		},
+        		failure: function(response){
+        			//alert(response);
+        		}
+        	};
+        	var transaction = YAHOO.util.Connect.asyncRequest('GET', '/remote/rest/thread/next/' + currentThreadId + '/', callback, null);
+        }
+	</script>
+	<body class="yui-skin-sam">
+		<!-- Atom feed -->
+		<div style="float: right">
+			<a href="#springUrl('/atom/threads')"><img border="0" src="#springUrl('/15px-Feed-icon.png')" width="15" height="15"></a>
+		</div>
+		<div id="adminBox">
+			<div class="hd"></div>
+			<div class="bd">
+			$announcement
+			</div>
+		</div>
+		<script language="javascript" type="text/javascript">
+                        var adminPanel = new YAHOO.widget.Panel("adminBox", {
+                                width:"30em", visible:true, constraintoviewport:false, modal:false, close: false} );
+                        adminPanel.setFooter("");
+                        adminPanel.render();
+                </script>
+		<div id="categoryBox">
+			<div class="hd">Categories</div>
+			<div class="bd">
+				<ul class="categoryList">
+					#foreach($cat in ${category})
+						<li class="categoryItem"><a href="#springUrl('/chan/')$cat.identifier">$cat.name</a></li>
+					#end
+				</ul>
+			</div>
+		</div>
+		<script language="javascript" type="text/javascript">
+                        var catPanel = new YAHOO.widget.Panel("categoryBox", {
+                                width:"30em", visible:true, constraintoviewport:false, modal:false, close: false} );
+                        catPanel.setFooter("");
+                        catPanel.render();
+                </script>
+		#if ($list.size(${external}) > 0)
+		<div id="externalCategoryList">
+			<div class="hd">External Categories</div>
+			<div class="bd">
+				<ul class="categoryList">
+					#foreach($cat in ${external})
+						<li class="categoryItem"><a href="$cat.host">$cat.name</a></li>
+					#end
+				</ul>
+			</div>
+		</div>
+		<script language="javascript" type="text/javascript">
+                        var externalPanel = new YAHOO.widget.Panel("externalCategoryList", {
+                                width:"30em", visible:true, constraintoviewport:false, modal:false, close: false} );
+                        externalPanel.setFooter("");
+                        externalPanel.render();
+                </script>
+		#end
+		<div id="recentPanel">
+			<div class="hd">Recent Images</div>
+			<div class="bd">
+				<div id="recentImagesDiv">
+					##<!-- some temporary images to keep the shape/dimensions correct before the images run in -->
+					<span id="recent0" width="160" height="160" style="border-style: dashed; border-width: 1px; padding-top: 140px; padding-left: 160px; background-image: url(/blankThumb.jpg); background-repeat: no-repeat; background-position: center top;"><img width="1" height="160" src="/blankThumb.jpg"/></span>
+					<span id="recent1" width="160" height="160" style="border-style: dashed; border-width: 1px; padding-top: 140px; padding-left: 160px; background-image: url(/blankThumb.jpg); background-repeat: no-repeat; background-position: center top;"><img width="1" height="160" src="/blankThumb.jpg"/></span>
+					<span id="recent2" width="160" height="160" style="border-style: dashed; border-width: 1px; padding-top: 140px; padding-left: 160px; background-image: url(/blankThumb.jpg); background-repeat: no-repeat; background-position: center top;"><img width="1" height="160" src="/blankThumb.jpg"/></span>
+					<span id="recent3" width="160" height="160" style="border-style: dashed; border-width: 1px; padding-top: 140px; padding-left: 160px; background-image: url(/blankThumb.jpg); background-repeat: no-repeat; background-position: center top;"><img width="1" height="160" src="/blankThumb.jpg"/></span>
+				</div>
+			</div>
+		</div>
+		<script language="javascript" type="text/javascript">
+			//panel for recent stuff
+                        var recentPanel = new YAHOO.widget.Panel("recentPanel", { width:"30em", visible:true, constraintoviewport:false, modal:false, close: false} );
+                        recentPanel.setFooter("");
+                        recentPanel.render();
+		</script>
+		<div id="statsPanel">
+			<div class="hd">Statistics</div>
+			<div class="bd">
+				<div id="statisticsDiv">
+	                                ##Statistics will be populated intohere by stats() method.
+	                        </div>
+			</div>
+		</div>
+		<script language="javascript" type="text/javascript">
+			// Instantiate a panel for stats
+                        var statsPanel = new YAHOO.widget.Panel("statsPanel", {
+                                width:"30em", visible:true, constraintoviewport:false, modal:false, close: false} );
+                        statsPanel.setFooter("");
+                        statsPanel.render();
+			##STATISTICS!!!
+			function stats(){
+				var callback =
+	        	{
+	        		success: function(response){
+	        			var result = YAHOO.lang.JSON.parse(response.responseText);
+						if (result != undefined){
+							var div = document.getElementById('statisticsDiv');
+							if ( div.hasChildNodes() )
+							{
+							    while ( div.childNodes.length >= 1 )
+							    {
+							        div.removeChild( div.firstChild );       
+							    } 
+							}
+							
+							var ul = document.createElement("ul");
+							var li1 = document.createElement("li");
+							li1.innerHTML = "Number of Files: " + result.RemoteStatistics.numberOfFiles;
+							ul.appendChild(li1);
+							var li2 = document.createElement("li");
+							li2.innerHTML = "Total Content Size: " + result.RemoteStatistics.totalContentSize + ' bytes';
+							ul.appendChild(li2);
+							var li3 = document.createElement("li");
+							li3.innerHTML = "Threads: " + result.RemoteStatistics.numberOfThreads;
+							ul.appendChild(li3);
+							var li4 = document.createElement("li");
+							li4.innerHTML = "Posts: " + result.RemoteStatistics.numberOfPosts;
+							ul.appendChild(li4);
+							var li5 = document.createElement("li");
+							li5.innerHTML = "Posts with Images: " + result.RemoteStatistics.postswithImages;
+							ul.appendChild(li5);
+							div.appendChild(ul);
+							
+						}
+	        		},
+	        		failure: function(response){
+	        			//alert(response);
+	        		}
+	        	};
+	        	var transaction = YAHOO.util.Connect.asyncRequest('GET', '/remote/rest/stats/current/', callback, null);
+			}
+			## Sets up the ajax loop
+	        	window.setInterval(stats, 60000);
+        	
+	        	stats();
+		</script>
+		##lets get this freaking watching thing going on 
+		<div id="watchbar" class="watchbar">
+                        <div id="watchPanel"><div class="bd"><div id="watchPanelBody"></div></div></div>
+                </div>
+		<script language="javascript" type="text/javascript">
+			setupWatchPanel();
+		</script>
+		<script language="javascript" type="text/javascript">
+			//Setup the control keys and help
+	                function growlHelp(){
+	                        ${esc.dollar}.jGrowl('<ul>' +
+	                        '<li>ALT+SHIFT+W Help</li>' +
+				'<li>ALT+SHIFT+C Open Thread Watching Panel</li>' +
+	                        '</ul>', { life: 10000, header: "Help"});
+        	        }
+
+                	YAHOO.util.Event.onDOMReady(function () {
+				##alt + shift + c = toggle the watch panel
+				var watchKey = new YAHOO.util.KeyListener(document, {alt: true, shift:true, keys:67 }, { fn:function(event){
+					watchPanel.show();
+				} } );
+				watchKey.enable();
+
+				##alt + shift + w = help (fucking H is being used by the help in the browser.. damnit)
+        	                var helpKey = new YAHOO.util.KeyListener(document, {alt: true, shift:true, keys:87 }, { fn:function(event){
+	                                growlHelp();
+                	        } } );
+                        	helpKey.enable();
+
+			});
+
+			//Do the alignment
+			catPanel.cfg.setProperty("context",["adminBox","tl","bl"]);
+                        catPanel.align("tl","bl",[-1,0]);
+			if (document.getElementById("externalCategoryList") != undefined){
+				externalPanel.cfg.setProperty("context",["categoryBox","tl","bl"]);
+	                        externalPanel.align("tl","bl",[-1,0]);
+                                recentPanel.cfg.setProperty("context",["externalCategoryList","tl","bl"]);
+                                recentPanel.align("tl","bl",[-1,0]);
+                        }else{
+                                recentPanel.cfg.setProperty("context",["categoryBox","tl","bl"]);
+                                recentPanel.align("tl","bl",[-1,0]);
+                        }
+			statsPanel.cfg.setProperty("context",["recentPanel","tl","bl"]);
+                        statsPanel.align("tl","bl",[-1,0]);
+			##Weird issue with the images loading up after the panels align.. which makes them unaligned again. 
+			setTimeout("statsPanel.align();",500);
+                </script>
+	</body>
+</html> 

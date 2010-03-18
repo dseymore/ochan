@@ -1,0 +1,150 @@
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jaxws="http://cxf.apache.org/jaxws"
+	xmlns:http-conf="http://cxf.apache.org/transports/http/configuration" xmlns:jaxrs="http://cxf.apache.org/jaxrs" xmlns:a="http://abdera.apache.org"
+	xsi:schemaLocation="
+http://cxf.apache.org/transports/http/configuration http://cxf.apache.org/schemas/configuration/http-conf.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd
+http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd
+http://abdera.apache.org http://abdera.apache.org/schemas/abdera-spring.xsd">
+	<import resource="classpath:META-INF/cxf/cxf.xml" />
+	<import resource="classpath:META-INF/cxf/cxf-extension-soap.xml" />
+	<import resource="classpath:META-INF/cxf/cxf-servlet.xml" />
+	<import resource="service-beans.xml" />
+	<import resource="classpath:META-INF/cxf/cxf-extension-xml.xml" />
+	<import resource="classpath:META-INF/cxf/cxf-extension-jaxrs-binding.xml" />
+
+
+	
+	<!--  Sync Service -->
+	<bean id="synchroService" class="org.ochan.dpl.service.LocalSynchroService">
+		<property name="environment" ref="sleepy"/>
+	</bean>
+	<jaxws:endpoint id="Synchro" implementor="#synchroService" address="/synchro" />
+	
+	<!--  Sync client -->
+	<bean id="synchroClientFactory" class="org.apache.cxf.jaxws.JaxWsProxyFactoryBean">
+		<property name="serviceClass" value="org.ochan.service.SynchroService" />
+		<property name="address" value="http://localhost:8080/remote/synchro" />
+	</bean>
+	
+	<!--  category Service -->
+	<bean id="categoryListBean" class="org.ochan.service.remote.webservice.CategoryListImpl">
+		<property name="categoryService" ref="localCategoryService" />
+	</bean>
+
+	<!--  category client  -->
+	<jaxws:endpoint id="CategoryList" implementor="#categoryListBean" address="/category" />
+<!--	I would love to use spring to build me a client.. but..problem is.. we dont know the url, and the client comes configured-->
+<!--	<bean id="client" class="org.ochan.service.remote.webservice.CategoryList"-->
+<!--		factory-bean="clientFactory" factory-method="create" />-->
+<!---->
+	<bean id="categoryClientFactory" class="org.apache.cxf.jaxws.JaxWsProxyFactoryBean">
+		<property name="serviceClass" value="org.ochan.service.remote.webservice.CategoryList" />
+		<property name="address" value="http://localhost:8080/remote/category" />
+	</bean>
+	<!--  End category client -->
+	
+	<!--  our JMX interaction guy  -->
+	<bean id="hostlist" class="org.ochan.service.remote.jmx.HostList">
+		<property name="categoryListClient" ref="categoryClientFactory" />
+		<property name="externalCategoryService" ref="localExternalCategoryService" />
+	</bean>
+	<http-conf:conduit name="*.http-conduit">
+		<http-conf:client AllowChunking="false" />
+	</http-conf:conduit>
+	
+	<!--  blob service -->
+		<jaxws:endpoint id="blobServiceClient" implementor="#localBlobService" address="/blob" />
+		<bean id="blobServiceClientFactory" class="org.apache.cxf.jaxws.JaxWsProxyFactoryBean">
+			<property name="serviceClass" value="org.ochan.service.BlobService" />
+			<property name="address" value="http://localhost:8080/remote/blob" />
+		</bean>
+	<!--  end blob -->
+	<!--  Post Service -->
+		<jaxws:endpoint id="postServiceClient" implementor="#localPostService" address="/post" />
+		<bean id="postServiceClientFactory" class="org.apache.cxf.jaxws.JaxWsProxyFactoryBean">
+			<property name="serviceClass" value="org.ochan.service.PostService" />
+			<property name="address" value="http://localhost:8080/remote/post" />
+		</bean>
+	
+	<!--  end post service -->
+	
+	<!--  Thread Service -->
+		<jaxws:endpoint id="threadServiceClient" implementor="#localThreadService" address="/thread" />
+		<bean id="threadServiceClientFactory" class="org.apache.cxf.jaxws.JaxWsProxyFactoryBean">
+			<property name="serviceClass" value="org.ochan.service.ThreadService" />
+			<property name="address" value="http://localhost:8080/remote/thread" />
+		</bean>
+	<!--  end thread service -->
+	<!--  Category Service -->
+		<jaxws:endpoint id="categoryServiceClient" implementor="#localCategoryService" address="/allCategory" />
+		<bean id="categoryServiceClientFactory" class="org.apache.cxf.jaxws.JaxWsProxyFactoryBean">
+			<property name="serviceClass" value="org.ochan.service.CategoryService" />
+			<property name="address" value="http://localhost:8080/remote/allCategory" />
+		</bean>
+	<!--  end category service -->
+		
+	<bean id="shardConfiguration" class="org.ochan.service.proxy.config.ShardConfiguration">
+		<property name="synchro" ref="synchroClientFactory"/>
+	</bean>
+
+	<!--  Post Service -->
+	<!--  no client ATM -->
+	<bean id="postListBean" class="org.ochan.service.remote.webservice.PostListImpl">
+		<property name="postService" ref="proxyPostService" />
+		<property name="threadService" ref="proxyThreadService" />
+		<property name="cache" ref="postListCache"/>
+	</bean>
+	<!--  Thread Support Service -->
+	<!--  no client ATM -->
+	<bean id="threadSupportBean" class="org.ochan.service.remote.webservice.ThreadSupportImpl">
+		<property name="threadService" ref="proxyThreadService" />
+		<property name="postService" ref="proxyPostService" />
+	</bean>
+	<!-- Statistics Service -->
+	<bean id="statsBean" class="org.ochan.service.remote.webservice.InstanceStatisticsImpl">
+		<property name="blobService" ref="proxyBlobService" />
+	</bean>
+	<!--  rest service endpoint -->
+	<jaxrs:server id="restEndpoint" address="/rest/">
+		<jaxrs:serviceBeans>
+	    	<ref bean="postListBean" />
+	    	<ref bean="threadSupportBean"/>
+	    	<ref bean="statsBean"/>
+	    </jaxrs:serviceBeans>
+	</jaxrs:server>
+	
+	
+	
+	
+	<!--  Atom Feeds -->
+	<bean id="threadCollectionAdapter" class="org.ochan.atom.ThreadCollectionAdapter">
+<!-- setting the href here doesn't work.. it gets encoded.. which is fail. -->
+<!--		<property name="href" value="threads"/>-->
+		<property name="postService" ref="proxyPostService" />
+		<property name="threadService" ref="proxyThreadService"/>
+		<property name="categoryService" ref="proxyCategoryService"/>
+		<property name="cache" ref="threadCache"/>
+	</bean>
+	<!-- Abdera -->
+	<a:provider>
+		<property name="workspaces">
+			<ref bean="simpleWorkspace" />
+		</property>
+		<a:targetResolver>
+			<a:regexTargetResolver>
+				<a:collection>(.*)threads(.*)</a:collection>
+				<a:entry>/atom/feed/([^/#?]+)(\?[^#]*)?</a:entry>
+				<a:service>/atom(\?[^#]*)?</a:service>
+			</a:regexTargetResolver>
+		</a:targetResolver>
+	</a:provider>
+	<bean id="simpleWorkspace" class="org.apache.abdera.protocol.server.impl.SimpleWorkspaceInfo">
+		<property name="title" value="Ochan Workspace" />
+		<property name="collections">
+			<list>
+				<ref bean="threadCollectionAdapter" />
+			</list>
+		</property>
+	</bean>
+</beans>
