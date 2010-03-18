@@ -171,8 +171,6 @@ public class ViewCategoryController extends SimpleFormController {
 			if (threads != null) {
 				for (Thread t : threads) {
 					t.setPosts(getPostService().retrieveThreadPosts(t.getIdentifier()));
-					//FIXME - there could potentially be a problem with a thread/post relationship..
-					//if there is no posts for that thread, don't add it to the list. 
 					for (Post p : t.getPosts()) {
 						if (p instanceof TextPost) {
 							TextPost tp = (TextPost) p;

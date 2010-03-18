@@ -304,29 +304,12 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 					    toolbar: {
 					        titlebar: 'Comment',
 					        buttons: [
-					            { group: 'textstyle', label: 'Font Style',
+					            { group: 'textstyle', label: 'Options',
 					                buttons: [
-					                    { type: 'push', label: 'Bold', value: 'bold' },
-					                    { type: 'push', label: 'Italic', value: 'italic' },
-					                    { type: 'push', label: 'Underline', value: 'underline' },
+					                    { type: 'push', label: 'HTML Link', value: 'createlink', disabled: true  },
 					                    { type: 'separator' },
-					                    { type: 'select', label: 'Arial', value: 'fontname', disabled: true,
-					                        menu: [
-					                            { text: 'Arial', checked: true },
-					                            { text: 'Arial Black' },
-					                            { text: 'Comic Sans MS' },
-					                            { text: 'Courier New' },
-					                            { text: 'Lucida Console' },
-					                            { text: 'Tahoma' },
-					                            { text: 'Times New Roman' },
-					                            { text: 'Trebuchet MS' },
-					                            { text: 'Verdana' }
-					                        ]
-					                    },
-					                    { type: 'spin', label: '10', value: 'fontsize', range: [ 9, 35 ], disabled: true },
-					                    { type: 'separator' },
-					                    { type: 'color', label: 'Font Color', value: 'forecolor', disabled: true },
-					                    { type: 'color', label: 'Background Color', value: 'backcolor', disabled: true }
+					                    { type: 'push', label: 'Create an Unordered List', value: 'insertunorderedlist' },
+	            						{ type: 'push', label: 'Create an Ordered List', value: 'insertorderedlist' }
 					                ]
 					            }
 					        ]
