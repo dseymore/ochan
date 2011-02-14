@@ -1,32 +1,14 @@
-/*
-Ochan - image board/anonymous forum
-Copyright (C) 2010  David Seymore
-
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- */
 package org.ochan.dpl.service;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.ochan.dpl.OchanEnvironment;
+import org.ochan.dpl.SleepyEnvironment;
 import org.ochan.dpl.ThreadDPL;
-import org.ochan.dpl.replication.TransactionTemplate;
 import org.ochan.entity.Category;
 import org.ochan.entity.Thread;
 import org.ochan.job.DeleteThreadJob;
@@ -40,16 +22,11 @@ import org.springframework.jmx.export.annotation.ManagedResource;
 
 import com.sleepycat.persist.EntityCursor;
 
-/**
- * 
- * @author dseymore
- * 
- */
 @ManagedResource(description = "Local Thread Service", objectName = "Ochan:service=local,name=LocalThreadService", logFile = "jmx.log")
 public class LocalThreadService implements ThreadService {
 
 	private PostService postService;
-	private OchanEnvironment environment;
+	private SleepyEnvironment environment;
 	private static final Log LOG = LogFactory.getLog(LocalThreadService.class);
 
 	/**
@@ -64,7 +41,7 @@ public class LocalThreadService implements ThreadService {
 	 * @param environment
 	 *            the environment to set
 	 */
-	public void setEnvironment(OchanEnvironment environment) {
+	public void setEnvironment(SleepyEnvironment environment) {
 		this.environment = environment;
 	}
 
@@ -112,27 +89,23 @@ public class LocalThreadService implements ThreadService {
 	// END STATS
 
 	@Override
-	public void createThread(final Long thisIdentifier, final Long category, final String author, final String subject, final String url, final String email, final String content, final Byte[] file, final String filename) {
+	public void createThread(Long thisIdentifier, Long category, String author, String subject, String url, String email, String content, Byte[] file, String filename) {
 		createCount++;
 		try {
-			final ThreadDPL thread = new ThreadDPL();
+			ThreadDPL thread = new ThreadDPL();
 			thread.setIdentifier(thisIdentifier);
 			thread.setCategory(category);
 			thread.setStartDate(new Date());
 			thread.setEnabled(false);
-
-			new TransactionTemplate(environment) {
-				public void doInTransaction() {
-					// save the thread
-					environment.threadByIdentifier().put(thread);
-					// save the post
-					postService.createPost(null, thread.getIdentifier(), author, subject, email, url, content, file, filename);
-					// and then update.
-					thread.setEnabled(true);
-					environment.threadByIdentifier().put(thread);
-				}
-			}.run();
-
+			
+			// save the thread
+			environment.threadByIdentifier.put(thread);
+			// save the post
+			postService.createPost(null, thread.getIdentifier(), author, subject, email, url, content, file, filename);
+			//and then update. 
+			thread.setEnabled(true);
+			environment.threadByIdentifier.put(thread);
+			
 		} catch (Exception e) {
 			LOG.error("Unable to store a new thread.", e);
 		}
@@ -141,14 +114,10 @@ public class LocalThreadService implements ThreadService {
 	@ManagedOperation(description = "Delete a Thread (delete the posts first...)!")
 	@ManagedOperationParameters( { @ManagedOperationParameter(name = "identifier", description = "The id of the thread as a Long object (L at the end)") })
 	@Override
-	public void deleteThread(final Long identifier) {
+	public void deleteThread(Long identifier) {
 		deleteCount++;
 		try {
-			new TransactionTemplate(environment) {
-				public void doInTransaction() {
-					environment.threadByIdentifier().delete(identifier);
-				}
-			}.run();
+			environment.threadByIdentifier.delete(identifier);
 		} catch (Exception e) {
 			LOG.error("Unable to delete.", e);
 		}
@@ -169,7 +138,7 @@ public class LocalThreadService implements ThreadService {
 	public Thread getThread(Long identifier) {
 		getCount++;
 		try {
-			return map(environment.threadByIdentifier().get(identifier));
+			return map(environment.threadByIdentifier.get(identifier));
 		} catch (Exception e) {
 			LOG.error("Unable to get.", e);
 		}
@@ -185,7 +154,7 @@ public class LocalThreadService implements ThreadService {
 		try {
 			// first lets find by category.
 			if (criteria != null && criteria.getCategory() != null) {
-				EntityCursor<ThreadDPL> threadsByCatDPL = environment.threadByCategory().subIndex((Long) criteria.getCategory()).entities();
+				EntityCursor<ThreadDPL> threadsByCatDPL = environment.threadByCategory.subIndex((Long) criteria.getCategory()).entities();
 				for (ThreadDPL dpl : threadsByCatDPL) {
 					threads.add(map(dpl));
 				}
@@ -195,7 +164,7 @@ public class LocalThreadService implements ThreadService {
 			if (criteria != null && criteria.getDeleteQueue() != null) {
 				// delete queue, means delete date is not null.
 				if (threads.isEmpty()) {
-					EntityCursor<ThreadDPL> allthreads = environment.threadByIdentifier().entities();
+					EntityCursor<ThreadDPL> allthreads = environment.threadByIdentifier.entities();
 					for (ThreadDPL dpl : allthreads) {
 						if (dpl.getDeleteDate() != null) {
 							threads.add(map(dpl));
@@ -215,7 +184,7 @@ public class LocalThreadService implements ThreadService {
 			}
 			if (criteria != null && criteria.getMax() != null) {
 				if (threads.isEmpty()) {
-					EntityCursor<ThreadDPL> allthreads = environment.threadByIdentifier().entities();
+					EntityCursor<ThreadDPL> allthreads = environment.threadByIdentifier.entities();
 					ThreadDPL max = null;
 					for (ThreadDPL dpl : allthreads) {
 						if (max == null || dpl.getIdentifier().compareTo(max.getIdentifier()) > 0) {
@@ -241,7 +210,7 @@ public class LocalThreadService implements ThreadService {
 			}
 			if (criteria != null && criteria.getNewerThan() != null) {
 				if (threads.isEmpty()) {
-					EntityCursor<ThreadDPL> allthreads = environment.threadByIdentifier().entities();
+					EntityCursor<ThreadDPL> allthreads = environment.threadByIdentifier.entities();
 					ThreadDPL newer = null;
 					for (ThreadDPL dpl : allthreads) {
 						if (newer == null && dpl.getIdentifier().compareTo((Long) criteria.getNewerThan()) > 0) {
@@ -253,7 +222,6 @@ public class LocalThreadService implements ThreadService {
 					if (newer != null) {
 						threads.add(map(newer));
 					}
-					allthreads.close();
 				} else {
 					// drilling down existing return
 					List<Thread> newThreads = new ArrayList<Thread>();
@@ -271,7 +239,7 @@ public class LocalThreadService implements ThreadService {
 			if (criteria != null && criteria.getNotDeleted() != null) {
 				// means delete date is null.
 				if (threads.isEmpty()) {
-					EntityCursor<ThreadDPL> allthreads = environment.threadByIdentifier().entities();
+					EntityCursor<ThreadDPL> allthreads = environment.threadByIdentifier.entities();
 					for (ThreadDPL dpl : allthreads) {
 						if (dpl.getDeleteDate() == null) {
 							threads.add(map(dpl));
@@ -304,15 +272,11 @@ public class LocalThreadService implements ThreadService {
 	@Override
 	public void updateThread(Thread thread) {
 		try {
-			final ThreadDPL dpl = environment.threadByIdentifier().get(thread.getIdentifier());
+			ThreadDPL dpl = environment.threadByIdentifier.get(thread.getIdentifier());
 			dpl.setDeleteCount(thread.getDeleteCount());
 			dpl.setDeleteDate(thread.getDeleteDate());
 			// and put to update
-			new TransactionTemplate(environment) {
-				public void doInTransaction() {
-					environment.threadByIdentifier().put(dpl);
-				}
-			}.run();
+			environment.threadByIdentifier.put(dpl);
 		} catch (Exception e) {
 			LOG.error("I suck at updating a thread", e);
 		}

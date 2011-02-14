@@ -1,26 +1,10 @@
-/*
-Ochan - image board/anonymous forum
-Copyright (C) 2010  David Seymore
-
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-*/
 package org.ochan.control;
 
 import static org.ochan.control.StaticNames.CATEGORY_LIST;
 import static org.ochan.control.StaticNames.EXTERNAL_CATEGORY_LIST;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,9 +14,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.sf.ehcache.Ehcache;
+import net.sf.ehcache.Element;
 
 import org.ochan.entity.Category;
 import org.ochan.entity.ExternalCategory;
+import org.ochan.entity.ImagePost;
+import org.ochan.entity.Post;
 import org.ochan.entity.Thread;
 import org.ochan.service.AnnouncementService;
 import org.ochan.service.CategoryService;
@@ -45,10 +32,6 @@ import org.springframework.jmx.export.annotation.ManagedResource;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 
-/**
- * This prepares the content for the main page generation.
- * @author dseymore
- */
 @ManagedResource(description = "ViewMainPage", objectName = "Ochan:util=controller,name=ViewMainPage", logFile = "jmx.log")
 public class CategoryListController implements Controller {
 
@@ -173,9 +156,68 @@ public class CategoryListController implements Controller {
 		List<ExternalCategory> externalList = getExternalCategoryService().retrieveCategories(null);
 		
 		
+		//Get a cached list of all threads and posts.. yay!
+		//semi-hack-i-tude.. need to push this down to a service level 
+		//(its copypasta from the threadcollectionadapter)
+		List<Thread> toreturn = new ArrayList<Thread>();
+		Element o = cache.get("1");
+		if (o == null || o.getObjectValue() == null || o.isExpired()){
+			List<Category> cats = categoryService.retrieveCategories();
+			for (Category c : cats){
+				ThreadCriteria criteria = new ThreadService.ThreadCriteria();
+				criteria.setCategory(c.getIdentifier());
+				List<Thread> threads = threadService.retrieveThreads(criteria);
+				//categories have 0 threads to begin with.. 
+				if (threads != null){
+					for (Thread thread : threads){
+						thread.setPosts(postService.retrieveThreadPosts(thread.getIdentifier()));
+						toreturn.add(thread);
+					}
+				}
+			}
+			Collections.sort(toreturn);
+			cache.put(new Element("1",toreturn));
+		}else{
+			//unsafe!
+			toreturn = (ArrayList<Thread>)o.getObjectValue();
+		}
+		
 		Map controlModel = new HashMap();
 		controlModel.put(CATEGORY_LIST, categories);
 		controlModel.put(EXTERNAL_CATEGORY_LIST, externalList);
+
+		//get the most recent three image posts (this logic is shit!)
+		Post p1 = null;
+		Post p2 = null;
+		Post p3 = null;
+		for (Thread t : toreturn){
+			boolean foundOne = false;
+			//walk backwards until we find one
+			//this handles when there is only one post or less than a lot.
+			for (int i = 1; i <= t.getPosts().size() && !foundOne && (
+					!(p1 !=null && !p1.getParent().getIdentifier().equals(t.getIdentifier())) 
+					|| !(p2 != null && !p2.getParent().getIdentifier().equals(t.getIdentifier())) 
+					|| !(p3 != null && !p3.getParent().getIdentifier().equals(t.getIdentifier()))); i++){
+				Post p = t.getPosts().get(t.getPosts().size() -i); 
+				if ( p instanceof ImagePost){ 
+					if (p1 == null){
+						p1 = p;
+					}else if (p2 == null){
+						p2 = p;
+					}else if (p3 == null){
+						p3 = p;
+					}
+					if (p3 != null){
+						//jump out!
+						break;
+					}
+					foundOne = true;
+				}
+			}
+		}
+		controlModel.put("P1",p1);
+		controlModel.put("P2",p2);
+		controlModel.put("P3",p3);
 		
 		//find the current most-recent thread's id
 		{

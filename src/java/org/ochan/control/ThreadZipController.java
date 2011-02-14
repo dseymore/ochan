@@ -1,21 +1,3 @@
-/*
-Ochan - image board/anonymous forum
-Copyright (C) 2010  David Seymore
-
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- */
 package org.ochan.control;
 
 import java.io.ByteArrayOutputStream;
@@ -49,17 +31,10 @@ import org.springframework.util.FileCopyUtils;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 
-/**
- * This class handles generating a zip of the thread. We should probably
- * consider saving these to the filesystem and busting them when a new post is
- * made.. since this is probably pretty expensive to make.
- * 
- * @author dseymore
- * 
- */
 @ManagedResource(description = "ThreadZIp", objectName = "Ochan:util=controller,name=ThreadZip", logFile = "jmx.log")
-public class ThreadZipController implements Controller {
+public class ThreadZipController implements Controller{
 
+	
 	private static final Log LOG = LogFactory.getLog(ThreadZipController.class);
 
 	private static final Preferences PREFS = Preferences.userNodeForPackage(ThreadZipController.class);
@@ -68,126 +43,121 @@ public class ThreadZipController implements Controller {
 	private BlobService blobService;
 
 	/**
-	 * The default zip generation length of time that would cause an exception
-	 * to be logged
+	 * The default zip generation length of time that would cause an exception to be logged
 	 */
-	private static final String LOG_ON_THIS_TIME = "200";
+	private static final String LOG_ON_THIS_TIME = "200"; 
 	public static final Long REQUESTS_PER_MINUTE = Long.valueOf(10);
-
-	// statistics are goooood
+	
+	//statistics are goooood
 	private static long totalTimeInMillis = 0;
 	private static long numberOfZips = 0;
 	private static long lastTimeInMillis = 0;
-
+	
 	private static long totalGenerationTimeInMillis = 0;
 	private static long lastGenerationTimeInMillis = 0;
 	private static Stopwatch requestWaitTime = SimonManager.getStopwatch(ThreadZipController.class.getName() + "Request");
-
-	@ManagedAttribute(description = "The average time a requests waits around being throttled")
-	public double getRequestWaitTime() {
+	
+	
+	@ManagedAttribute(description="The average time a requests waits around being throttled")
+	public double getRequestWaitTime(){
 		return requestWaitTime.getStatProcessor().getMean();
 	}
-
-	@ManagedAttribute(description = "The number of requests the thumbnailer will pump out a minute")
-	public String getRequestsPerMinute() {
+	@ManagedAttribute(description="The number of requests the thumbnailer will pump out a minute")
+	public String getRequestsPerMinute(){
 		return PREFS.get("requestsPerMinute", REQUESTS_PER_MINUTE.toString());
 	}
-
-	@ManagedAttribute(description = "The number of requests the thumbnailer will pump out a minute")
-	public void setRequestsPerMinute(String requestsPerMinute) {
-		if (StringUtils.isNumeric(requestsPerMinute)) {
+	@ManagedAttribute(description="The number of requests the thumbnailer will pump out a minute")
+	public void setRequestsPerMinute(String requestsPerMinute){
+		if (StringUtils.isNumeric(requestsPerMinute)){
 			PREFS.put("requestsPerMinute", requestsPerMinute);
 		}
 	}
-
+	
 	/**
 	 * 
 	 * @return
 	 */
-	@ManagedAttribute(description = "The time in milliseconds that is threshold before logging exceptions due to poor performance.")
-	public Long getTimeLength() {
+	@ManagedAttribute(description="The time in milliseconds that is threshold before logging exceptions due to poor performance.")
+	public Long getTimeLength(){
 		return new Long(PREFS.get("TIME", LOG_ON_THIS_TIME));
 	}
-
 	/**
 	 * 
 	 * @param value
 	 */
-	@ManagedAttribute(defaultValue = "200", description = "The time in milliseconds that is threshold before logging exceptions due to poor performance.", persistPolicy = "OnUpdate")
-	@ManagedOperationParameters(@ManagedOperationParameter(description = "Time in Milliseconds", name = "value"))
-	@ManagedOperation(description = "")
-	public void setTimeLength(String value) {
+	@ManagedAttribute(defaultValue="200", description="The time in milliseconds that is threshold before logging exceptions due to poor performance.", persistPolicy="OnUpdate")
+	@ManagedOperationParameters(@ManagedOperationParameter(description="Time in Milliseconds", name="value"))
+	@ManagedOperation(description="")
+	public void setTimeLength(String value){
 		PREFS.put("TIME", value);
 	}
-
+	
 	/**
 	 * 
 	 * @return
 	 */
-	@ManagedAttribute(description = "The average time in milliseconds the system is encountering on zip requests")
-	public long getAverageTimeInMillis() {
-		if (totalTimeInMillis != 0 && numberOfZips != 0) {
+	@ManagedAttribute(description="The average time in milliseconds the system is encountering on zip requests")
+	public long getAverageTimeInMillis(){
+		if (totalTimeInMillis != 0 && numberOfZips != 0){
 			return totalTimeInMillis / numberOfZips;
 		}
 		return 0;
 	}
-
+	
 	/**
 	 * 
 	 * @return
 	 */
-	@ManagedAttribute(description = "The average time in milliseconds the system is encountering on generating zip requests")
-	public long getAverageGenerationTimeInMillis() {
-		if (totalGenerationTimeInMillis != 0 && numberOfZips != 0) {
+	@ManagedAttribute(description="The average time in milliseconds the system is encountering on generating zip requests")
+	public long getAverageGenerationTimeInMillis(){
+		if (totalGenerationTimeInMillis != 0 && numberOfZips != 0){
 			return totalGenerationTimeInMillis / numberOfZips;
 		}
 		return 0;
 	}
-
+	
 	/**
 	 * 
 	 * @return
 	 */
-	@ManagedAttribute(description = "The number of zips that have been requested")
-	public long getNumberOfZips() {
+	@ManagedAttribute(description="The number of zips that have been requested")
+	public long getNumberOfZips(){
 		return numberOfZips;
 	}
-
 	/**
 	 * 
 	 * @return
 	 */
-	@ManagedAttribute(description = "The last time we generated & transferred a zip in milliseconds")
-	public long getLastTimeInMIllis() {
+	@ManagedAttribute(description="The last time we generated & transferred a zip in milliseconds")
+	public long getLastTimeInMIllis(){
 		return lastTimeInMillis;
 	}
-
 	/**
 	 * 
 	 * @return
 	 */
-	@ManagedAttribute(description = "The total time in milliseconds it has taken to generate & transferred all zips")
-	public long getTotalTimeInMIllis() {
+	@ManagedAttribute(description="The total time in milliseconds it has taken to generate & transferred all zips")
+	public long getTotalTimeInMIllis(){
 		return totalTimeInMillis;
 	}
-
+	
 	/**
 	 * 
 	 * @return
 	 */
-	@ManagedAttribute(description = "The last time we generated a zip in milliseconds")
-	public long getLastGenerationTimeInMillis() {
+	@ManagedAttribute(description="The last time we generated a zip in milliseconds")
+	public long getLastGenerationTimeInMillis(){
 		return lastGenerationTimeInMillis;
 	}
-
 	/**
 	 * 
 	 * @return
 	 */
-	@ManagedAttribute(description = "The total time in milliseconds it has taken to generate all zips")
-	public long getTotalGenerationTimeInMIllis() {
+	@ManagedAttribute(description="The total time in milliseconds it has taken to generate all zips")
+	public long getTotalGenerationTimeInMIllis(){
 		return totalGenerationTimeInMillis;
 	}
+	
 
 	/**
 	 * @return the postService
@@ -203,64 +173,61 @@ public class ThreadZipController implements Controller {
 	public void setPostService(PostService postService) {
 		this.postService = postService;
 	}
-
+	
 	/**
-	 * @param blobService
-	 *            the blobService to set
+	 * @param blobService the blobService to set
 	 */
 	public void setBlobService(BlobService blobService) {
 		this.blobService = blobService;
 	}
-
 	/**
-	 * For a parameter of 'identifier' that is a thread, it creates a zip output
-	 * of all the images.
+	 * For a parameter of 'identifier' that is a thread, it creates a zip output of all the images. 
 	 */
 	public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		// lets add throttling capability
+		//lets add throttling capability
 		Split requestSplit = requestWaitTime.start();
-		Throttler requestThrottler = new Throttler(Long.valueOf(getRequestsPerMinute()).intValue(), 60000);
+		Throttler requestThrottler = new Throttler(Long.valueOf(getRequestsPerMinute()).intValue(),60000);
 		requestThrottler.StartRequest();
 		requestSplit.stop();
 		// capture start of call
 		long start = new Date().getTime();
 		try {
 			numberOfZips++;
-			// parse out the id
+			//parse out the id
 			Long id = Long.valueOf(request.getParameter("identifier"));
 			org.ochan.entity.Thread t = new org.ochan.entity.Thread();
 			t.setIdentifier(id);
-			// grab the posts
+			//grab the posts
 			List<Post> posts = postService.retrieveThreadPosts(t.getIdentifier());
 			ByteArrayOutputStream bos = new ByteArrayOutputStream();
-			ZipOutputStream zipfile = new ZipOutputStream(bos);
-			// for each post
-			for (Post post : posts) {
-				// if its an image
-				if (post instanceof ImagePost) {
-					ImagePost image = (ImagePost) post;
+		    ZipOutputStream zipfile = new ZipOutputStream(bos);
+		    //for each post
+			for(Post post : posts){
+				//if its an image
+				if (post instanceof ImagePost){
+					ImagePost image = (ImagePost)post;
 					Byte[] fullImageBytes = blobService.getBlob(image.getImageIdentifier());
-					// create a zip entry
+					//create a zip entry
 					ZipEntry zipentry = new ZipEntry(post.getIdentifier() + ".jpg");
-					zipfile.putNextEntry(zipentry);
-					// expensive object to primitive (but simple)
-					byte[] datum = new byte[fullImageBytes.length];
+			        zipfile.putNextEntry(zipentry);
+			        //expensive object to primitive (but simple)
+			        byte[] datum = new byte[fullImageBytes.length];
 					int i = 0;
 					for (Byte val : fullImageBytes) {
 						datum[i] = val.byteValue();
 						i++;
 					}
-					// write the byte array
-					zipfile.write((byte[]) datum);
+					//write the byte array
+			        zipfile.write((byte[]) datum);
 				}
 			}
-			// close the zip
+			//close the zip
 			zipfile.close();
 			byte[] datum = bos.toByteArray();
 			long generationEnd = new Date().getTime();
 			lastGenerationTimeInMillis = generationEnd - start;
 			totalGenerationTimeInMillis += generationEnd - start;
-			// start response
+			//start response
 			response.setContentType("application/zip");
 			response.setHeader("Cache-Control", "no-cache");
 			response.setHeader("Pragma", "no-cache");
@@ -268,12 +235,12 @@ public class ThreadZipController implements Controller {
 
 			LOG.debug("file length is " + datum.length);
 			response.setContentLength(datum.length);
-			response.setHeader("Content-Disposition", " inline; filename=" + id + ".zip");
+			response.setHeader("Content-Disposition", " inline; filename=" + id+".zip");
 			// convert to non-object
 			FileCopyUtils.copy(datum, response.getOutputStream());
-		} catch (SocketException se) {
-			// this happens when a socket is closed mid-stream.
-			LOG.trace("Socket exception", se);
+		} catch (SocketException se){
+			//this happens when a socket is closed mid-stream.
+			LOG.trace("Socket exception",se);
 		} catch (Exception e) {
 			LOG.error("Unable to create thumbnail", e);
 		}
@@ -282,11 +249,12 @@ public class ThreadZipController implements Controller {
 		// compute total time
 		lastTimeInMillis = end - start;
 		totalTimeInMillis += end - start;
-
-		if (lastTimeInMillis > getTimeLength()) {
+		
+		if (lastTimeInMillis > getTimeLength()){
 			LOG.warn("Zip times are getting excessive: " + lastTimeInMillis + " ms. for thread id:" + request.getParameter("identifier"));
 		}
 		return null;
 	}
+
 
 }

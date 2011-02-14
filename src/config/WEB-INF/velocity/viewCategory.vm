@@ -1,21 +1,3 @@
-#*
-Ochan - image board/anonymous forum
-Copyright (C) 2010  David Seymore
-
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-*#
 <html>
     <head>
     	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -48,7 +30,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 		<script type="text/javascript" src="#springUrl('/yui/tabview/tabview-min.js')"></script>
 		<script type="text/javascript" src="#springUrl('/yui/dragdrop/dragdrop-min.js')"></script>
 		<script type="text/javascript" src="#springUrl('/yui/button/button-min.js')"></script>
-		<script language="javascript" type="text/javascript" src="#springUrl('/watching.min.js')"></script>		
+		
 		##Ochan dependencies
 		<link rel="stylesheet" type="text/css" href="#springUrl('/style.css')"/>
 		#parse("/WEB-INF/velocity/pagingstyle.vm")
@@ -61,8 +43,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 	    		'<li>ALT+SHIFT+N New Thread</li>' +
 	    		'<li>ALT+SHIFT+Z Previous Page</li>' +
 	    		'<li>ALT+SHIFT+X Next Page</li>' +
-			'<li>ALT+SHIFT+O Open Options</li>' +
-			'<li>ALT+SHIFT+C Open Thread Watching Panel</li>' +
 	    		'<li>ALT+SHIFT+W Help</li>' + 
 	    		'</ul>', { life: 10000, header: "Help"});
 	    	}
@@ -97,12 +77,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 			//alt + shift + x = next page
 			var kl2 = new YAHOO.util.KeyListener(document, { alt:true, shift:true, keys:88 }, { fn:function(event){ var Ex = YAHOO.namespace('example'); Ex.paginator.setPage(Ex.paginator.getCurrentPage() + 1); } } );
 			kl2.enable();
-
-			##alt + shift + c = toggle the watch panel
-                        var watchKey = new YAHOO.util.KeyListener(document, {alt: true, shift:true, keys:67 }, { fn:function(event){
-                                watchPanel.show();
-                        } } );
-                        watchKey.enable();
 	
 			//alt + shift + z = last page
 			var kl1 = new YAHOO.util.KeyListener(document, { alt:true, shift:true, keys:90 }, { fn:function(event){ var Ex = YAHOO.namespace('example'); Ex.paginator.setPage(Ex.paginator.getCurrentPage() - 1); } } );
@@ -111,10 +85,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 			//alt + shift + n = new thread
 			var kl3 = new YAHOO.util.KeyListener(document, {alt: true, shift:true, keys:78 }, { fn:function(event){ panel.show(); return false; } } );
 			kl3.enable();
-
-			###alt + shift + o = 79 = options dialog
-			var kl5 = new YAHOO.util.KeyListener(document, {alt: true, shift: true, keys:79 }, {fn:function(event){ panel2.show(); return false; } } );
-			kl5.enable();
 			
 			##alt + shift + w = help (fucking H is being used by the help in the browser.. damnit)
 			var helpKey = new YAHOO.util.KeyListener(document, {alt: true, shift:true, keys:87 }, { fn:function(event){ 
@@ -162,13 +132,12 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 							<li><a href="#tab2"><em>Remote Image</em></a></li>
 					    </ul>            
 					    <div class="yui-content">
-							<div><label for="file">Image:</label><input id="file" type="file" name="file" size="30"/></div>
+							<div><label for="file">Image:</label><input id="file" type="file" name="file" size="40"/></div>
 							<div><label for="remote">Image Url:</label><input id="remote" type="text" name="fileUrl" size="40"/></div>
 					    </div>
 					</div>
 					<br/>
 					<span><input id="submitButton" type="submit"/></span>
-					<span><input id="cancelButton" type="button"/></span>
 				</form>
 			</div></div>
 			<!-- YUI magic to turn a basic accessible form into a friendly for people who can see form -->
@@ -182,12 +151,29 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 				    toolbar: {
 				        titlebar: 'Comment',
 				        buttons: [
-				            { group: 'textstyle', label: 'Options',
+				            { group: 'textstyle', label: 'Font Style',
 				                buttons: [
-				                    { type: 'push', label: 'HTML Link', value: 'createlink', disabled: true  },
+				                    { type: 'push', label: 'Bold', value: 'bold' },
+				                    { type: 'push', label: 'Italic', value: 'italic' },
+				                    { type: 'push', label: 'Underline', value: 'underline' },
 				                    { type: 'separator' },
-				                    { type: 'push', label: 'Create an Unordered List', value: 'insertunorderedlist' },
-            						{ type: 'push', label: 'Create an Ordered List', value: 'insertorderedlist' }
+				                    { type: 'select', label: 'Arial', value: 'fontname', disabled: true,
+				                        menu: [
+				                            { text: 'Arial', checked: true },
+				                            { text: 'Arial Black' },
+				                            { text: 'Comic Sans MS' },
+				                            { text: 'Courier New' },
+				                            { text: 'Lucida Console' },
+				                            { text: 'Tahoma' },
+				                            { text: 'Times New Roman' },
+				                            { text: 'Trebuchet MS' },
+				                            { text: 'Verdana' }
+				                        ]
+				                    },
+				                    { type: 'spin', label: '10', value: 'fontsize', range: [ 9, 35 ], disabled: true },
+				                    { type: 'separator' },
+				                    { type: 'color', label: 'Font Color', value: 'forecolor', disabled: true },
+				                    { type: 'color', label: 'Background Color', value: 'backcolor', disabled: true }
 				                ]
 				            }
 				        ]
@@ -210,10 +196,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 				
 				var myTabs = new YAHOO.widget.TabView("uploadgroup");
 				var submitButton = new YAHOO.widget.Button("submitButton", { label: "Create" });
-				var cancelFunc = function(e){
-					panel.hide();
-				};
-				var cancelButton = new YAHOO.widget.Button("cancelButton", { label: "Cancel", onclick: { fn: cancelFunc} });
 				
 				function addId(id){
 	        		myEditor.execCommand('inserthtml','<p>&gt;&gt;' + id + '</p>');
@@ -284,12 +266,5 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 			</div>
 		</div>
         <p/>
-	##lets get this freaking watching thing going on
-        <div id="watchbar" class="watchbar">
-                <div id="watchPanel"><div class="bd"><div id="watchPanelBody"></div></div></div>
-        </div>
-        <script language="javascript" type="text/javascript">
-                setupWatchPanel();
-        </script>
     </body>
 </html>

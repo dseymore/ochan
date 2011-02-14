@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+                           http://www.springframework.org/schema/tx
+                           http://www.springframework.org/schema/tx/spring-tx-2.0.xsd
+                           http://www.springframework.org/schema/aop
+                           http://www.springframework.org/schema/aop/spring-aop-2.0.xsd">
+
+	<!--  get the main applicationContext for the servlet to link to -->
+<!--	<import resource="service-beans.xml" />-->
+<!--	<import resource="cxf-beans.xml" />-->
+
+	<!-- xxxxxxxxxxxxxxxxxxxxxxxxx frontend configuration xxxxxxxxxxxxxxxxxxxxxxxxx  -->
+	<!--  xxxxxxxxxxxxxxxxxxxxxxxxx  VELOCITY xxxxxxxxxxxxxxxxxxxxxxxxx  -->
+
+	<!-- 
+		This bean sets up the Velocity environment for us based on a root path for templates.
+		Optionally, a properties file can be specified for more control over the Velocity
+		environment, but the defaults are pretty sane for file based template loading.
+	-->
+    <bean id="velocityConfig" class="org.springframework.web.servlet.view.velocity.VelocityConfigurer">
+        <property name="resourceLoaderPath">
+            <value>/</value>
+        </property>
+    </bean>
+
+	<!-- 
+		View resolvers can also be configured with ResourceBundles or XML files. If you need
+		different view resolving based on Locale, you have to use the resource bundle resolver.
+	-->
+    <bean id="viewResolver" class="org.springframework.web.servlet.view.velocity.VelocityViewResolver">
+        <property name="contentType" value="text/html; charset=UTF-8" />
+        <property name="cache" value="true" />
+        <property name="prefix" value="/WEB-INF/velocity/" />
+        <property name="suffix" value=".vm" />
+		<!-- if you want to use the Spring Velocity macros, set this property to true -->
+        <property name="exposeSpringMacroHelpers" value="true" />
+        <property name="toolboxConfigLocation" value="/WEB-INF/toolbox.xml"/>
+    </bean>
+
+	<!--  xxxxxxxxxxxxxxxxxxxxxxxxx  Spring MVC xxxxxxxxxxxxxxxxxxxxxxxxx   -->
+
+	<!--  simple mapping of urls to handlers -->
+    <bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+        <property name="mappings">
+            <props>
+                <prop key="/**/list.www">listController</prop>
+                <prop key="/**/addPage.www">addController</prop>
+                <prop key="/**/addFile.www">uploadController</prop>
+                <prop key="/**/preview.www">previewController</prop>
+            </props>
+        </property>
+    </bean>
+    
+    <!-- 
+	/ = categoryList
+	/wiki/<search criteria> = categoryList w/ filter
+	 -->
+    <bean class="carbonfive.spring.web.pathparameter.ParameterizedUrlHandlerMapping">
+        <property name="alwaysUseFullPath" value="true"/>
+        <property name="mappings">
+            <props>
+                <prop key="/wiki/(*:search)">listController</prop>
+                <prop key="/wiki/preview/(*:key)">previewController</prop>
+            </props>
+        </property>
+    </bean>
+    <!-- Controllers -->
+    <bean name="listController" class="org.ochan.whatwhatwiki.control.ListController">
+        <property name="viewName" value="list" />
+        <property name="fileService" ref="localFileService" />
+        <property name="pageService" ref="localPageService" />
+    </bean>
+    <bean name="addController" class="org.ochan.whatwhatwiki.control.EditPageController">
+        <property name="pageService" ref="localPageService" />
+    </bean>
+    <bean name="previewController" class="org.ochan.whatwhatwiki.control.PreviewController">
+        <property name="viewName" value="view" />
+        <property name="pageService" ref="localPageService" />
+    </bean>
+    <bean name="uploadController" class="org.ochan.whatwhatwiki.control.UploadController">
+        <property name="commandName" value="command" />
+        <property name="commandClass" value="org.ochan.whatwhatwiki.control.UploadForm" />
+        <property name="bindOnNewForm" value="true" />
+        <property name="sessionForm" value="false" />
+        <property name="fileService" ref="localFileService" />
+    </bean>
+     
+        
+    <!--	Requires commons-fileupload-->
+    <bean id="multipartResolver" class="org.ochan.util.ManagedCommonsMultipartResolver"/>
+
+    <!--  custom exception handlers yay! -->
+    <bean id="fileSizeExceptionHandler" class="org.ochan.exception.handler.FileSizeHandlerExceptionResolver"/>
+</beans>

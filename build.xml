@@ -64,23 +64,8 @@
 		</jar>
 	</target>
 
-	<target name="minify">
-		<taskdef name="jsmin" classname="net.matthaynes.jsmin.JSMin_Task">
-			 <classpath>
-                                <fileset dir="${basedir}/tools/">
-                                        <include name="js*.jar" />
-                                        <include name="lib/*.jar" />
-                                </fileset>
-                        </classpath>
-		</taskdef>
-		<mkdir dir="${basedir}/scratch/minify"/>
-		<jsmin destdir="${basedir}/scratch/minify" suffix="true">
-			<fileset dir="src/root/" includes="*.js"/>
-		</jsmin>
-	</target>
 
-
-	<target name="war" depends="compile,minify">
+	<target name="war" depends="compile">
 		<!-- YUI is delivered in the deployment -->
 		<mkdir dir="${basedir}/scratch/yui"/>
 		<mkdir dir="${basedir}/scratch/yui/yui"/>
@@ -96,7 +81,6 @@
 			<webinf dir="src/config/WEB-INF/" />
 			<!-- <metainf dir="src/config/META-INF/"/>-->
 			<fileset dir="src/root" />
-			<fileset dir="scratch/minify" />
 			<fileset dir="scratch/yui"/>
 			<fileset dir="scratch/jgrowl"/>
 			<fileset dir="scratch/jquery"/>
@@ -122,15 +106,6 @@
 
 	<target name="clean">
 		<delete dir="${build.dir}" />
-	</target>
-
-	<target name="fresh">
-		<delete verbose="true">
-			<fileset dir="." includes="je.*"/>
-		</delete>
-		<delete verbose="true">
-			<fileset dir="." includes="*.jdb"/>
-		</delete>
 	</target>
 
 	<target name="clean-cache" depends="clean" description="--> clean the ivy cache">

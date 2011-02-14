@@ -1,0 +1,296 @@
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<link REL="SHORTCUT ICON" HREF="#springUrl('/favicon.png')">
+		<META HTTP-EQUIV="Pragma" CONTENT="no-cache">
+                <link type="application/atom+xml" rel="alternate" href="#springUrl('/atom/edits')">
+		<title>$deployment.getSystemTitle()</title>
+                ##our css
+                <link rel="stylesheet" type="text/css" href="#springUrl('/style.css')"/>
+
+                ##Jquery for growl-like toast notifications :D 
+		<link rel="stylesheet" type="text/css" href="#springUrl('/jgrowl/jquery.jgrowl.css')"/> 
+		<script type="text/javascript" src="#springUrl('/jquery-1.3.2.min.js')"></script>
+		<script type="text/javascript" src="#springUrl('/jgrowl/jquery.jgrowl_minimized.js')"></script>
+		
+                ##YUI CSS files:  
+		<link rel="stylesheet" type="text/css" href="#springUrl('/yui/base/base-min.css')"/>
+		<link rel="stylesheet" type="text/css" href="#springUrl('/yui/assets/skins/sam/skin.css')"/> 
+		##YUI JS files:  
+		<script type="text/javascript" src="#springUrl('/yui/yahoo-dom-event/yahoo-dom-event.js')"></script>
+		<script type="text/javascript" src="#springUrl('/yui/element/element-min.js')"></script>
+		<script type="text/javascript" src="#springUrl('/yui/json/json-min.js')"></script>
+		<script type="text/javascript" src="#springUrl('/yui/connection/connection-min.js')"></script>
+		<script type="text/javascript" src="#springUrl('/yui/datasource/datasource-min.js')"></script>
+		<script type="text/javascript" src="#springUrl('/yui/charts/charts-min.js')"></script>
+		<script type="text/javascript" src="#springUrl('/yui/container/container-min.js')"></script>
+		<script type="text/javascript" src="#springUrl('/yui/imageloader/imageloader-min.js')"></script>
+		<script type="text/javascript" src="#springUrl('/yui/layout/layout-min.js')"></script>
+		<script type="text/javascript" src="#springUrl('/yui/menu/menu-min.js')"></script>
+		<script type="text/javascript" src="#springUrl('/yui/paginator/paginator-min.js')"></script>
+		<script type="text/javascript" src="#springUrl('/yui/editor/simpleeditor-min.js')"></script>
+		<script type="text/javascript" src="#springUrl('/yui/tabview/tabview-min.js')"></script>
+		<script type="text/javascript" src="#springUrl('/yui/dragdrop/dragdrop-min.js')"></script>
+		<script type="text/javascript" src="#springUrl('/yui/button/button-min.js')"></script>
+
+                <script type="text/javascript" >
+	    	###Some Help dawg
+	    	function growlHelp(){
+	    		${esc.dollar}.jGrowl('<ul>' +
+	    		'<li>ALT+SHIFT+R New Page</li>' +
+                        '<li>ALT+SHIFT+F New File</li>' +
+	    		'<li>ALT+SHIFT+W Help</li>' + 
+	    		'</ul>', { life: 10000, header: "Help"});
+	    	}
+	    
+        	YAHOO.util.Event.onDOMReady(function () {
+        	##alt + shift + r = create new page
+                var kl3 = new YAHOO.util.KeyListener(document, {alt: true, shift:true, keys:82 }, { fn:function(event){ addPage(); return false; } } );
+                kl3.enable();
+
+                ##alt + shift + f = create new page
+                var kl4 = new YAHOO.util.KeyListener(document, {alt: true, shift:true, keys:70 }, { fn:function(event){ uploadPanel.show(); return false; } } );
+                kl4.enable();
+
+                ##alt + shift + w = help (fucking H is being used by the help in the browser.. damnit)
+                var helpKey = new YAHOO.util.KeyListener(document, {alt: true, shift:true, keys:87 }, { fn:function(event){ 
+                        growlHelp();
+                } } );
+                helpKey.enable();
+
+                });   	
+                </script>
+
+	</head>
+
+<body id="body" class="yui-skin-sam">
+<!-- Atom feed -->
+<div style="float: right">
+        <a href="#springUrl('/atom/edits/')"><img border="0" src="#springUrl('/15px-Feed-icon.png')" width="15" height="15"></a>
+</div>
+<div class="navigationBox">
+    <!-- what do we need navigation for? -->
+</div>
+<div id="navbar">
+        <div id="panel2"><div class="bd">
+                <span>[<a href="#" onclick="addPage(); return false;">Add New Page</a>]</span>
+                <span>[<a href="#" onclick="uploadPanel.show(); return false;">Add New File</a>]</span>
+                <span>[<a href="#" onclick="growlHelp(); return false;">Help</a>]</span>
+        </div></div>
+</div>
+<!-- Panel for creating a new page -->
+<div id="replyPanel">
+    <form id="pageForm" action="#springUrl('/addPage.www')" method="POST" enctype="multipart/form-data">
+            <div id="panel1"><div class="bd">
+                    <fieldset>
+                            <legend>Details</legend>
+                            <table>	
+                                    <tr><td><label for="author">Author:</label></td><td><input id="author" type="text" name="author" value="${author}" size="40"/></td></tr>
+                                    <tr><td><label for="title">Title:</label></td><td><input id="title" type="text" name="title" value="" size="40"/></td></tr>
+                                    <tr><td><label for="comment">Comment:</label></td><td><input id="comment" type="text" name="comment" value="" size="40"/></td></tr>
+                            </table>
+                    </fieldset>
+                    <span><textarea name="content" id="content" cols="50" rows="10"></textarea></span>
+                    <span><input id="submitButton" type="submit"/></span>
+            </div></div> 
+    </form>
+    <!-- YUI magic to turn a basic accessible form into a friendly for people who can see form -->
+    <script type="text/javascript">
+            var myEditor = new YAHOO.widget.SimpleEditor('content', {
+                height: '200px',
+                width: '450px',
+                dompath: false,
+                animate: false,
+                handleSubmit: true,
+                toolbar: {
+                    titlebar: 'Content',
+                    buttons: [
+                        { group: 'textstyle', label: 'Font Style',
+                            buttons: [
+                                { type: 'push', label: 'Bold', value: 'bold' },
+                                { type: 'push', label: 'Italic', value: 'italic' },
+                                { type: 'push', label: 'Underline', value: 'underline' },
+                                { type: 'separator' },
+                                { type: 'select', label: 'Arial', value: 'fontname', disabled: true,
+                                    menu: [
+                                        { text: 'Arial', checked: true },
+                                        { text: 'Arial Black' },
+                                        { text: 'Comic Sans MS' },
+                                        { text: 'Courier New' },
+                                        { text: 'Lucida Console' },
+                                        { text: 'Tahoma' },
+                                        { text: 'Times New Roman' },
+                                        { text: 'Trebuchet MS' },
+                                        { text: 'Verdana' }
+                                    ]
+                                },
+                                { type: 'spin', label: '10', value: 'fontsize', range: [ 9, 35 ], disabled: true },
+                                { type: 'separator' },
+                                { type: 'color', label: 'Font Color', value: 'forecolor', disabled: true },
+                                { type: 'color', label: 'Background Color', value: 'backcolor', disabled: true }
+                            ]
+                        }
+                    ]
+                }
+            });
+
+            myEditor.render();
+
+            // Instantiate a Panel from markup
+            var panel = new YAHOO.widget.Panel("panel1", { width:"475px", visible:false, constraintoviewport:true, modal:true} );
+            panel.setHeader("New Page");
+            panel.setFooter("");
+            panel.render();
+
+            // Instantiate a panel for navbar
+            var panel2 = new YAHOO.widget.Panel("panel2", { width:"30em", visible:true, constraintoviewport:true, modal:false} );
+            panel2.setHeader("Options");
+            panel2.setFooter("");
+            panel2.render();
+
+            var submitButton = new YAHOO.widget.Button("submitButton", { label: "Create" });
+
+            function onSubmitPage(p_oEvent) {
+                var bSubmit = true;
+                if(YAHOO.lang.trim(document.getElementById('title').value)==""){
+                    alert('Title is required.');
+                    bSubmit = false;
+                }
+                if(!bSubmit) {
+                    YAHOO.util.Event.preventDefault(p_oEvent);
+                }
+            }
+
+            YAHOO.util.Event.on("pageForm", "submit", onSubmitPage);
+    </script>
+    <!-- PANEL 2 -->
+    <form id="uploadform" action="#springUrl('/addFile.www')" method="POST" enctype="multipart/form-data">
+            <div id="panel3"><div class="bd">
+                    <fieldset>
+                            <legend>Details</legend>
+                            <table>	
+                                    <tr><td><label for="uploadauthor">Author:</label></td><td><input id="uploadauthor" type="text" name="author" value="${author}" size="40"/></td></tr>
+                                    <tr><td><label for="uploadtitle">Title:</label></td><td><input id="uploadtitle" type="text" name="title" value="" size="40"/></td></tr>
+                                    <tr><td><label for="file">File:</label></td><td><input id="file" type="file" name="file" size="35"/></td></tr>
+                            </table>
+                    </fieldset>
+                    <span><input id="submitButton2" type="submit"/></span>
+            </div></div> 
+    </form>
+    <!-- YUI magic to turn a basic accessible form into a friendly for people who can see form -->
+    <script type="text/javascript">
+            // Instantiate a Panel from markup
+            var uploadPanel = new YAHOO.widget.Panel("panel3", { width:"475px", visible:false, constraintoviewport:true, modal:true} );
+            uploadPanel.setHeader("New File");
+            uploadPanel.setFooter("");
+            uploadPanel.render();
+
+            var submitButton = new YAHOO.widget.Button("submitButton2", { label: "Create" });
+
+            function onSubmitFile(p_oEvent) {
+                var bSubmit = true;
+                if(YAHOO.lang.trim(document.getElementById('uploadtitle').value)==""){
+                    alert('Title is required.');
+                    bSubmit = false;
+                }
+                if(YAHOO.lang.trim(document.getElementById('file').value)==""){
+                    alert('You have to upload something.');
+                    bSubmit = false;
+                }
+                if(!bSubmit) {
+                    YAHOO.util.Event.preventDefault(p_oEvent);
+                }
+            }
+
+            YAHOO.util.Event.on("uploadform", "submit", onSubmitFile);
+
+
+    </script>
+</div>
+<br clear="all"/>
+<!-- we need a div to put our dynamic panels into -->
+<div id="container">
+    <h2 class="heading">Pages</h2>
+    <ul>
+    #foreach($page in ${pages})
+    <li><a href="#springUrl('/wiki/preview/')$page.key" title="Preview">$page.key</a>&nbsp;[<a href="#" title="History" onclick="showHistory('$page.key')">History</a>]&nbsp;[<a href="#" onclick="editPage('$page.key')">Edit</a>]</li>
+    #end
+    </ul>
+
+    <h2 class="heading">Files</h2>
+    <ul>
+    #foreach($file in ${files})
+    <li>$file.key</li>
+    #end
+    </ul>
+</div>
+<!-- History javascript -->
+<script type="text/javascript">
+function addPage(){
+    //un hijack the panel, its shared by the edit feature. 
+    document.getElementById('title').value = '';
+    //clear & reset the editor
+    myEditor.clearEditorDoc();
+    panel.show();
+}
+
+function editPage(key){
+	var callback = 
+	{
+		success: function(response){
+			var result = YAHOO.lang.JSON.parse(response.responseText);
+			if (result != undefined && result.RemotePage.key != -1){
+				//lets hijack the new page panel, and prepopulate it with 
+				//the content of the most recent version.
+				var title = key;
+				var content = result.RemotePage.latest;
+				document.getElementById('title').value = key;
+				//clear & reset the editor
+				myEditor.clearEditorDoc();
+				myEditor.execCommand('inserthtml',content);
+				//FIXME - change the button label
+				panel.show();
+			}
+		}
+	};
+	var transaction = YAHOO.util.Connect.asyncRequest('GET', '/remote/rest/page/get/' + key + '/', callback, null);
+}
+
+function showHistory(key){
+    var callback =
+        {
+                success: function(response){
+                        var result = YAHOO.lang.JSON.parse(response.responseText);
+                        //notification time!
+                        if (result != undefined && result.RemotePage.key != -1){
+                            // Instantiate a Panel from script
+                            var historyPanel = new YAHOO.widget.Panel(key, { width:"520px", visible:false, constraintoviewport:true, modal:true} );
+                            historyPanel.setHeader(result.RemotePage.key);
+                            var body = "<table><tr><th>user</th><th>date</th><th>comment</th></tr>";
+                            if(result.RemotePage.versions.length != undefined){
+                                for (var i = 0; i < result.RemotePage.versions.length; i++) { 
+                                    body += "<tr><td>" + result.RemotePage.versions[i].author + "</td><td>" + result.RemotePage.versions[i].date + "</td><td>" + result.RemotePage.versions[i].comment + "</td></tr>";
+                                }
+                            }else{
+                                body += "<tr><td>" + result.RemotePage.versions.author + "</td><td>" + result.RemotePage.versions.date + "</td><td>" + result.RemotePage.versions.comment + "</td></tr>";
+                            }
+                            body += "</table>";
+                            historyPanel.setBody(body);
+                            historyPanel.setFooter('');
+                            historyPanel.render("container");
+                            //we need to do this to properly destroy the live-generated panel. 
+                            historyPanel.beforeHideEvent.subscribe(function(){
+                               historyPanel.destroy();
+                            }); 
+                            historyPanel.show();
+                        }
+                },
+                failure: function(response){
+                        //alert(response);
+                }
+        };
+        var transaction = YAHOO.util.Connect.asyncRequest('GET', '/remote/rest/page/get/' + key + '/', callback, null);
+}
+</script>
+</body>
+</html>

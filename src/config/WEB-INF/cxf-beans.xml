@@ -102,9 +102,7 @@ http://abdera.apache.org http://abdera.apache.org/schemas/abdera-spring.xsd">
 		<property name="postService" ref="proxyPostService" />
 	</bean>
 	<!-- Statistics Service -->
-	<bean id="statsBean" class="org.ochan.service.remote.webservice.InstanceStatisticsImpl">
-		<property name="blobService" ref="proxyBlobService" />
-	</bean>
+	<bean id="statsBean" class="org.ochan.service.remote.webservice.InstanceStatisticsImpl"/>
 	<!--  rest service endpoint -->
 	<jaxrs:server id="restEndpoint" address="/rest/">
 		<jaxrs:serviceBeans>

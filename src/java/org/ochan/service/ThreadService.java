@@ -1,23 +1,6 @@
-/*
-Ochan - image board/anonymous forum
-Copyright (C) 2010  David Seymore
-
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- */
 package org.ochan.service;
 
+import java.util.HashMap;
 import java.util.List;
 
 import javax.jws.WebService;
@@ -37,88 +20,75 @@ public interface ThreadService {
 	 * @author David Seymore Oct 27, 2007
 	 */
 	@XmlRootElement
-	public class ThreadCriteria {
+	public class ThreadCriteria{
 		private Object category;
 		private Object deleteQueue;
 		private Object notDeleted;
 		private Object newerThan;
 		private Object max;
-
 		/**
 		 * @return the category
 		 */
 		public Object getCategory() {
 			return category;
 		}
-
 		/**
-		 * @param category
-		 *            the category to set
+		 * @param category the category to set
 		 */
 		public void setCategory(Object category) {
 			this.category = category;
 		}
-
 		/**
 		 * @return the deleteQueue
 		 */
 		public Object getDeleteQueue() {
 			return deleteQueue;
 		}
-
 		/**
-		 * @param deleteQueue
-		 *            the deleteQueue to set
+		 * @param deleteQueue the deleteQueue to set
 		 */
 		public void setDeleteQueue(Object deleteQueue) {
 			this.deleteQueue = deleteQueue;
 		}
-
 		/**
 		 * @return the notDeleted
 		 */
 		public Object getNotDeleted() {
 			return notDeleted;
 		}
-
 		/**
-		 * @param notDeleted
-		 *            the notDeleted to set
+		 * @param notDeleted the notDeleted to set
 		 */
 		public void setNotDeleted(Object notDeleted) {
 			this.notDeleted = notDeleted;
 		}
-
 		/**
 		 * @return the newerThan
 		 */
 		public Object getNewerThan() {
 			return newerThan;
 		}
-
 		/**
-		 * @param newerThan
-		 *            the newerThan to set
+		 * @param newerThan the newerThan to set
 		 */
 		public void setNewerThan(Object newerThan) {
 			this.newerThan = newerThan;
 		}
-
 		/**
 		 * @return the max
 		 */
 		public Object getMax() {
 			return max;
 		}
-
 		/**
-		 * @param max
-		 *            the max to set
+		 * @param max the max to set
 		 */
 		public void setMax(Object max) {
 			this.max = max;
 		}
-
+		
+		
+		
 	};
 
 	/**

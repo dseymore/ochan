@@ -1,21 +1,3 @@
-/*
-Ochan - image board/anonymous forum
-Copyright (C) 2010  David Seymore
-
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- */
 package org.ochan.form;
 
 import org.springframework.web.multipart.MultipartFile;
@@ -121,6 +103,8 @@ public class PostReplyForm {
 	public void setFile(MultipartFile file) {
 		this.file = file;
 	}
+	
+	
 
 	/**
 	 * @return the subject
@@ -130,12 +114,13 @@ public class PostReplyForm {
 	}
 
 	/**
-	 * @param subject
-	 *            the subject to set
+	 * @param subject the subject to set
 	 */
 	public void setSubject(String subject) {
 		this.subject = subject;
 	}
+	
+	
 
 	public String getFileUrl() {
 		return fileUrl;
@@ -153,8 +138,7 @@ public class PostReplyForm {
 	}
 
 	/**
-	 * @param zipFile
-	 *            the zipFile to set
+	 * @param zipFile the zipFile to set
 	 */
 	public void setZipFile(MultipartFile zipFile) {
 		this.zipFile = zipFile;
@@ -179,5 +163,7 @@ public class PostReplyForm {
 		buf.append("]");
 		return buf.toString();
 	}
+	
+	
 
 }

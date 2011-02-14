@@ -1,21 +1,3 @@
-#*
-Ochan - image board/anonymous forum
-Copyright (C) 2010  David Seymore
-
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-*#
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -24,7 +6,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 		<title>$deployment.getSystemTitle()</title>
 		<link type="application/atom+xml" rel="alternate" href="#springUrl('/atom/threads/')$category.identifier/$thread.identifier">
 		##Ochan dependencies
-		<script language="javascript" type="text/javascript" src="#springUrl('/quoting.min.js')"></script>
+		<script language="javascript" type="text/javascript" src="#springUrl('/quoting.js')"></script>
 		<link rel="stylesheet" type="text/css" href="#springUrl('/style.css')"/>
 		
 		##Jquery for growl-like toast notifications :D 
@@ -53,13 +35,13 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 		<script type="text/javascript" src="#springUrl('/yui/dragdrop/dragdrop-min.js')"></script>
 		<script type="text/javascript" src="#springUrl('/yui/button/button-min.js')"></script>
 		
+		
 		<!-- Ochan thread watcher! -->
 		<script language="javascript" type="text/javascript">
 			//variable to keep track of the pages most recent thread id
 	        var currentPostId = 0;	        
 			var autoscroll = true;
-			var thisThreadId = ${thread.identifier};
-
+	        
 	        ## Sets up the ajax loop
 	        window.setInterval(xyz, 10000)
 	        window.setInterval(threadStat, 1000)
@@ -184,9 +166,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 	    	function growlHelp(){
 	    		${esc.dollar}.jGrowl('<ul>' +
 	    		'<li>ALT+SHIFT+R Reply</li>' +
-	    		'<li>ALT+SHIFT+A Toggle AutoScroll</li>' +
-			'<li>ALT+SHIFT+O Open Options</li>' +
-			'<li>ALT+SHIFT+C Open Thread Watching Panel</li>' +
+	    		'<li>ALT+SHIFT+A AutoScroll Toggle</li>' +
 	    		'<li>ALT+SHIFT+W Help</li>' + 
 	    		'</ul>', { life: 10000, header: "Help"});
 	    	}
@@ -195,16 +175,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
         	##alt + shift + r = reply to the thread
 			var kl3 = new YAHOO.util.KeyListener(document, {alt: true, shift:true, keys:82 }, { fn:function(event){ panel.show(); return false; } } );
 			kl3.enable();
-
-			##alt + shift + c = toggle the watch panel
-                        var watchKey = new YAHOO.util.KeyListener(document, {alt: true, shift:true, keys:67 }, { fn:function(event){
-                                watchPanel.show();
-                        } } );
-                        watchKey.enable();
-			
-			###alt + shift + o = 79 = options dialog
-			var kl5 = new YAHOO.util.KeyListener(document, {alt: true, shift: true, keys:79 }, {fn:function(event){ panel2.show(); return false; } } );
-			kl5.enable();
 			
 			##alt + shift + a = autoscroll toggle
 			var kl4 = new YAHOO.util.KeyListener(document, {alt: true, shift:true, keys:65 }, { fn:function(event){ toggleScroll(); return false; } } );
@@ -238,7 +208,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 						#end
 						</a>]</span>
 				<span>[<a href="#" onclick="panel.show(); return false;">Reply</a>]</span>
-				<span style="display: none;" id="watchSpan">[<a id="watchLink" href="javascript:watchFunction();">Watch</a>]</span>
 				<span>[<a id="autoscroll" href="#" onclick="toggleScroll(); return false;">Autoscroll On</a>]</span>
 				<span>[<a href="#" onclick="growlHelp(); return false;">Help</a>]</span>
 			</div></div>
@@ -266,14 +235,13 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 								<li><a href="#tab3"><em>Zip File</em></a></li>
 						    </ul>            
 						    <div class="yui-content">
-								<div><label for="file">Image:</label><input id="file" type="file" name="file" size="30"/></div>
+								<div><label for="file">Image:</label><input id="file" type="file" name="file" size="40"/></div>
 								<div><label for="remote">Image Url:</label><input id="remote" type="text" name="fileUrl" size="40"/></div>
-								<div><label for="zip">Zip File:</label><input id="zip" type="file" name="zipFile" size="30"/></div>
+								<div><label for="zip">Zip File:</label><input id="zip" type="file" name="zipFile" size="40"/></div>
 						    </div>
 						</div>
 						<br/>
 						<span><input id="submitButton" type="submit"/></span>
-						<span><input id="cancelButton" type="button"/></span>
 					</div></div> 
 				</form>
 				<!-- the autoscroll toggling feature -->
@@ -304,12 +272,29 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 					    toolbar: {
 					        titlebar: 'Comment',
 					        buttons: [
-					            { group: 'textstyle', label: 'Options',
+					            { group: 'textstyle', label: 'Font Style',
 					                buttons: [
-					                    { type: 'push', label: 'HTML Link', value: 'createlink', disabled: true  },
+					                    { type: 'push', label: 'Bold', value: 'bold' },
+					                    { type: 'push', label: 'Italic', value: 'italic' },
+					                    { type: 'push', label: 'Underline', value: 'underline' },
 					                    { type: 'separator' },
-					                    { type: 'push', label: 'Create an Unordered List', value: 'insertunorderedlist' },
-	            						{ type: 'push', label: 'Create an Ordered List', value: 'insertorderedlist' }
+					                    { type: 'select', label: 'Arial', value: 'fontname', disabled: true,
+					                        menu: [
+					                            { text: 'Arial', checked: true },
+					                            { text: 'Arial Black' },
+					                            { text: 'Comic Sans MS' },
+					                            { text: 'Courier New' },
+					                            { text: 'Lucida Console' },
+					                            { text: 'Tahoma' },
+					                            { text: 'Times New Roman' },
+					                            { text: 'Trebuchet MS' },
+					                            { text: 'Verdana' }
+					                        ]
+					                    },
+					                    { type: 'spin', label: '10', value: 'fontsize', range: [ 9, 35 ], disabled: true },
+					                    { type: 'separator' },
+					                    { type: 'color', label: 'Font Color', value: 'forecolor', disabled: true },
+					                    { type: 'color', label: 'Background Color', value: 'backcolor', disabled: true }
 					                ]
 					            }
 					        ]
@@ -332,10 +317,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 					
 					var myTabs = new YAHOO.widget.TabView("uploadgroup");
 					var submitButton = new YAHOO.widget.Button("submitButton", { label: "Reply" });
-					var cancelFunc = function(e){
-						panel.hide();
-					};
-					var cancelButton = new YAHOO.widget.Button("cancelButton", { label: "Cancel", onclick: { fn: cancelFunc} });
 					
 					function addId(id){
 		        		myEditor.execCommand('inserthtml','<p>&gt;&gt;' + id + '</p>');
@@ -367,19 +348,5 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 				</table>
 			</div>
 		#end
-		<div id="dialog1" class="yui-pe-content">
-			<div class="hd">Watch</div>
-			<div class="bd">
-				<label for="threadname">Name:</label><input type="textbox" id="threadname" name="threadname" />
-			</div>
-		</div>
 	</body>
-        <script language="javascript" type="text/javascript" src="#springUrl('/watching.min.js')"></script>
-	##lets get this freaking watching thing going on
-        <div id="watchbar" class="watchbar">
-                <div id="watchPanel"><div class="bd"><div id="watchPanelBody"></div></div></div>
-        </div>
-        <script language="javascript" type="text/javascript">
-                setupWatchPanel();
-        </script>
 </html> 
