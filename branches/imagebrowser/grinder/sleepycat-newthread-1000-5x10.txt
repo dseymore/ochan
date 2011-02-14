@@ -1,6 +1,0 @@
-Test	Description	Successful Tests	Errors	Mean Time	Mean Time Standard Deviation	TPS	Peak TPS	Mean Response Length	Response Bytes Per Second	Response Errors	Mean time to resolve host	Mean time to establish connection	Mean time to first byte	
-Test 100	Page 1	990	0	11700	9040	2.83	50.0	0.00	0.00	0	0.00	0.00	0.00	
-Test 101	GET /	1033	0	48.0	105	2.95	50.0	0.00	0.00	0	0.473	1.04	43.3	
-Test 102	GET 1	990	0	11600	9050	2.83	50.0	307000	868000	3	0.00	0.00	262	
-Test 200	Page 2	983	0	115	166	2.81	29.0	0.00	0.00	0	0.00	0.00	0.00	
-Test 201	POST openCategory.Ochan	983	0	114	166	2.81	29.0	5.98	16.8	3	0.472	0.954	110	

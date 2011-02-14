@@ -1,9 +1,9 @@
 Building:
 
-Just type ant :)
+Just type mvn clean install
 
 Deploying:
 
-just type java -jar scratch/Ochan.jar
+just type java -jar target/*.jar
 
 You've got a working copy of Ochan now! 
