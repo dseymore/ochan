@@ -1,0 +1,15 @@
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<link REL="SHORTCUT ICON" HREF="#springUrl('/favicon.png')">
+	    <script language="javascript" type="text/javascript" src="#springUrl('/quoting.js')"></script>
+	    <title>$deployment.getSystemTitle()</title>
+	    ##Ochan dependencies
+		<link rel="stylesheet" type="text/css" href="#springUrl('/style.css')"/>
+	</head>
+	<body id="body">
+		<div align="center">
+			<img src="#springUrl('/404.png')" alt="404 Not Found.... you probably came here via a dead thread"/>
+		</div>
+	</body>
+</html>

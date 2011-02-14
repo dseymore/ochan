@@ -1,0 +1,352 @@
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<META HTTP-EQUIV="Pragma" CONTENT="no-cache">
+		<link REL="SHORTCUT ICON" HREF="#springUrl('/favicon.png')">
+		<title>$deployment.getSystemTitle()</title>
+		<link type="application/atom+xml" rel="alternate" href="#springUrl('/atom/threads/')$category.identifier/$thread.identifier">
+		##Ochan dependencies
+		<script language="javascript" type="text/javascript" src="#springUrl('/quoting.js')"></script>
+		<link rel="stylesheet" type="text/css" href="#springUrl('/style.css')"/>
+		
+		##Jquery for growl-like toast notifications :D 
+		<link rel="stylesheet" type="text/css" href="#springUrl('/jgrowl/jquery.jgrowl.css')"/> 
+		<script type="text/javascript" src="#springUrl('/jquery-1.3.2.min.js')"></script>
+		<script type="text/javascript" src="#springUrl('/jgrowl/jquery.jgrowl_minimized.js')"></script>
+		
+		
+		##YUI CSS files:  
+		<link rel="stylesheet" type="text/css" href="#springUrl('/yui/base/base-min.css')"/>
+		<link rel="stylesheet" type="text/css" href="#springUrl('/yui/assets/skins/sam/skin.css')"/> 
+		##YUI JS files:  
+		<script type="text/javascript" src="#springUrl('/yui/yahoo-dom-event/yahoo-dom-event.js')"></script>
+		<script type="text/javascript" src="#springUrl('/yui/element/element-min.js')"></script>
+		<script type="text/javascript" src="#springUrl('/yui/json/json-min.js')"></script>
+		<script type="text/javascript" src="#springUrl('/yui/connection/connection-min.js')"></script>
+		<script type="text/javascript" src="#springUrl('/yui/datasource/datasource-min.js')"></script>
+		<script type="text/javascript" src="#springUrl('/yui/charts/charts-min.js')"></script>
+		<script type="text/javascript" src="#springUrl('/yui/container/container-min.js')"></script>
+		<script type="text/javascript" src="#springUrl('/yui/imageloader/imageloader-min.js')"></script>
+		<script type="text/javascript" src="#springUrl('/yui/layout/layout-min.js')"></script>
+		<script type="text/javascript" src="#springUrl('/yui/menu/menu-min.js')"></script>
+		<script type="text/javascript" src="#springUrl('/yui/paginator/paginator-min.js')"></script>
+		<script type="text/javascript" src="#springUrl('/yui/editor/simpleeditor-min.js')"></script>
+		<script type="text/javascript" src="#springUrl('/yui/tabview/tabview-min.js')"></script>
+		<script type="text/javascript" src="#springUrl('/yui/dragdrop/dragdrop-min.js')"></script>
+		<script type="text/javascript" src="#springUrl('/yui/button/button-min.js')"></script>
+		
+		
+		<!-- Ochan thread watcher! -->
+		<script language="javascript" type="text/javascript">
+			//variable to keep track of the pages most recent thread id
+	        var currentPostId = 0;	        
+			var autoscroll = true;
+	        
+	        ## Sets up the ajax loop
+	        window.setInterval(xyz, 10000)
+	        window.setInterval(threadStat, 1000)
+	        
+	        ## Calls rest url for the next post
+	        function xyz(){
+	        	var callback =
+	        	{
+	        		success: function(response){
+	        			var result = YAHOO.lang.JSON.parse(response.responseText);
+	        			if (result != undefined && result.RemotePost.identifier != -1){
+							createItem(result.RemotePost.subject, result.RemotePost.email, result.RemotePost.author, result.RemotePost.url, result.RemotePost.time, result.RemotePost.type, result.RemotePost.identifier, result.RemotePost.comment, result.RemotePost.filename, result.RemotePost.fileSize);
+							currentPostId = result.RemotePost.identifier;
+						} 
+	        		},
+	        		failure: function(response){
+	        			//alert(response);
+	        		}
+	        	};
+	        	var transaction = YAHOO.util.Connect.asyncRequest('GET', '/remote/rest/post/next/' + currentPostId + '/', callback, null); 
+	        }
+	        
+	        ### calls the rest url to mark it for deletion
+	        function deleteThread(someParam){
+	        	var callback =
+	        	{
+	        		success: function(response){
+	        			var result = YAHOO.lang.JSON.parse(response.responseText);
+	        			//now we have the stuff
+	        			if (result.RemoteThread.identifier != -1){
+	        				deleteLink = document.getElementById('deletelink');
+	        				if (result.RemoteThread.locked){
+	        					deleteLink.innerHTML = 'Thread Locked';
+	        				}else{
+		        				if (result.RemoteThread.deleteDate != null){
+		        					deleteLink.innerHTML = 'Undelete ' + result.RemoteThread.deleteCount;
+		        				}else{
+		        					deleteLink.innerHTML = 'Delete ' + result.RemoteThread.deleteCount;
+		        				}
+	        				}
+	        			}	        			
+
+	        		},
+	        		failure: function(response){
+	        			//alert(response);
+	        		}
+	        	};
+	        	var transaction = YAHOO.util.Connect.asyncRequest('GET', '/remote/rest/thread/delete/${thread.identifier}/', callback, null); 
+	        }
+	        
+	        ###Checks the deleted status of the thread
+	        function threadStat(){
+	        	var callback =
+	        	{
+	        		success: function(response){
+	        			var result = YAHOO.lang.JSON.parse(response.responseText);
+	        			if (result.RemoteThread.identifier != -1){
+	        				deleteLink = document.getElementById('deletelink');
+	        				if (result.RemoteThread.locked){
+	        					deleteLink.innerHTML = 'Thread Locked';
+	        				}else{
+		        				if (result.RemoteThread.deleteDate != null){
+		        					deleteLink.innerHTML = 'Undelete';
+		        				}else{
+		        					deleteLink.innerHTML = 'Delete';
+		        				}
+		        				if (result.RemoteThread.deleteCount){
+		        					deleteLink.innerHTML = deleteLink.innerHTML + ' ' + result.RemoteThread.deleteCount;
+		        				}
+		        			}
+	        			} 
+	        		},
+	        		failure: function(response){
+	        			//alert(response);
+	        		}
+	        	};
+	        	var transaction = YAHOO.util.Connect.asyncRequest('GET', '/remote/rest/thread/status/${thread.identifier}/', callback, null); 
+	        }
+	        
+	        
+	        ##NASTY duplication of style in JAVASCRIPT to ... 2 places to edit one style.. sucks. 
+	        function createItem(subject,email,author,url,time,type,id,comment,filename,filesize){
+	        	var body = document.getElementById("body");
+	        	var bigdiv = document.createElement("div");
+	        	bigdiv.setAttribute("id",id);
+	        	bigdiv.setAttribute("class","reply");
+	        	var location = document.createElement("a");
+	        	location.setAttribute("name",id);
+	        	
+	        	var newdiv = document.createElement("div");
+	        	newdiv.innerHTML = subject + "&nbsp;&nbsp;<a href=\"mailto:" + email + "\">" + author + "</a> " + "<a href=\"" + url + "\">uri</a>" + time + "&nbsp;" + filename + "&nbsp;" + filesize + "&nbsp;<a href=\"#\" onclick=\"javascript:addId(" + id +  ")\">&raquo;" + id + "</a>";
+	        	var table = document.createElement("table");
+	        	var row = document.createElement("tr");
+	        	var cell1 = document.createElement("td");
+	        	cell1.className = 'clearcell';
+	        	if (type == 'IMAGE'){
+	        		cell1.innerHTML = "<a href=\"#springUrl('/chan/img/')" + id + "\"><img src=\"#springUrl('/chan/img/')" + id + "?thumb=true\"></a>";
+	        	}
+	        	var cell2 = document.createElement("td");
+	        	cell2.className = 'clearcell';
+	        	cell2.innerHTML = comment;
+	        	row.appendChild(cell1);
+	        	row.appendChild(cell2);
+	        	table.appendChild(row);
+	        	
+	        	bigdiv.appendChild(location);
+	        	bigdiv.appendChild(newdiv);
+	        	bigdiv.appendChild(table);
+	        	
+	        	body.appendChild(bigdiv);
+	        	
+	        	var endLocation = document.createElement("a");
+	        	endLocation.setAttribute("name","end"+id);
+	        	body.appendChild(endLocation);
+				if (autoscroll){
+	        		window.location.hash="end"+id;
+	        	}
+	        }
+	    </script>
+	    <script type="text/javascript" >
+	    	###Some Help dawg
+	    	function growlHelp(){
+	    		${esc.dollar}.jGrowl('<ul>' +
+	    		'<li>ALT+SHIFT+R Reply</li>' +
+	    		'<li>ALT+SHIFT+A AutoScroll Toggle</li>' +
+	    		'<li>ALT+SHIFT+W Help</li>' + 
+	    		'</ul>', { life: 10000, header: "Help"});
+	    	}
+	    
+        	YAHOO.util.Event.onDOMReady(function () {
+        	##alt + shift + r = reply to the thread
+			var kl3 = new YAHOO.util.KeyListener(document, {alt: true, shift:true, keys:82 }, { fn:function(event){ panel.show(); return false; } } );
+			kl3.enable();
+			
+			##alt + shift + a = autoscroll toggle
+			var kl4 = new YAHOO.util.KeyListener(document, {alt: true, shift:true, keys:65 }, { fn:function(event){ toggleScroll(); return false; } } );
+			kl4.enable();
+			
+			##alt + shift + w = help (fucking H is being used by the help in the browser.. damnit)
+			var helpKey = new YAHOO.util.KeyListener(document, {alt: true, shift:true, keys:87 }, { fn:function(event){ 
+				growlHelp();
+			} } );
+			helpKey.enable();
+			
+			});   	
+        </script>
+	</head>
+	<body id="body" class="yui-skin-sam">
+		<!-- Atom feed -->
+		<div style="float: right">
+			<a href="#springUrl('/atom/threads/')$category.identifier/$thread.identifier"><img border="0" src="#springUrl('/15px-Feed-icon.png')" width="15" height="15"></a>
+		</div>
+		<div class="navigationBox">
+			<a href="http://$deployment.hostname:$deployment.port">Home</a> >> <a href="#springUrl('/chan/')$category.identifier">$category.name</a> >> <a href="#springUrl('/chan/thread/')$thread.identifier">$thread.identifier</a>
+		</div>
+		<div id="navbar">
+			<div id="panel2"><div class="bd">
+				<span>[<a href="#springUrl('/chan/zip/')$thread.identifier">Export</a>]</span>
+				<span>[<a id="deletelink" href="#" onclick="javascript:deleteThread('val')">
+						#if ($thread.deleteDate)Undelete#end
+						#if (!$thread.deleteDate)Delete#end
+						#if ($thread.deleteCount)
+							$thread.deleteCount
+						#end
+						</a>]</span>
+				<span>[<a href="#" onclick="panel.show(); return false;">Reply</a>]</span>
+				<span>[<a id="autoscroll" href="#" onclick="toggleScroll(); return false;">Autoscroll On</a>]</span>
+				<span>[<a href="#" onclick="growlHelp(); return false;">Help</a>]</span>
+			</div></div>
+		</div>
+		#if (!$blockPosts)
+			<div id="replyPanel">
+				<form action="#springUrl('/viewThread.Ochan')" method="POST" enctype="multipart/form-data">
+					<input type="hidden" name="parent" value="${thread.identifier}"/>
+					<div id="panel1"><div class="bd">
+						<fieldset>
+							<legend>Details</legend>
+							<table>	
+								<tr><td><label for="author">Author:</label></td><td><input id="author" type="text" name="author" value="${author}" size="40"/></td></tr>
+								<tr><td><label for="subject">Subject:</label></td><td><input id="subject" type="text" name="subject" value="" size="40"/></td></tr>
+								<tr><td><label for="email">Email:</label></td><td><input id="email" type="text" name="email" value="" size="40"/></td></tr>
+								<tr><td><label for="url">URL:</label></td><td><input id="url" type="text" name="url" value="" size="40"/></td></tr>
+							</table>
+						</fieldset>
+						<span><textarea name="comment" id="comment" cols="50" rows="10"></textarea></span>
+						<!-- start tabs -->
+						<div id="uploadgroup" class="yui-navset">
+						    <ul class="yui-nav">
+								<li class="selected"><a href="#tab1"><em>Upload Image</em></a></li>
+								<li><a href="#tab2"><em>Remote Image</em></a></li>
+								<li><a href="#tab3"><em>Zip File</em></a></li>
+						    </ul>            
+						    <div class="yui-content">
+								<div><label for="file">Image:</label><input id="file" type="file" name="file" size="40"/></div>
+								<div><label for="remote">Image Url:</label><input id="remote" type="text" name="fileUrl" size="40"/></div>
+								<div><label for="zip">Zip File:</label><input id="zip" type="file" name="zipFile" size="40"/></div>
+						    </div>
+						</div>
+						<br/>
+						<span><input id="submitButton" type="submit"/></span>
+					</div></div> 
+				</form>
+				<!-- the autoscroll toggling feature -->
+				<script type="text/javascript">
+					function toggleScroll(){
+						var a = document.getElementById('autoscroll');
+						var message = 'Autoscroll ';
+						if (autoscroll){
+							autoscroll = false;
+							a.innerHTML = 'Autoscroll Off';
+							message = message + ' disabled.';
+						}else{
+							autoscroll = true;
+							a.innerHTML = 'Autoscroll On';
+							message = message + ' enabled.';
+						} 
+						${esc.dollar}.jGrowl(message, { life: 10000, header: "Autoscroll"});
+					}
+				</script>
+				<!-- YUI magic to turn a basic accessible form into a friendly for people who can see form -->
+				<script type="text/javascript">
+					var myEditor = new YAHOO.widget.SimpleEditor('comment', {
+					    height: '200px',
+					    width: '450px',
+					    dompath: false,
+					    animate: false,
+					    handleSubmit: true,
+					    toolbar: {
+					        titlebar: 'Comment',
+					        buttons: [
+					            { group: 'textstyle', label: 'Font Style',
+					                buttons: [
+					                    { type: 'push', label: 'Bold', value: 'bold' },
+					                    { type: 'push', label: 'Italic', value: 'italic' },
+					                    { type: 'push', label: 'Underline', value: 'underline' },
+					                    { type: 'separator' },
+					                    { type: 'select', label: 'Arial', value: 'fontname', disabled: true,
+					                        menu: [
+					                            { text: 'Arial', checked: true },
+					                            { text: 'Arial Black' },
+					                            { text: 'Comic Sans MS' },
+					                            { text: 'Courier New' },
+					                            { text: 'Lucida Console' },
+					                            { text: 'Tahoma' },
+					                            { text: 'Times New Roman' },
+					                            { text: 'Trebuchet MS' },
+					                            { text: 'Verdana' }
+					                        ]
+					                    },
+					                    { type: 'spin', label: '10', value: 'fontsize', range: [ 9, 35 ], disabled: true },
+					                    { type: 'separator' },
+					                    { type: 'color', label: 'Font Color', value: 'forecolor', disabled: true },
+					                    { type: 'color', label: 'Background Color', value: 'backcolor', disabled: true }
+					                ]
+					            }
+					        ]
+					    }
+					});
+					
+					myEditor.render();
+					
+					// Instantiate a Panel from markup
+					var panel = new YAHOO.widget.Panel("panel1", { width:"475px", visible:false, constraintoviewport:true, modal:true} );
+					panel.setHeader("Reply");
+					panel.setFooter("");
+					panel.render();
+					
+					// Instantiate a panel for navbar
+					var panel2 = new YAHOO.widget.Panel("panel2", { width:"30em", visible:true, constraintoviewport:true, modal:false} );
+					panel2.setHeader("Options");
+					panel2.setFooter("");
+					panel2.render();
+					
+					var myTabs = new YAHOO.widget.TabView("uploadgroup");
+					var submitButton = new YAHOO.widget.Button("submitButton", { label: "Reply" });
+					
+					function addId(id){
+		        		myEditor.execCommand('inserthtml','<p>&gt;&gt;' + id + '</p>');
+			        }
+				</script>
+			</div>
+		#end
+		<br>
+		#foreach($post in ${thread.posts})
+			<div id="$post.identifier" class="reply">
+				<script language="javascript" type="text/javascript">
+					currentPostId = $post.identifier;
+				</script>
+				<a name="$post.identifier"/>
+				<div>
+					$post.subject&nbsp;&nbsp;<a href="mailto:$post.email">$post.author</a> <a href="$post.url">uri</a> $post.time  &nbsp;#if($post.filename)$post.filename#end&nbsp;#if($post.fileSize)$post.fileSize#end&nbsp;<a href="#" onclick="javascript:addId($post.identifier)">&raquo;$post.identifier</a>
+				</div>
+				<table>
+					<tr>
+					#if ($post.getClass().getName() == 'org.ochan.entity.ImagePost')
+						<td>
+							<a href="#springUrl('/chan/img/')$post.identifier"><img src="#springUrl('/chan/img/')$post.identifier?thumb=true"></a>
+						</td>
+					#end
+						<td>
+							$post.comment
+						</td>
+					</tr>
+				</table>
+			</div>
+		#end
+	</body>
+</html> 
