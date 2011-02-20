@@ -219,8 +219,8 @@
 
     <h2 class="heading">Files</h2>
     <ul>
-    #foreach($file in ${files})
-    <li>$file.key</li>
+    #foreach($image in ${images})
+    <li>$image.absolutePath $image.identifier</li>
     #end
     </ul>
 </div>

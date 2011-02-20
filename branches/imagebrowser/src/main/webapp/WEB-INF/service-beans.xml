@@ -16,14 +16,14 @@
     <aop:spring-configured />
         
         <!--  xxxxxxxxxxxxxxxxxxxxxxxxx  Service configuration xxxxxxxxxxxxxxxxxxxxxxxxx  -->
-    <bean class="org.ochan.whatwhatwiki.dpl.SleepyEnvironment" id="sleepy" destroy-method="close"/>
-    <bean id="localPageService" class="org.ochan.whatwhatwiki.service.local.LocalPageService">
+    
+    <bean class="org.ochan.imagebrowser.dpl.SleepyEnvironment" id="sleepy" destroy-method="close"/>
+    <bean class="org.ochan.imagebrowser.service.local.LocalImageService" id="localImageService">
         <property name="sleepyEnvironment" ref="sleepy"/>
     </bean>
-    <bean id="localFileService" class="org.ochan.whatwhatwiki.service.local.LocalFileService">
+    <bean class="org.ochan.imagebrowser.service.local.LocalBlobService" id="localBlobService">
         <property name="sleepyEnvironment" ref="sleepy"/>
     </bean>
-        
         <!--  JMX! -->
     <bean id="exporter" class="org.springframework.jmx.export.MBeanExporter">
         <property name="assembler" ref="assembler"/>

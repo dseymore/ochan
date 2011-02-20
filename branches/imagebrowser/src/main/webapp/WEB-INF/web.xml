@@ -71,17 +71,17 @@
         <url-pattern>*.vm</url-pattern>
     </servlet-mapping>
     <servlet>
-        <servlet-name>WhatWhatWiki</servlet-name>
+        <servlet-name>ImageBrowser</servlet-name>
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
     </servlet>
     <servlet-mapping>
 <!--		  this will automatically find Ochan-servlet.xml -->
-        <servlet-name>WhatWhatWiki</servlet-name>
-        <url-pattern>*.www</url-pattern>
+        <servlet-name>ImageBrowser</servlet-name>
+        <url-pattern>*.view</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>WhatWhatWiki</servlet-name>
-        <url-pattern>/wiki/*</url-pattern>
+        <servlet-name>ImageBrowser</servlet-name>
+        <url-pattern>/browse/*</url-pattern>
     </servlet-mapping>
     <filter>
         <filter-name>PathParameterFilter</filter-name>
@@ -89,14 +89,14 @@
     </filter>
     <filter-mapping>
         <filter-name>PathParameterFilter</filter-name>
-        <url-pattern>/wiki/*</url-pattern>
+        <url-pattern>/browse/*</url-pattern>
     </filter-mapping>
 	
 	
 	<!-- so that the welcome calls the servlet -->
     <servlet-mapping>
-        <servlet-name>WhatWhatWiki</servlet-name>
-        <url-pattern>list.www</url-pattern>
+        <servlet-name>ImageBrowser</servlet-name>
+        <url-pattern>list.view</url-pattern>
     </servlet-mapping>
 
 
@@ -105,7 +105,7 @@
 <!--		<listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>-->
 <!--	</listener> -->
     <welcome-file-list>
-        <welcome-file>/list.www</welcome-file>
+        <welcome-file>/list.view</welcome-file>
     </welcome-file-list>
 
     <!--  Log4J JMX initialization -->

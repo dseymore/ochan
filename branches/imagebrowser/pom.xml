@@ -3,10 +3,10 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.ochan</groupId>
-    <artifactId>WhatWhatWiki</artifactId>
+    <artifactId>ImageBrowser</artifactId>
     <packaging>war</packaging>
     <version>0.0.1-SNAPSHOT</version>
-    <name>whatwhatwiki</name>
+    <name>ImageBrowser</name>
     <url>http://maven.apache.org</url>
     <properties>
         <version.org.springframework>2.5.4</version.org.springframework>
@@ -310,6 +310,12 @@
             <groupId>jquery</groupId>
             <artifactId>jgrowl</artifactId>
             <version>1.2.0</version>
+            <type>war</type>
+        </dependency>
+	<dependency>
+            <groupId>sencha</groupId>
+            <artifactId>sencha-touch</artifactId>
+            <version>1.0.1a</version>
             <type>war</type>
         </dependency>
     </dependencies>
