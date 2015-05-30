@@ -1,0 +1,1 @@
+Ochan is a project to create a totally scalable, distributable, and easy to partition imageboard application that is not only incredibly easy to start, its easy to monitor, maintain, extend, and use.
